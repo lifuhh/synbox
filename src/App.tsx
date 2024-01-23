@@ -1,6 +1,4 @@
 const App = () => {
-  return (
-    <div>App</div>
-  )
+  return <div>Test x</div>
 }
 export default App
