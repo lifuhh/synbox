@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { useEffect, useRef, useState } from 'react'
-import { SearchBarToggleViewIcon } from '../custom_icons'
+import { SearchBarToggleViewIcon } from '../svgicons'
 import SearchBar from './SearchBar'
 
 const SearchBarViewToggler = () => {
@@ -35,7 +35,7 @@ const SearchBarViewToggler = () => {
   return (
     <div className={`flex flex-col justify-center items-center w-full px-10`}>
       <div
-        className={`w-full flex justify-center items-center md:pt-4 ${
+        className={`w-full flex justify-center items-center pt-2 ${
           isHidden ? 'slide-up-animation' : 'slide-down-animation'
         } `}>
         <SearchBar ref={inputToggleFocusRef} />
@@ -47,7 +47,7 @@ const SearchBarViewToggler = () => {
             : 'slide-search-toggle-icon-down-animation'
         } `}>
         <Button size='icon' variant='ghost' onClick={handleSearchBarViewToggle}>
-          <SearchBarToggleViewIcon className='h-10 w-10 text-gray-500 dark:text-gray-400 z-2' />
+          <SearchBarToggleViewIcon className='h-10 w-10 text-gray-500 dark:text-gray-400' />
           <span className='sr-only'>Search View Toggle</span>
         </Button>
       </div>

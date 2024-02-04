@@ -1,46 +1,38 @@
-import LoginButtonTest from './components/shared/LoginButtonTest'
-import SearchBarViewToggler from './components/shared/SearchBarViewToggler'
-import TopBar from './components/shared/TopBar'
+import { Route, Routes } from 'react-router-dom'
+import RootLayout from './_root/RootLayout'
+import { Home } from './_root/pages'
+
+import { Toaster } from '@/components/ui/toaster'
+import Player from './_root/pages/Player'
 import './globals.css'
 
 const App = () => {
   return (
-    <>
-      <TopBar />
-      <div>
-        <p>Test v5</p>
-        <ruby className='font_noto_sans_jp_black_900'>
-          漢<rp>(</rp>
-          <rt>かん</rt>
-          <rp>)</rp>字<rp>(</rp>
-          <rt>じ</rt>
-          <rp>)</rp>
-        </ruby>
-        <br />
-        <ruby className='font_noto_sans_jp_reg'>
-          漢<rp>(</rp>
-          <rt>かん</rt>
-          <rp>)</rp>字<rp>(</rp>
-          <rt>じ</rt>
-          <rp>)</rp>
-        </ruby>
-        <br />
-        <p className='font_doki_doki'>カラオケ</p>
-        <br />
-        <ruby className='font_mochiy_pop_one'>
-          漢<rp>(</rp>
-          <rt>かん</rt>
-          <rp>)</rp>字<rp>(</rp>
-          <rt>じ</rt>
-          <rp>)</rp>
-        </ruby>
+    <main className='flex h-screen'>
+      <Routes>
+        {/* public routes */}
+        {/* <Route element={<AuthLayout />}>
+        <Route path='/sign-in' element={<SignInForm />} />
+        <Route path='/sign-up' element={<SignUpForm />} />
+      </Route> */}
 
-        <br />
-        <p>Stop Breaking??</p>
-        <br />
-      </div>
-      <LoginButtonTest />
-    </>
+        {/* private routes */}
+        <Route element={<RootLayout />}>
+          <Route index element={<Home />} />
+          <Route path='/player' element={<Player />} />
+
+          {/* <Route path='/explore' element={<Explore />}/>
+        // <Route path='/saved' element={<Saved />} />
+        // <Route path='/all-users' element={<AllUsers />} />
+        // <Route path='/create-post' element={<CreatePost />} />
+        // <Route path='/update-post/:id' element={<EditPost />} />
+        // <Route path='/posts/:id' element={<PostDetails />} />
+        // <Route path='/profile/:id' element={<Profile />} />
+        // <Route path='/update-profile/:id' element={<UpdateProfile />} /> */}
+        </Route>
+      </Routes>
+      <Toaster />
+    </main>
   )
 }
 export default App

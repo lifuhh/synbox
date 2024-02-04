@@ -1,13 +1,15 @@
+import FavouritesButton from '../favourites/FavouritesButton'
+import NowPlayingDisplay from './NowPlayingDisplay'
 import SearchBarViewToggler from './SearchBarViewToggler'
 
 const TopBar = () => {
   return (
-    <div className='flex justify-between items-center'>
-      <h1>??</h1>
+    <div className='flex justify-between items-start fixed top-0 left-0 w-full z-10'>
+      <NowPlayingDisplay />
       <div className='flex-grow mx-5'>
         <SearchBarViewToggler />
       </div>
-      <h1>????</h1>
+      <FavouritesButton />
     </div>
   )
 }

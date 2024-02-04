@@ -40,10 +40,17 @@ module.exports = {
       screens: {
         xs: '480px',
       },
+
       width: {
+        '9/10': '90%',
         420: '420px',
         465: '465px',
       },
+
+      height: {
+        '9/10': '90%',
+      },
+
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
       },
