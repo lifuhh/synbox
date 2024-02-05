@@ -2,11 +2,11 @@
 
 import HomeCarousel from '@/components/shared/HomeCarousel'
 
-const Home = () => {
+const HomePage = () => {
   return (
     <div className='flex items-center justify-center w-full'>
       <HomeCarousel />
     </div>
   )
 }
-export default Home
+export default HomePage

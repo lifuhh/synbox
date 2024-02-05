@@ -3,7 +3,7 @@ import RootLayout from './_root/RootLayout'
 import { Home } from './_root/pages'
 
 import { Toaster } from '@/components/ui/toaster'
-import Player from './_root/pages/Player'
+import PlayerPage from './_root/pages/PlayerPage'
 import './globals.css'
 
 const App = () => {
@@ -19,7 +19,7 @@ const App = () => {
         {/* private routes */}
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
-          <Route path='/player' element={<Player />} />
+          <Route path='/player' element={<PlayerPage />} />
 
           {/* <Route path='/explore' element={<Explore />}/>
         // <Route path='/saved' element={<Saved />} />
