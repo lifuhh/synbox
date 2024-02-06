@@ -1,5 +1,6 @@
 import { formattedVideoItemForCarousel } from '@/types'
 import React, { CSSProperties } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { CardBody, CardContainer, CardItem } from '../ui/3d-card'
 
 type HomeCarouselItemProps = {
@@ -17,6 +18,12 @@ const HomeCarouselItem: React.FC<HomeCarouselItemProps> = ({
   itemCount,
   item,
 }) => {
+  const navigate = useNavigate()
+
+  const handleNavigate = () => {
+    navigate(`/v/${item.videoId}`, { state: { videoDetails: item } })
+  }
+
   // Adjust the index to be 0-based
   const adjustedIndex = index - 1
   let distance = Math.abs(adjustedIndex - currentIndex)
@@ -81,13 +88,13 @@ const HomeCarouselItem: React.FC<HomeCarouselItemProps> = ({
                 className='px-4 py-2 rounded-xl text-xs font-normal dark:text-white text-blue-900'>
                 {item.channel}
               </CardItem>
-              <CardItem
-                translateZ={10}
-                translateX={30}
-                as='button'
-                className='px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold'>
-                {item.videoId}
-              </CardItem>
+              <button
+                className='px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold'
+                onClick={handleNavigate}>
+                <CardItem translateZ={10} translateX={30}>
+                  {item.videoId}
+                </CardItem>
+              </button>
             </div>
           </CardBody>
         </CardContainer>

@@ -18,8 +18,7 @@ const App = () => {
         {/* private routes */}
         <Route element={<RootLayout />}>
           <Route index element={<HomePage />} />
-          <Route path='/player' element={<PlayerPage />} />
-
+          <Route path='/v/:id' element={<PlayerPage />} />
           {/* <Route path='/explore' element={<Explore />}/>
         // <Route path='/saved' element={<Saved />} />
         // <Route path='/all-users' element={<AllUsers />} />

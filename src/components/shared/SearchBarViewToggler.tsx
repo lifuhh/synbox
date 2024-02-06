@@ -1,11 +1,14 @@
 import { Button } from '@/components/ui/button'
 import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { SearchBarToggleViewIcon } from '../svgicons'
 import SearchBar from './SearchBar'
 
 const SearchBarViewToggler = () => {
   const [isHidden, setIsHidden] = useState(false)
   const inputToggleFocusRef = useRef<HTMLInputElement>(null)
+
+  const location = useLocation()
 
   const handleSearchBarViewToggle = () => {
     setIsHidden(!isHidden)
@@ -31,6 +34,16 @@ const SearchBarViewToggler = () => {
       inputToggleFocusRef.current.blur() // Unfocus the search input when it is hidden
     }
   }, [isHidden])
+
+  useEffect(() => {
+    if (location.pathname.includes('/v/')) {
+      setIsHidden(true) // Show the search bar when on the PlayerPage route
+    }
+
+    if (location.pathname === '/') {
+      setIsHidden(false) // Show the search bar when on the root route
+    }
+  }, [location.pathname])
 
   return (
     <div className={`flex flex-col justify-center items-center w-full px-10`}>
