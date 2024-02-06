@@ -7,13 +7,18 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel'
+import { formattedVideoItemForCarousel } from '@/types'
 import Autoplay from 'embla-carousel-autoplay'
 import { useEffect, useState } from 'react'
 import HomeCarouselItem from './HomeCarouselItem'
 
 Autoplay.globalOptions = { delay: 6500 }
 
-const HomeCarousel = () => {
+type HomeCarouselProps = {
+  items: formattedVideoItemForCarousel[]
+}
+
+const HomeCarousel = ({ items }: HomeCarouselProps) => {
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -22,13 +27,37 @@ const HomeCarousel = () => {
     if (!api) {
       return
     }
+    let isThrottled = false // Throttle flag
+    if (isThrottled) return // Exit if throttled
+    isThrottled = true // Set throttle flag
 
     setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap() + 1)
+    setCurrent(api.selectedScrollSnap())
 
     let accumulatedDeltaY = 0 // Accumulator for deltaY values
     const deltaYThreshold = 100 // Threshold to trigger scroll, adjust as needed
     let throttleTimeout: ReturnType<typeof setTimeout> | null = null // Throttle timeout
+
+    // function to handle left/right arrow key press
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check if the current focused element is an input field to prevent navigation when typing
+      if (document?.activeElement?.tagName !== 'INPUT') {
+        switch (e.key) {
+          case 'ArrowLeft':
+            api.scrollPrev() // Navigate to the previous slide
+            break
+          case 'ArrowRight':
+            api.scrollNext() // Navigate to the next slide
+            break
+          default:
+            break
+        }
+
+        setTimeout(() => {
+          isThrottled = false // Reset throttle flag after a delay
+        }, 100) // Adjust delay as needed
+      }
+    }
 
     // Function to handle wheel event
     const handleWheel = (e: WheelEvent) => {
@@ -51,29 +80,26 @@ const HomeCarousel = () => {
 
     const emblaContainer = api.containerNode() // Get the Embla container
     emblaContainer.addEventListener('wheel', handleWheel, { passive: true })
-
     api.on('select', () => {
-      setCurrent(api.selectedScrollSnap() + 1)
+      // Adjusted logic to ensure the middle card is considered as the current card
+      // This might involve calculating the index based on your carousel's specific implementation details
+      const newIndex = api.selectedScrollSnap() + 1 - 1 // Adjusted to account for the middle card
+      setCurrent(newIndex)
     })
     // Add wheel event listener to the Embla container
     emblaContainer.addEventListener('wheel', handleWheel, { passive: true })
 
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap() + 1)
-    })
+    // Add the event listener to the window object
+    window.addEventListener('keydown', handleKeyDown)
 
     // Cleanup event listener on component unmount
     return () => {
       emblaContainer.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('keydown', handleKeyDown)
     }
   }, [api])
 
-  const slidesNumber = 10
-
-  const tempSlidesNumberGenerator = Array.from(
-    { length: slidesNumber },
-    (_, index) => index + 1
-  )
+  const slidesNumber = items.length
 
   return (
     <div className='overflow-hidden'>
@@ -82,18 +108,19 @@ const HomeCarousel = () => {
           loop: true,
           dragFree: true,
           containScroll: 'trimSnaps',
-          startIndex: 2,
+          startIndex: 1,
         }}
         setApi={setApi}
         plugins={[Autoplay()]}>
         <CarouselContent className='-ml-3'>
-          {tempSlidesNumberGenerator.map((slideIndex) => (
-            <CarouselItem key={slideIndex} className='basis-1/3 pl-3'>
+          {items.map((item, itemIndex) => (
+            <CarouselItem key={itemIndex} className='basis-1/3 px-3'>
               <HomeCarouselItem
                 opacity={1}
-                index={slideIndex}
+                index={itemIndex + 1}
                 currentIndex={current}
                 itemCount={slidesNumber}
+                item={item}
               />
             </CarouselItem>
           ))}

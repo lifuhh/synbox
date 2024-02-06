@@ -1,9 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
 import RootLayout from './_root/RootLayout'
-import { Home } from './_root/pages'
+import { HomePage, PlayerPage } from './_root/pages'
 
 import { Toaster } from '@/components/ui/toaster'
-import PlayerPage from './_root/pages/PlayerPage'
 import './globals.css'
 
 const App = () => {
@@ -18,7 +17,7 @@ const App = () => {
 
         {/* private routes */}
         <Route element={<RootLayout />}>
-          <Route index element={<Home />} />
+          <Route index element={<HomePage />} />
           <Route path='/player' element={<PlayerPage />} />
 
           {/* <Route path='/explore' element={<Explore />}/>

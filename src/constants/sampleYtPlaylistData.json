@@ -1,0 +1,381 @@
+{
+  "kind": "youtube#playlistItemListResponse",
+  "etag": "iyKl_UOevh9UlgiAbCrpcDxzVug",
+  "items": [
+    {
+      "kind": "youtube#playlistItem",
+      "etag": "uLAjlx5zDRmbAm-Azhvk0kHTTYc",
+      "id": "UEx6SjFtcXd4b2dwRnVGQ2sxWWZVRTFjMGdXdG5JdXRmei41NkI0NEY2RDEwNTU3Q0M2",
+      "snippet": {
+        "publishedAt": "2024-02-06T03:55:12Z",
+        "channelId": "UCZtzcQ_fiXuw6dNx_AxK7_Q",
+        "title": "YOASOBI - 優しい彗星  / THE FIRST TAKE",
+        "description": "「THE FIRST TAKE」は、一発撮りのパフォーマンスを鮮明に切り取るYouTubeチャンネル。\nONE TAKE ONLY, ONE LIFE ONLY. 一発撮りで、音楽と向き合う。\n\n第99回は、YOASOBIからボーカル・ikuraが登場。\n今回披露する楽曲は、TVアニメ『BEASTARS』第2期のエンディングテーマとなっている「優しい彗星」。\n『BEASTARS』原作者の板垣巴留氏がYOASOBIのために書き下ろした小説『獅子座流星群のままに』をもとに制作された本楽曲を、今回のために作られたスペシャルアレンジにのせてikuraが優しくも力強い歌声で一発撮りで披露する。\n\nSTREAMING&DOWNLOAD：https://lnk.to/k7LtoLrd\nINSTRUMENTAL DOWNLOAD：https://piapro.jp/t/NqQv\n\n■YOASOBI SNS\nOfficial Site：https://www.yoasobi-music.jp/\nTwitter：https://twitter.com/yoasobi_staff\nikura Instagram：https://www.instagram.com/lilasikuta/\nAyase Instagram：https://www.instagram.com/ayase_0404/\nYouTube：https://www.youtube.com/channel/UCvpredjG93ifbCP1Y77JyFA\n\n■「THE FIRST TAKE」SNS \nOfficial site：https://www.thefirsttake.jp/\nInstagram：https://www.instagram.com/the_firsttake/\nTwitter：https://twitter.com/The_FirstTake   \nTiktok：https://www.tiktok.com/@the_first_take\n\n—  \n\n白いスタジオに置かれた一本のマイク。\n\nここでのルールはただ一つ。\n一発撮りのパフォーマンスをすること。\nそれ以外は、何をしてもいい。\n\n一度きりのテイクで、何をみせてくれるだろうか。\n\n一発撮りで、音楽と向き合う。\nTHE FIRST TAKE\n\n\nA microphone and a white studio.\n\nAnd 1 rule.\nYou’ve got 1 TAKE.\nPerform anything you like.\n\nShow us everything you’ve got for that 1 moment.\n\nONE TAKE ONLY, ONE LIFE ONLY.\nTHE FIRST TAKE\n\n\nikura from YOASOBI returns in our episode 99.\n1 TAKE performance of “Yasashii Suisei”, an ending theme song to the TV animation BEASTARS 2nd Season. \n“Yasashii Suisei” was turned into music by the novel specially written for YOASOBI, Shishiza Ryuseigun no Mamani written by Paru Itagaki the manga artist of BEASTARS.\nA special arranged music with ikura’s soulful yet gentle voice, performs in one take only for THE FIRST TAKE.\n\n\nCREDITS  \n\n—   \n\nCreative Director / Art Director: Keisuke Shimizu \nArt Director: Kana Takarada \nCopywriter: Hiroshi Yamazaki \nDirector of Photography: Kazuki Nagayama \nLighting Director：Kazuhide Toya \nProducer: Kentaro Kinoshita\nStylist: Daisuke Fujimoto\nHair&Make: YOUCA",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/EaA6NlH80wg/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/EaA6NlH80wg/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/EaA6NlH80wg/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/EaA6NlH80wg/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/EaA6NlH80wg/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Synera",
+        "playlistId": "PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz",
+        "position": 0,
+        "resourceId": {
+          "kind": "youtube#video",
+          "videoId": "EaA6NlH80wg"
+        },
+        "videoOwnerChannelTitle": "THE FIRST TAKE",
+        "videoOwnerChannelId": "UC9zY_E8mcAo_Oq772LEZq8Q"
+      }
+    },
+    {
+      "kind": "youtube#playlistItem",
+      "etag": "G_R6tJXHRioHtGETFjDpdrzIYAk",
+      "id": "UEx6SjFtcXd4b2dwRnVGQ2sxWWZVRTFjMGdXdG5JdXRmei4yODlGNEE0NkRGMEEzMEQy",
+      "snippet": {
+        "publishedAt": "2024-02-06T03:55:30Z",
+        "channelId": "UCZtzcQ_fiXuw6dNx_AxK7_Q",
+        "title": "幾田りら - レンズ / THE FIRST TAKE",
+        "description": "「THE FIRST TAKE」は、一発撮りのパフォーマンスを鮮明に切り取るYouTubeチャンネル。 ONE TAKE ONLY, ONE LIFE ONLY. 一発撮りで、音楽と向き合う。\n\n第221回は、シンガーソングライターでありYOASOBIのボーカルikuraとしても活躍する幾田りらが登場。TBSテレビ 火曜ドラマ『持続可能な恋ですか？～父と娘の結婚行進曲～』の主題歌で、大切な人が写る想いの詰まった写真を拾い集めるように書き上げたという「レンズ」の一発撮りパフォーマンスを披露する。\n\nSTREAMING & DOWNLOAD：https://orcd.co/lens\n\n■幾田りら SNS\nTwitter：https://twitter.com/ikutalilas\nInstagram：https://www.instagram.com/lilasikuta/\nTikTok：https://www.tiktok.com/@lilaasikuta\nOfficial YouTube Channel：https://www.youtube.com/channel/UCztEY6czNyJKjRWMwuur9bg\n\n■YOASOBI SNS\nOfficial Site：https://www.yoasobi-music.jp/\nTwitter：https://twitter.com/yoasobi_staff\nikura Instagram：https://www.instagram.com/lilasikuta/\nAyase Instagram：https://www.instagram.com/ayase_0404/\nYouTube：https://www.youtube.com/c/Ayase0404\n\n ■「THE FIRST TAKE」SNS \nOfficial site：https://www.thefirsttake.jp/ \nInstagram：https://www.instagram.com/the_firsttake/ \nTwitter：https://twitter.com/The_FirstTake    \nTikTok：https://www.tiktok.com/@the_first_take \nTHE FIRST TIMES : https://www.thefirsttimes.jp/\n＿\n\n\n白いスタジオに置かれた一本のマイク。 \n\nここでのルールはただ一つ。\n一発撮りのパフォーマンスをすること。 \nそれ以外は、何をしてもいい。  \n\n一度きりのテイクで、何をみせてくれるだろうか。\n  \n一発撮りで、音楽と向き合う。 \nTHE FIRST TAKE   \n\n\nA microphone and a white studio.\n\nAnd 1 rule.\nYou’ve got 1 TAKE.\nPerform anything you like.\n\nShow us everything you’ve got for that 1 moment.\n\nONE TAKE ONLY, ONE LIFE ONLY.\nTHE FIRST TAKE\n\nSinger songwriter Lilas Ikuta, who is also widely known as YOASOBI’s vocal ikura, returns in our Episode 221.\n1 TAKE performance of ‘Lens,’ a song Lilas wrote as if she were collecting photos of her loved ones filled with precious memories and feelings. The song is the theme song of TBS TV series “Jizokukano na koi desuka?” (Is it a Sustainable Love? ~Father and Daughter's Wedding March~) airing on Tuesday nights.\nOne shot performance only for THE FIRST TAKE.\n\nCREDITS    \n―     \nDirector/Creative Director: Keisuke Shimizu \nArt Director: Yo Kimura\nCopywriter: Hiroshi Yamazaki\nDirector of Photography: Kazuki Nagayama\nTechnical Coordinator: Ryu Kitamura\nCamera Assistants:Ibuki Machida, yun wondoku\nLighting Director: Kazuhide Toya\nLighting Chief Assistant: Naoya Imaoka\nLighting Assistants: Yukinori Suda, Shusuke Mukai, Toshiya Igarashi, Shiina Watanabe\nMovie Producer: Shohei Sadohara (TYO drive)\nProduction Manager: Yusuke Kurashina (TYO drive)\nProduction Assistant: Kai Takaha, Nagisa Taki\nStylist: Daisuke Fujimoto \nHair&Make up: YOUCA\nOffline Editor: Kentaro Kinoshita\nColorist: Yuma Karasawa\nOnline Editor: Takeru Miyamoto, Shuto Koike\nPost-Production Manager: Seitaro Inoue\n\n\n#THEFIRSTTAKE #幾田りら#レンズ",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/x90-vUMKdx0/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/x90-vUMKdx0/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/x90-vUMKdx0/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/x90-vUMKdx0/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/x90-vUMKdx0/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Synera",
+        "playlistId": "PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz",
+        "position": 1,
+        "resourceId": {
+          "kind": "youtube#video",
+          "videoId": "x90-vUMKdx0"
+        },
+        "videoOwnerChannelTitle": "THE FIRST TAKE",
+        "videoOwnerChannelId": "UC9zY_E8mcAo_Oq772LEZq8Q"
+      }
+    },
+    {
+      "kind": "youtube#playlistItem",
+      "etag": "QP30FwVOfIhiNDPDoH4aCQlz0Ss",
+      "id": "UEx6SjFtcXd4b2dwRnVGQ2sxWWZVRTFjMGdXdG5JdXRmei4wMTcyMDhGQUE4NTIzM0Y5",
+      "snippet": {
+        "publishedAt": "2024-02-06T03:55:39Z",
+        "channelId": "UCZtzcQ_fiXuw6dNx_AxK7_Q",
+        "title": "ロクデナシ「愛が灯る」/ Rokudenashi - The Flame of Love【Official Music Video】",
+        "description": "2023.02.15 Release\nStreaming＆Download ▶ https://rokudenashi-ninzin.lnk.to/Aigatomoru\n\nInstrumental＜ピアプロ＞：https://piapro.jp/t/U-jm\nPiano Score＜PDF＞：https://22.gigafile.nu/0221-d0abc9b52960864f6fc58d207c69e1878\n\n1st Album「愛ニ咲花」2023.12.27 Release\n▶︎ https://Rokudenashi-ninzin.jp/special/\n\nTwitter：https://twitter.com/Rokudenashi_nzn\nInstagram：https://www.instagram.com/rokudenashi_ninzin/\nTikTok：https://www.tiktok.com/@rokudenashi_ninzin\n\nVocal：にんじん @ninzin_official \nWords, Music & Arrangement：MIMI @MIMI...official \nIllustration：faPka（ https://twitter.com/fapkapukapuka ）\nMovie：よしだなすび（ https://twitter.com/Yoshidanasubeam ）\nMix Engineer：Chikara Sato（ https://twitter.com/studioonett ）\nMastering Engineer：Tsubasa Yamazaki\n\n#ロクデナシ #愛が灯る #にんじん",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/_XeE2aEiPHk/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/_XeE2aEiPHk/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/_XeE2aEiPHk/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/_XeE2aEiPHk/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/_XeE2aEiPHk/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Synera",
+        "playlistId": "PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz",
+        "position": 2,
+        "resourceId": {
+          "kind": "youtube#video",
+          "videoId": "_XeE2aEiPHk"
+        },
+        "videoOwnerChannelTitle": "ロクデナシ -Rokudenashi-",
+        "videoOwnerChannelId": "UCRlRgAguUGfWD4EDfBUls4w"
+      }
+    },
+    {
+      "kind": "youtube#playlistItem",
+      "etag": "3IsNmSishxRsYtFRPa2wCYHzpB8",
+      "id": "UEx6SjFtcXd4b2dwRnVGQ2sxWWZVRTFjMGdXdG5JdXRmei41MjE1MkI0OTQ2QzJGNzNG",
+      "snippet": {
+        "publishedAt": "2024-02-06T03:55:48Z",
+        "channelId": "UCZtzcQ_fiXuw6dNx_AxK7_Q",
+        "title": "Novelbright - 愛とか恋とか [Official Music Video]",
+        "description": "2022.5.18 Release\nMajor 2nd Full Album「Assort」リード曲「愛とか恋とか」\nStreaming&DL▶️https://novelbright.lnk.to/AitokaKoitoka\n各種音楽配信&サブスクリプションサービスで配信中！\n\n----------------------------------------------------------------------------------------------\nMajor 2nd Full Album「Assort」\n予約受付中▶https://novelbright.lnk.to/Assort_Reserve\n----------------------------------------------------------------------------------------------\n2024年4月6日(土)の北海道公演を皮切りに25ヵ所を回る全国ワンマンツアーが決定！\n■各プレイガイド一般発売\n受付期間：2月3日(土)10:00～\n【チケット料金】\n全席指定       　　　  : ￥7,000(税込)\n全席指定【学割】　　　 : ¥4,900（税込）\n\nチケットぴあ：https://w.pia.jp/t/novelbright/\nイープラス：https://eplus.jp/novelbright/\nローソンチケット：https://l-tike.com/novelbright/\n\n4月6日(土)　 【北海道】 カナモトホール\n4月12日(金)  【山口県】KDDI維新ホール メインホール\n4月14日(日)  【広島県】呉信用金庫ホール(呉市文化ホール)\n4月19日(金)  【香川県】サンポートホール高松 大ホール\n4月20日(土)  【愛媛県】松山市民会館 大ホール\n4月27日(土)  【群馬県】高崎芸術劇場 大劇場\n4月29日(月祝)【栃木県】栃木県総合文化センター メインホール\n5月2日(木)   【愛知県】名古屋国際会議場センチュリーホール\n5月10日(金)  【福井県】鯖江市文化センター\n5月17日(金)  【福島県】白河文化交流館コミネス 大ホール\n5月24日(金)  【福岡県】福岡市民会館\n5月26日(日)  【京都府】文化パルク城陽 プラムホール\n6月1日(土) 　【岡山県】岡山芸術創造劇場ハレノワ 大劇場\n6月2日(日) 　【島根県】出雲市民会館 大ホール\n6月6日(木) 　【大阪府】オリックス劇場\n6月8日(土) 　【静岡県】静岡市民文化会館 中ホール\n6月15日(土)  【宮崎県】都城市総合文化ホール 大ホール\n6月16日(日)  【佐賀県】鳥栖市民文化会館\n6月21日(金)  【石川県】本多の森 北電ホール\n6月23日(日)  【岐阜県】岐阜市民会館 大ホール\n6月28日(金)  【奈良県】なら100年会館 大ホール\n6月30日(日)  【滋賀県】守山市民ホール 大ホール\n7月6日(土) 　【山形県】酒田市民会館(希望ホール) 大ホール\n7月7日(日) 　【宮城県】トークネットホール仙台(仙台市民会館)\n7月26日(金)  【東京都】東京ガーデンシアター\n----------------------------------------------------------------------------------------------\n\nCast：Nagisa Sekimizu / Yuto Oku\nDirector / Editor：ill.pics\nDirector of Photography：ill.pics\nAssistant camera：Junpei Azuma / Takeyuki furuhashi\nLighting Director：Ryuji Matsumoto\nLighting Assistant：Nanae Niwa / Shinya Ishikawa\nHairmake(Novelbright)：STORM (LINX)\nStylist(Novelbright)：Haruki Okamura\nHairmake(Cast)：Madoka ban / Natsuki Takahata\nStylist (Cast)：Mei Komiyama\nAssistant Stylist(Cast)：Mana Kaneishi\nProducer：Yukiko Yamamoto\nProducion Manager：Ruka Kuriwaki\nProduction Assistant：Akiko Tachikawa / Kaho Harada\nLocation：NPO teganumaFilm commission / hermitclub.\nProduction：UNITED PRODUCTIONS\n\n#Novelbright #愛とか恋とか #関水渚",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/Q5JytNgQzqk/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/Q5JytNgQzqk/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/Q5JytNgQzqk/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/Q5JytNgQzqk/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/Q5JytNgQzqk/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Synera",
+        "playlistId": "PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz",
+        "position": 3,
+        "resourceId": {
+          "kind": "youtube#video",
+          "videoId": "Q5JytNgQzqk"
+        },
+        "videoOwnerChannelTitle": "Novelbright",
+        "videoOwnerChannelId": "UCIJAlAYCNN8RACtDDsy9K6g"
+      }
+    },
+    {
+      "kind": "youtube#playlistItem",
+      "etag": "1m9eotb5AVGbZ59tucFcQXJwyxE",
+      "id": "UEx6SjFtcXd4b2dwRnVGQ2sxWWZVRTFjMGdXdG5JdXRmei4wOTA3OTZBNzVEMTUzOTMy",
+      "snippet": {
+        "publishedAt": "2024-02-06T03:56:46Z",
+        "channelId": "UCZtzcQ_fiXuw6dNx_AxK7_Q",
+        "title": "西野カナ『もしも運命の人がいるのなら』Live on \"Love Collection Live 2019\"",
+        "description": "『もしも運命の人がいるのなら』のLive on Love Collection Live 2019をYouTube初公開！！\nST/DLはこちらhttps://nishinokana.lnk.to/Moshimounnmeinohitogairunonara\n\n『もしも運命の人がいるのなら』\n2015年4月発売Sg\n2016年7月発売AL「Just LOVE」収録\n2018年11月発売BEST AL「Love Collection 2 ～mint～」収録\n\n“Kana Nishino Love Collection Live 2019”より 映像商品購入はこちらから 　2019年＠横浜アリーナ\nhttps://www.sonymusicshop.jp/m/item/itemShw.php?site=S&cd=SEXL000000130\n\n『もしも運命の人がいるのなら』 作詞：西野カナ\n\n一分一秒 今この瞬間も\n世界のどこかで誰かがきっと\n恋に落ちてく 結ばれていく\nたったひとりの運命の人と\n\nかっこよくて 爽やかで\n私よりも背が高くて\n笑顔が素敵で Ah\nキリがない理想 結局は\n「好きになった人がタイプ」\nそういうもんでしょ\n\nそれでも昔から\n好きな人には好かれないし\nいいなと思った人は\n恋人がいるわ\n\nもしも運命の人がいるのなら\n運命の出会いがあるなら\nあなたはいったい\nどこで寄り道しているのかしら？\nもしかしたらすぐ近くにいる？\nそれとも遥か海の向こう？\nいつかあなたが迎えに来てくれる\nその日まで待っているから\n\nやっぱり優しい人がいい\nもちろんそれはそうだけど\n優しいだけじゃ Ah\n「俺についてこい」と言われても\n黙ってはついて行けないし\nこれってワガママかな？\n\n中身が大事だって\n初対面じゃ分からないし\n勢いも大事だって\n妥協もできないわ\n\nもしも運命の人がいるのなら\n運命の出会いがあるなら\nあなたはいったい\nいつになれば辿り着くのかしら？\n占いでは昨日のはずだけど\n明日か明後日か来年かな？\nいつかあなたが迎えに来てくれる\nその日まで待っているから\n\n\n一分一秒 今この瞬間も\n運命のその時に近づいてる\n夢を見ている いつかあなたと\nたったひとりの運命の人と\n\nもしも運命の人がいるのなら\n運命の出会いがあるなら\nあなたはいったい\nどこで寄り道しているのかしら？\n私ならずっとここにいるよ\nそろそろ待ちくたびれる頃\n風のうわさではまた誰かが\n運命の人に出逢ったみたい\nあなたが迎えに来てくれる\nその日まで やっぱり… 待てないわ\n\n■西野カナ サブスク・ダウンロード\nhttps://nishinokana.lnk.to/DLST\n■西野カナ CD・DVD・Blu-rayパッケージ\nhttps://www.sonymusicshop.jp/m/arti/artiItm.php?site=S&ima=3019&cd=70005022\n■西野カナOfficial Site\nhttp://www.nishinokana.com/\n■公式SNS\n[Twitter] https://twitter.com/kanayanofficial\n[Facebook] https://ja-jp.facebook.com/nishinokanaofficial\n\n#西野カナサブスク全曲解禁 #恋する気持ちをもう一度",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/RFFzHTHEiq8/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/RFFzHTHEiq8/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/RFFzHTHEiq8/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/RFFzHTHEiq8/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/RFFzHTHEiq8/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Synera",
+        "playlistId": "PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz",
+        "position": 4,
+        "resourceId": {
+          "kind": "youtube#video",
+          "videoId": "RFFzHTHEiq8"
+        },
+        "videoOwnerChannelTitle": "西野カナ Official YouTube Channel",
+        "videoOwnerChannelId": "UCXq19VXLNkTtVE9LfRBKd5Q"
+      }
+    },
+    {
+      "kind": "youtube#playlistItem",
+      "etag": "cv0c4o5IsGWgn9g2u9KNiIbF3lg",
+      "id": "UEx6SjFtcXd4b2dwRnVGQ2sxWWZVRTFjMGdXdG5JdXRmei4xMkVGQjNCMUM1N0RFNEUx",
+      "snippet": {
+        "publishedAt": "2024-02-06T03:57:16Z",
+        "channelId": "UCZtzcQ_fiXuw6dNx_AxK7_Q",
+        "title": "YOASOBI - 群青  / THE FIRST TAKE",
+        "description": "「THE FIRST TAKE」は、一発撮りのパフォーマンスを鮮明に切り取るYouTubeチャンネル。\nONE TAKE ONLY, ONE LIFE ONLY. 一発撮りで、音楽と向き合う。\n\n第96回は、「THE HOME TAKE」で「夜に駆ける」を披露し話題となったYOASOBIが、Ayase・ikuraの2人揃って初登場。\n今回は、人気マンガ『ブルーピリオド』（作・山口つばさ）にインスパイアされて生まれ、ブルボン「アルフォートミニチョコレート」TVCMでもおなじみの人気曲「群青」をメディア初歌唱する。\n楽曲の中でも印象的な合唱パートにぷらそにかのメンバーを迎え、バンドメンバーと共に圧巻のパフォーマンスを一発撮りで披露する。\n\nSTREAMING&DOWNLOAD：https://orcd.co/gunjo\n\nGuitar：AssH\nBass：やまもとひかる\nDrums：仄雲\nKeyboards：禊萩ざくろ\nChorus：ぷらそにか\n\n■YOASOBI SNS\nOfficial Site：https://www.yoasobi-music.jp/\nTwitter：https://twitter.com/yoasobi_staff\nikura Instagram：https://www.instagram.com/lilasikuta/\nAyase Instagram：https://www.instagram.com/ayase_0404/\nYouTube：https://www.youtube.com/channel/UCvpredjG93ifbCP1Y77JyFA\n\n■「THE FIRST TAKE」SNS \nOfficial site：https://www.thefirsttake.jp/\nInstagram：https://www.instagram.com/the_firsttake/\nTwitter：https://twitter.com/The_FirstTake   \nTiktok：https://www.tiktok.com/@the_first_take\n\n—  \n\n白いスタジオに置かれた一本のマイク。\n\nここでのルールはただ一つ。\n一発撮りのパフォーマンスをすること。\nそれ以外は、何をしてもいい。\n\n一度きりのテイクで、何をみせてくれるだろうか。\n\n一発撮りで、音楽と向き合う。\nTHE FIRST TAKE\n\n\nA microphone and a white studio.\n\nAnd 1 rule.\nYou’ve got 1 TAKE.\nPerform anything you like.\n\nShow us everything you’ve got for that 1 moment.\n\nONE TAKE ONLY, ONE LIFE ONLY.\nTHE FIRST TAKE\n\n\nYOASOBI returns from THE HOME TAKE in our episode 96. The first time to have both Ayase and ikura to appear at THE FIRST TAKE.\n1 TAKE performance of “Gunjo”, a song inspired by a smash-hit anime Blue Period and has a tie-in to Bourbon Alfort Mini Chocolate TV commercial, for the first time on a media.\nWelcoming PLUSONICA as the chorus and with the band members, performs a mind blowing performance for THE FIRST TAKE.\n\n\n\nCREDITS  \n\n—   \n\nCreative Director / Art Director: Keisuke Shimizu \nArt Director: Kana Takarada \nCopywriter: Hiroshi Yamazaki \nDirector of Photography: Kazuki Nagayama \nLighting Director: Kazuhide Toya \nProducer: Kentaro Kinoshita\nStylist: Daisuke Fujimoto\nHair&Make: YOUCA",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/NyUTYwZe_l4/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/NyUTYwZe_l4/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/NyUTYwZe_l4/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/NyUTYwZe_l4/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/NyUTYwZe_l4/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Synera",
+        "playlistId": "PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz",
+        "position": 5,
+        "resourceId": {
+          "kind": "youtube#video",
+          "videoId": "NyUTYwZe_l4"
+        },
+        "videoOwnerChannelTitle": "THE FIRST TAKE",
+        "videoOwnerChannelId": "UC9zY_E8mcAo_Oq772LEZq8Q"
+      }
+    },
+    {
+      "kind": "youtube#playlistItem",
+      "etag": "bnabsUvD5rIW3i1qjLg5lURyfYg",
+      "id": "UEx6SjFtcXd4b2dwRnVGQ2sxWWZVRTFjMGdXdG5JdXRmei41MzJCQjBCNDIyRkJDN0VD",
+      "snippet": {
+        "publishedAt": "2024-02-06T03:58:10Z",
+        "channelId": "UCZtzcQ_fiXuw6dNx_AxK7_Q",
+        "title": "LiSA 『炎』 -MUSiC CLiP-",
+        "description": "「炎」（劇場版「鬼滅の刃」無限列車編 主題歌）\nDOWNLOAD & STREAMING\nhttps://LiSA.lnk.to/homura_digital \n\n「炎」\n作詞：梶浦由記、LiSA\n作曲：梶浦由記\n編曲：梶浦由記\n\nLiSA 6th Album 「LANDER」\n発売日：2022年11月16日（水）\n\nCD：https://lisa.lnk.to/LANDER_pkg\n\n●完全数量生産限定盤（CD+GOODS）\nVVCL 2120-1 / 9,350円（税込）\n●初回生産限定盤A（CD+Blu-ray+PHOTOBOOK）\nVVCL 2122-4 / 5,720円（税込）\n●初回生産限定盤B（CD+DVD＋PHOTOBOOK）\nVVCL 2125-7 / 5,720円（税込）\n●通常盤（CD）\nVVCL 2128 / 3,300円（税込）\n\n[CD収録内容] 全形態共通\n01.往け\n（「劇場版 ソードアート・オンライン - プログレッシブ - 星なき夜のアリア」主題歌）\n02.一斉ノ喝采\n　（ABEMA・テレビ朝日 FIFA ワールドカップ カタール 2022 番組公式テーマソング）\n03.dis/connect\n04.シャンプーソング\n05.明け星\n（テレビアニメ「鬼滅の刃」無限列車編 オープニングテーマ）\n06.白銀\n（テレビアニメ「鬼滅の刃」無限列車編 エンディングテーマ）\n07.炎\n（劇場版「鬼滅の刃」無限列車編 主題歌）\n08.逃飛行\n09.HADASHi NO STEP\n（TBS系 火曜ドラマ「プロミス・シンデレラ」主題歌）\n10.シフクノトキ\n（カバヤ・ピュアラルグミCMソング）\n11.土曜日のわたしたちは\n（日本テレビ系「ズームイン‼️サタデー」テーマソング）\n12.悪女のオキテ\n13.dawn\n（TVアニメ「バック・アロウ」 オープニングテーマ）\n14.NEW ME\n\nLiSA - 炎 / THE FIRST TAKE\nhttps://www.youtube.com/watch?v=4Q9DWZLaY2U \n\nFollow LiSA\nOFFICIAL WEBSITE：http://www.lxixsxa.com/\nLiSA Twitter：https://twitter.com/LiSA_OLiVE\nLiSA STAFF Twitter：https://twitter.com/LiSA_STAFF\nFacebook：https://www.facebook.com/lxixsxa.jp/\nInstagram：https://www.instagram.com/xlisa_olivex/\nTikTok：https://www.tiktok.com/@lxixsxa_official\n\n#LiSA #炎 #鬼滅の刃 #Homura #DemonSlayer",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/4DxL6IKmXx4/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/4DxL6IKmXx4/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/4DxL6IKmXx4/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/4DxL6IKmXx4/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/4DxL6IKmXx4/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Synera",
+        "playlistId": "PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz",
+        "position": 6,
+        "resourceId": {
+          "kind": "youtube#video",
+          "videoId": "4DxL6IKmXx4"
+        },
+        "videoOwnerChannelTitle": "LiSA Official YouTube",
+        "videoOwnerChannelId": "UCqEfdEvLG5oQWNYlDQrGlKw"
+      }
+    },
+    {
+      "kind": "youtube#playlistItem",
+      "etag": "x-whBSmyNniqnckF1U0-jkZznvs",
+      "id": "UEx6SjFtcXd4b2dwRnVGQ2sxWWZVRTFjMGdXdG5JdXRmei5DQUNERDQ2NkIzRUQxNTY1",
+      "snippet": {
+        "publishedAt": "2024-02-06T03:58:18Z",
+        "channelId": "UCZtzcQ_fiXuw6dNx_AxK7_Q",
+        "title": "Aimer「残響散歌」MUSIC VIDEO（テレビアニメ「鬼滅の刃」遊郭編オープニングテーマ）",
+        "description": "テレビアニメ「鬼滅の刃」遊郭編OPテーマ&EDテーマAimer 『残響散歌/朝が来る』now on sale!⇒https://aimer.lnk.to/zankyosanka\n\nAimer 20th single 『残響散歌/朝が来る』\n発売日：2022年1月12日（水）\n「残響散歌」…テレビアニメ「鬼滅の刃」遊郭編オープニングテーマ\n「朝が来る」…テレビアニメ「鬼滅の刃」遊郭編エンディングテーマ\n\n初回生産限定盤（CD+DVD）\n1,760円（税込）/ VVCL-1953-1954\n※CD+DVD（「残響散歌」「朝が来る」MUSIC VIDEO収録）\n\n通常盤（CD）\n1,320円（税込）/ VVCL-1955\n期間生産限定盤（CD+DVD）\n\n1,760円（税込）/ VVCL-1956-1957\n※テレビアニメ「鬼滅の刃」遊郭編描きおろしジャケット\n※テレビアニメ「鬼滅の刃」遊郭編描きおろしイラスト使用ミニポスター\n※テレビアニメ「鬼滅の刃」遊郭編ノンクレジットOP/ED映像収録\n\n#Aimer #鬼滅の刃　＃遊郭編\n\n「残響散歌」MUSIC VIDEO\nDirector：YASUHIRO ARAFUNE (EPOCH)\nProducer：NAOKI AKIYAMA (19-juke-)\nCast：Mayuki\n\nhttp://www.aimer-web.jp/",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/tLQLa6lM3Us/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/tLQLa6lM3Us/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/tLQLa6lM3Us/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/tLQLa6lM3Us/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          }
+        },
+        "channelTitle": "Synera",
+        "playlistId": "PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz",
+        "position": 7,
+        "resourceId": {
+          "kind": "youtube#video",
+          "videoId": "tLQLa6lM3Us"
+        },
+        "videoOwnerChannelTitle": "Aimer Official YouTube Channel",
+        "videoOwnerChannelId": "UCR1zT1s524Hbc85bdvno_8w"
+      }
+    }
+  ],
+  "pageInfo": {
+    "totalResults": 8,
+    "resultsPerPage": 10
+  }
+}
