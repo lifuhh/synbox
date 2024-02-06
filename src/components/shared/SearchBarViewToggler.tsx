@@ -4,7 +4,19 @@ import { useLocation } from 'react-router-dom'
 import { SearchBarToggleViewIcon } from '../svgicons'
 import SearchBar from './SearchBar'
 
-const SearchBarViewToggler = () => {
+//
+//
+//
+
+const SearchBarViewToggler = ({
+  shouldDismissSearchBar,
+  setIsSearchBarHidden,
+  setShouldDismissSearchBar,
+}: {
+  setIsSearchBarHidden: React.Dispatch<React.SetStateAction<boolean>>
+  shouldDismissSearchBar: boolean
+  setShouldDismissSearchBar: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
   const [isHidden, setIsHidden] = useState(false)
   const inputToggleFocusRef = useRef<HTMLInputElement>(null)
 
@@ -45,8 +57,18 @@ const SearchBarViewToggler = () => {
     }
   }, [location.pathname])
 
+  useEffect(() => {
+    if (shouldDismissSearchBar) {
+      setIsHidden(true)
+      setIsSearchBarHidden(true) // Update the state in RootLayout
+      setShouldDismissSearchBar(false)
+    }
+  }, [setShouldDismissSearchBar, shouldDismissSearchBar, setIsSearchBarHidden])
+
   return (
-    <div className={`flex flex-col justify-center items-center w-full px-10`}>
+    <div
+      className={`flex flex-col justify-center items-center w-full px-10`}
+      id='searchbartoggler'>
       <div
         className={`w-full flex justify-center items-center pt-2 ${
           isHidden ? 'slide-up-animation' : 'slide-down-animation'

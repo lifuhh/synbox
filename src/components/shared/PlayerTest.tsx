@@ -25,9 +25,9 @@ const PlayerTest = ({ videoDetails }: PlayerTestProps) => {
         videoId: videoDetails.videoId,
         playerVars: {
           autoplay: 1,
-          controls: 0,
+          controls: 1,
           showinfo: 0,
-          fs: 0,
+          fs: 1,
           loop: 0,
           playlist: '',
           cc_load_policy: 0,

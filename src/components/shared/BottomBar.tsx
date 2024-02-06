@@ -1,6 +1,6 @@
 const BottomBar = () => {
   return (
-    <div className='fixed bottom-0 left-0 w-full'>
+    <div className='fixed bottom-0 left-0 w-full z-10'>
       <div className='flex justify-between items-center '>
         <h1>a</h1>
         <h1>b</h1>
