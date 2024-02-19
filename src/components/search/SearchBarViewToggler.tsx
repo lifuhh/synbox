@@ -1,12 +1,10 @@
 import { Button } from '@/components/ui/button'
-import { useEffect, useRef, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { SearchBarToggleViewIcon } from '../svgicons'
 import SearchBar from './SearchBar'
 
-//
-//
-//
+const SearchResultsFrameContext = createContext(false)
 
 const SearchBarViewToggler = ({
   shouldDismissSearchBar,
@@ -17,6 +15,8 @@ const SearchBarViewToggler = ({
   shouldDismissSearchBar: boolean
   setShouldDismissSearchBar: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
+  const [isSearchResultsFrameVisible, setIsSearchResultsFrameVisible] =
+    useState(false)
   const [isHidden, setIsHidden] = useState(false)
   const inputToggleFocusRef = useRef<HTMLInputElement>(null)
 
@@ -39,7 +39,7 @@ const SearchBarViewToggler = ({
   }, []) //
 
   useEffect(() => {
-    // Only focus when isHidden is false (search bar is visible)
+    // Focus the search bar when it shows up
     if (!isHidden && inputToggleFocusRef.current) {
       inputToggleFocusRef.current.focus()
     } else if (isHidden && inputToggleFocusRef.current) {
@@ -49,7 +49,7 @@ const SearchBarViewToggler = ({
 
   useEffect(() => {
     if (location.pathname.includes('/v/')) {
-      setIsHidden(true) // Show the search bar when on the PlayerPage route
+      setIsHidden(true) // Hide the search bar when on the player route
     }
 
     if (location.pathname === '/') {
@@ -66,27 +66,32 @@ const SearchBarViewToggler = ({
   }, [setShouldDismissSearchBar, shouldDismissSearchBar, setIsSearchBarHidden])
 
   return (
-    <div
-      className={`flex flex-col justify-center items-center w-full px-10`}
-      id='searchbartoggler'>
+    <SearchResultsFrameContext.Provider value={isSearchResultsFrameVisible}>
       <div
-        className={`w-full flex justify-center items-center pt-2 ${
-          isHidden ? 'slide-up-animation' : 'slide-down-animation'
-        } `}>
-        <SearchBar ref={inputToggleFocusRef} />
+        className={`flex flex-col justify-center items-center w-full pt-2 ml-20  `}
+        id='searchbartoggler'>
+        <div
+          className={` ${
+            isHidden ? 'slide-up-animation' : 'slide-down-animation'
+          } `}>
+          <SearchBar setIsSearchResultsFrameVisible={setIsSearchResultsFrameVisible} />
+        </div>
+        <div
+          className={`absolute top-20 z-10 ${isSearchResultsFrameVisible ? 'hidden' : 'visible'} ${
+            isHidden
+              ? 'slide-search-toggle-icon-up-animation'
+              : 'slide-search-toggle-icon-down-animation'
+          } `}>
+          <Button
+            size='icon'
+            variant='ghost'
+            onClick={handleSearchBarViewToggle}>
+            <SearchBarToggleViewIcon className=' h-10 w-10 text-gray-500 dark:text-gray-400' />
+            <span className='sr-only'>Search View Toggle</span>
+          </Button>
+        </div>
       </div>
-      <div
-        className={` pt-2 ${
-          isHidden
-            ? 'slide-search-toggle-icon-up-animation'
-            : 'slide-search-toggle-icon-down-animation'
-        } `}>
-        <Button size='icon' variant='ghost' onClick={handleSearchBarViewToggle}>
-          <SearchBarToggleViewIcon className='h-10 w-10 text-gray-500 dark:text-gray-400' />
-          <span className='sr-only'>Search View Toggle</span>
-        </Button>
-      </div>
-    </div>
+    </SearchResultsFrameContext.Provider>
   )
 }
 

@@ -57,3 +57,9 @@ export const TempSquareIconTest: React.FC = () => {
     </svg>
   )
 }
+
+export const SynboxLogo: React.FC = () => {
+  return (
+    <img src='/assets/icons/Synbox_logo_dark_1.svg' className='w-auto h-16' />
+  )
+}

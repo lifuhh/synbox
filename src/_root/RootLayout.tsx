@@ -11,7 +11,7 @@ const RootLayout = () => {
   useEffect(() => {
     const handleDocumentClick = (event: MouseEvent) => {
       if (isSearchBarHidden && event.target) {
-        const searchBar = document.getElementById('searchbartoggler') // Replace with your search bar's ID or use a ref
+        const searchBar = document.getElementById('searchbartoggler')
         if (searchBar && !searchBar.contains(event.target as Node)) {
           setShouldDismissSearchBar(true)
         }
@@ -55,7 +55,7 @@ const RootLayout = () => {
         setIsSearchBarHidden={setIsSearchBarHidden}
       />
       <section className='flex flex-row flex-1 h-full'>
-        {/* Outlet lets us show what's gonna be on the Homepage later */}
+        {/* Outlet lets us show what's gonna be on the Landing Page later */}
         <Outlet />
       </section>
     </div>

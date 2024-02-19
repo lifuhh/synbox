@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 
-import { TempSquareIconTest } from '../svgicons'
+import { SynboxLogo } from '../svgicons'
 import { Button } from '../ui/button'
 
 const NowPlayingDisplay = () => {
@@ -11,13 +11,10 @@ const NowPlayingDisplay = () => {
   }
 
   return (
-    <div className='flex items-center justify-between p-5'>
+    <div className='flex flex-shrink-0 items-center p-5'>
       <Link to='/'>
-        <Button
-          className='inline-flex items-center justify-center p-2 rounded-md text-green-700 '
-          aria-label='Toggle menu'
-          onClick={handleOnClick}>
-          <TempSquareIconTest />
+        <Button aria-label='Toggle menu' onClick={handleOnClick}>
+          <SynboxLogo />
         </Button>
       </Link>
     </div>

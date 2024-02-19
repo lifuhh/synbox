@@ -1,6 +1,8 @@
 import FavouritesButton from '../favourites/FavouritesButton'
+import SearchBarViewToggler from '../search/SearchBarViewToggler'
 import NowPlayingDisplay from './NowPlayingDisplay'
-import SearchBarViewToggler from './SearchBarViewToggler'
+
+//TODO: Fix topbar css..
 
 const TopBar = ({
   setIsSearchBarHidden,
@@ -12,15 +14,13 @@ const TopBar = ({
   setShouldDismissSearchBar: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   return (
-    <div className='flex justify-between items-start fixed top-0 left-0 w-full z-10'>
+    <div className='flex items-center fixed top-0 left-0 w-full z-10'>
       <NowPlayingDisplay />
-      <div className='flex-grow mx-5'>
-        <SearchBarViewToggler
-          setIsSearchBarHidden={setIsSearchBarHidden}
-          shouldDismissSearchBar={shouldDismissSearchBar}
-          setShouldDismissSearchBar={setShouldDismissSearchBar}
-        />
-      </div>
+      <SearchBarViewToggler
+        setIsSearchBarHidden={setIsSearchBarHidden}
+        shouldDismissSearchBar={shouldDismissSearchBar}
+        setShouldDismissSearchBar={setShouldDismissSearchBar}
+      />
       <FavouritesButton />
     </div>
   )
