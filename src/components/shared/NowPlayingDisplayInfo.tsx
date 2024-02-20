@@ -1,9 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
 
 import { SynboxLogo } from '../svgicons'
-import { Button } from '../ui/button'
 
-const NowPlayingDisplay = () => {
+const NowPlayingDisplayInfo = () => {
   const navigate = useNavigate()
 
   const handleOnClick = () => {
@@ -11,13 +10,13 @@ const NowPlayingDisplay = () => {
   }
 
   return (
-    <div className='flex flex-shrink-0 items-center p-5'>
+    <div className='flex flex-shrink-0 items-center w-48'>
       <Link to='/'>
-        <Button aria-label='Toggle menu' onClick={handleOnClick}>
+        <button aria-label='Toggle menu' onClick={handleOnClick}>
           <SynboxLogo />
-        </Button>
+        </button>
       </Link>
     </div>
   )
 }
-export default NowPlayingDisplay
+export default NowPlayingDisplayInfo

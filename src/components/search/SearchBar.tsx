@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input'
-import { useGetLandingPagePlaylist } from '@/lib/react-query/queriesAndMutations'
-import { forwardRef, useState } from 'react'
+import { useGetYoutubeSearchResults } from '@/lib/react-query/queriesAndMutations'
+import { formattedSearchResult } from '@/types'
+import { forwardRef, useRef, useState } from 'react'
 import { SearchIcon } from '../svgicons'
 import SearchResultsFrame from './SearchResultsFrame'
 import SearchResultsItem from './SearchResultsItem'
@@ -10,33 +11,19 @@ interface SearchBarProps {
   inputToggleFocusRef?: React.Ref<HTMLInputElement> // Make the ref optional
 }
 
-interface SearchResultProps {
-  videoId: string
-  title: string
-  creator: string
-  // Add other properties as needed
-}
-
-// const SearchBar = ({
-//   setIsSearchResultsFrameVisible,
-//   inputToggleFocusRef,
-// }: SearchBarProps)
-
 const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
   ({ setIsSearchResultsFrameVisible }: SearchBarProps, inputToggleFocusRef) => {
     const [searchTerm, setSearchTerm] = useState('')
-    const [triggerSearch, setTriggerSearch] = useState(false)
+    const searchTrigger = useRef(0)
 
     const { data: songList, isFetching: isSearchFetching } =
-      useGetLandingPagePlaylist(triggerSearch ? searchTerm : '')
+      useGetYoutubeSearchResults(searchTerm, searchTrigger.current)
 
     //? Might be useful to have a ref for future use cases
     // const inputRef = useRef<HTMLInputElement>(null)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(e.target.value)
-
-      if (triggerSearch) setTriggerSearch(false)
 
       // Clear results when search term is empty
       if (e.target.value === '') {
@@ -45,17 +32,16 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     }
 
     const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      e.preventDefault()
-
       if (e.key === 'Enter') {
-        setTriggerSearch(true)
+        e.preventDefault()
+        console.log('search triggered')
+        searchTrigger.current++
         setIsSearchResultsFrameVisible(true)
       }
     }
 
     const handleListItemClick = () => {
       setSearchTerm('')
-      setTriggerSearch(false)
       setIsSearchResultsFrameVisible(false)
       //TODO: add navigate to player based on selected item
     }
@@ -64,12 +50,12 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
       <div className='flex justify-between items-center bg-gray-100 dark:bg-gray-800 rounded-lg py-2 w-96'>
         <SearchIcon className='h-5 w-5 text-gray-500 dark:text-gray-400 m-2' />
         <Input
-          // ref={inputToggleFocusRef}
+          ref={inputToggleFocusRef}
           className='flex-1 bg-transparent text-black focus:ring-2 w-full mr-3 focus:ring-pink-600'
           placeholder='Search...'
           type='search'
-          // value={searchTerm}
-          // onChange={handleInputChange}
+          value={searchTerm}
+          onChange={handleInputChange}
           onKeyDown={handleSearchSubmit}
         />
         {isSearchFetching && <div>Loading...</div>}
@@ -77,13 +63,14 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
           <SearchResultsFrame
             isOpen={Boolean(songList && songList.length)}
             onSelect={handleListItemClick}>
-            {songList.map((result: SearchResultProps) => (
+            {songList.map((result: formattedSearchResult) => (
               <SearchResultsItem
+              thumbnailUrl={result.thumbnailUrl}
                 key={result.videoId}
                 videoId={result.videoId}
                 title={result.title}
-                creator={result.creator}
-                onClick={handleListItemClick}
+                creator={result.channel}
+                onSelect={handleListItemClick}
               />
             ))}
           </SearchResultsFrame>

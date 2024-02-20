@@ -1,6 +1,6 @@
 import FavouritesButton from '../favourites/FavouritesButton'
 import SearchBarViewToggler from '../search/SearchBarViewToggler'
-import NowPlayingDisplay from './NowPlayingDisplay'
+import NowPlayingDisplayInfo from './NowPlayingDisplayInfo'
 
 //TODO: Fix topbar css..
 
@@ -15,7 +15,7 @@ const TopBar = ({
 }) => {
   return (
     <div className='flex items-center fixed top-0 left-0 w-full z-10'>
-      <NowPlayingDisplay />
+      <NowPlayingDisplayInfo />
       <SearchBarViewToggler
         setIsSearchBarHidden={setIsSearchBarHidden}
         shouldDismissSearchBar={shouldDismissSearchBar}

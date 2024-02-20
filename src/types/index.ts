@@ -1,15 +1,26 @@
 //! Appwrite Types
 
-
-
-
-
 //! Youtube Types
-export interface YoutubePlaylistResponse {
+//? Youtube Playlist
+export interface formattedYoutubeVideoItemForCarousel {
+  title: string
+  channel: string
+  description: string
+  thumbnailUrl: string
+  videoId: string
+}
+export interface YoutubePlaylistApiResponse {
   kind: string
   etag: string
-  items: YoutubeItem[]
+  items: YoutubePlaylistItem[]
   pageInfo: PageInfo
+}
+
+export interface YoutubePlaylistItem {
+  kind: string
+  etag: string
+  id: string
+  snippet: YoutubePlaylistItemSnippet
 }
 
 export interface PageInfo {
@@ -17,19 +28,12 @@ export interface PageInfo {
   resultsPerPage: number
 }
 
-export interface YoutubeItem {
-  kind: string
-  etag: string
-  id: string
-  snippet: Snippet
-}
-
-export interface Snippet {
+export interface YoutubePlaylistItemSnippet {
   publishedAt: string
   channelId: string
   title: string
   description: string
-  thumbnails: Thumbnail
+  thumbnails: Thumbnails
   channelTitle: string
   playlistId: string
   position: number
@@ -38,11 +42,16 @@ export interface Snippet {
   videoOwnerChannelId: string
 }
 
-export interface Thumbnail {
+export interface ResourceId {
+  kind: string
+  videoId: string
+}
+
+export interface Thumbnails {
   default: ThumbnailInfo
   medium: ThumbnailInfo
   high: ThumbnailInfo
-  standard: ThumbnailInfo
+  standard?: ThumbnailInfo
   maxres?: ThumbnailInfo
 }
 
@@ -52,15 +61,37 @@ export interface ThumbnailInfo {
   height: number
 }
 
-export interface ResourceId {
-  kind: string
+export interface formattedSearchResult {
+  title: string
+  channel: string
+  thumbnailUrl: string
   videoId: string
 }
 
-export interface formattedVideoItemForCarousel {
+//? Youtube Search
+export interface YoutubeSearchApiResponse {
+  kind: string
+  etag: string
+  nextPageToken: string
+  regionCode: string
+  items: YoutubeSearchItem[]
+  pageInfo: PageInfo
+}
+
+export interface YoutubeSearchItem {
+  kind: string
+  etag: string
+  id: ResourceId
+  snippet: YoutubeSearchItemSnippet
+}
+
+export interface YoutubeSearchItemSnippet {
+  publishedAt: string
+  channelId: string
   title: string
-  channel: string
   description: string
-  thumbnailUrl: string
-  videoId: string
+  thumbnails: Thumbnails
+  channelTitle: string
+  liveBroadcastContent: string
+  publishTime: string
 }

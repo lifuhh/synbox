@@ -68,16 +68,20 @@ const SearchBarViewToggler = ({
   return (
     <SearchResultsFrameContext.Provider value={isSearchResultsFrameVisible}>
       <div
-        className={`flex flex-col justify-center items-center w-full pt-2 ml-20  `}
+        className={`flex flex-col justify-center items-center w-full pt-2  `}
         id='searchbartoggler'>
         <div
           className={` ${
             isHidden ? 'slide-up-animation' : 'slide-down-animation'
           } `}>
-          <SearchBar setIsSearchResultsFrameVisible={setIsSearchResultsFrameVisible} />
+          <SearchBar
+            setIsSearchResultsFrameVisible={setIsSearchResultsFrameVisible}
+          />
         </div>
         <div
-          className={`absolute top-20 z-10 ${isSearchResultsFrameVisible ? 'hidden' : 'visible'} ${
+          className={`absolute top-20 z-10 ${
+            isSearchResultsFrameVisible ? 'hidden' : 'visible'
+          } ${
             isHidden
               ? 'slide-search-toggle-icon-up-animation'
               : 'slide-search-toggle-icon-down-animation'
@@ -86,7 +90,7 @@ const SearchBarViewToggler = ({
             size='icon'
             variant='ghost'
             onClick={handleSearchBarViewToggle}>
-            <SearchBarToggleViewIcon className=' h-10 w-10 text-gray-500 dark:text-gray-400' />
+            <SearchBarToggleViewIcon className=' h-10 w-10 text-gray-500 dark:text-gray-400 pt-2' />
             <span className='sr-only'>Search View Toggle</span>
           </Button>
         </div>

@@ -1,4 +1,4 @@
-import { formattedVideoItemForCarousel } from '@/types'
+import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import React, { CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, CardContainer, CardItem } from '../ui/3d-card'
@@ -8,7 +8,7 @@ type HomeCarouselItemProps = {
   index: number
   currentIndex: number
   itemCount: number // Pass the total number of items as a prop
-  item: formattedVideoItemForCarousel
+  item: formattedYoutubeVideoItemForCarousel
 }
 
 const HomeCarouselItem: React.FC<HomeCarouselItemProps> = ({
@@ -21,7 +21,7 @@ const HomeCarouselItem: React.FC<HomeCarouselItemProps> = ({
   const navigate = useNavigate()
 
   const handleNavigate = () => {
-    navigate(`/v/${item.videoId}`, { state: { videoDetails: item } })
+    navigate(`/v/${item.videoId}`, { state: { videoId: item.videoId } })
   }
 
   // Adjust the index to be 0-based

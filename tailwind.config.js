@@ -22,8 +22,11 @@ module.exports = {
     },
     extend: {
       colors: {
+        background: '#30011E',
+        primary: '#C2185B',
         'primary-500': '#C2185B', // Magenta shade for primary action items
         'primary-600': '#AD1457', // A darker magenta for hover states or active items
+        secondary: '#FF80AB', // A lighter magenta for secondary buttons or highlights
         'secondary-500': '#FF80AB', // A lighter magenta for secondary buttons or highlights
         'off-white': '#F8F0FB', // An off-white with a hint of magenta for backgrounds
         red: '#FF5A5A', // You can keep the red if it's part of your palette or adjust it to fit the magenta theme

@@ -381,3 +381,27 @@
 .slide-search-toggle-icon-down-animation {
   animation: slideSearchToggleIconDown 0.4s forwards;
 }
+
+.scrolling-text-container {
+  overflow: hidden; /* Hide overflow */
+  white-space: nowrap; /* Keep text in a single line */
+  width: 100%; /* Adjust the width as needed */
+  max-width: 100%; /* Ensure it doesn't grow beyond its container */
+  padding: 8px; /* Optional, for some spacing around the text */
+}
+
+.scrolling-text {
+  display: inline-block;
+  animation: scrollText 20s linear infinite;
+  overflow-x: hidden;
+}
+
+@keyframes scrollText {
+  0%,
+  100% {
+    transform: translateX(0%);
+  }
+  90% {
+    transform: translateX(-100%);
+  }
+}

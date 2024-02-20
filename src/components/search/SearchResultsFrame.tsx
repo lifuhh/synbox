@@ -13,10 +13,10 @@ const SearchResultsFrame: React.FC<SearchResultsFrameProps> = ({
 }) => {
   return (
     <ul
-      className={`absolute top-full left-0 bg-white shadow-md rounded-md z-50 w-full ${
+      className={`absolute bg-white shadow-md rounded-md grid gap-1 p-2 top-full left-0 z-50 w-full ${
         isOpen ? 'block' : 'hidden'
       } ${className || ''}`}
-      onClick={onSelect}>
+      onSelect={onSelect}>
       {children}
     </ul>
   )
