@@ -1,7 +1,8 @@
 import PlayerBottomBar from '@/components/shared/PlayerBottomBar'
 import VideoPlayer from '@/components/shared/VideoPlayer'
-import { ChangeEvent, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
+import BaseReactPlayer, { BaseReactPlayerProps } from 'react-player/base'
 import { useLocation } from 'react-router-dom'
 
 const PlayerPage = () => {
@@ -12,13 +13,13 @@ const PlayerPage = () => {
   )
   const [playing, setPlaying] = useState<boolean>(false)
   const [volume, setVolume] = useState<number>(0)
-  const [muted, setMuted] = useState<boolean>(false)
+  const [muted, setMuted] = useState<boolean>(true)
   const [seeking, setSeeking] = useState<boolean>(false)
   const [played, setPlayed] = useState<number>(0)
   const [loaded, setLoaded] = useState<number>(0)
   const [loop, setLoop] = useState<boolean>(false)
   const [duration, setDuration] = useState<number>(0)
-  const playerRef = useRef<ReactPlayer | null>(null)
+  const playerRef = useRef<BaseReactPlayer<ReactPlayer> | null>(null)
 
   const load = (vidId: string) => {
     setVideoId(vidId)
@@ -26,21 +27,22 @@ const PlayerPage = () => {
     setLoaded(0)
   }
 
-  const handlePlayPause = () => {
+  const handlePlayPause = useCallback(() => {
     setPlaying(!playing)
-  }
+  }, [playing])
 
-  const handleToggleLoop = () => {
+  const handleToggleLoop = useCallback(() => {
     setLoop(!loop)
-  }
+  }, [loop]) // Add dependencies if any
 
-  const handleVolumeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setVolume(parseFloat(e.target.value))
-  }
+  const handleVolumeChange = useCallback((value: number) => {
+    setMuted(value === 0)
+    setVolume(value)
+  }, [])
 
-  const handleToggleMuted = () => {
-    setMuted(!muted)
-  }
+  const handleToggleMuted = useCallback(() => {
+    setMuted((prevMuted) => !prevMuted)
+  }, [])
 
   const handlePlay = () => {
     console.log('onPlay')
@@ -52,8 +54,13 @@ const PlayerPage = () => {
     setPlaying(false)
   }
 
-  const handleSeekChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPlayed(parseFloat(e.target.value))
+  const handleSeekChange = (value: number) => {
+    const newPlayedTime = parseInt((value * duration).toFixed(0))
+
+    setPlayed(newPlayedTime)
+    if (playerRef.current) {
+      playerRef.current.seekTo(newPlayedTime)
+    }
   }
 
   const handleSeekMouseDown = () => {
@@ -68,17 +75,23 @@ const PlayerPage = () => {
     }
   }
 
-  const handleProgress = (state: { played: number; loaded: number }) => {
-    console.log('onProgress', state)
-    // Assuming no seeking state to manage, directly setting played and loaded
-    setPlayed(state.played)
-    setLoaded(state.loaded)
+  const handleProgress = () => {
+    if (!playerRef.current) return null
+
+    const secondsLapsed = playerRef.current.getCurrentTime()
+
+    const curPlayed = Math.floor(parseInt(secondsLapsed.toFixed(0)))
+
+    console.log('This is handle progress + curPlayed: + ' + curPlayed)
+
+    setPlayed(curPlayed)
+    // setLoaded(loaded)
   }
 
   //* When ended, go to next track [to be implemented]
   const handleEnded = () => {
     console.log('onEnded')
-    setPlaying(loop)
+    // setPlaying(loop)
   }
 
   const handleDuration = (duration: number) => {
@@ -97,10 +110,19 @@ const PlayerPage = () => {
             playing={playing}
             volume={volume}
             muted={muted}
+            handlePlay={handlePlay}
+            handleProgress={handleProgress}
+            handleDuration={handleDuration}
           />
         )}
       </div>
       <PlayerBottomBar
+        playing={playing}
+        loop={loop}
+        volume={volume}
+        muted={muted}
+        played={played}
+        duration={duration}
         playerRef={playerRef}
         handlePlay={handlePlay}
         handlePause={handlePause}

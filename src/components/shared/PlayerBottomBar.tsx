@@ -1,23 +1,36 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
+import { formatTimeDisplay } from '@/utils'
 import { ChangeEvent, ForwardedRef, MouseEvent } from 'react'
 import ReactPlayer from 'react-player'
 
 interface PlayerBottomBarProps {
+  playing: boolean
+  loop: boolean
+  muted: boolean
+  volume: number
+  played: number
+  duration: number
   handlePlay: () => void
   handlePause: () => void
   handlePlayPause: () => void
   handleSeekMouseDown: () => void
-  handleSeekChange: (e: ChangeEvent<HTMLInputElement>) => void
+  handleSeekChange: (value: number) => void
   handleSeekMouseUp: (e: MouseEvent<HTMLInputElement>) => void
   handleProgress: (state: { played: number; loaded: number }) => void
   handleToggleLoop: () => void
-  handleVolumeChange: (e: ChangeEvent<HTMLInputElement>) => void
+  handleVolumeChange: (value: number) => void
   handleToggleMuted: () => void
   playerRef: ForwardedRef<ReactPlayer>
 }
 
 const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
+  playing,
+  loop,
+  muted,
+  volume,
+  played,
+  duration,
   playerRef,
   handlePlay,
   handlePause,
@@ -30,10 +43,14 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleVolumeChange,
   handleToggleMuted,
 }) => {
+  const getCurrentPlayedPercentage = () => {
+    return parseFloat((played / duration).toFixed(3))
+  }
+
   return (
     <div className='fixed bottom-0 inset-x-0 bg-gray border-t border-gray-100 dark:border-gray-800'>
-      <div className='mx-4 grid items-center grid-cols-3 py-2'>
-        <div className='flex items-center gap-1 md:gap-4'>
+      <div className='flex items-center justify-between mx-4 py-2'>
+        <div className='flex items-center gap-1 md:gap-2 mr-6'>
           <Button className='rounded-full' size='icon' variant='ghost'>
             <ChevronLeftIcon className='w-6 h-6' />
             <span className='sr-only'>Previous track</span>
@@ -43,7 +60,11 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             size='icon'
             variant='ghost'
             onClick={handlePlayPause}>
-            <PlayIcon className='w-6 h-6' />
+            {playing ? (
+              <PauseIcon className='w-6 h-6' />
+            ) : (
+              <PlayIcon className='w-6 h-6' />
+            )}
             <span className='sr-only'>Play</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
@@ -51,7 +72,9 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             <span className='sr-only'>Next track</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
-            <RepeatIcon className='w-4 h-4' />
+            {/* <RepeatIcon className='w-4 h-4' /> */}
+            <VolumeIcon className='w-6 h-6' />
+
             <span className='sr-only'>Repeat</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
@@ -60,20 +83,49 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
           </Button>
         </div>
         {/* Progress Bar */}
-        <div className='flex items-center justify-center'>
-          <Slider defaultValue={[0]} max={100} step={1} className='' />
+        <div className='flex flex-1 items-center justify-center gap-4'>
+          <Slider
+            defaultValue={[0]}
+            max={0.999999}
+            step={0.000001}
+            className='flex-1'
+            value={[getCurrentPlayedPercentage()]}
+            onValueChange={(value) => handleSeekChange(value[0])}
+          />
+          {/* //TODO: Why the hell are the numbers causing the progress bar to change size?  */}
+          <div className='flex-shrink-0 items-center'>
+            <div>
+              <span className='w-20 truncate'>{formatTimeDisplay(played)}</span>
+              <span className='w-16 '>{' / '}</span>
+              <span className='w-20 truncate'>
+                {formatTimeDisplay(duration)}
+              </span>
+            </div>
+          </div>
         </div>
-        <div className='flex items-center justify-end gap-1 md:gap-4'>
+        <div className='flex items-center justify-end gap-1 md:gap-2 ml-6'>
           <Button className='rounded-full' size='icon' variant='ghost'>
             <RepeatIcon className='w-4 h-4' />
             <span className='sr-only'>Repeat</span>
+          </Button>
+          <Button className='rounded-full' size='icon' variant='ghost'>
+            <SampleCaptionsIcon className='w-4 h-4' />
+            <span className='sr-only'>Captions</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
             <ShuffleIcon className='w-4 h-4' />
             <span className='sr-only'>Shuffle</span>
           </Button>
           {/* Volume Control */}
-          <Slider defaultValue={[0]} max={100} step={1} className='w-36' />
+          <Slider
+            defaultValue={[0]}
+            min={0}
+            max={1}
+            step={0.01}
+            onValueChange={(value) => handleVolumeChange(value[0])}
+            className='w-36'
+            value={[volume]}
+          />
         </div>
       </div>
     </div>
@@ -136,6 +188,45 @@ function PlayIcon(props) {
   )
 }
 
+function SampleCaptionsIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'>
+      <rect x='1' y='4' width='22' height='16' rx='2' ry='2'></rect>
+      <path d='M8 12c0 1.1.9 2 2 2h1v-4h-1c-1.1 0-2 .9-2 2z'></path>
+      <path d='M14 12c0 1.1.9 2 2 2h1v-4h-1c-1.1 0-2 .9-2 2z'></path>
+    </svg>
+  )
+}
+
+function PauseIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'>
+      <rect x='6' y='4' width='4' height='16' rx='1' ry='1' />
+      <rect x='14' y='4' width='4' height='16' rx='1' ry='1' />
+    </svg>
+  )
+}
+
 function RepeatIcon(props) {
   return (
     <svg
@@ -194,6 +285,23 @@ function VideoIcon(props) {
       strokeLinejoin='round'>
       <path d='m22 8-6 4 6 4V8Z' />
       <rect width='14' height='12' x='2' y='6' rx='2' ry='2' />
+    </svg>
+  )
+}
+
+function VolumeIcon(props) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      height='24'
+      viewBox='0 0 24 24'
+      width='24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'>
+      <path d='M560-131v-82q90-26 145-100t55-168q0-94-55-168T560-749v-82q124 28 202 125.5T840-481q0 127-78 224.5T560-131ZM120-360v-240h160l200-200v640L280-360H120Zm440 40v-322q47 22 73.5 66t26.5 96q0 51-26.5 94.5T560-320ZM400-606l-86 86H200v80h114l86 86v-252ZM300-480Z' />
     </svg>
   )
 }

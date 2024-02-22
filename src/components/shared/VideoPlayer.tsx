@@ -7,6 +7,9 @@ interface VideoPlayerProps {
   loop: boolean // Whether the video should loop on end
   volume: number // The volume level of the video (0-1)
   muted: boolean // Whether the video is muted
+  handlePlay: () => void
+  handleDuration: (duration: number) => void
+  handleProgress: (played: number) => void
   playerRef: ForwardedRef<ReactPlayer>
   // Add methods for handling playback control (play, pause, seek)
   // and volume control (setVolume, toggleMute)
@@ -16,6 +19,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoId,
   loop,
   playing,
+  handlePlay,
+  handleDuration,
+  handleProgress,
   volume,
   muted,
   playerRef,
@@ -23,24 +29,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   console.log('this is video id')
   console.log(videoId)
 
-  const handlePlay = () => {
-    console.log('onPlay')
-  }
-
   const handleEnded = () => {
     console.log('onEnded')
   }
 
-  const handleProgress = () => {
-    console.log('onProgress')
-  }
-
-  const handleDuration = (duration: number) => {
-    console.log('onDuration', duration)
-  }
+  const handlePlayerReady = () => {}
 
   const handlePause = () => {
-    console.log('onPause')
+    console.log('VideoPlayer.tsx player has been paused')
+  }
+
+  const handleReady = () => {
+    handlePlay()
   }
 
   return (
@@ -48,15 +48,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       <div className='w-full h-full border-4 border-green-200'>
         <ReactPlayer
           ref={playerRef}
+          config={{
+            youtube: {
+              playerVars: {
+                rel: 0,
+              },
+            },
+          }}
           width='100%'
           height='100%'
-          url={`https://www.youtube.com/watch?v=${videoId}`}
+          url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3`}
           muted={muted}
           volume={volume}
           playing={playing}
           loop={loop}
-          controls={true}
-          onReady={() => console.log('ready')}
+          controls={false}
+          onReady={handleReady}
           onStart={() => console.log('onStart')}
           onPlay={handlePlay}
           onSeek={(e) => console.log('onSeek', e)}
@@ -66,6 +73,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           onDuration={handleDuration}
           onPause={handlePause}
         />
+        {/* OVERLAY DIV to prevent user direct interaction with player */}
+        {/* //TODO: Add some kind of good quality UX to notify users to unmute video */}
+        <div className='absolute top-0 left-0 w-full h-full bg-black bg-opacity-0 flex justify-center items-center text-white'></div>
       </div>
     </div>
   )

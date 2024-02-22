@@ -64,3 +64,17 @@ function trimLength(text: string, maxLength: number, trail: boolean) {
 
   return trail ? editedText + '...' : editedText
 }
+
+export function formatTimeDisplay(seconds: number) {
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const remainingSeconds = seconds % 60
+  const remainingMinutes = minutes % 60
+  return `${hours ? `${hours}:` : ''}${pad(remainingMinutes)}:${pad(
+    remainingSeconds
+  )}`
+}
+
+function pad(string: number) {
+  return ('0' + string).slice(-2)
+}
