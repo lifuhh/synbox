@@ -8,6 +8,22 @@
 
 :root {
   --icon-top-offset: 15px; /* Adjust this value to what works for your layout */
+  --background: #30011e;
+  --primary: #c2185b;
+  --primary-500: #c2185b;
+  --primary-600: #ad1457;
+  --secondary: #ff80ab;
+  --secondary-500: #ff80ab;
+  --off-white: #f8f0fb;
+  --red: #ff5a5a;
+  --dark-1: #30011e;
+  --dark-2: #440229;
+  --dark-3: #560231;
+  --dark-4: #69023a;
+  --light-1: #ffffff;
+  --light-2: #fbe9f6;
+  --light-3: #d05d8f;
+  --light-4: #e1bee7;
 }
 
 @font-face {
@@ -28,6 +44,14 @@
     background-size: cover; /* Cover the entire viewport */
     background-position: center; /* Center the image in the viewport */
     background-repeat: no-repeat; /* Do not repeat the image */
+  }
+
+  .font-outline-1 {
+    /* text-shadow: 0 0 4px var(--primary-600);  */
+    text-shadow: 0 0 10px yellow; /* Adjust offset as needed */
+  }
+  .font-outline-4 {
+    text-shadow: 0 0 4px yellow; /* Adjust offset as needed */
   }
 }
 
@@ -218,7 +242,7 @@
   }
 
   .file_uploader-box {
-    @apply flex-center flex-col p-7 h-80 lg:h-[612px];
+    @apply flex-center flex-col p-7 h-20 lg:h-[300px];
   }
 
   /* Grid Post List */
@@ -264,24 +288,20 @@
 
   .font_noto_sans_jp_reg {
     font-family: 'Noto Sans JP', sans-serif;
-    font-size: 80px;
   }
 
   .font_noto_sans_jp_black_900 {
     font-family: 'Noto Sans JP', sans-serif;
     font-weight: 900;
-    font-size: 80px;
   }
 
   .font_mochiy_pop_one {
     font-family: 'Mochiy Pop One', sans-serif;
-    font-size: 80px;
   }
 
   .font_doki_doki {
     font-family: 'Doki Doki', sans-serif;
     color: white;
-    font-size: 80px;
   }
 }
 

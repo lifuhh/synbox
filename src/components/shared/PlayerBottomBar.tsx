@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { formatTimeDisplay } from '@/utils'
-import { ChangeEvent, ForwardedRef, MouseEvent } from 'react'
+import { ChangeEvent, ForwardedRef, MouseEvent, useMemo } from 'react'
 import ReactPlayer from 'react-player'
+import CaptionDropdownButton from '../captions/CaptionDropdownButton'
 
 interface PlayerBottomBarProps {
   playing: boolean
@@ -43,9 +44,17 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleVolumeChange,
   handleToggleMuted,
 }) => {
+  console.log('Player Bottom Bar re-rendered...')
+
   const getCurrentPlayedPercentage = () => {
     return parseFloat((played / duration).toFixed(3))
   }
+
+  const formattedPlayed = useMemo(() => formatTimeDisplay(played), [played])
+  const formattedDuration = useMemo(
+    () => formatTimeDisplay(duration),
+    [duration]
+  )
 
   return (
     <div className='fixed bottom-0 inset-x-0 bg-gray border-t border-gray-100 dark:border-gray-800'>
@@ -95,22 +104,17 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
           {/* //TODO: Why the hell are the numbers causing the progress bar to change size?  */}
           <div className='flex-shrink-0 items-center'>
             <div>
-              <span className='w-20 truncate'>{formatTimeDisplay(played)}</span>
+              <span className='w-20 truncate'>{formattedPlayed}</span>
               <span className='w-16 '>{' / '}</span>
-              <span className='w-20 truncate'>
-                {formatTimeDisplay(duration)}
-              </span>
+              <span className='w-20 truncate'>{formattedDuration}</span>
             </div>
           </div>
         </div>
         <div className='flex items-center justify-end gap-1 md:gap-2 ml-6'>
+          <CaptionDropdownButton />
           <Button className='rounded-full' size='icon' variant='ghost'>
             <RepeatIcon className='w-4 h-4' />
             <span className='sr-only'>Repeat</span>
-          </Button>
-          <Button className='rounded-full' size='icon' variant='ghost'>
-            <SampleCaptionsIcon className='w-4 h-4' />
-            <span className='sr-only'>Captions</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
             <ShuffleIcon className='w-4 h-4' />
@@ -184,26 +188,6 @@ function PlayIcon(props) {
       strokeLinecap='round'
       strokeLinejoin='round'>
       <polygon points='5 3 19 12 5 21 5 3' />
-    </svg>
-  )
-}
-
-function SampleCaptionsIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns='http://www.w3.org/2000/svg'
-      width='24'
-      height='24'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'>
-      <rect x='1' y='4' width='22' height='16' rx='2' ry='2'></rect>
-      <path d='M8 12c0 1.1.9 2 2 2h1v-4h-1c-1.1 0-2 .9-2 2z'></path>
-      <path d='M14 12c0 1.1.9 2 2 2h1v-4h-1c-1.1 0-2 .9-2 2z'></path>
     </svg>
   )
 }

@@ -7,6 +7,8 @@ import {
   formattedYoutubeVideoItemForCarousel,
 } from '@/types'
 
+export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
+
 export function formatYoutubePlaylistResponse(
   data: YoutubePlaylistApiResponse
 ): formattedYoutubeVideoItemForCarousel[] {

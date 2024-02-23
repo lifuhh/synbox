@@ -9,7 +9,7 @@ interface VideoPlayerProps {
   muted: boolean // Whether the video is muted
   handlePlay: () => void
   handleDuration: (duration: number) => void
-  handleProgress: (played: number) => void
+  handleProgress: () => void
   playerRef: ForwardedRef<ReactPlayer>
   // Add methods for handling playback control (play, pause, seek)
   // and volume control (setVolume, toggleMute)
@@ -26,9 +26,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   muted,
   playerRef,
 }) => {
-  console.log('this is video id')
-  console.log(videoId)
-
   const handleEnded = () => {
     console.log('onEnded')
   }
@@ -44,7 +41,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }
 
   return (
-    <div className='w-[90vw] h-[50.625vw] bg-transparent fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+    <div className='w-[90vw] h-[50.85vw] bg-transparent fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
       <div className='w-full h-full border-4 border-green-200'>
         <ReactPlayer
           ref={playerRef}

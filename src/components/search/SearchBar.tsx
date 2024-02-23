@@ -65,12 +65,11 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             onSelect={handleListItemClick}>
             {songList.map((result: formattedSearchResult) => (
               <SearchResultsItem
-              thumbnailUrl={result.thumbnailUrl}
+                thumbnailUrl={result.thumbnailUrl}
                 key={result.videoId}
                 videoId={result.videoId}
                 title={result.title}
                 creator={result.channel}
-                onSelect={handleListItemClick}
               />
             ))}
           </SearchResultsFrame>

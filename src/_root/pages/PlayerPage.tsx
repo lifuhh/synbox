@@ -1,16 +1,23 @@
 import PlayerBottomBar from '@/components/shared/PlayerBottomBar'
 import VideoPlayer from '@/components/shared/VideoPlayer'
-import { ChangeEvent, useCallback, useRef, useState } from 'react'
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer, { BaseReactPlayerProps } from 'react-player/base'
-import { useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
-  const location = useLocation()
+  console.log('Player Page rendered...')
 
-  const [videoId, setVideoId] = useState<string | null>(
-    location.state?.videoId || null
-  )
+  const { videoId } = useParams() // Extract videoId from route parameters
+
+  const [stateVideoId, setStateVideoId] = useState<string | null>(null)
+
   const [playing, setPlaying] = useState<boolean>(false)
   const [volume, setVolume] = useState<number>(0)
   const [muted, setMuted] = useState<boolean>(true)
@@ -21,8 +28,12 @@ const PlayerPage = () => {
   const [duration, setDuration] = useState<number>(0)
   const playerRef = useRef<BaseReactPlayer<ReactPlayer> | null>(null)
 
+  useEffect(() => {
+    if (videoId) setStateVideoId(videoId)
+  }, [videoId])
+
   const load = (vidId: string) => {
-    setVideoId(vidId)
+    setStateVideoId(vidId)
     setPlayed(0)
     setLoaded(0)
   }
@@ -102,9 +113,9 @@ const PlayerPage = () => {
   return (
     <>
       <div className='flex flex-col items-center justify-center my-20'>
-        {videoId && (
+        {stateVideoId && (
           <VideoPlayer
-            videoId={videoId}
+            videoId={stateVideoId}
             playerRef={playerRef}
             loop={loop}
             playing={playing}
@@ -138,4 +149,4 @@ const PlayerPage = () => {
     </>
   )
 }
-export default PlayerPage
+export default React.memo(PlayerPage)
