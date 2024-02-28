@@ -41,8 +41,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }
 
   return (
-    <div className='w-[90vw] h-[50.85vw] bg-transparent fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-      <div className='w-full h-full border-4 border-green-200'>
+    <div className='aspect-video w-9/10 bg-transparent fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+      <div className='w-full h-full border-4 border-green-200 border-opacity-15'>
         <ReactPlayer
           ref={playerRef}
           config={{

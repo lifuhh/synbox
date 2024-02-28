@@ -1,14 +1,9 @@
+import CaptionDisplay from '@/components/captions/CaptionDisplay'
 import PlayerBottomBar from '@/components/shared/PlayerBottomBar'
 import VideoPlayer from '@/components/shared/VideoPlayer'
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
-import BaseReactPlayer, { BaseReactPlayerProps } from 'react-player/base'
+import BaseReactPlayer from 'react-player/base'
 import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
@@ -112,6 +107,7 @@ const PlayerPage = () => {
 
   return (
     <>
+      <CaptionDisplay />
       <div className='flex flex-col items-center justify-center my-20'>
         {stateVideoId && (
           <VideoPlayer
@@ -149,4 +145,4 @@ const PlayerPage = () => {
     </>
   )
 }
-export default React.memo(PlayerPage)
+export default PlayerPage
