@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   useInfiniteQuery,
   useMutation,
@@ -26,17 +27,10 @@ export const useGetLandingPagePlaylist = () => {
   })
 }
 
-export const useGetYoutubeSearchResults = (
-  searchTerm: string,
-  searchTrigger: number
-) => {
+export const useGetYoutubeSearchResults = (searchTerm: string) => {
   return useQuery({
-    queryKey: [
-      QUERY_KEYS.GET_YOUTUBE_SEARCH_RESULTS,
-      searchTerm,
-      searchTrigger,
-    ],
-    enabled: !!searchTerm && searchTrigger > 0,
+    queryKey: [QUERY_KEYS.GET_YOUTUBE_SEARCH_RESULTS, searchTerm],
+    enabled: !!searchTerm,
     queryFn: () => getYoutubeSearchResults(searchTerm),
   })
 }
