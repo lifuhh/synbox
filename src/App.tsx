@@ -4,33 +4,33 @@ import RootLayout from './_root/RootLayout'
 import { LandingPage, PlayerPage, TestPage } from './_root/pages'
 
 import { Toaster } from '@/components/ui/toaster'
-import { useEffect, useState } from 'react'
+// import { useEffect, useState } from 'react'
 import { SampleLandingPageV0 } from './components/sample-landing-page-v0'
 import './globals.css'
 
-createServer({
-  routes() {
-    this.get('/api/users', () => [
-      { id: '1', name: 'Luke' },
-      { id: '2', name: 'Leia' },
-      { id: '3', name: 'Anakin' },
-    ])
-  },
-})
+// createServer({
+//   routes() {
+//     this.get('/api/users', () => [
+//       { id: '1', name: 'Luke' },
+//       { id: '2', name: 'Leia' },
+//       { id: '3', name: 'Anakin' },
+//     ])
+//   },
+// })
 
 const App = () => {
-  const [users, setUsers] = useState([])
+  // const [users, setUsers] = useState([])
 
-  useEffect(() => {
-    fetch('/api/users')
-      .then((response) => response.json())
-      .then((json) => {
-        setUsers(json)
-        console.log(json)
+  // useEffect(() => {
+  //   fetch('/api/users')
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       setUsers(json)
+  //       console.log(json)
 
-        return json
-      })
-  }, [])
+  //       return json
+  //     })
+  // }, [])
 
   return (
     <main className='flex h-screen'>

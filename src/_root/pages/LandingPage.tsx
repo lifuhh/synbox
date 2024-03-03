@@ -7,8 +7,6 @@ const LandingPage = () => {
   const { data: playlistData, isLoading: isPlaylistDataFetching } =
     useGetLandingPagePlaylist()
 
-
-
   return (
     <div className='flex items-center justify-center w-full'>
       {isPlaylistDataFetching && !playlistData ? (
