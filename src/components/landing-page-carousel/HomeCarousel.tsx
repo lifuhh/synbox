@@ -7,15 +7,16 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel'
-import { formattedVideoItemForCarousel } from '@/types'
+import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import Autoplay from 'embla-carousel-autoplay'
 import { useEffect, useState } from 'react'
+import BottomBar from '../shared/BottomBar'
 import HomeCarouselItem from './HomeCarouselItem'
 
-Autoplay.globalOptions = { delay: 6500 }
+Autoplay.globalOptions = { delay: 4000 }
 
 type HomeCarouselProps = {
-  items: formattedVideoItemForCarousel[]
+  items: formattedYoutubeVideoItemForCarousel[]
 }
 
 const HomeCarousel = ({ items }: HomeCarouselProps) => {
@@ -114,7 +115,15 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
         plugins={[Autoplay()]}>
         <CarouselContent className='-ml-3'>
           {items.map((item, itemIndex) => (
-            <CarouselItem key={itemIndex} className='basis-1/3 px-3'>
+            // <CarouselItem
+            //   key={itemIndex}
+            //   className='basis-1/3 px-3 border-4 border-sky-500'>
+            //   <h1>{item.title.slice(5, 10)}</h1>
+            // </CarouselItem>
+
+            <CarouselItem
+              key={itemIndex}
+              className='md:basis-1/2 lg:basis-1/3 md:px-3'>
               <HomeCarouselItem
                 opacity={1}
                 index={itemIndex + 1}

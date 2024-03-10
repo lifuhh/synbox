@@ -17,7 +17,7 @@ const YoutubeApiKey = import.meta.env.VITE_GOOGLE_API_KEY
 export async function getLandingPagePlaylist(): Promise<
   formattedYoutubeVideoItemForCarousel[]
 > {
-  // console.log('fetching landing page playlist')
+  console.log('fetching landing page playlist')
 
   const response = await axios.get<YoutubePlaylistApiResponse>(
     `https://www.googleapis.com/youtube/v3/playlistItems`,
@@ -34,6 +34,8 @@ export async function getLandingPagePlaylist(): Promise<
   if (!response) throw new Error('Failed to fetch playlist items')
 
   const processedResponse = formatYoutubePlaylistResponse(response.data)
+
+  console.log(processedResponse)
 
   return processedResponse
 }

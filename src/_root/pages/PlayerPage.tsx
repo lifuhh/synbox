@@ -1,5 +1,6 @@
 import CaptionDisplay from '@/components/captions/CaptionDisplay'
-import PlayerBottomBar from '@/components/shared/PlayerBottomBar'
+import PlayerBottomBar from '@/components/playerbottombar/PlayerBottomBar'
+import NewVideoPlayer from '@/components/shared/NewVideoPlayer'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
@@ -8,13 +9,13 @@ import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
   console.log('Player Page rendered...')
-
+  //* Video ID state
   const { videoId } = useParams() // Extract videoId from route parameters
-
   const [stateVideoId, setStateVideoId] = useState<string | null>(null)
 
+  //* Video Player state
   const [playing, setPlaying] = useState<boolean>(false)
-  const [volume, setVolume] = useState<number>(0)
+  const [volume, setVolume] = useState<number>(0.2)
   const [muted, setMuted] = useState<boolean>(true)
   const [seeking, setSeeking] = useState<boolean>(false)
   const [played, setPlayed] = useState<number>(0)
@@ -22,6 +23,9 @@ const PlayerPage = () => {
   const [loop, setLoop] = useState<boolean>(false)
   const [duration, setDuration] = useState<number>(0)
   const playerRef = useRef<BaseReactPlayer<ReactPlayer> | null>(null)
+
+  //* Lyrics-related state
+  const [romajiEnabled, setRomajiEnabled] = useState<boolean>(true)
 
   useEffect(() => {
     if (videoId) setStateVideoId(videoId)
@@ -42,12 +46,16 @@ const PlayerPage = () => {
   }, [loop]) // Add dependencies if any
 
   const handleVolumeChange = useCallback((value: number) => {
-    setMuted(value === 0)
+    // setMuted(value === 0)
     setVolume(value)
   }, [])
 
   const handleToggleMuted = useCallback(() => {
     setMuted((prevMuted) => !prevMuted)
+  }, [])
+
+  const handleToggleRomajiDisplay = useCallback(() => {
+    setRomajiEnabled((prevRomajiEnabled) => !prevRomajiEnabled)
   }, [])
 
   const handlePlay = () => {
@@ -88,7 +96,7 @@ const PlayerPage = () => {
 
     const curPlayed = Math.floor(parseInt(secondsLapsed.toFixed(0)))
 
-    console.log('This is handle progress + curPlayed: + ' + curPlayed)
+    // console.log('This is handle progress + curPlayed: + ' + curPlayed)
 
     setPlayed(curPlayed)
     // setLoaded(loaded)
@@ -107,8 +115,9 @@ const PlayerPage = () => {
 
   return (
     <>
-      <CaptionDisplay />
-      <div className='flex flex-col items-center justify-center my-20'>
+      {/* Caption Display Controller */}
+      <CaptionDisplay romajiEnabled={romajiEnabled} />
+      <div className='relative aspect-video w-full max-h-full border-2 border-primary border-opacity-5'>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}
@@ -131,6 +140,7 @@ const PlayerPage = () => {
         played={played}
         duration={duration}
         playerRef={playerRef}
+        romajiEnabled={romajiEnabled}
         handlePlay={handlePlay}
         handlePause={handlePause}
         handlePlayPause={handlePlayPause}
@@ -141,6 +151,7 @@ const PlayerPage = () => {
         handleToggleLoop={handleToggleLoop}
         handleVolumeChange={handleVolumeChange}
         handleToggleMuted={handleToggleMuted}
+        handleToggleRomajiDisplay={handleToggleRomajiDisplay}
       />
     </>
   )

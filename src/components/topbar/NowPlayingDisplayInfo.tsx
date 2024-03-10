@@ -10,7 +10,7 @@ const NowPlayingDisplayInfo = () => {
   }
 
   return (
-    <div className='flex flex-shrink-0 items-center w-48'>
+    <div className='flex align-middle justify-start w-48 min-w-48 z-20'>
       <Link to='/'>
         <button aria-label='Toggle menu' onClick={handleOnClick}>
           <SynboxLogo />

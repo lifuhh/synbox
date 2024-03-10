@@ -48,6 +48,8 @@ module.exports = {
         '9/10': '90%',
         420: '420px',
         465: '465px',
+        '80vw': '80vw',
+        '90vw': '90vw',
       },
 
       height: {
@@ -57,6 +59,10 @@ module.exports = {
 
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
+      },
+      fontSize: {
+        '4.2vw': '4.2vw',
+        '2.4vw': '2.4vw',
       },
       keyframes: {
         'accordion-down': {
