@@ -2,10 +2,9 @@ import FavouritesButton from '../favourites/FavouritesButton'
 import SearchBarContainer from '../search/SearchBarContainer'
 import NowPlayingDisplayInfo from './NowPlayingDisplayInfo'
 
-
 const TopBar = () => {
   return (
-    <div className='flex-between fixed top-0 left-0 w-full z-10'>
+    <div className='flex-between h-14 w-full pt-2 bg-teal-500 bg-opacity-30 z-50'>
       <NowPlayingDisplayInfo />
       <SearchBarContainer />
       <FavouritesButton />

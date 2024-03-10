@@ -2,11 +2,11 @@ import CaptionFileDrop from '@/components/captions/CaptionFileDrop'
 
 import { isKanji } from 'wanakana'
 
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable'
+// import {
+//   ResizableHandle,
+//   ResizablePanel,
+//   ResizablePanelGroup,
+// } from '@/components/ui/resizable'
 
 const CaptionDisplay = () => {
   const containerStyleFirst: React.CSSProperties = {
@@ -86,7 +86,8 @@ const CaptionDisplay = () => {
           <p
             style={engTranslationStyle}
             className='flex font_noto_sans_jp_black_900 justify-center font-outline-1'>
-            Couldn't beat her smile, it stirred up all the media
+            {/* Couldn't beat her smile, it stirred up all the media */}
+            Testing Testing Testing Testing Testing
           </p>
         </div>
 
@@ -96,7 +97,7 @@ const CaptionDisplay = () => {
               <p
                 style={lyricsStyle}
                 className='font-outline-1 font_noto_sans_jp_black_900'>
-                <ruby>
+                {/* <ruby>
                   無敵<rp>(</rp>
                   <rt>むてき</rt>
                   <rp>)</rp>
@@ -113,7 +114,14 @@ const CaptionDisplay = () => {
                   <rt>あ</rt>
                   <rp>)</rp>
                 </ruby>
-                らすメディア
+                らすメディア */}
+                サンプル{' '}
+                <ruby>
+                  試料<rp>(</rp>
+                  <rt>しりょう</rt>
+                  <rp>)</rp>
+                </ruby>{' '}
+                サンプル
               </p>
             </div>
           </div>
@@ -122,7 +130,7 @@ const CaptionDisplay = () => {
               <p
                 style={lyricsStyle}
                 className='font-outline-1 font_noto_sans_jp_black_900'>
-                <ruby>
+                {/* <ruby>
                   知<rp>(</rp>
                   <rt>し</rt>
                   <rp>)</rp>
@@ -141,7 +149,14 @@ const CaptionDisplay = () => {
                   <rt>きょうなにた</rt>
                   <rp>)</rp>
                 </ruby>
-                べた？
+                べた？ */}
+                サンプル{' '}
+                <ruby>
+                  試料<rp>(</rp>
+                  <rt>しりょう</rt>
+                  <rp>)</rp>
+                </ruby>{' '}
+                サンプル
               </p>
             </div>
           </div>

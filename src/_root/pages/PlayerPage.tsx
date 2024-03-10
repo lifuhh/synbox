@@ -1,5 +1,6 @@
 import CaptionDisplay from '@/components/captions/CaptionDisplay'
-import PlayerBottomBar from '@/components/shared/PlayerBottomBar'
+import PlayerBottomBar from '@/components/player-controls/PlayerBottomBar'
+import NewVideoPlayer from '@/components/shared/NewVideoPlayer'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
@@ -14,7 +15,7 @@ const PlayerPage = () => {
   const [stateVideoId, setStateVideoId] = useState<string | null>(null)
 
   const [playing, setPlaying] = useState<boolean>(false)
-  const [volume, setVolume] = useState<number>(0)
+  const [volume, setVolume] = useState<number>(0.2)
   const [muted, setMuted] = useState<boolean>(true)
   const [seeking, setSeeking] = useState<boolean>(false)
   const [played, setPlayed] = useState<number>(0)
@@ -42,7 +43,7 @@ const PlayerPage = () => {
   }, [loop]) // Add dependencies if any
 
   const handleVolumeChange = useCallback((value: number) => {
-    setMuted(value === 0)
+    // setMuted(value === 0)
     setVolume(value)
   }, [])
 
@@ -108,7 +109,7 @@ const PlayerPage = () => {
   return (
     <>
       <CaptionDisplay />
-      <div className='flex flex-col items-center justify-center my-20'>
+      <div className='relative aspect-video w-full max-h-full border-4 border-green-200 border-opacity-15'>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}

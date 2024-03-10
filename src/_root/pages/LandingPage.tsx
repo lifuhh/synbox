@@ -1,4 +1,4 @@
-import HomeCarousel from '@/components/shared/HomeCarousel'
+import HomeCarousel from '@/components/landing-page-carousel/HomeCarousel'
 import Loader from '@/components/shared/Loader'
 import { useGetLandingPagePlaylist } from '@/lib/react-query/queriesAndMutations'
 

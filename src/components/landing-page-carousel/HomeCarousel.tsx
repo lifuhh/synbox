@@ -12,7 +12,7 @@ import Autoplay from 'embla-carousel-autoplay'
 import { useEffect, useState } from 'react'
 import HomeCarouselItem from './HomeCarouselItem'
 
-Autoplay.globalOptions = { delay: 6500 }
+Autoplay.globalOptions = { delay: 4000 }
 
 type HomeCarouselProps = {
   items: formattedYoutubeVideoItemForCarousel[]
@@ -102,7 +102,7 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
   const slidesNumber = items.length
 
   return (
-    <div className='overflow-hidden border-4 border-white'>
+    <div className='overflow-hidden border-2 border-white'>
       <Carousel
         opts={{
           loop: true,
@@ -114,21 +114,23 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
         plugins={[Autoplay()]}>
         <CarouselContent className='-ml-3'>
           {items.map((item, itemIndex) => (
+            // <CarouselItem
+            //   key={itemIndex}
+            //   className='basis-1/3 px-3 border-4 border-sky-500'>
+            //   <h1>{item.title.slice(5, 10)}</h1>
+            // </CarouselItem>
+
             <CarouselItem
               key={itemIndex}
-              className='basis-1/3 px-3 border-4 border-sky-500'>
-              <h1>{item.title.slice(5, 10)}</h1>
+              className='md:basis-1/2 lg:basis-1/3 md:px-3'>
+              <HomeCarouselItem
+                opacity={1}
+                index={itemIndex + 1}
+                currentIndex={current}
+                itemCount={slidesNumber}
+                item={item}
+              />
             </CarouselItem>
-
-            // <CarouselItem key={itemIndex} className='basis-1/3 px-3'>
-            //   <HomeCarouselItem
-            //     opacity={1}
-            //     index={itemIndex + 1}
-            //     currentIndex={current}
-            //     itemCount={slidesNumber}
-            //     item={item}
-            //   />
-            // </CarouselItem>
           ))}
         </CarouselContent>
         <CarouselPrevious />
