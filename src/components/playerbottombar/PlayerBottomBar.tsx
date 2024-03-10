@@ -5,18 +5,19 @@ import { ChangeEvent, ForwardedRef, MouseEvent, useMemo } from 'react'
 import ReactPlayer from 'react-player'
 import CaptionDropdownButton from '../captions/CaptionDropdownButton'
 
-import ClosedCaptionIcon from '@mui/icons-material/ClosedCaption'
+// import ClosedCaptionIcon from '@mui/icons-material/ClosedCaption'
 import PauseIcon from '@mui/icons-material/Pause'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import SettingsIcon from '@mui/icons-material/Settings'
 import ShuffleIcon from '@mui/icons-material/Shuffle'
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 // import ClosedCaptionOffIcon from '@mui/icons-material/ClosedCaptionOff';
-import SubtitlesIcon from '@mui/icons-material/Subtitles'
-// import SubtitlesOffIcon from '@mui/icons-material/SubtitlesOff'
 import { cn } from '@/lib/utils'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
+import SubtitlesIcon from '@mui/icons-material/Subtitles'
+import SubtitlesOffIcon from '@mui/icons-material/SubtitlesOff'
 import UploadIcon from '@mui/icons-material/Upload'
 import VolumeControl from './VolumeControl'
 
@@ -27,6 +28,7 @@ interface PlayerBottomBarProps {
   volume: number
   played: number
   duration: number
+  romajiEnabled: boolean
   handlePlay: () => void
   handlePause: () => void
   handlePlayPause: () => void
@@ -37,6 +39,7 @@ interface PlayerBottomBarProps {
   handleToggleLoop: () => void
   handleVolumeChange: (value: number) => void
   handleToggleMuted: () => void
+  handleToggleRomajiDisplay: () => void
   playerRef: ForwardedRef<ReactPlayer>
 }
 
@@ -47,6 +50,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   volume,
   played,
   duration,
+  romajiEnabled,
   playerRef,
   handlePlay,
   handlePause,
@@ -58,6 +62,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleToggleLoop,
   handleVolumeChange,
   handleToggleMuted,
+  handleToggleRomajiDisplay,
 }) => {
   console.log('Player Bottom Bar re-rendered...')
 
@@ -72,8 +77,8 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   )
 
   return (
-    <div className='fixed bottom-0 inset-x-0 bg-gray border-t border-gray-100 dark:border-gray-800 bg-primary-500 bg-opacity-10'>
-      <div className='h-1'>
+    <div className='fixed bottom-0 inset-x-0 bg-gray bg-primary-500 bg-opacity-10'>
+      <div className='h-1 cursor-pointer'>
         <Slider
           defaultValue={[0]}
           max={0.999999}
@@ -85,7 +90,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       <div className='flex items-center justify-between sm:mx-2 py-2'>
         <div className='flex items-center lg:mr-6'>
           <Button className='rounded-full' size='icon' variant='ghost'>
-            <SkipPreviousIcon />
+            <SkipPreviousIcon sx={{ fontSize: 32 }} />
             <span className='sr-only'>Previous track</span>
           </Button>
           <Button
@@ -93,11 +98,15 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             size='icon'
             variant='ghost'
             onClick={handlePlayPause}>
-            {playing ? <PauseIcon /> : <PlayArrowIcon />}
+            {playing ? (
+              <PauseIcon sx={{ fontSize: 32 }} />
+            ) : (
+              <PlayArrowIcon sx={{ fontSize: 32 }} />
+            )}
             <span className='sr-only'>Play</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
-            <SkipNextIcon />
+            <SkipNextIcon sx={{ fontSize: 32 }} />
             <span className='sr-only'>Next track</span>
           </Button>
 
@@ -120,22 +129,39 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
         {/* Progress Bar */}
         {/* <div className='flex flex-1 items-center justify-center gap-4'></div> */}
         <div className='flex items-center justify-end gap-1 md:gap-2 ml-6'>
+          {/* //! Shuffle Play */}
           <Button className='rounded-full' size='icon' variant='ghost'>
-            <ShuffleIcon />
+            <ShuffleIcon sx={{ fontSize: 32 }} />
             <span className='sr-only'>Shuffle</span>
           </Button>
-          <Button className='rounded-full' size='icon' variant='ghost'>
-            <ClosedCaptionIcon />
-          </Button>
-          <Button className='rounded-full' size='icon' variant='ghost'>
-            <SubtitlesIcon className='w-4 h-4' />
+          {/* //! Subtitles Selection & Upload */}
+          <CaptionDropdownButton />
+          {/* //! Translation Selection */}
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onClick={handleToggleRomajiDisplay}>
+            {romajiEnabled ? (
+              <SubtitlesIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+            ) : (
+              <SubtitlesOffIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+            )}
             <span className='sr-only'>Repeat</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
-            <FullscreenIcon className='w-4 h-4' />
+            <SettingsIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
             <span className='sr-only'>Repeat</span>
           </Button>
-          {/* Volume Control */}
+          {/* //*TODO: Handle Dismissing Top Bar & Bottom Bar to make more space  */}
+          <Button className='rounded-full' size='icon' variant='ghost'>
+            <FullscreenIcon
+              className='w-4 h-4'
+              color='disabled'
+              sx={{ fontSize: 32 }}
+            />
+            <span className='sr-only'>Repeat</span>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,4 +1,6 @@
 import { Button } from '@/components/ui/button'
+import ClosedCaptionIcon from '@mui/icons-material/ClosedCaption'
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -34,56 +36,58 @@ const CaptionDropdownButton = () => {
   }
 
   return (
-    <Dialog>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button className='rounded-full' size='icon' variant='ghost'>
-            <SampleCaptionsIcon className='w-4 h-4' />
-            <span className='sr-only'>Captions</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className='w-56 m-1 bg-primary'>
-          <DropdownMenuGroup>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Choose Lyrics</DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent className=' bg-primary pb-2'>
-                  <DropdownMenuCheckboxItem
-                    checked={showStatusBar}
-                    onCheckedChange={setShowStatusBar}>
-                    Official
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuSeparator />
-                  <DialogTrigger asChild>
-                    <DropdownMenuItem onClick={handleUploadClick}>
-                      Upload Lyrics
-                    </DropdownMenuItem>
-                  </DialogTrigger>
-                  <DropdownMenuItem>Edit Lyrics</DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator className=' bg-black' />
-          <DropdownMenuGroup>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                Choose Translation
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent className=' bg-primary'>
-                  <DropdownMenuItem>English</DropdownMenuItem>
-                  <DropdownMenuItem>Chinese</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Upload Translation</DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <LyricsUploadDialog />
-    </Dialog>
+    <div className='cursor-pointer items-center flex flex-between'>
+      <Dialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className='rounded-full' size='icon' variant='ghost'>
+              <ClosedCaptionIcon sx={{ fontSize: 32 }} />
+              <span className='sr-only'>Captions</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className='w-56 m-1 bg-primary cursor-pointer z-20'>
+            <DropdownMenuGroup>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Choose Lyrics</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className=' bg-primary pb-2'>
+                    <DropdownMenuCheckboxItem
+                      checked={showStatusBar}
+                      onCheckedChange={setShowStatusBar}>
+                      Official
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuSeparator />
+                    <DialogTrigger asChild>
+                      <DropdownMenuItem onClick={handleUploadClick}>
+                        Upload Lyrics
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                    <DropdownMenuItem>Edit Lyrics</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator className=' bg-black' />
+            <DropdownMenuGroup>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  Choose Translation
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className=' bg-primary'>
+                    <DropdownMenuItem>English</DropdownMenuItem>
+                    <DropdownMenuItem>Chinese</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Upload Translation</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <LyricsUploadDialog />
+      </Dialog>
+    </div>
   )
 }
 export default CaptionDropdownButton

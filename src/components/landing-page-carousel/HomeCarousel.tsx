@@ -10,6 +10,7 @@ import {
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import Autoplay from 'embla-carousel-autoplay'
 import { useEffect, useState } from 'react'
+import BottomBar from '../shared/BottomBar'
 import HomeCarouselItem from './HomeCarouselItem'
 
 Autoplay.globalOptions = { delay: 4000 }
@@ -102,7 +103,7 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
   const slidesNumber = items.length
 
   return (
-    <div className='overflow-hidden border-2 border-white'>
+    <div className='overflow-hidden'>
       <Carousel
         opts={{
           loop: true,

@@ -2,8 +2,8 @@ import { Input } from '@/components/ui/input'
 import { useGetYoutubeSearchResults } from '@/lib/react-query/queriesAndMutations'
 import { formattedSearchResult } from '@/types'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRef, useState } from 'react'
-import { SearchIcon } from '../svgicons'
+import SearchIcon from '@mui/icons-material/Search'
+import { useState } from 'react'
 import SearchResultsFrame from './SearchResultsFrame'
 import SearchResultsItem from './SearchResultsItem'
 
@@ -35,7 +35,7 @@ const SearchBar = () => {
 
   return (
     <div className='flex justify-between items-center bg-gray-100 dark:bg-gray-800 rounded-lg py-1 md:w-96'>
-      <SearchIcon className='h-5 w-5 text-gray-500 dark:text-gray-400 m-2' />
+      <SearchIcon className='text-primary m-2' sx={{ fontSize: 26 }} />
       <Input
         className='flex-1 bg-transparent text-black focus:ring-2 w-full mr-3 focus:ring-pink-600'
         placeholder='Search...'

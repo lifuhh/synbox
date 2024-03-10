@@ -1,7 +1,7 @@
 const BottomBar = () => {
   return (
-    <div className='h-14 flex-between w-full'>
-      <h1>Wassap</h1>
+    <div className='fixed bottom-0 left-0 flex-between flex-col h-14 w-full'>
+      <h1>Powered By YouTube Logo</h1>
     </div>
   )
 }

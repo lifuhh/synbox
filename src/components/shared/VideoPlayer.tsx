@@ -30,7 +30,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     console.log('onEnded')
   }
 
-  const handlePlayerReady = () => {}
+  // const handlePlayerReady = () => {}
 
   const handlePause = () => {
     console.log('VideoPlayer.tsx player has been paused')
@@ -41,34 +41,37 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }
 
   return (
-    <ReactPlayer
-      className='absolute top-0 left-0 right-0'
-      ref={playerRef}
-      config={{
-        youtube: {
-          playerVars: {
-            rel: 0,
+    <>
+      <ReactPlayer
+        className='absolute top-0 left-0 right-0'
+        ref={playerRef}
+        config={{
+          youtube: {
+            playerVars: {
+              rel: 0,
+            },
           },
-        },
-      }}
-      width='100%'
-      height='100%'
-      url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3`}
-      muted={muted}
-      volume={volume}
-      playing={playing}
-      loop={loop}
-      controls={false}
-      onReady={handleReady}
-      onStart={() => console.log('onStart')}
-      onPlay={handlePlay}
-      onSeek={(e) => console.log('onSeek', e)}
-      onEnded={handleEnded}
-      onError={(e) => console.log('onError', e)}
-      onProgress={handleProgress}
-      onDuration={handleDuration}
-      onPause={handlePause}
-    />
+        }}
+        width='100%'
+        height='100%'
+        url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3`}
+        muted={muted}
+        volume={volume}
+        playing={playing}
+        loop={loop}
+        controls={false}
+        onReady={handleReady}
+        onStart={() => console.log('onStart')}
+        onPlay={handlePlay}
+        onSeek={(e) => console.log('onSeek', e)}
+        onEnded={handleEnded}
+        onError={(e) => console.log('onError', e)}
+        onProgress={handleProgress}
+        onDuration={handleDuration}
+        onPause={handlePause}
+      />
+      <div className='absolute top-0 left-0 w-full h-full bg-black bg-opacity-0 flex justify-center items-center text-white'></div>
+    </>
   )
 }
 export default VideoPlayer

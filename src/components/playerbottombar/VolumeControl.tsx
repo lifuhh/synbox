@@ -32,11 +32,11 @@ const VolumeControl: React.FC<VolumeControlProps> = ({
         variant='ghost'
         onClick={handleToggleMuted}>
         {muted ? (
-          <VolumeOffIcon />
+          <VolumeOffIcon sx={{ fontSize: 32 }} />
         ) : volume == 0 ? (
-          <VolumeMuteIcon />
+          <VolumeMuteIcon sx={{ fontSize: 32 }} />
         ) : (
-          <VolumeUpIcon />
+          <VolumeUpIcon sx={{ fontSize: 32 }} />
         )}
         <span className='sr-only'>Shuffle</span>
       </Button>

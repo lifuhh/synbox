@@ -47,11 +47,12 @@
   }
 
   .font-outline-1 {
-    /* text-shadow: 0 0 4px var(--primary-600);  */
-    text-shadow: 0 0 10px yellow; /* Adjust offset as needed */
+    text-shadow: 0 0 10px var(--primary-600);
+    /* text-shadow: 0 0 10px yellow; Adjust offset as needed */
   }
   .font-outline-4 {
-    text-shadow: 0 0 4px yellow; /* Adjust offset as needed */
+    text-shadow: 0 0 10px var(--primary-600);
+    /* text-shadow: 0 0 4px yellow; Adjust offset as needed */
   }
 }
 
@@ -75,6 +76,10 @@
 
   .flex-start {
     @apply flex justify-start items-center;
+  }
+
+  .flex-end {
+    @apply flex justify-end items-center;
   }
 
   .custom-scrollbar::-webkit-scrollbar {

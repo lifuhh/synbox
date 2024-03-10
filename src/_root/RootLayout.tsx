@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom'
 
 import BottomBar from '@/components/shared/BottomBar'
-import TopBar from '@/components/shared/TopBar'
+import TopBar from '@/components/topbar/TopBar'
 
 const RootLayout = () => {
   const location = useLocation()
