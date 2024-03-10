@@ -26,6 +26,7 @@ const PlayerPage = () => {
 
   //* Lyrics-related state
   const [romajiEnabled, setRomajiEnabled] = useState<boolean>(true)
+  const [lyricsVisibility, setLyricsVisibility] = useState<boolean>(true)
 
   useEffect(() => {
     if (videoId) setStateVideoId(videoId)
@@ -56,6 +57,10 @@ const PlayerPage = () => {
 
   const handleToggleRomajiDisplay = useCallback(() => {
     setRomajiEnabled((prevRomajiEnabled) => !prevRomajiEnabled)
+  }, [])
+
+  const handleToggleLyricsVisibility = useCallback((visibility: boolean) => {
+    setLyricsVisibility(visibility)
   }, [])
 
   const handlePlay = () => {
@@ -116,7 +121,7 @@ const PlayerPage = () => {
   return (
     <>
       {/* Caption Display Controller */}
-      <CaptionDisplay romajiEnabled={romajiEnabled} />
+      {lyricsVisibility ? <CaptionDisplay romajiEnabled={romajiEnabled} /> : ''}
       <div className='relative aspect-video w-full max-h-full border-2 border-primary border-opacity-5'>
         {stateVideoId && (
           <VideoPlayer
@@ -152,6 +157,7 @@ const PlayerPage = () => {
         handleVolumeChange={handleVolumeChange}
         handleToggleMuted={handleToggleMuted}
         handleToggleRomajiDisplay={handleToggleRomajiDisplay}
+        handleToggleLyricsVisibility={handleToggleLyricsVisibility}
       />
     </>
   )

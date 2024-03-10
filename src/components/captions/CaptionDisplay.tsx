@@ -61,7 +61,7 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
       style={{ zIndex: 1000 }}>
       <div className='flex flex-col justify-end md:justify-between w-full h-full my-7'>
         {/* Translation Div */}
-        <div className='md:pt-4 pb-20 md:pb-0 w-full'>
+        <div className='md:pt-4 md:pb-0 w-full'>
           <p
             style={engTranslationStyle}
             className='flex font_noto_sans_jp_black_900 justify-center font-outline-1'>
@@ -71,12 +71,12 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
         </div>
 
         {/* Lyrics Div */}
-        <div className='w-full md:flex-1 flex flex-col justify-end pb-20 sm:pb-3'>
-          <div className='mx-4'>
+        <div className='w-full md:flex-1 flex flex-col justify-end py-4 md:pb-3'>
+          <div className='lg:mx-4 pl-2 sm:pl-4'>
             <div style={containerStyleFirst}>
               <p
                 style={lyricsStyle}
-                className='font-outline-1 font_noto_sans_jp_black_900'>
+                className='font-outline-1 font_noto_sans_jp_black_900 sm:pl-2'>
                 <ruby>
                   無敵<rp>(</rp>
                   <rt>むてき</rt>
@@ -94,7 +94,7 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
                   <rt>あ</rt>
                   <rp>)</rp>
                 </ruby>
-                らすメディア
+                らすメディア . . . . . ♪
                 {/* サンプル{' '}
                 <ruby>
                   試料<rp>(</rp>
@@ -105,7 +105,7 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
               </p>
             </div>
           </div>
-          <div className='flex justify-end mx-4'>
+          <div className='flex justify-end lg:mx-4 sm:pr-2'>
             <div style={containerStyleSecond}>
               <p
                 style={lyricsStyle}
@@ -130,6 +130,7 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
                   <rp>)</rp>
                 </ruby>
                 べた？
+                {/* 3 ... 2 ... 1 ... */}
               </p>
             </div>
           </div>
@@ -150,7 +151,7 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
 }
 
 const containerStyleFirst: React.CSSProperties = {
-  width: '80vw', // 80% of the viewport width
+  width: '90vw', // 80% of the viewport width
   display: 'flex',
   justifyContent: 'start',
 }

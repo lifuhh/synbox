@@ -40,6 +40,7 @@ interface PlayerBottomBarProps {
   handleVolumeChange: (value: number) => void
   handleToggleMuted: () => void
   handleToggleRomajiDisplay: () => void
+  handleToggleLyricsVisibility: (visibility: boolean) => void
   playerRef: ForwardedRef<ReactPlayer>
 }
 
@@ -63,6 +64,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleVolumeChange,
   handleToggleMuted,
   handleToggleRomajiDisplay,
+  handleToggleLyricsVisibility,
 }) => {
   console.log('Player Bottom Bar re-rendered...')
 
@@ -135,7 +137,9 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             <span className='sr-only'>Shuffle</span>
           </Button>
           {/* //! Subtitles Selection & Upload */}
-          <CaptionDropdownButton />
+          <CaptionDropdownButton
+            handleToggleLyricsVisibility={handleToggleLyricsVisibility}
+          />
           {/* //! Translation Selection */}
           <Button
             className='rounded-full'
