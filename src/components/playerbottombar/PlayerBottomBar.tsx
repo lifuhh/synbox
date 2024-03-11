@@ -1,24 +1,21 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { formatTimeDisplay } from '@/utils'
-import { ChangeEvent, ForwardedRef, MouseEvent, useMemo } from 'react'
+import { ForwardedRef, MouseEvent, useCallback, useMemo } from 'react'
 import ReactPlayer from 'react-player'
-import CaptionDropdownButton from '../captions/CaptionDropdownButton'
+import LyricsDropdownButton from '../lyrics-display/LyricsDropdownButton'
 
-// import ClosedCaptionIcon from '@mui/icons-material/ClosedCaption'
 import PauseIcon from '@mui/icons-material/Pause'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import RepeatIcon from '@mui/icons-material/Repeat'
+import RepeatOnIcon from '@mui/icons-material/RepeatOn'
 import SettingsIcon from '@mui/icons-material/Settings'
-import ShuffleIcon from '@mui/icons-material/Shuffle'
-import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 // import ClosedCaptionOffIcon from '@mui/icons-material/ClosedCaptionOff';
-import { cn } from '@/lib/utils'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import SubtitlesIcon from '@mui/icons-material/Subtitles'
 import SubtitlesOffIcon from '@mui/icons-material/SubtitlesOff'
-import UploadIcon from '@mui/icons-material/Upload'
 import VolumeControl from './VolumeControl'
 
 interface PlayerBottomBarProps {
@@ -68,15 +65,57 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
 }) => {
   console.log('Player Bottom Bar re-rendered...')
 
-  const getCurrentPlayedPercentage = () => {
+  const getCurrentPlayedPercentage = useCallback(() => {
     return parseFloat((played / duration).toFixed(3))
-  }
+  }, [duration, played])
 
   const formattedPlayed = useMemo(() => formatTimeDisplay(played), [played])
   const formattedDuration = useMemo(
     () => formatTimeDisplay(duration),
     [duration]
   )
+
+  const openFullscreen = (elem) => {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen() // Standard method
+    } else if (elem.mozRequestFullScreen) {
+      /* Firefox */
+      elem.mozRequestFullScreen() // Firefox
+    } else if (elem.webkitRequestFullscreen) {
+      /* Chrome, Safari & Opera */
+      elem.webkitRequestFullscreen() // Chrome, Safari, and Opera
+    } else if (elem.msRequestFullscreen) {
+      /* IE/Edge */
+      elem.msRequestFullscreen() // IE/Edge
+    }
+  }
+
+  const handleFullscreen = () => {
+    // Check if any element is currently in fullscreen mode
+    if (
+      !document.fullscreenElement &&
+      !document.mozFullScreenElement &&
+      !document.webkitFullscreenElement &&
+      !document.msFullscreenElement
+    ) {
+      // No element is in fullscreen, enter fullscreen mode
+      openFullscreen(document.documentElement) // You can also use document.body
+    } else {
+      // An element is already in fullscreen, exit fullscreen mode
+      if (document.exitFullscreen) {
+        document.exitFullscreen() // Standard method
+      } else if (document.mozCancelFullScreen) {
+        /* Firefox */
+        document.mozCancelFullScreen() // Firefox
+      } else if (document.webkitExitFullscreen) {
+        /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen() // Chrome, Safari, and Opera
+      } else if (document.msExitFullscreen) {
+        /* IE/Edge */
+        document.msExitFullscreen() // IE/Edge
+      }
+    }
+  }
 
   return (
     <div className='fixed bottom-0 inset-x-0 bg-gray bg-primary-500 bg-opacity-10'>
@@ -132,12 +171,20 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
         {/* <div className='flex flex-1 items-center justify-center gap-4'></div> */}
         <div className='flex items-center justify-end gap-1 md:gap-2 ml-6'>
           {/* //! Shuffle Play */}
-          <Button className='rounded-full' size='icon' variant='ghost'>
-            <ShuffleIcon sx={{ fontSize: 32 }} />
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onClick={handleToggleLoop}>
+            {loop ? (
+              <RepeatOnIcon sx={{ fontSize: 32 }} />
+            ) : (
+              <RepeatIcon sx={{ fontSize: 32 }} />
+            )}
             <span className='sr-only'>Shuffle</span>
           </Button>
           {/* //! Subtitles Selection & Upload */}
-          <CaptionDropdownButton
+          <LyricsDropdownButton
             handleToggleLyricsVisibility={handleToggleLyricsVisibility}
           />
           {/* //! Translation Selection */}
@@ -158,12 +205,12 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             <span className='sr-only'>Repeat</span>
           </Button>
           {/* //*TODO: Handle Dismissing Top Bar & Bottom Bar to make more space  */}
-          <Button className='rounded-full' size='icon' variant='ghost'>
-            <FullscreenIcon
-              className='w-4 h-4'
-              color='disabled'
-              sx={{ fontSize: 32 }}
-            />
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onClick={handleFullscreen}>
+            <FullscreenIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
             <span className='sr-only'>Repeat</span>
           </Button>
         </div>

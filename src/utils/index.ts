@@ -1,4 +1,5 @@
 import {
+  UploadedSrtLine,
   YoutubePlaylistApiResponse,
   YoutubePlaylistItem,
   YoutubeSearchApiResponse,
@@ -13,7 +14,7 @@ import {
   romajiToHiraganaMap,
 } from './charactersMap'
 
-import { isKanji, toHiragana, toRomaji } from 'wanakana'
+import { isKanji, toRomaji } from 'wanakana'
 
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
 
@@ -67,11 +68,14 @@ export function formatYoutubeSearchResponse(
   return items
 }
 
-function trimLength(text: string, maxLength: number, trail: boolean) {
-  const editedText =
-    text.length > maxLength ? text.substring(0, maxLength) : text
+export function trimLength(text: string, maxLength: number, trail: boolean) {
 
-  return trail ? editedText + '...' : editedText
+  const tooLong = text.length > maxLength
+
+  const editedText =
+    tooLong ? text.substring(0, maxLength) : text
+
+  return trail ? (tooLong ? editedText + '...' : editedText) : editedText
 }
 
 //* Video Time Display Functions
@@ -128,8 +132,13 @@ export function formatLyricsLineSrt(lyric: string, romaji: string) {
 
 //Type: 0 - normal, 1 - ending special, 2 - wrapped with 「」, 3 - ending with ...
 function lyricSpecialCharacterRemover(lyric: string): [string, number, string] {
-  // Test for '?' and '!'
-  if (/\?$/.test(lyric) || /!$/.test(lyric)) {
+  // Test for '?' and '!' and '、' and '。'
+  if (
+    /\?$/.test(lyric) ||
+    /!$/.test(lyric) ||
+    /、$/.test(lyric) ||
+    /。$/.test(lyric)
+  ) {
     return [lyric.slice(0, -1), 1, lyric[lyric.length - 1]]
   }
   // Test for brackets
@@ -310,4 +319,35 @@ function getCorrespondingHiragana(romaji: string): string {
 //* Given "ひ", returns "hi"
 function getCorrespondingRomaji(characters: string): string {
   return japaneseToRomajiMap[characters]
+}
+
+//* Lyrics Dropzone Helpers
+
+export function parseSrt(srt: string): UploadedSrtLine[] {
+  const subtitleBlocks = srt.trim().split(/\n\s*\n/)
+  const subtitles = subtitleBlocks.map((subtitleBlock, index) => {
+    // eslint-disable-next-line prefer-const
+    let [timeString, ...textLines] = subtitleBlock.split('\n')
+    timeString = textLines[0]
+    textLines.shift() // remove index
+    const [startTime, endTime] = timeString.split(' --> ')
+    const text = textLines
+      .join('\n')
+      .replace(/<[^>]*>/g, '')
+      .replace(/\{.*?\}/g, '')
+    return {
+      index,
+      startTime,
+      endTime,
+      text,
+    }
+  })
+  return subtitles
+}
+
+export function parseRomajiFile(fileContent: string): string[] {
+  const lines = fileContent.split(/\r\n|\n/) // Split by newline characters to get lines
+  const nonEmptyLines = lines.filter((line) => line.trim() !== '') // Filter out empty lines
+
+  return nonEmptyLines
 }

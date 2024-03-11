@@ -1,6 +1,5 @@
-import CaptionDisplay from '@/components/captions/CaptionDisplay'
+import LyricsDisplay from '@/components/lyrics-display/LyricsDisplayOverlay'
 import PlayerBottomBar from '@/components/playerbottombar/PlayerBottomBar'
-import NewVideoPlayer from '@/components/shared/NewVideoPlayer'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
@@ -120,8 +119,8 @@ const PlayerPage = () => {
 
   return (
     <>
-      {/* Caption Display Controller */}
-      {lyricsVisibility ? <CaptionDisplay romajiEnabled={romajiEnabled} /> : ''}
+      {/* Lyrics Display Controller */}
+      {lyricsVisibility ? <LyricsDisplay romajiEnabled={romajiEnabled} /> : ''}
       <div className='relative aspect-video w-full max-h-full border-2 border-primary border-opacity-5'>
         {stateVideoId && (
           <VideoPlayer

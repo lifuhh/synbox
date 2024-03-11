@@ -1,10 +1,10 @@
 import DOMPurify from 'dompurify'
 
-interface CaptionTextProps {
+interface LyricsTextLineProps {
   htmlContent: string
 }
 
-const LyricText: React.FC<CaptionTextProps> = ({ htmlContent }) => {
+const LyricTextLine: React.FC<LyricsTextLineProps> = ({ htmlContent }) => {
   const createMarkup = (html: string) => {
     return { __html: DOMPurify.sanitize(html) }
   }
@@ -15,4 +15,4 @@ const LyricText: React.FC<CaptionTextProps> = ({ htmlContent }) => {
     />
   )
 }
-export default LyricText
+export default LyricTextLine

@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { formatLyricsLineSrt } from '@/utils'
 import { isKanji, toRomaji } from 'wanakana'
-import LyricText from './CaptionText'
+import LyricTextLine from './LyricTextLine'
 
-interface CaptionDisplayProps {
+interface LyricsDisplayProps {
   romajiEnabled: boolean
 }
 
-//! Caption Display overlay is z-40
-const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
+//! Lyrics Display overlay is z-40
+const LyricsDisplay: React.FC<LyricsDisplayProps> = ({ romajiEnabled }) => {
   // 知りたいその秘密ミステリアス
   const [firstLineIndex, setFirstLineIndex] = useState<number>(0)
   const [secondLineIndex, setSecondLineIndex] = useState<number>(1)
@@ -17,7 +17,10 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
   const lyricsTestA1 = '知りたいその秘密ミステリアス'
   const lyricsTestA2 = 'shiritai sono himitsu misuteriasu'
 
-  const test = formatLyricsLineSrt(lyricsTestA1, lyricsTestA2)
+  const test = useMemo(
+    () => formatLyricsLineSrt(lyricsTestA1, lyricsTestA2),
+    []
+  )
 
   const placeholderLyric1 =
     '<ruby>無敵<rp>(</rp><rt>むてき</rt><rp>)</rp></ruby>の<ruby>笑顔<rp>(</rp><rt>えがお</rt><rp>)</rp></ruby>で<ruby>荒<rp>(</rp><rt>あ</rt><rp>)</rp></ruby>らすメディア . . . . . ♪'
@@ -40,12 +43,12 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({ romajiEnabled }) => {
         <div className='w-full md:flex-1 flex flex-col justify-end py-4 md:pb-3'>
           <div className='lg:mx-4 pl-2 sm:pl-4'>
             <div style={containerStyleFirst}>
-              <LyricText htmlContent={placeholderLyric1} />
+              <LyricTextLine htmlContent={placeholderLyric1} />
             </div>
           </div>
           <div className='flex justify-end lg:mx-4 sm:pr-2'>
             <div style={containerStyleSecond}>
-              <LyricText htmlContent={placeholderLyric2} />
+              <LyricTextLine htmlContent={placeholderLyric2} />
             </div>
           </div>
         </div>
@@ -74,5 +77,4 @@ const containerStyleSecond: React.CSSProperties = {
   justifyContent: 'end',
 }
 
-
-export default CaptionDisplay
+export default LyricsDisplay

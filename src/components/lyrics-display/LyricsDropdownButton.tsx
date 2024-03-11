@@ -18,23 +18,21 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu'
 import { useState } from 'react'
+import LyricsUploadDialog from '../lyrics-upload/LyricsUploadDialog'
 import { Dialog, DialogTrigger } from '../ui/dialog'
-import LyricsUploadDialog from './LyricsUploadDialog'
 
 type Checked = DropdownMenuCheckboxItemProps['checked']
 
-interface CaptionDropdownButtonProps {
+interface LyricsDropdownButtonProps {
   handleToggleLyricsVisibility: (visibility: boolean) => void
 }
 
-// const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
-
-const CaptionDropdownButton: React.FC<CaptionDropdownButtonProps> = ({
+const LyricsDropdownButton: React.FC<LyricsDropdownButtonProps> = ({
   handleToggleLyricsVisibility,
 }) => {
   const [showStatusBar, setShowStatusBar] = useState<Checked>(true)
-  const [showActivityBar, setShowActivityBar] = useState<Checked>(false)
-  const [showPanel, setShowPanel] = useState<Checked>(false)
+  // const [showActivityBar, setShowActivityBar] = useState<Checked>(false)
+  // const [showPanel, setShowPanel] = useState<Checked>(false)
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -139,5 +137,4 @@ const CaptionDropdownButton: React.FC<CaptionDropdownButtonProps> = ({
     // </div>
   )
 }
-export default CaptionDropdownButton
-
+export default LyricsDropdownButton

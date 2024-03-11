@@ -25,7 +25,7 @@ const VolumeControl: React.FC<VolumeControlProps> = ({
     <div
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
-      className='flex-around'>
+      className='flex-around cursor-pointer'>
       <Button
         className='rounded-full'
         size='icon'
