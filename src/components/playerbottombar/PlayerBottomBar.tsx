@@ -92,7 +92,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       <div className='flex items-center justify-between sm:mx-2 py-2'>
         <div className='flex items-center lg:mr-6'>
           <Button className='rounded-full' size='icon' variant='ghost'>
-            <SkipPreviousIcon sx={{ fontSize: 32 }} />
+            <SkipPreviousIcon />
             <span className='sr-only'>Previous track</span>
           </Button>
           <Button

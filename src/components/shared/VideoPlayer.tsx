@@ -70,7 +70,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onDuration={handleDuration}
         onPause={handlePause}
       />
-      <div className='absolute top-0 left-0 w-full h-full bg-black bg-opacity-0 flex justify-center items-center text-white'></div>
+      {playing ? (
+        <div className='absolute top-0 left-0 w-full h-full bg-black bg-opacity-0 flex justify-center items-center text-white'></div>
+      ) : (
+        ''
+      )}
     </>
   )
 }

@@ -61,8 +61,9 @@ module.exports = {
         inter: ['Inter', 'sans-serif'],
       },
       fontSize: {
-        '4.2vw': '4.2vw',
+        '2vw': '2vw',
         '2.4vw': '2.4vw',
+        '4.2vw': '4.2vw',
       },
       keyframes: {
         'accordion-down': {
