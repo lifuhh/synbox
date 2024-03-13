@@ -7,7 +7,6 @@ import BaseReactPlayer from 'react-player/base'
 import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
-  // console.log('Player Page rendered...')
   //* Video ID state
   const { videoId } = useParams() // Extract videoId from route parameters
   const [stateVideoId, setStateVideoId] = useState<string | null>(null)

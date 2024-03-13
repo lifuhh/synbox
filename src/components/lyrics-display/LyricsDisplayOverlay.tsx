@@ -14,14 +14,6 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({ romajiEnabled }) => {
   const [firstLineIndex, setFirstLineIndex] = useState<number>(0)
   const [secondLineIndex, setSecondLineIndex] = useState<number>(1)
 
-  const lyricsTestA1 = '知りたいその秘密ミステリアス'
-  const lyricsTestA2 = 'shiritai sono himitsu misuteriasu'
-
-  const test = useMemo(
-    () => formatLyricsLineSrt(lyricsTestA1, lyricsTestA2),
-    []
-  )
-
   const placeholderLyric1 =
     '<ruby>無敵<rp>(</rp><rt>むてき</rt><rp>)</rp></ruby>の<ruby>笑顔<rp>(</rp><rt>えがお</rt><rp>)</rp></ruby>で<ruby>荒<rp>(</rp><rt>あ</rt><rp>)</rp></ruby>らすメディア . . . . . ♪'
   const placeholderLyric2 =

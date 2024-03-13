@@ -47,24 +47,13 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
 
   useEffect(() => {
     if (srtUploaded && txtUploaded) {
-      console.log('Both files uploaded. Performing validation...')
       // Your validation logic here
       const srtSize = currentParsedSrt.length
       const txtSize = currentParsedRomaji.length
 
       if (srtSize !== txtSize) {
-        console.log('Srt and txt file sizes do not match')
+        // console.log('Srt and txt file sizes do not match')
       }
-
-      // if (srtSize > txtSize) {
-      //   setTxtUploaded(false)
-      //   setTxtFileName('')
-      //   setParsedRomaji([])
-      // } else {
-      //   setSrtUploaded(false)
-      //   setSrtFileName('')
-      //   setParsedSrt([])
-      // }
 
       setMainParsedSrt(currentParsedSrt)
       setMainParsedRomaji(currentParsedRomaji)
@@ -85,15 +74,11 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
   ])
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log('This is accepted files')
-    console.log(acceptedFiles)
-    console.log(typeof acceptedFiles)
 
     acceptedFiles.forEach((file: File) => {
       const fileName = file.name
       const extension = fileName.split('.').pop()
       const trimmedFileName = trimLength(fileName, 30, true)
-      console.log('extension is: ' + extension)
 
       const reader = new FileReader()
 
@@ -107,14 +92,14 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
           setSrtUploaded(true)
           setCurrentParsedSrt(parsedContent)
           setSrtFileName(trimmedFileName)
-          console.log(parsedContent)
+
         } else if (extension == 'txt') {
-          console.log(content)
+
           const parsedContent = parseRomajiFile(content)
           setTxtUploaded(true)
           setCurrentParsedRomaji(parsedContent)
           setTxtFileName(trimmedFileName)
-          console.log("This is a txt file's content")
+
         }
       }
       reader.readAsText(file)
@@ -166,7 +151,7 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
   // }
 
   return (
-    <div>
+    <div className='h-72 border-4 border-slate-800'>
       <div
         {...getRootProps({ className: 'dropzone' })}
         className='cursor-pointer border-4 border-dark-4 h-48'>

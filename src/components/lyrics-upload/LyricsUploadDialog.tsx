@@ -23,6 +23,10 @@ const LyricsUploadDialog = () => {
   const [bothFilesUploaded, setBothFilesUploaded] = useState<boolean>(false)
   const [bothFilesNames, setBothFilesNames] = useState<string[]>([])
 
+  const [stageTwoLyrics, setStageTwoLyrics] = useState<{
+    [key: string]: string
+  }>({})
+
   const handlePreviousStep = () => {
     setLyricsUploadPhase((prevPhase) => prevPhase - 1)
   }
@@ -31,7 +35,7 @@ const LyricsUploadDialog = () => {
     setLyricsUploadPhase((prevPhase) => prevPhase + 1)
   }
 
-  let currentMainComponent, currentMainButton
+  let currentMainComponent, currentMainButton, currentDescription
 
   if (lyricsUploadPhase === 0) {
     currentMainComponent = (
@@ -51,11 +55,24 @@ const LyricsUploadDialog = () => {
         Next
       </Button>
     )
+
+    currentDescription =
+      'Upload a pair of lyrics (.srt) and romaji (.txt) files for processing'
   } else if (lyricsUploadPhase === 1) {
-    currentMainComponent = <LyricsUploadStageTwo />
+    currentMainComponent = (
+      <LyricsUploadStageTwo
+        mainParsedRomaji={mainParsedRomaji}
+        mainParsedSrt={mainParsedSrt}
+        setStageTwoLyrics={setStageTwoLyrics}
+      />
+    )
     currentMainButton = <Button onClick={handleNextStep}>Next</Button>
+
+    currentDescription = 'Check the lyrics against the romaji before proceeding'
   } else if (lyricsUploadPhase === 2) {
-    currentMainComponent = <LyricsUploadStageThree />
+    currentMainComponent = (
+      <LyricsUploadStageThree stageTwoLyrics={stageTwoLyrics} />
+    )
     currentMainButton = (
       <Button
         onClick={() => {}}
@@ -64,6 +81,8 @@ const LyricsUploadDialog = () => {
         Upload Lyrics
       </Button>
     )
+    currentDescription =
+      'Perform a final check on the generated lyrics code before uploading'
   }
 
   return (
@@ -73,10 +92,7 @@ const LyricsUploadDialog = () => {
           <DialogTitle>
             Upload Lyrics (Part {lyricsUploadPhase + 1})
           </DialogTitle>
-          <DialogDescription>
-            Upload a pair of lyrics (.srt) and romaji (.txt) files for
-            processing
-          </DialogDescription>
+          <DialogDescription>{currentDescription}</DialogDescription>
         </DialogHeader>
         {currentMainComponent}
         <DialogFooter>

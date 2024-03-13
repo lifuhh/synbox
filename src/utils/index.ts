@@ -9,7 +9,7 @@ import {
 } from '@/types'
 
 import {
-  japaneseToRomajiMap,
+  // japaneseToRomajiMap,
   romajiRegex,
   romajiToHiraganaMap,
 } from './charactersMap'
@@ -69,11 +69,9 @@ export function formatYoutubeSearchResponse(
 }
 
 export function trimLength(text: string, maxLength: number, trail: boolean) {
-
   const tooLong = text.length > maxLength
 
-  const editedText =
-    tooLong ? text.substring(0, maxLength) : text
+  const editedText = tooLong ? text.substring(0, maxLength) : text
 
   return trail ? (tooLong ? editedText + '...' : editedText) : editedText
 }
@@ -95,65 +93,58 @@ function pad(string: number) {
 
 //* LYRICS PROCESSING FUNCTIONS
 
+//! This is the core processing function
 //* Given '知りたいその秘密ミステリアス' and 'shiritai sono himitsu misuteriasu', returns the HTML for the lyrics w/ furigana
 export function formatLyricsLineSrt(lyric: string, romaji: string) {
-  let processedLyricsLine = ''
-  const [cleansedLyric, type, specialChar] = lyricSpecialCharacterRemover(lyric)
-
-  if (type === 2) {
-    processedLyricsLine += '「'
-  }
-
+  //? Generates ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"]
   const separatedLyrics =
-    splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(cleansedLyric)
-  const kanjiRomajiMatch = kanjiToRomajiMatcher(
+    splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(lyric)
+
+  //? Generates [ ["知", "shi"], ["秘密", "himitsu"] ]
+  const kanjiRomajiMatches = kanjiToRomajiMatcher(
     Array.from(separatedLyrics),
     romaji
   )
 
-  for (const lyricsChunk of separatedLyrics) {
-    console.log('This is lyricsChunk: ' + lyricsChunk)
-    if (!isKanji(lyricsChunk)) {
-      processedLyricsLine += lyricsChunk
-    } else {
-      const kanjiMatchingHiragana = getCorrespondingHiraganaFromList(
-        splitRomajiIntoSyllables(kanjiRomajiMatch[lyricsChunk])
-      )
+  let finalProcessedLyricsLine = ''
 
-      processedLyricsLine += generateRubySnippet(
-        lyricsChunk,
-        kanjiMatchingHiragana
-      )
+  for (const chunk of separatedLyrics) {
+    if (!isKanji(chunk)) {
+      finalProcessedLyricsLine += chunk
+    } else {
+      if (kanjiRomajiMatches.length > 0) {
+        const [kanji, romaji] = kanjiRomajiMatches.shift() as [string, string]
+
+        let hiraganaOfKanji
+
+        if (romaji.includes('EDITME_')) {
+          hiraganaOfKanji = getCorrespondingHiraganaFromList(
+            splitRomajiIntoSyllables(romaji.split('EDITME_')[1].toLowerCase())
+          )
+          finalProcessedLyricsLine += generateRubySnippet(
+            kanji,
+            hiraganaOfKanji,
+            true
+          )
+        } else {
+          hiraganaOfKanji = getCorrespondingHiraganaFromList(
+            splitRomajiIntoSyllables(romaji.toLowerCase())
+          )
+          finalProcessedLyricsLine += generateRubySnippet(
+            kanji,
+            hiraganaOfKanji,
+            false
+          )
+        }
+      } else {
+        finalProcessedLyricsLine += generateRubySnippet(chunk, 'FIXME', true)
+      }
     }
   }
-
-  return processedLyricsLine + specialChar
+  return finalProcessedLyricsLine
 }
 
-//Type: 0 - normal, 1 - ending special, 2 - wrapped with 「」, 3 - ending with ...
-function lyricSpecialCharacterRemover(lyric: string): [string, number, string] {
-  // Test for '?' and '!' and '、' and '。'
-  if (
-    /\?$/.test(lyric) ||
-    /!$/.test(lyric) ||
-    /、$/.test(lyric) ||
-    /。$/.test(lyric)
-  ) {
-    return [lyric.slice(0, -1), 1, lyric[lyric.length - 1]]
-  }
-  // Test for brackets
-  if (/^「.*」$/.test(lyric)) {
-    return [lyric.substring(1, lyric.length - 1), 2, '」']
-  }
-
-  const dotsMatch = lyric.match(/\.*$/)
-  if (dotsMatch && dotsMatch[0].length > 0) {
-    return [lyric.replace(/\.*$/, ''), 3, dotsMatch[0]] // Remove all trailing dots and return the matched dots
-  }
-  return [lyric, 0, '']
-}
-
-//* Given '知りたいその秘密ミステリアス', returns ["知", "りたいその", "秘密", "ミステリアス"]
+//* Given '出会い、共「に過ごし」てき、日々', returns ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"]
 function splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(
   lyrics: string
 ): string[] {
@@ -175,7 +166,15 @@ function splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(
         lyricsBlock.push(kanjiBuffer)
         kanjiBuffer = ''
       }
-      charBuffer += char
+      if (isJapSpecialCharacter(char)) {
+        if (charBuffer !== '') {
+          lyricsBlock.push(charBuffer)
+          charBuffer = ''
+        }
+        lyricsBlock.push(char)
+      } else {
+        charBuffer += char
+      }
     }
   }
 
@@ -188,75 +187,164 @@ function splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(
   return lyricsBlock
 }
 
-//? UNUSED FOR NOW: Given '知りたいその秘密ミステリアス', returns ["知", "ritaisono", "秘密", "misuteriasu"]
-// function splitLyricsIntoChunksSeparatingKanji(lyrics: string): string[] {
-
-//   //* First change lyrics into romaji wherever applicable
-//   const romajiLyrics = toRomaji(lyrics)
-
-//   let charBuffer = ''
-//   let kanjiBuffer = ''
-//   const lyricsBlock = []
-
-//   for (const char of romajiLyrics) {
-//     const charIsKanji = isKanji(char)
-
-//     if (charIsKanji) {
-//       if (charBuffer !== '') {
-//         lyricsBlock.push(charBuffer)
-//         charBuffer = ''
-//       }
-//       kanjiBuffer += char
-//     } else {
-//       if (kanjiBuffer !== '') {
-//         lyricsBlock.push(kanjiBuffer)
-//         kanjiBuffer = ''
-//       }
-//       charBuffer += char
-//     }
-//   }
-
-//   if (charBuffer !== '') {
-//     lyricsBlock.push(charBuffer)
-//   }
-//   if (kanjiBuffer !== '') {
-//     lyricsBlock.push(kanjiBuffer)
-//   }
-
-//   return lyricsBlock
-// }
-
-//* Given ["知", "ritaisono", "秘密", "misuteriasu"] and "shiritai sonohimitsumisuteriasu", returns {知: "shi", 秘密: "himitsu"}
+//? Given ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"] and romaji "deai itomo ni sugoshi teki hibi", returns [ ["出会", "deai"], ["共", "tomo"] ]
 function kanjiToRomajiMatcher(
   lyrics: string[],
   romaji: string
-): { [key: string]: string } {
+): [string, string][] {
   let nospaceRomaji = romaji.replace(/\s/g, '')
+  console.log('This is lyrics List')
+  console.log(lyrics)
+  console.log('This is nospace romaji: ')
+  console.log(nospaceRomaji)
 
   const lyricsList = lyrics
 
-  const kanjiRomajiMatch: { [key: string]: string } = {}
+  const kanjiRomajiMatches: [string, string][] = []
 
   while (lyricsList.length > 0) {
     const lyricsChunk = lyricsList.shift() as string
 
+    if (isJapSpecialCharacter(lyricsChunk)) {
+      continue
+    }
+
+    //! If chunk IS kanji
     if (isKanji(lyricsChunk)) {
+      console.log('This is kanji chunk: ' + lyricsChunk)
+
       if (lyricsList.length >= 1) {
-        // 1. Identify index of ending of kanji romaji
-        const nextLyricsChunk = toRomaji(lyricsList[0])
-        // 2. If current chunk is Kanji, next chunk can't be kanji
-        const nextLyricsChunkRegex = new RegExp(nextLyricsChunk, 'i')
-        const nextLyricsChunkIndex = nospaceRomaji.search(nextLyricsChunkRegex)
-        const kanjiMatchedChunk = nospaceRomaji.slice(0, nextLyricsChunkIndex)
-        kanjiRomajiMatch[lyricsChunk] = kanjiMatchedChunk
-        // 3. Slice off the matched romaji from nospaceRomaji
-        nospaceRomaji = nospaceRomaji.slice(nextLyricsChunkIndex)
+        let nextLyricsText = lyricsList[0]
+
+        while (isJapSpecialCharacter(nextLyricsText)) {
+          lyricsList.shift()
+          if (lyricsList.length === 0) {
+            nextLyricsText = 'END'
+          } else {
+            nextLyricsText = lyricsList[0]
+          }
+        }
+
+        const nextAllKanjiBuffer = []
+        //! Special processing - if situation is kanji + specialcharacter + kanji + kanji + nonkanji e.g. '今、静かな夜の中で'
+        if (isKanji(nextLyricsText)) {
+          nextAllKanjiBuffer.push(lyricsChunk)
+          //? After exiting this loop, nextLyricsText is either non-Kanji or "FIXME"
+          while (isKanji(nextLyricsText)) {
+            const nextImmediateKanji = lyricsList.shift() as string
+            nextAllKanjiBuffer.push(nextImmediateKanji)
+            if (lyricsList.length === 0) {
+              nextLyricsText = 'END_FIXME'
+            }
+            nextLyricsText = lyricsList[0]
+          }
+        }
+
+        //* Possible situations
+        //* 1. All normal, nextLyricsText is non-Kanji, nextAllKanjiBuffer is empty
+        //* 2. nextLyricsText = 'END', nextAllKanjiBuffer is empty, means only left with 1 kanji to match with remaining romaji
+        //* 3. nextLyricsText = 'END_FIXME', nextAllKanjiBuffer has kanji, means theres bunch of kanji to fix matching with remaining romaji
+        //* 4. nextAllKanjiBuffer has kanji, nextLyricsText is non-kanji, means theres a bunch of kanji to be matched with some romaji slice
+
+        if (nextLyricsText === 'END') {
+          //* Process case 2
+          if (nospaceRomaji.length == 0) {
+            kanjiRomajiMatches.push([lyricsChunk, 'EDITME_'])
+            continue
+          } else {
+            kanjiRomajiMatches.push([lyricsChunk, nospaceRomaji])
+          }
+        }
+        if (nextLyricsText === 'END_FIXME') {
+          //* Process case 3
+          for (const kanji of nextAllKanjiBuffer) {
+            if (nospaceRomaji.length == 0) {
+              kanjiRomajiMatches.push([kanji, 'EDITME_'])
+              continue
+            } else {
+              kanjiRomajiMatches.push([kanji, 'EDITME_' + nospaceRomaji])
+            }
+          }
+          if (nospaceRomaji.length == 0) continue
+        }
+
+        //* Process case 1 and 4
+        const nextLyricsChunkRomaji = adjustPronunciationInRomaji(
+          toRomaji(nextLyricsText)
+        )
+
+        console.log('This is next lyrics chunk: ' + nextLyricsChunkRomaji)
+
+        const nextLyricsChunkRomajiRegex = new RegExp(
+          nextLyricsChunkRomaji,
+          'i'
+        )
+
+        const match = nospaceRomaji.match(nextLyricsChunkRomajiRegex)
+
+        if (match && match.index !== undefined) {
+          let nextLyricsChunkRomajiIndex = match.index
+
+          const repeatedSyllableMatch = nospaceRomaji
+            .slice(nextLyricsChunkRomajiIndex)
+            .match(/^(\w+)\1/)
+          if (repeatedSyllableMatch) {
+            nextLyricsChunkRomajiIndex += repeatedSyllableMatch[0].length / 2 // Adjust to include the first instance of the repeated syllable if any
+          }
+
+          const kanjiMatchedRomajiChunk = nospaceRomaji.slice(
+            0,
+            nextLyricsChunkRomajiIndex
+          )
+
+          console.log('IMPORTANT')
+          console.log('This is kanji matched chunk: ' + kanjiMatchedRomajiChunk)
+
+          // let nextLyricsChunkRomajiIndex = nospaceRomaji.search(
+          //   nextLyricsChunkRomajiRegex
+          // )
+
+          // const repeatedSyllableMatch = nospaceRomaji
+          //   .slice(nextLyricsChunkRomajiIndex)
+          //   .match(/^(\w+)\1/)
+          // if (repeatedSyllableMatch) {
+          //   nextLyricsChunkRomajiIndex += repeatedSyllableMatch[0].length / 2 // Adjust to include the first instance of the repeated syllable if any
+          // }
+
+          // const kanjiMatchedRomajiChunk = nospaceRomaji.slice(
+          //   0,
+          //   nextLyricsChunkRomajiIndex
+          // )
+
+          // console.log('IMPORTANT')
+          // console.log('This is kanji matched chunk: ' + kanjiMatchedRomajiChunk)
+
+          if (nextAllKanjiBuffer.length > 0) {
+            for (const kanji of nextAllKanjiBuffer) {
+              kanjiRomajiMatches.push([
+                kanji,
+                'EDITME_' + kanjiMatchedRomajiChunk,
+              ])
+            }
+          } else {
+            kanjiRomajiMatches.push([lyricsChunk, kanjiMatchedRomajiChunk])
+          }
+
+          // 3. Slice off the matched romaji from nospaceRomaji
+          nospaceRomaji = nospaceRomaji.slice(nextLyricsChunkRomajiIndex)
+          console.log(
+            'This is post processing nospace romaji: ' + nospaceRomaji
+          )
+        }
       } else {
         // 2. If no more items in separatedLyrics, then the rest of the romaji is the romaji for the kanji
-        if (!(lyricsChunk in kanjiRomajiMatch)) {
-          kanjiRomajiMatch[lyricsChunk] = nospaceRomaji
+        if (nospaceRomaji.length == 0) {
+          kanjiRomajiMatches.push([lyricsChunk, 'EDITME_'])
+        } else {
+          kanjiRomajiMatches.push([lyricsChunk, nospaceRomaji])
         }
       }
+      //! if chunk is NOT kanji
     } else {
       // slice off length of romaji from romaji lyrics string
       const lyricsChunkRomaji = toRomaji(lyricsChunk)
@@ -264,11 +352,35 @@ function kanjiToRomajiMatcher(
       nospaceRomaji = nospaceRomaji.slice(lyricsChunkLength)
     }
   }
-  return kanjiRomajiMatch
+
+  console.log('This is kanji romaji match')
+  kanjiRomajiMatches.forEach((subArray) => {
+    console.log(subArray)
+  })
+  return kanjiRomajiMatches
 }
 
-function generateRubySnippet(kanji: string, hiragana: string): string {
-  if (hiragana == '') return kanji
+function adjustPronunciationInRomaji(romajiSubstring: string): string {
+  // Replace "ha" with a regex pattern that matches both "ha" and "wa"
+  let adjustedRomaji = romajiSubstring.replace(/ha/gi, '(ha|wa)')
+
+  // Similarly for "he" to match "he" or "e", and "wo" to match "wo" or "o"
+  adjustedRomaji = adjustedRomaji.replace(/he/gi, '(he|e)')
+  adjustedRomaji = adjustedRomaji.replace(/wo/gi, '(wo|o)')
+
+  return adjustedRomaji
+}
+
+function generateRubySnippet(
+  kanji: string,
+  hiragana: string,
+  error: boolean
+): string {
+  if (error) {
+    return `<ruby>${kanji}<rp>(</rp><rt>EDITME: ${hiragana}</rt><rp>)</rp></ruby>`
+  }
+  if (hiragana == '')
+    return `<ruby>${kanji}<rp>(</rp><rt>EDITME</rt><rp>)</rp></ruby>`
   return `<ruby>${kanji}<rp>(</rp><rt>${hiragana}</rt><rp>)</rp></ruby>`
 }
 
@@ -317,12 +429,28 @@ function getCorrespondingHiragana(romaji: string): string {
 
 //? Don't think need this actually but whatever
 //* Given "ひ", returns "hi"
-function getCorrespondingRomaji(characters: string): string {
-  return japaneseToRomajiMap[characters]
+// function getCorrespondingRomaji(characters: string): string {
+//   return japaneseToRomajiMap[characters]
+// }
+
+//* wanakana's isKanji will mark all these as false
+function isJapSpecialCharacter(char: string): boolean {
+  return (
+    char === '、' ||
+    char === '。' ||
+    char === '「' ||
+    char === '」' ||
+    char === '？' ||
+    char === '！' ||
+    char === ' ' ||
+    char === '『' ||
+    char === '』'
+  )
 }
 
 //* Lyrics Dropzone Helpers
-
+//! Stage One - parse Srt File into array of
+//! { index: number, startTime: string, endTime: string, text: string }
 export function parseSrt(srt: string): UploadedSrtLine[] {
   const subtitleBlocks = srt.trim().split(/\n\s*\n/)
   const subtitles = subtitleBlocks.map((subtitleBlock, index) => {
@@ -345,9 +473,44 @@ export function parseSrt(srt: string): UploadedSrtLine[] {
   return subtitles
 }
 
+//! Stage One - parse Romaji File into array of strings
 export function parseRomajiFile(fileContent: string): string[] {
   const lines = fileContent.split(/\r\n|\n/) // Split by newline characters to get lines
   const nonEmptyLines = lines.filter((line) => line.trim() !== '') // Filter out empty lines
 
   return nonEmptyLines
+}
+
+export function stageThreeKanjiPairExtractor(allLyrics: string[]): {
+  [key: string]: [string, string, number]
+} {
+  const kanjiPairs: {
+    [key: string]: [string, string, number]
+  } = {}
+  let uniqueId = 500
+
+  const pattern = /<ruby>(.*?)<rp>\(<\/rp><rt>(.*?)<\/rt><rp>\)<\/rp><\/ruby>/g
+
+  let match
+
+  for (let i = 0; i < allLyrics.length; i++) {
+    const currentLine = allLyrics[i]
+
+    while ((match = pattern.exec(currentLine)) !== null) {
+      // match[1] will contain the kanji part, match[2] will contain the hiragana part
+      let key = `${currentLine}___${i}`
+      if (key in kanjiPairs) {
+        key += uniqueId
+        uniqueId++
+      }
+      kanjiPairs[key] = [match[1], match[2], i]
+    }
+  }
+
+  return kanjiPairs
+}
+
+export function stageThreeKeyExtractor(key: string): string {
+  const parts = key.split('___')
+  return parts[0]
 }

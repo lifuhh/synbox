@@ -24,6 +24,40 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
   const [current, setCurrent] = useState(1)
   const [count, setCount] = useState(0)
 
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      // Different browsers have different properties for detecting fullscreen
+      const isFullscreenNow =
+        document.fullscreenElement ||
+        document.mozFullScreenElement ||
+        document.webkitFullscreenElement ||
+        document.msFullscreenElement
+      setIsFullscreen(!!isFullscreenNow)
+    }
+
+    // Add event listeners for different browsers
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange)
+
+    return () => {
+      // Make sure to remove the event listeners on component unmount
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener(
+        'webkitfullscreenchange',
+        handleFullscreenChange
+      )
+      document.removeEventListener(
+        'mozfullscreenchange',
+        handleFullscreenChange
+      )
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
+    }
+  }, [])
+
   useEffect(() => {
     if (!api) {
       return
@@ -102,8 +136,10 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
 
   const slidesNumber = items.length
 
+  //      className={`absolute bg-white shadow-md rounded-md grid gap-1 p-2 top-full left-0 z-50 w-full ${isOpen ? 'block' : 'hidden'} ${className || ''}`}
+
   return (
-    <div className='overflow-hidden'>
+    <div className={`overflow-hidden `}>
       <Carousel
         opts={{
           loop: true,
@@ -113,17 +149,12 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
         }}
         setApi={setApi}
         plugins={[Autoplay()]}>
-        <CarouselContent className='-ml-3'>
+          {/* //TODO: need to move this carousel down when fullscreened, current fix doesnt work */}
+        <CarouselContent className={`-ml-3 ${isFullscreen ? ' mt-40' : ''}`}>
           {items.map((item, itemIndex) => (
-            // <CarouselItem
-            //   key={itemIndex}
-            //   className='basis-1/3 px-3 border-4 border-sky-500'>
-            //   <h1>{item.title.slice(5, 10)}</h1>
-            // </CarouselItem>
-
             <CarouselItem
               key={itemIndex}
-              className='md:basis-1/2 lg:basis-1/3 md:px-3'>
+              className='md:basis-1/2 xl:basis-1/3 md:px-3'>
               <HomeCarouselItem
                 opacity={1}
                 index={itemIndex + 1}

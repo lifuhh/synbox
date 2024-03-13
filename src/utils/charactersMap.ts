@@ -1,3 +1,6 @@
+export const romajiRegex: RegExp =
+  /([kgszjtdhfbpmyrwn]?[aiueo])|([sc]h[ieuo])|([kstnhmrw]y[aiueo])|n(?![aeiouy]|$)|shi|chi|tsu|ji|([kgszjtdhfbpmyrwn]'?[aiueo])|([kgszjtdhfbpmyrwn]?y[aiueo])/gi
+
 export const romajiToHiraganaMap: Record<string, string> = {
   '-': 'っ',
   a: 'あ',
@@ -97,8 +100,11 @@ export const romajiToHiraganaMap: Record<string, string> = {
   gyu: 'ぎゅ',
   gyo: 'ぎょ',
   jya: 'じゃ',
+  ja: 'じゃ',
   jyu: 'じゅ',
+  ju: 'じゅ',
   jyo: 'じょ',
+  jo: 'じょ',
   bya: 'びゃ',
   byu: 'びゅ',
   byo: 'びょ',
@@ -294,5 +300,3 @@ export const japaneseToRomajiMap: Record<string, string> = {
   ピュ: 'pyu',
   ピョ: 'pyo',
 }
-
-export const romajiRegex: RegExp = /n(?![aeiou]|$)|([kgszjtdhfbpmyrwn]?[aiueo])|([sc]h[auo])|([kstnhmrw]y[aiueo])|shi|chi|tsu|([kgszjtdhfbpmyrwn]?y[aiueo])/g;
