@@ -99,7 +99,7 @@ const SongHighlightCarousel = () => {
     api.on('select', () => {
       // Adjusted logic to ensure the middle card is considered as the current card
       // This might involve calculating the index based on your carousel's specific implementation details
-      const newIndex = api.selectedScrollSnap() + 1 - 1 // Adjusted to account for the middle card
+      const newIndex = api.selectedScrollSnap()
       setCurrent(newIndex)
     })
     // Add wheel event listener to the Embla container
@@ -116,13 +116,11 @@ const SongHighlightCarousel = () => {
   }, [api])
 
   return (
-    <div
-      ref={carouselRef}
-      className='w-full sm:w-2/3 lg:w-8/12 h-96 mt-8 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
+    <div className='w-full lg:w-7/12 h-96 mt-8 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
       {isPlaylistDataFetching && !playlistData ? (
         <Loader />
       ) : (
-        <div className={`overflow-hidden`}>
+        <div ref={carouselRef} className={`overflow-hidden`}>
           <Carousel
             opts={{
               loop: true,
@@ -138,7 +136,11 @@ const SongHighlightCarousel = () => {
                 ? playlistData.map((item, itemIndex) => (
                     <CarouselItem
                       key={itemIndex}
-                      className='lg:basis-2/5 lg:px-3'>
+                      className={`
+                       sm:basis-2/5
+                      sm:px-3
+                      ${current == itemIndex ? 'z-30' : 'z-10'}
+                      `}>
                       <SongHighlightCarouselItem
                         opacity={1}
                         index={itemIndex + 1}
@@ -150,8 +152,8 @@ const SongHighlightCarousel = () => {
                   ))
                 : ''}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            {/* <CarouselPrevious />
+            <CarouselNext /> */}
           </Carousel>
         </div>
       )}

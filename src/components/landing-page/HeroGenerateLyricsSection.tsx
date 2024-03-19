@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import { Spotlight } from '../ui/Spotlight'
 
-const GenerateLyricsInput = () => {
+const HeroGenerateLyricsSection = () => {
   return (
     <section className='lyrics-generator px-4 mt-2'>
       <div className='md:h-[25rem] w-full rounded-md flex items-top md:justify-center pt-10 bg-dark-1/[0.15] antialiased bg-grid-white/[0.90] relative  overflow-hidden'>
@@ -28,14 +28,14 @@ const GenerateLyricsInput = () => {
               variant='default'
               role='combobox'
               className='w-[120px] py-6 border-2 border-primary-500/40 hover:border-primary-500/90 hover:bg-gray-200/20'>
-              Generate Lyrics
+              Sing This!
             </Button>
           </div>
-          <p className='w-full sm:w-4/5 mt-4 font-normal text-base text-neutral-300 no-select max-w-3xl text-center mx-auto'>
-            Spotlight effect is a great way to draw attention to a specific part
-            of the page. Here, we are drawing the attention towards the text
-            section of the page. I don&apos;t know why but I&apos;m running out
-            of copy.
+          <p className='w-full sm:w-4/5 mt-4 font-normal text-base text-neutral-300 no-select max-w-7xl text-center mx-auto'>
+            Paste a YouTube link to get started! If the video has no available
+            lyrics yet, Synbox will leverage OpenAI's automatic speech
+            recognition system, Whisper, to generate karaoke lyrics, romaji
+            pronunciations, and various translations for you to sing along with.
           </p>
         </div>
       </div>
@@ -48,4 +48,4 @@ const GenerateLyricsInput = () => {
     </section>
   )
 }
-export default GenerateLyricsInput
+export default HeroGenerateLyricsSection

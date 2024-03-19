@@ -13,7 +13,7 @@ const TopBar = () => {
   return (
     // <section className='topbar sticky top-0 bg'>
     <section className='topbar sticky top-0 z-100'>
-      <nav className='flex-between h-14 w-full bg-dark-1 bg-opacity-80'>
+      <nav className='flex-between h-14 w-full bg-dark-1 bg-opacity-80 pt-2'>
         <AppLogo />
         {/* <div className='flex-end pb-2 justify-end lg:gap-2 w-48'>
           <AccountBoxIcon

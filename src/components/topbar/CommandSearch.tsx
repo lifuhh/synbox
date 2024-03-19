@@ -17,6 +17,14 @@ import { Button } from '../ui/button'
 const CommandSearch = () => {
   const [open, setOpen] = useState(false)
 
+  const handleCommandItemClick = () => {
+    console.log('waw clicked command')
+  }
+
+  const handleCommandItemNavigate = (videoId: string) => {
+    console.log('waw clicked command item: ' + videoId)
+  }
+
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
@@ -52,15 +60,34 @@ const CommandSearch = () => {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading='Suggestions'>
-            <CommandItem>YOASOBI</CommandItem>
-            <CommandItem>Ado</CommandItem>
-            <CommandItem>VAUNDY</CommandItem>
+            <CommandItem
+              className='cursor-pointer hover:bg-white/20'
+              onSelect={() => handleCommandItemNavigate('YOASOBI')}>
+              YOASOBI
+            </CommandItem>
+            <CommandItem
+              className='cursor-pointer hover:bg-white/20'
+              onSelect={handleCommandItemClick}>
+              Ado
+            </CommandItem>
+            <CommandItem
+              className='cursor-pointer hover:bg-white/20'
+              onSelect={handleCommandItemClick}>
+              VAUNDY
+            </CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading='Settings'>
             <CommandItem>Profile</CommandItem>
             <CommandItem>Billing</CommandItem>
             <CommandItem>Settings</CommandItem>
+            <CommandItem
+              className='cursor-pointer hover:bg-white/20'
+              onSelect={handleCommandItemClick}>
+              Highlights
+            </CommandItem>
+            <CommandItem>Videos</CommandItem>
+            <CommandItem>Command Line</CommandItem>
           </CommandGroup>
         </CommandList>
       </CommandDialog>
