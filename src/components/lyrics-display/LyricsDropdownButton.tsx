@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu'
 import { useState } from 'react'
-import LyricsUploadDialog from '../lyrics-upload/LyricsUploadDialog'
+import LyricsUploadDialog from '../generate-lyrics/LyricsUploadDialog'
 import { Dialog, DialogTrigger } from '../ui/dialog'
 
 type Checked = DropdownMenuCheckboxItemProps['checked']

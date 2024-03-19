@@ -139,7 +139,7 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
   //      className={`absolute bg-white shadow-md rounded-md grid gap-1 p-2 top-full left-0 z-50 w-full ${isOpen ? 'block' : 'hidden'} ${className || ''}`}
 
   return (
-    <div className={`overflow-hidden `}>
+    <div className={`overflow-hidden`}>
       <Carousel
         opts={{
           loop: true,
@@ -149,12 +149,10 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
         }}
         setApi={setApi}
         plugins={[Autoplay()]}>
-          {/* //TODO: need to move this carousel down when fullscreened, current fix doesnt work */}
+        {/* //TODO: need to move this carousel down when fullscreened, current fix doesnt work */}
         <CarouselContent className={`-ml-3 ${isFullscreen ? ' mt-40' : ''}`}>
           {items.map((item, itemIndex) => (
-            <CarouselItem
-              key={itemIndex}
-              className='md:basis-1/2 xl:basis-1/3 md:px-3'>
+            <CarouselItem key={itemIndex} className='lg:basis-2/5 lg:px-3'>
               <HomeCarouselItem
                 opacity={1}
                 index={itemIndex + 1}

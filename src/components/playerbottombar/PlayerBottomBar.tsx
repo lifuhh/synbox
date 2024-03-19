@@ -16,6 +16,7 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import SubtitlesIcon from '@mui/icons-material/Subtitles'
 import SubtitlesOffIcon from '@mui/icons-material/SubtitlesOff'
+import React from 'react'
 import VolumeControl from './VolumeControl'
 
 interface PlayerBottomBarProps {
@@ -219,4 +220,4 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   )
 }
 
-export default PlayerBottomBar
+export default React.memo(PlayerBottomBar)

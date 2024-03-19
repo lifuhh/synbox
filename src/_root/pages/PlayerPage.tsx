@@ -22,6 +22,9 @@ const PlayerPage = () => {
   const [duration, setDuration] = useState<number>(0)
   const playerRef = useRef<BaseReactPlayer<ReactPlayer> | null>(null)
 
+  const testRafId = useRef<number>(0)
+  const testCounter = useRef<number>(0)
+
   //* Lyrics-related state
   const [romajiEnabled, setRomajiEnabled] = useState<boolean>(true)
   const [lyricsVisibility, setLyricsVisibility] = useState<boolean>(true)
@@ -61,41 +64,80 @@ const PlayerPage = () => {
     setLyricsVisibility(visibility)
   }, [])
 
-  const handlePlay = () => {
+  const handlePlay = useCallback(() => {
     console.log('onPlay')
     setPlaying(true)
-  }
+    // setTestStartTime(performance.now())
+  }, [])
 
-  const handlePause = () => {
+  useEffect(() => {
+    //! RAF gives a timestamp actually
+    const testAnimationFrameCallback = (timestamp: number) => {
+      // console.log(timestamp)
+      testCounter.current++
+      if (playerRef.current) {
+        const videoPlayedTime = playerRef.current.getCurrentTime().toFixed(3)
+        if (testCounter.current % 60 === 0) console.log({ videoPlayedTime })
+
+        testRafId.current = requestAnimationFrame(testAnimationFrameCallback)
+      }
+    }
+
+    if (playing) {
+      testRafId.current = requestAnimationFrame(testAnimationFrameCallback)
+    } else {
+      cancelAnimationFrame(testRafId.current)
+    }
+
+    return () => {
+      cancelAnimationFrame(testRafId.current)
+    }
+  }, [playing])
+
+  const handlePause = useCallback(() => {
     console.log('onPause')
     setPlaying(false)
+  }, [])
+
+  const handleStart = () => {
+    console.log('video started playing')
+    console.log(performance.now())
   }
 
-  const handleSeekChange = (value: number) => {
-    const newPlayedTime = parseInt((value * duration).toFixed(0))
+  const handleSeekChange = useCallback(
+    (value: number) => {
+      const newPlayedTime = parseInt((value * duration).toFixed(0))
 
-    setPlayed(newPlayedTime)
-    if (playerRef.current) {
-      playerRef.current.seekTo(newPlayedTime)
-    }
-  }
+      setPlayed(newPlayedTime)
+      if (playerRef.current) {
+        playerRef.current.seekTo(newPlayedTime)
+      }
+    },
+    [duration]
+  )
 
-  const handleSeekMouseDown = () => {
+  const handleSeekMouseDown = useCallback(() => {
     // Implementation for seeking if needed
     setSeeking(true)
-  }
+  }, [])
 
-  const handleSeekMouseUp = (e: React.MouseEvent<HTMLInputElement>) => {
-    if (playerRef.current) {
-      setSeeking(false)
-      playerRef.current.seekTo(parseFloat(e.currentTarget.value))
-    }
-  }
+  const handleSeekMouseUp = useCallback(
+    (e: React.MouseEvent<HTMLInputElement>) => {
+      if (playerRef.current) {
+        setSeeking(false)
+        playerRef.current.seekTo(parseFloat(e.currentTarget.value))
+      }
+    },
+    []
+  )
 
-  const handleProgress = () => {
+  const handleProgress = useCallback(() => {
     if (!playerRef.current) return null
 
     const secondsLapsed = playerRef.current.getCurrentTime()
+
+    //? This fires every second
+    // console.log({ secondsLapsed })
 
     const curPlayed = Math.floor(parseInt(secondsLapsed.toFixed(0)))
 
@@ -103,12 +145,12 @@ const PlayerPage = () => {
 
     setPlayed(curPlayed)
     // setLoaded(loaded)
-  }
+  }, [])
 
   //* When ended, go to next track [to be implemented]
   const handleEnded = () => {
     console.log('onEnded')
-    // setPlaying(loop)
+    setPlaying(loop)
   }
 
   const handleDuration = (duration: number) => {
@@ -132,6 +174,7 @@ const PlayerPage = () => {
             handlePlay={handlePlay}
             handleProgress={handleProgress}
             handleDuration={handleDuration}
+            handleStart={handleStart}
           />
         )}
       </div>

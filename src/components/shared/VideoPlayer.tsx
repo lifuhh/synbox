@@ -10,6 +10,8 @@ interface VideoPlayerProps {
   handlePlay: () => void
   handleDuration: (duration: number) => void
   handleProgress: () => void
+  handleStart: () => void
+  handleEnded: () => void
   playerRef: ForwardedRef<ReactPlayer>
   // Add methods for handling playback control (play, pause, seek)
   // and volume control (setVolume, toggleMute)
@@ -20,16 +22,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   loop,
   playing,
   handlePlay,
+  handleEnded,
+  handleStart,
   handleDuration,
   handleProgress,
   volume,
   muted,
   playerRef,
 }) => {
-  const handleEnded = () => {
-    console.log('onEnded')
-  }
-
   // const handlePlayerReady = () => {}
 
   const handlePause = () => {
@@ -54,14 +54,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         }}
         width='100%'
         height='100%'
-        url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3`}
+        url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3&rel=0`}
         muted={muted}
         volume={volume}
         playing={playing}
         loop={loop}
         controls={false}
         onReady={handleReady}
-        onStart={() => console.log('onStart')}
+        onStart={handleStart}
         onPlay={handlePlay}
         onSeek={(e) => console.log('onSeek', e)}
         onEnded={handleEnded}
