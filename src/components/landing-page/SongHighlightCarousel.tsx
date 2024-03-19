@@ -1,3 +1,5 @@
+import Loader from '@/components/shared/Loader'
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Carousel,
@@ -9,56 +11,34 @@ import {
 } from '@/components/ui/carousel'
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import Autoplay from 'embla-carousel-autoplay'
-import { useEffect, useState } from 'react'
-import BottomBar from '../shared/BottomBar'
-import HomeCarouselItem from './HomeCarouselItem'
+import { useEffect, useRef, useState } from 'react'
+
+import { useLockBodyScrollOnHover } from '@/hooks/useLockScrollOnHover'
+import { useGetLandingPagePlaylist } from '@/lib/react-query/queriesAndMutations'
+import SongHighlightCarouselItem from './SongHighlightCarouselItem'
 
 Autoplay.globalOptions = { delay: 4000 }
 
-type HomeCarouselProps = {
-  items: formattedYoutubeVideoItemForCarousel[]
-}
+const SongHighlightCarousel = () => {
+  const { data: playlistData, isLoading: isPlaylistDataFetching } =
+    useGetLandingPagePlaylist()
 
-const HomeCarousel = ({ items }: HomeCarouselProps) => {
+  const slidesNumber = playlistData?.length
+
+  const carouselRef = useRef<HTMLDivElement>(null)
+
+  const preventPageScroll = (event: WheelEvent): void => {
+    event.preventDefault()
+  }
+
+  //* UseEffect to prevent page from scrolling when user hovers over the carousel
+  useLockBodyScrollOnHover(carouselRef, 640)
+
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [current, setCurrent] = useState(1)
   const [count, setCount] = useState(0)
 
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
-
-  //* UseEffect for full screen mode
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      // Different browsers have different properties for detecting fullscreen
-      const isFullscreenNow =
-        document.fullscreenElement ||
-        document.mozFullScreenElement ||
-        document.webkitFullscreenElement ||
-        document.msFullscreenElement
-      setIsFullscreen(!!isFullscreenNow)
-    }
-
-    // Add event listeners for different browsers
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange)
-
-    return () => {
-      // Make sure to remove the event listeners on component unmount
-      document.removeEventListener('fullscreenchange', handleFullscreenChange)
-      document.removeEventListener(
-        'webkitfullscreenchange',
-        handleFullscreenChange
-      )
-      document.removeEventListener(
-        'mozfullscreenchange',
-        handleFullscreenChange
-      )
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
-    }
-  }, [])
-
+  //* UseEffect for Carousel Animations (Embla specified)
   useEffect(() => {
     if (!api) {
       return
@@ -135,40 +115,47 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
     }
   }, [api])
 
-  const slidesNumber = items.length
-
-  //      className={`absolute bg-white shadow-md rounded-md grid gap-1 p-2 top-full left-0 z-50 w-full ${isOpen ? 'block' : 'hidden'} ${className || ''}`}
-
   return (
-    <div className={`overflow-hidden`}>
-      <Carousel
-        opts={{
-          loop: true,
-          dragFree: true,
-          containScroll: 'trimSnaps',
-          startIndex: 1,
-        }}
-        setApi={setApi}
-        plugins={[Autoplay()]}>
-        {/* //TODO: need to move this carousel down when fullscreened, current fix doesnt work */}
-        <CarouselContent className={`-ml-3 ${isFullscreen ? ' mt-40' : ''}`}>
-          {items.map((item, itemIndex) => (
-            <CarouselItem key={itemIndex} className='lg:basis-2/5 lg:px-3'>
-              <HomeCarouselItem
-                opacity={1}
-                index={itemIndex + 1}
-                currentIndex={current}
-                itemCount={slidesNumber}
-                item={item}
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+    <div
+      ref={carouselRef}
+      className='w-full sm:w-2/3 lg:w-8/12 h-96 mt-8 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
+      {isPlaylistDataFetching && !playlistData ? (
+        <Loader />
+      ) : (
+        <div className={`overflow-hidden`}>
+          <Carousel
+            opts={{
+              loop: true,
+              dragFree: true,
+              containScroll: 'trimSnaps',
+              startIndex: 1,
+            }}
+            setApi={setApi}
+            plugins={[Autoplay()]}>
+            {/* //TODO: need to move this carousel down when fullscreened, current fix doesnt work */}
+            <CarouselContent className={`-ml-3`}>
+              {slidesNumber && playlistData
+                ? playlistData.map((item, itemIndex) => (
+                    <CarouselItem
+                      key={itemIndex}
+                      className='lg:basis-2/5 lg:px-3'>
+                      <SongHighlightCarouselItem
+                        opacity={1}
+                        index={itemIndex + 1}
+                        currentIndex={current}
+                        itemCount={slidesNumber}
+                        item={item}
+                      />
+                    </CarouselItem>
+                  ))
+                : ''}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
+      )}
     </div>
   )
 }
-
-export default HomeCarousel
+export default SongHighlightCarousel

@@ -127,6 +127,13 @@
     font-family: 'Noto Sans JP', sans-serif;
   }
 
+  .no-select {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+  }
+
   .font_noto_sans_jp_black_900 {
     font-family: 'Noto Sans JP', sans-serif;
     font-weight: 900;
