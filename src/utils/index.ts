@@ -38,7 +38,12 @@ export function formatYoutubePlaylistResponse(
       }
     }
   )
-  return items
+
+  const shuffledResults = shuffleArray(
+    items
+  ) as formattedYoutubeVideoItemForCarousel[]
+
+  return shuffledResults.slice(0, 20)
 }
 
 export function formatYoutubeSearchResponse(
@@ -513,4 +518,39 @@ export function stageThreeKanjiPairExtractor(allLyrics: string[]): {
 export function stageThreeKeyExtractor(key: string): string {
   const parts = key.split('___')
   return parts[0]
+}
+
+export const extractVideoId = (youtubeUrl: string): string | null => {
+  // Regular expression for finding a YouTube video ID in various URL formats
+  const videoIdPattern =
+    /(?:v=|\/)([0-9A-Za-z_-]{11})|youtu\.be\/([0-9A-Za-z_-]{11})/
+
+  const match = youtubeUrl.match(videoIdPattern)
+  if (match) {
+    // Check which group has the match
+    const videoId = match[1] ? match[1] : match[2]
+
+    // Further validation if the video ID is part of a query string
+    const parsedUrl = new URL(youtubeUrl)
+    const queryParams = parsedUrl.searchParams
+    // This check ensures that 'v' parameter is present and the videoId is from the 'v' parameter
+    if (queryParams.has('v') && videoId === queryParams.get('v')) {
+      return videoId
+    }
+
+    // If the video ID didn't come from the 'v' parameter but was successfully extracted
+    if (videoId) {
+      return videoId
+    }
+  }
+
+  return null
+}
+
+export const shuffleArray = (array: unknown[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
 }

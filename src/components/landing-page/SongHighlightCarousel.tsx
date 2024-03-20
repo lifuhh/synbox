@@ -27,7 +27,6 @@ const SongHighlightCarousel = () => {
 
   const carouselRef = useRef<HTMLDivElement>(null)
 
-
   //* UseEffect to prevent page from scrolling when user hovers over the carousel
   useLockBodyScrollOnHover(carouselRef, 640)
 
@@ -137,7 +136,7 @@ const SongHighlightCarousel = () => {
   )
 
   return (
-    <div className='w-full lg:w-7/12 xl:w-8/12 h-96 mt-2 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
+    <div className='w-full lg:w-7/12 h-96 mt-2 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
       {isPlaylistDataFetching && !playlistData ? (
         <Loader />
       ) : (

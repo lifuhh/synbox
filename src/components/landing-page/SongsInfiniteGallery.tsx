@@ -1,5 +1,5 @@
 import { Spotlight } from '../ui/Spotlight'
-import { HoverEffect } from '../ui/card-hover-effect'
+import { HoverEffect } from './HoverEffect'
 
 const sample_data = [
   {

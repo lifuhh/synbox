@@ -1,9 +1,5 @@
-import LyricsUploadDialog from '@/components/generate-lyrics/LyricsUploadDialog'
-import { Center, Container } from '@mantine/core'
-
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import HeroGenerateLyricsSection from '@/components/generate-lyrics/HeroGenerateLyricsSection'
 import { useEffect, useState } from 'react'
 
 const TestPage = () => {
@@ -14,16 +10,15 @@ const TestPage = () => {
   const videoId = 'gNieKej1GAM'
 
   const startTranscription = async () => {
-    const existingTaskID = localStorage.getItem('taskID');
+    const existingTaskID = localStorage.getItem('taskID')
     if (existingTaskID) {
-      alert("A task is already in progress. Please wait for it to complete.");
-      return;
+      alert('A task is already in progress. Please wait for it to complete.')
+      return
     }
     // const receivedTaskID = await callYourApiToStartTranscription(videoUrl);
-    localStorage.setItem('taskID', receivedTaskID);
+    localStorage.setItem('taskID', receivedTaskID)
     setTaskID(receivedTaskID) // Update the taskID state, triggering the useEffect hook
   }
-
 
   useEffect(() => {
     const savedTaskID = localStorage.getItem('taskID')
@@ -40,8 +35,8 @@ const TestPage = () => {
     eventSource.onmessage = function (event) {
       const data = JSON.parse(event.data)
       if (data.status === 'Completed') {
-        localStorage.removeItem('taskID'); // Remove taskID from localStorage
-        setTaskID(null); // Reset the state
+        localStorage.removeItem('taskID') // Remove taskID from localStorage
+        setTaskID(null) // Reset the state
         console.log('Transcription Completed')
         // Handle completion (e.g., notify user, fetch results)
         eventSource.close()
@@ -69,26 +64,10 @@ const TestPage = () => {
 
   // console.log({ videoId })
 
-
   return (
-    // <div className='absolute top-1/6 left-0 w-full h-8/10 z-40 '>
-
-    <Container fluid={true} className=' min-h-96 flex '>
-      <div className='bg-blue-500'>
-        <Button variant='ghost' onClick={startTranscription}>
-          Test Socket
-        </Button>
-        {progress && <div>Progress: {progress}%</div>}
-      </div>
-      <Center className=''>
-        <Dialog open={true}>
-          <DialogTrigger asChild>
-            <Button variant='outline'>Test Dialog</Button>
-          </DialogTrigger>
-          <LyricsUploadDialog />
-        </Dialog>
-      </Center>
-    </Container>
+    <div className='flex mx-auto my-auto align-middle '>
+      <HeroGenerateLyricsSection />
+    </div>
   )
 }
 export default TestPage

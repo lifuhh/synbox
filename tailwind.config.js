@@ -23,18 +23,17 @@ module.exports = {
     extend: {
       colors: {
         background: '#30011E',
-        primary: '#C2185B',
-        'primary-500': '#C2185B', // Magenta shade for primary action items
-        'primary-600': '#AD1457', // A darker magenta for hover states or active items
-        secondary: '#FF80AB', // A lighter magenta for secondary buttons or highlights
-        'secondary-500': '#FF80AB', // A lighter magenta for secondary buttons or highlights
+        primary: '#CA195F',
+        'primary-500': '#B51054', // Magenta shade for primary action items
+        'primary-600': '#9F0048', // A darker magenta for hover states or active items
+        secondary: '#E74E8A', // A lighter magenta for secondary buttons or highlights
+        'secondary-500': '#E43478', // A lighter magenta for secondary buttons or highlights
         'off-white': '#F8F0FB', // An off-white with a hint of magenta for backgrounds
-        red: '#FF5A5A', // You can keep the red if it's part of your palette or adjust it to fit the magenta theme
         'dark-1': '#30011E', // A very dark magenta for text or backgrounds
         'dark-2': '#440229', // A slightly lighter dark magenta
         'dark-3': '#560231', // Even lighter, for surfaces and components
         'dark-4': '#69023A', // A medium dark magenta for lower-contrast elements
-        'light-1': '#FFFFFF', // Pure white for contrast against magenta shades
+        'light-1': '#FFEAF4', // Pure white for contrast against magenta shades
         'light-2': '#FBE9F6', // Light magenta for subtle backgrounds
         'light-3': '#D05D8F', // A mid-light magenta for less prominent UI elements
         'light-4': '#E1BEE7', // A pale magenta for hover states or disabled elements

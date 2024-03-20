@@ -1,3 +1,7 @@
+//! THIS FILE IS TO BE DELETED
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DialogContent,
   DialogDescription,
@@ -6,12 +10,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { UploadedSrtLine } from '@/types'
-
 import { Button, Stepper } from '@mantine/core'
-
 import { useState } from 'react'
-import GenerateLyricsButton from './GenerateLyricsButton'
-import GeneratedResultsDisplay from './GeneratedResultsDisplay'
 
 //* This component should manage the state and decide what to display
 const LyricsUploadDialog = () => {
@@ -36,9 +36,19 @@ const LyricsUploadDialog = () => {
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<any>(null)
 
-  const firstApiCall = async () => {}
-  const secondApiCall = async (firstResult: any) => {}
-  const thirdApiCall = async (secondResult: any) => {}
+  async function firstApiCall(): Promise<string> {
+    // Do some asynchronous operation to get the lyrics
+    const lyrics = 'some lyrics'
+    return lyrics
+  }
+  const secondApiCall = async (firstResult: any) => {
+    const lyrics = 'some lyrics'
+    return lyrics
+  }
+  const thirdApiCall = async (secondResult: any) => {
+    const lyrics = 'some lyrics'
+    return lyrics
+  }
 
   const updateProgressStep = () =>
     setLyricsGenerationStep((current) => (current < 3 ? current + 1 : current))
@@ -60,27 +70,27 @@ const LyricsUploadDialog = () => {
       const lyrics = await firstApiCall()
       if (lyrics) {
         setHasGeneratedLyrics(true)
-        setGeneratedLyrics(lyrics)
+        // setGeneratedLyrics(lyrics)
       }
       updateProgressStep()
       // Make the second API call using the result from the first call
       const romaji = await secondApiCall(lyrics)
       if (romaji) {
         setHasGeneratedRomaji(true)
-        setGeneratedRomaji(romaji)
+        // setGeneratedRomaji(romaji)
       }
       updateProgressStep()
       // Make the third API call using the result from the second call
       const translationEN = await thirdApiCall(lyrics)
       if (translationEN) {
         setHasGeneratedTranslationsEN(true)
-        setGeneratedTranslationsEN(translationEN)
+        // setGeneratedTranslationsEN(translationEN)
       }
 
       const translationCH = await thirdApiCall(lyrics)
       if (translationCH) {
         setHasGeneratedTranslationsCH(true)
-        setGeneratedTranslationsCH(translationCH)
+        // setGeneratedTranslationsCH(translationCH)
       }
       updateProgressStep()
     } catch (err) {
@@ -90,65 +100,17 @@ const LyricsUploadDialog = () => {
     }
   }
 
-  if (lyricsGenerationStep === 0) {
-    currentMainComponent = (
-      <GenerateLyricsButton handleButtonClick={handleButtonClick} />
-    )
-  } else if (lyricsGenerationStep === 1) {
-    currentMainComponent = (
-      <GeneratedResultsDisplay
-        hasGeneratedLyrics={hasGeneratedLyrics}
-        hasGeneratedRomaji={hasGeneratedRomaji}
-        hasGeneratedTranslationsEN={hasGeneratedTranslationsEN}
-        hasGeneratedTranslationsCH={hasGeneratedTranslationsCH}
-        generatedLyrics={generatedLyrics}
-        generatedRomaji={generatedRomaji}
-        generatedTranslationsEN={generatedTranslationsEN}
-        generatedTranslationsCH={generatedTranslationsCH}
-      />
-    )
-    currentProgress = 'Generating Lyrics...'
-  } else if (lyricsGenerationStep === 2) {
-    currentMainComponent = <h1>Stage {lyricsGenerationStep}</h1>
-
-    currentProgress = 'Generating romaji...'
-  } else if (lyricsGenerationStep === 3) {
-    currentMainComponent = <h1>Stage {lyricsGenerationStep}</h1>
-
-    currentProgress = 'Generating Translations...'
-  }
-
   return (
     <>
-      <DialogContent className='h-2/3 sm:max-w-[700px] '>
+      <DialogContent className='h-2/3 sm:max-w-[40em] '>
         <DialogHeader>
-          <DialogTitle >
-            <Stepper
-              active={lyricsGenerationStep}
-              onStepClick={setLyricsGenerationStep}
-              allowNextStepsSelect={false}
-              color='pink'>
-              <Stepper.Step label='Start' description='Lyrics'>
-                Click the button to let us work the magic!
-              </Stepper.Step>
-              <Stepper.Step label='Generating' description='Translations'>
-                Step 1: Generating Lyrics and Timestamps
-              </Stepper.Step>
-              <Stepper.Step label='Step 2' description='Uploading to Database'>
-                Step 3: Generate and create translations
-              </Stepper.Step>
-              <Stepper.Completed>
-                Completed! Close the dialog and enjoy!
-                {/* DISPLAY SUCCESS UPLOAD / FAILED UPLOAD INFO */}
-              </Stepper.Completed>
-            </Stepper>
-          </DialogTitle>
+          <DialogTitle>Placeholder Title</DialogTitle>
           <DialogDescription>{headerDescription}</DialogDescription>
         </DialogHeader>
-        {currentMainComponent}
+        <div>Placeholder Content</div>
         <DialogFooter>
           <div className='flex flex-between flex-col align-middle'>
-            {currentProgress}
+            Placeholder Footer
           </div>
         </DialogFooter>
       </DialogContent>

@@ -48,7 +48,7 @@ const PopularSongsTable = () => {
         verticalSpacing='xs'
         highlightOnHover
         className=' bg-dark-3 bg-opacity-15 '>
-        <Table.Thead className=' bg-dark-4'>
+        <Table.Thead className=' bg-dark-4 pointer-events-none'>
           <Table.Tr>
             <Table.Th className='text-center'>
               <p>Top 50</p>

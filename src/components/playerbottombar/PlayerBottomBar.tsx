@@ -1,7 +1,13 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { formatTimeDisplay } from '@/utils'
-import { ForwardedRef, MouseEvent, useCallback, useMemo } from 'react'
+import {
+  ForwardedRef,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react'
 import ReactPlayer from 'react-player'
 import LyricsDropdownButton from '../lyrics-display/LyricsDropdownButton'
 
@@ -19,11 +25,12 @@ import SubtitlesOffIcon from '@mui/icons-material/SubtitlesOff'
 import React from 'react'
 import VolumeControl from './VolumeControl'
 
+import { useAppContext } from '@/context/AppContext'
+import { useLocation, useNavigate } from 'react-router-dom'
+
 interface PlayerBottomBarProps {
   playing: boolean
   loop: boolean
-  muted: boolean
-  volume: number
   played: number
   duration: number
   romajiEnabled: boolean
@@ -35,8 +42,6 @@ interface PlayerBottomBarProps {
   handleSeekMouseUp: (e: MouseEvent<HTMLInputElement>) => void
   handleProgress: (state: { played: number; loaded: number }) => void
   handleToggleLoop: () => void
-  handleVolumeChange: (value: number) => void
-  handleToggleMuted: () => void
   handleToggleRomajiDisplay: () => void
   handleToggleLyricsVisibility: (visibility: boolean) => void
   playerRef: ForwardedRef<ReactPlayer>
@@ -45,8 +50,6 @@ interface PlayerBottomBarProps {
 const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   playing,
   loop,
-  muted,
-  volume,
   played,
   duration,
   romajiEnabled,
@@ -59,12 +62,14 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleSeekMouseUp,
   handleProgress,
   handleToggleLoop,
-  handleVolumeChange,
-  handleToggleMuted,
   handleToggleRomajiDisplay,
   handleToggleLyricsVisibility,
 }) => {
   console.log('Player Bottom Bar re-rendered...')
+  const [isFullScreen, setIsFullScreen] = React.useState(false)
+  const { playerControlsVisible } = useAppContext()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const getCurrentPlayedPercentage = useCallback(() => {
     return parseFloat((played / duration).toFixed(3))
@@ -75,6 +80,39 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     () => formatTimeDisplay(duration),
     [duration]
   )
+
+  useEffect(() => {
+    const currentPath = location.pathname
+
+    // Check if we are not on the specific route
+    if (currentPath !== '/v/') {
+      setIsFullScreen(false)
+      // Call exitFullscreen when we are navigating away from the specific route
+      exitFullscreen()
+    }
+
+    // Optional: If you also want to handle component unmount, you can include the exitFullscreen call in the cleanup function
+    return () => {
+      setIsFullScreen(false)
+      exitFullscreen()
+    }
+  }, [location, setIsFullScreen])
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen()
+    } else if (document.mozCancelFullScreen) {
+      /* Firefox */
+      document.mozCancelFullScreen()
+    } else if (document.webkitExitFullscreen) {
+      /* Chrome, Safari and Opera */
+      document.webkitExitFullscreen()
+    } else if (document.msExitFullscreen) {
+      /* IE/Edge */
+      document.msExitFullscreen()
+    }
+    setIsFullScreen(false)
+  }
 
   const openFullscreen = (elem) => {
     if (elem.requestFullscreen) {
@@ -89,6 +127,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       /* IE/Edge */
       elem.msRequestFullscreen() // IE/Edge
     }
+    setIsFullScreen(true)
   }
 
   const handleFullscreen = () => {
@@ -101,6 +140,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     ) {
       // No element is in fullscreen, enter fullscreen mode
       openFullscreen(document.documentElement) // You can also use document.body
+      setIsFullScreen(true)
     } else {
       // An element is already in fullscreen, exit fullscreen mode
       if (document.exitFullscreen) {
@@ -115,11 +155,15 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
         /* IE/Edge */
         document.msExitFullscreen() // IE/Edge
       }
+      setIsFullScreen(false)
     }
   }
 
   return (
-    <div className='fixed bottom-0 inset-x-0 bg-gray bg-primary-500 bg-opacity-10'>
+    <div
+      className={`fixed bottom-0 inset-x-0  bg-gray bg-dark-3 ${
+        isFullScreen ? 'bg-opacity-15' : 'bg-opacity-45'
+      } controls ${playerControlsVisible ? 'visible' : 'hidden'} `}>
       <div className='h-1 cursor-pointer'>
         <Slider
           defaultValue={[0]}
@@ -152,12 +196,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             <span className='sr-only'>Next track</span>
           </Button>
 
-          <VolumeControl
-            volume={volume}
-            muted={muted}
-            handleVolumeChange={handleVolumeChange}
-            handleToggleMuted={handleToggleMuted}
-          />
+          <VolumeControl />
           <div className='flex-between ml-2'>
             <span className='text-center hidden sm:inline'>
               {formattedPlayed}
@@ -168,8 +207,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             </span>
           </div>
         </div>
-        {/* Progress Bar */}
-        {/* <div className='flex flex-1 items-center justify-center gap-4'></div> */}
+
         <div className='flex items-center justify-end gap-1 md:gap-2 ml-6'>
           {/* //! Shuffle Play */}
           <Button
@@ -199,11 +237,11 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             ) : (
               <SubtitlesOffIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
             )}
-            <span className='sr-only'>Repeat</span>
+            <span className='sr-only'>Toggle Romaji</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
             <SettingsIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
-            <span className='sr-only'>Repeat</span>
+            <span className='sr-only'>Settings</span>
           </Button>
           {/* //*TODO: Handle Dismissing Top Bar & Bottom Bar to make more space  */}
           <Button
@@ -212,7 +250,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             variant='ghost'
             onClick={handleFullscreen}>
             <FullscreenIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
-            <span className='sr-only'>Repeat</span>
+            <span className='sr-only'>Fullscreen</span>
           </Button>
         </div>
       </div>

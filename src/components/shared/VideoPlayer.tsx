@@ -1,4 +1,5 @@
-import { ForwardedRef } from 'react'
+import { useAppContext } from '@/context/AppContext'
+import { ForwardedRef, useEffect } from 'react'
 import ReactPlayer from 'react-player'
 
 interface VideoPlayerProps {
@@ -31,6 +32,35 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   playerRef,
 }) => {
   // const handlePlayerReady = () => {}
+  const { setPlayerControlsVisible } = useAppContext()
+
+  //? UseEffect to handle delay in dismissing controls visibility when playing video
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> // Declare timer to use it inside clearTimeout
+
+    const showControlsTemporarily = () => {
+      clearTimeout(timer) // Clear any existing timer on mouse move
+      setPlayerControlsVisible(true) // Show the controls on mouse move
+
+      // Set a new timer to hide the controls after 4.5 seconds of no mouse movement
+      if (playing) {
+        // Check if the video is playing
+        timer = setTimeout(() => {
+          setPlayerControlsVisible(false)
+        }, 4500)
+      }
+    }
+
+    showControlsTemporarily() // Show the controls initially when the video starts playing
+
+    document.addEventListener('mousemove', showControlsTemporarily)
+
+    // Cleanup function to remove the event listener and clear the timeout when the component unmounts or before the effect runs again
+    return () => {
+      document.removeEventListener('mousemove', showControlsTemporarily)
+      clearTimeout(timer)
+    }
+  }, [setPlayerControlsVisible, playing])
 
   const handlePause = () => {
     console.log('VideoPlayer.tsx player has been paused')

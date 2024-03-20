@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { useAppContext } from '@/context/AppContext'
 import { formatLyricsLineSrt } from '@/utils'
 import { isKanji, toRomaji } from 'wanakana'
 import LyricTextLine from './LyricTextLine'
@@ -10,6 +11,8 @@ interface LyricsDisplayProps {
 
 //! Lyrics Display overlay is z-40
 const LyricsDisplay: React.FC<LyricsDisplayProps> = ({ romajiEnabled }) => {
+  const { playerControlsVisible } = useAppContext()
+
   // 知りたいその秘密ミステリアス
   const [firstLineIndex, setFirstLineIndex] = useState<number>(0)
   const [secondLineIndex, setSecondLineIndex] = useState<number>(1)
@@ -21,13 +24,15 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({ romajiEnabled }) => {
 
   return (
     <div
-      className={`absolute left-0 top-0 w-full h-9/10 pt-4 pointer-events-none z-40`}>
-      <div className='flex flex-col justify-end md:justify-between w-full h-full my-7'>
+      className={`absolute left-0 top-0 w-full ${
+        playerControlsVisible ? 'h-9/10' : 'h-full'
+      } pointer-events-none z-40`}>
+      <div className='flex flex-col justify-end md:justify-between w-full h-full'>
         {/* Translation Div */}
         <div className='md:pt-4 md:pb-0 w-full'>
           <p className='flex font_noto_sans_jp_black_900 justify-center font-outline-1 text-2vw'>
             {/* Couldn't beat her smile, it stirred up all the media */}
-            Testing Testing Testing Testing Testing
+            Testing Testing Translations Here Testing Testing
           </p>
         </div>
 
@@ -45,7 +50,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({ romajiEnabled }) => {
           </div>
         </div>
         {romajiEnabled && (
-          <div className='pb-8 sm:pb-4'>
+          <div className='pb-2'>
             <p className='flex font_noto_sans_jp_black_900 justify-center font-outline-1 text-2.4vw'>
               {/* Couldn't beat her smile, it stirred up all the media */}
               Testing Testing Testing Testing Testing

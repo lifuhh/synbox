@@ -1,11 +1,15 @@
 import { Button } from '@/components/ui/button'
-import { GithubIcon, Moon, Sun } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
-import { GitHubIcon, GithubLogo } from '../svgicons'
+import { GitHubIcon } from '../svgicons'
 import CommandSearch from '../topbar/CommandSearch'
 import AppLogo from '../topbar/NowPlayingDisplayInfo'
 
+import { useAppContext } from '@/context/AppContext'
+
 const TopBar = () => {
+  const { playerControlsVisible } = useAppContext()
+
   const location = useLocation() // Use the useLocation hook to access the current route
   const isVideoPlayer = location.pathname.includes('/v/')
   // Determine the background opacity based on the pathname
@@ -18,9 +22,12 @@ const TopBar = () => {
 
   return (
     // <section className='topbar sticky top-0 bg'>
-    <section className='topbar sticky top-0 z-100'>
+    <section
+      className={`topbar sticky top-0 z-100 controls ${
+        playerControlsVisible ? 'visible block h-14' : 'hidden'
+      }`}>
       <nav
-        className={`flex-between h-14 pb-2 w-full bg-dark-1 pt-2 ${topbarOpacity}`}>
+        className={`flex-between h-14 w-full bg-dark-1 ${topbarOpacity} sm:px-12`}>
         <AppLogo />
         {/* <div className='flex-end pb-2 justify-end lg:gap-2 w-48'>
           <AccountBoxIcon
@@ -29,7 +36,7 @@ const TopBar = () => {
           />
           <FavouritesButton />
         </div> */}
-        <div className='flex items-center ml-auto gap-3 mr-4'>
+        <div className='flex items-center ml-auto gap-3 mr-2'>
           <CommandSearch isVideoPlayer={isVideoPlayer} />
           {/* <Button className='w-10 h-10 border-primary overflow-hidden'> */}
           {/* <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' /> */}

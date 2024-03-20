@@ -1,20 +1,23 @@
 import LyricsDisplay from '@/components/lyrics-display/LyricsDisplayOverlay'
 import PlayerBottomBar from '@/components/playerbottombar/PlayerBottomBar'
 import VideoPlayer from '@/components/shared/VideoPlayer'
+import { useAppContext } from '@/context/AppContext'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
 import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
+  console.log('PlayerPage re-rendered...')
+  const { playerControlsVisible, muted, setPlayerMuted, volume } =
+    useAppContext()
+
   //* Video ID state
   const { videoId } = useParams() // Extract videoId from route parameters
   const [stateVideoId, setStateVideoId] = useState<string | null>(null)
 
   //* Video Player state
-  const [playing, setPlaying] = useState<boolean>(false)
-  const [volume, setVolume] = useState<number>(0.2)
-  const [muted, setMuted] = useState<boolean>(true)
+  const [playing, setPlaying] = useState<boolean>(muted ? false : true)
   const [seeking, setSeeking] = useState<boolean>(false)
   const [played, setPlayed] = useState<number>(0)
   const [loaded, setLoaded] = useState<number>(0)
@@ -46,15 +49,6 @@ const PlayerPage = () => {
   const handleToggleLoop = useCallback(() => {
     setLoop(!loop)
   }, [loop]) // Add dependencies if any
-
-  const handleVolumeChange = useCallback((value: number) => {
-    // setMuted(value === 0)
-    setVolume(value)
-  }, [])
-
-  const handleToggleMuted = useCallback(() => {
-    setMuted((prevMuted) => !prevMuted)
-  }, [])
 
   const handleToggleRomajiDisplay = useCallback(() => {
     setRomajiEnabled((prevRomajiEnabled) => !prevRomajiEnabled)
@@ -99,10 +93,11 @@ const PlayerPage = () => {
     setPlaying(false)
   }, [])
 
-  const handleStart = () => {
+  const handleStart = useCallback(() => {
     console.log('video started playing')
+    setPlaying(true)
     console.log(performance.now())
-  }
+  }, [])
 
   const handleSeekChange = useCallback(
     (value: number) => {
@@ -148,21 +143,24 @@ const PlayerPage = () => {
   }, [])
 
   //* When ended, go to next track [to be implemented]
-  const handleEnded = () => {
+  const handleEnded = useCallback(() => {
     console.log('onEnded')
     setPlaying(loop)
-  }
+  }, [loop])
 
-  const handleDuration = (duration: number) => {
+  const handleDuration = useCallback((duration: number) => {
     console.log('onDuration', duration)
     setDuration(duration)
-  }
+  }, [])
 
   return (
     <>
       {/* Lyrics Display Controller */}
       {lyricsVisibility ? <LyricsDisplay romajiEnabled={romajiEnabled} /> : ''}
-      <div className='relative aspect-video w-full max-h-full border-2 border-primary border-opacity-5'>
+      <div
+        className={`relative aspect-video w-full h-full border-2 -my-14 border-primary border-opacity-5 ${
+          playerControlsVisible ? '' : 'my-0 cursor-none'
+        }`}>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}
@@ -175,14 +173,13 @@ const PlayerPage = () => {
             handleProgress={handleProgress}
             handleDuration={handleDuration}
             handleStart={handleStart}
+            handleEnded={handleEnded}
           />
         )}
       </div>
       <PlayerBottomBar
         playing={playing}
         loop={loop}
-        volume={volume}
-        muted={muted}
         played={played}
         duration={duration}
         playerRef={playerRef}
@@ -195,8 +192,6 @@ const PlayerPage = () => {
         handleSeekMouseUp={handleSeekMouseUp}
         handleProgress={handleProgress}
         handleToggleLoop={handleToggleLoop}
-        handleVolumeChange={handleVolumeChange}
-        handleToggleMuted={handleToggleMuted}
         handleToggleRomajiDisplay={handleToggleRomajiDisplay}
         handleToggleLyricsVisibility={handleToggleLyricsVisibility}
       />
