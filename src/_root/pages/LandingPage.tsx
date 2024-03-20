@@ -14,7 +14,11 @@ const LandingPage = () => {
       <HeroGenerateLyricsSection />
       <Divider
         my='xs'
-        label={<h1 className='text-xl text-white'>Featured</h1>}
+        label={
+          <h1 className='text-2xl font_noto_sans_jp_black_900 font-bold text-light-2'>
+            おすすめ
+          </h1>
+        }
         labelPosition='center'
         className='p-4'
       />
@@ -25,7 +29,7 @@ const LandingPage = () => {
       </section>
       <Divider
         my='xs'
-        label={<h1 className='text-xl text-white'>Song Gallery</h1>}
+        label={<h1 className='text-2xl font-bold text-light-2'>Gallery</h1>}
         labelPosition='center'
         className='p-4'
       />

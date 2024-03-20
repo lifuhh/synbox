@@ -11,25 +11,22 @@ import {
 } from '@/components/ui/carousel'
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import Autoplay from 'embla-carousel-autoplay'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useLockBodyScrollOnHover } from '@/hooks/useLockScrollOnHover'
 import { useGetLandingPagePlaylist } from '@/lib/react-query/queriesAndMutations'
 import SongHighlightCarouselItem from './SongHighlightCarouselItem'
 
-Autoplay.globalOptions = { delay: 4000 }
+Autoplay.globalOptions = { delay: 7000 }
 
 const SongHighlightCarousel = () => {
   const { data: playlistData, isLoading: isPlaylistDataFetching } =
     useGetLandingPagePlaylist()
 
-  const slidesNumber = playlistData?.length
+  const slidesNumber = useMemo(() => playlistData?.length, [playlistData])
 
   const carouselRef = useRef<HTMLDivElement>(null)
 
-  const preventPageScroll = (event: WheelEvent): void => {
-    event.preventDefault()
-  }
 
   //* UseEffect to prevent page from scrolling when user hovers over the carousel
   useLockBodyScrollOnHover(carouselRef, 640)
@@ -77,7 +74,7 @@ const SongHighlightCarousel = () => {
 
     // Function to handle wheel event
     const handleWheel = (e: WheelEvent) => {
-      accumulatedDeltaY += e.deltaY
+      accumulatedDeltaY += e.deltaX
 
       if (!throttleTimeout) {
         throttleTimeout = setTimeout(() => {
@@ -90,7 +87,7 @@ const SongHighlightCarousel = () => {
           accumulatedDeltaY = 0
           if (throttleTimeout) clearTimeout(throttleTimeout)
           throttleTimeout = null
-        }, 150) // Throttle timeout, adjust as needed for sensitivity
+        }, 100) // Throttle timeout, adjust as needed for sensitivity
       }
     }
 
@@ -115,8 +112,32 @@ const SongHighlightCarousel = () => {
     }
   }, [api])
 
+  const carouselItems = useMemo(
+    () =>
+      playlistData && slidesNumber
+        ? playlistData.map((item, itemIndex) => (
+            <CarouselItem
+              key={itemIndex}
+              className={`
+     sm:basis-2/5
+    sm:px-3
+    ${current == itemIndex ? 'z-30' : 'z-10'}
+    `}>
+              <SongHighlightCarouselItem
+                opacity={1}
+                index={itemIndex + 1}
+                currentIndex={current}
+                itemCount={slidesNumber}
+                item={item}
+              />
+            </CarouselItem>
+          ))
+        : '',
+    [playlistData, slidesNumber, current]
+  )
+
   return (
-    <div className='w-full lg:w-7/12 h-96 mt-8 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
+    <div className='w-full lg:w-7/12 xl:w-8/12 h-96 mt-2 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
       {isPlaylistDataFetching && !playlistData ? (
         <Loader />
       ) : (
@@ -132,25 +153,7 @@ const SongHighlightCarousel = () => {
             plugins={[Autoplay()]}>
             {/* //TODO: need to move this carousel down when fullscreened, current fix doesnt work */}
             <CarouselContent className={`-ml-3`}>
-              {slidesNumber && playlistData
-                ? playlistData.map((item, itemIndex) => (
-                    <CarouselItem
-                      key={itemIndex}
-                      className={`
-                       sm:basis-2/5
-                      sm:px-3
-                      ${current == itemIndex ? 'z-30' : 'z-10'}
-                      `}>
-                      <SongHighlightCarouselItem
-                        opacity={1}
-                        index={itemIndex + 1}
-                        currentIndex={current}
-                        itemCount={slidesNumber}
-                        item={item}
-                      />
-                    </CarouselItem>
-                  ))
-                : ''}
+              {carouselItems}
             </CarouselContent>
             {/* <CarouselPrevious />
             <CarouselNext /> */}

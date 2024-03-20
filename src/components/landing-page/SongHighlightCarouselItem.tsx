@@ -1,5 +1,11 @@
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
-import React, { CSSProperties } from 'react'
+import React, {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, CardContainer, CardItem } from '../ui/3d-card'
 
@@ -18,44 +24,55 @@ const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
   itemCount,
   item,
 }) => {
-  console.log('I am re-rendering')
-
+  const [cardStyle, setCardStyle] = useState<CSSProperties>({})
+  const requestRef = useRef<number>()
   const navigate = useNavigate()
 
-  const handleNavigate = () => {
+  const handleNavigate = useCallback(() => {
     navigate(`/v/${item.videoId}`, { state: { videoId: item.videoId } })
-  }
+  }, [item.videoId, navigate])
 
-  // Adjust the index to be 0-based
-  const adjustedIndex = index - 1
-  let distance = Math.abs(adjustedIndex - currentIndex)
+  useEffect(() => {
+    const calculateStyles = () => {
+      const adjustedIndex = index - 1
+      let distance = Math.abs(adjustedIndex - currentIndex)
 
-  // Adjust the distance for looping scenarios
-  if (currentIndex === 0 && adjustedIndex === itemCount - 1) {
-    // Special case when transitioning from the first to the last item
-    distance = 1 // Treat it as the next item for consistent scaling
-  } else if (currentIndex === itemCount - 1 && adjustedIndex === 0) {
-    // Special case when transitioning from the last to the first item
-    distance = 1 // Treat it as the next item for consistent scaling
-  } else {
-    distance = Math.min(distance, itemCount - distance)
-  }
+      if (currentIndex === 0 && adjustedIndex === itemCount - 1) {
+        distance = 1
+      } else if (currentIndex === itemCount - 1 && adjustedIndex === 0) {
+        distance = 1
+      } else {
+        distance = Math.min(distance, itemCount - distance)
+      }
 
-  const scaleBase = 0.18 // Base scale factor
-  const scale = 1 - scaleBase * distance
-  const opacityDecrement = 0.18 // Opacity decrement factor
-  const opacityInRange = Math.max(1 - opacityDecrement * distance, 0.2) // Ensure opacity is not less than 0.2
+      const scaleBase = 0.18
+      const scale = 1 - scaleBase * distance
+      const opacityDecrement = 0.18
+      const opacityInRange = Math.max(1 - opacityDecrement * distance, 0.2)
 
-  const cardStyle: CSSProperties = {
-    transform: `scale(${scale})`, // Apply calculated scale
-    opacity: opacityInRange, // Apply calculated opacity
-    transition: 'transform 0.5s ease-in-out, opacity 0.3s ease-in-out', // Smooth transition
-  }
+      return {
+        transform: `scale(${scale})`,
+        opacity: opacityInRange,
+        transition: 'transform 0.5s ease-in-out, opacity 0.3s ease-in-out',
+      }
+    }
+
+    const animate = () => {
+      setCardStyle(calculateStyles())
+    }
+
+    requestRef.current = requestAnimationFrame(animate)
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current)
+      }
+    }
+  }, [currentIndex, itemCount, index])
 
   return (
     <div style={{ opacity }} className='scale-75 min-h-100'>
       <div style={cardStyle}>
-        <CardContainer className=''>
+        <CardContainer>
           <CardBody className='bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-[30rem] h-auto rounded-xl p-6 border'>
             <CardItem
               translateZ='50'
@@ -65,8 +82,8 @@ const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
 
             <CardItem
               translateZ='100'
-              rotateX={20}
-              rotateZ={-10}
+              // rotateX={20}
+              // rotateZ={-10}
               className='w-full mt-4'>
               <img
                 src={item.thumbnailUrl}
@@ -85,7 +102,7 @@ const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
             <div className='flex justify-between items-center mt-10'>
               <CardItem
                 translateZ={10}
-                translateX={-30}
+                // translateX={-30}
                 as='button'
                 className='px-4 py-2 rounded-xl text-xs font-normal dark:text-white text-blue-900'>
                 {item.channel}
@@ -93,7 +110,10 @@ const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
               <button
                 className='px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold'
                 onClick={handleNavigate}>
-                <CardItem translateZ={10} translateX={30}>
+                <CardItem
+                  translateZ={10}
+                  // translateX={30}
+                >
                   {item.videoId}
                 </CardItem>
               </button>

@@ -1,10 +1,16 @@
 import { Button } from '@/components/ui/button'
 import { GithubIcon, Moon, Sun } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 import { GitHubIcon, GithubLogo } from '../svgicons'
 import CommandSearch from '../topbar/CommandSearch'
 import AppLogo from '../topbar/NowPlayingDisplayInfo'
 
 const TopBar = () => {
+  const location = useLocation() // Use the useLocation hook to access the current route
+  const isVideoPlayer = location.pathname.includes('/v/')
+  // Determine the background opacity based on the pathname
+  const topbarOpacity = isVideoPlayer ? 'bg-opacity-0' : 'bg-opacity-80'
+  const buttonVisibility = isVideoPlayer ? 'hidden' : 'visible'
   // const pathname = window.location.pathname
   // console.log('Pathname in topbar is')
   // console.log(pathname)
@@ -13,7 +19,8 @@ const TopBar = () => {
   return (
     // <section className='topbar sticky top-0 bg'>
     <section className='topbar sticky top-0 z-100'>
-      <nav className='flex-between h-14 w-full bg-dark-1 bg-opacity-80 pt-2'>
+      <nav
+        className={`flex-between h-14 pb-2 w-full bg-dark-1 pt-2 ${topbarOpacity}`}>
         <AppLogo />
         {/* <div className='flex-end pb-2 justify-end lg:gap-2 w-48'>
           <AccountBoxIcon
@@ -23,21 +30,21 @@ const TopBar = () => {
           <FavouritesButton />
         </div> */}
         <div className='flex items-center ml-auto gap-3 mr-4'>
-          <CommandSearch />
+          <CommandSearch isVideoPlayer={isVideoPlayer} />
           {/* <Button className='w-10 h-10 border-primary overflow-hidden'> */}
           {/* <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' /> */}
           {/* <Moon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' /> */}
           <Button
             variant='outline'
             size='icon'
-            className='border-primary hover:border-white'>
+            className={`border-primary hover:border-white ${buttonVisibility}`}>
             <GitHubIcon className='fill-white scale-75' />
             <span className='sr-only'>GitHub Button</span>
           </Button>
           <Button
             variant='outline'
             size='icon'
-            className='  border-primary hover:border-white'>
+            className={` border-primary hover:border-white ${buttonVisibility}`}>
             {/* <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' /> */}
             {/* <Moon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' /> */}
             <Moon className='absolute h-[1.2rem] w-[1.2rem] scale-100 transition-all dark:rotate-0 dark:scale-100' />

@@ -41,22 +41,22 @@ const PopularSongsTable = () => {
   ))
 
   return (
-    <div className=' w-full mx-auto lg:ml-6 lg:w-5/12 mt-8 h-96 overflow-y-auto rounded-md '>
+    <div className=' w-full mx-auto lg:ml-6 lg:w-5/12 xl:w-4/12 mt-10 lg:mt-2 h-96 rounded-md overflow-y-auto custom-scrollbar'>
       <Table
         stickyHeader
         stickyHeaderOffset={0}
         verticalSpacing='xs'
         highlightOnHover
-        className=' bg-dark-3 bg-opacity-15'>
+        className=' bg-dark-3 bg-opacity-15 '>
         <Table.Thead className=' bg-dark-4'>
           <Table.Tr>
             <Table.Th className='text-center'>
-              <p>Top 100 Apple Music Charts</p>
+              <p>Top 50</p>
             </Table.Th>
           </Table.Tr>
         </Table.Thead>
-        <Table.Tbody>{test_rows}</Table.Tbody>
-        <Table.Caption>End of Popularity Leaderboard</Table.Caption>
+        <Table.Tbody className=' '>{test_rows}</Table.Tbody>
+        <Table.Caption>Source: Apple Music Charts</Table.Caption>
       </Table>
     </div>
   )

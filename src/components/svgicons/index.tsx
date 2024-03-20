@@ -1,6 +1,9 @@
 export const SynboxLogo: React.FC = () => {
   return (
-    <img src='/assets/icons/Synbox_logo_dark_1.svg' className='w-auto h-16' />
+    <img
+      src='/assets/icons/Synbox_logo_dark_1.svg'
+      className='w-auto h-16 mt-2'
+    />
   )
 }
 

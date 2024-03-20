@@ -7,7 +7,9 @@ export const useLockBodyScrollOnHover = (
 ) => {
   useEffect(() => {
     const preventScroll = (event: WheelEvent): void => {
-      event.preventDefault()
+      if (event.deltaX !== 0) {
+        event.preventDefault()
+      }
     }
 
     const enableScrollLock = (): void => {

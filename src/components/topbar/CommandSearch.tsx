@@ -14,7 +14,11 @@ import SearchIcon from '@mui/icons-material/Search'
 import { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 
-const CommandSearch = () => {
+interface CommandSearchProps {
+  isVideoPlayer: boolean
+}
+
+const CommandSearch: React.FC<CommandSearchProps> = ({ isVideoPlayer }) => {
   const [open, setOpen] = useState(false)
 
   const handleCommandItemClick = () => {
@@ -40,17 +44,23 @@ const CommandSearch = () => {
     <>
       <div>
         <Button
-          variant='outline'
+          variant={isVideoPlayer ? 'default' : 'outline'}
           role='combobox'
           aria-expanded={open}
-          className='w-[250px] justify-between px-2 border-primary hover:border-white hover:bg-dark-3/80'
+          className={` ${
+            isVideoPlayer ? 'w-[40px]' : 'w-[170px] md:w-[250px]'
+          } justify-between px-2 border-primary hover:border-white hover:bg-dark-3/80`}
           onClick={() => setOpen((open) => !open)}>
-          <div className=''>
-            <SearchIcon />
-            Search YouTube
+          <div>
+            <SearchIcon className={``} />
+            {isVideoPlayer ? '' : 'Search YouTube'}
           </div>
 
-          <div dir='ltr' className='align-middle pb-1'>
+          <div
+            dir='ltr'
+            className={`align-middle pb-1  ${
+              isVideoPlayer ? 'hidden' : 'hidden md:block'
+            }`}>
             <Kbd className='px-2'>⌘</Kbd> + <Kbd className='px-2 '>K</Kbd>
           </div>
         </Button>

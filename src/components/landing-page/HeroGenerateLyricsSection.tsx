@@ -22,7 +22,7 @@ const HeroGenerateLyricsSection = () => {
               // border-2 border-primary-500/40 hover:border-primary-500/90
               // focus:ring-0 focus:ring-violet-300
               // focus:outline-none focus:ring-0 focus:ring-teal-300
-              className='py-6 focus:ring-transparent focus:border-white border-2 border-primary'
+              className='py-6 focus:ring-transparent hover:border-secondary border-2  focus:border-white border-primary'
             />
             <Button
               variant='default'
@@ -31,20 +31,17 @@ const HeroGenerateLyricsSection = () => {
               Sing This!
             </Button>
           </div>
-          <p className='w-full sm:w-4/5 mt-4 font-normal text-base text-neutral-300 no-select max-w-7xl text-center mx-auto'>
-            Paste a YouTube link to get started! If the video has no available
-            lyrics yet, Synbox will leverage OpenAI's automatic speech
-            recognition system, Whisper, to generate karaoke lyrics, romaji
-            pronunciations, and various translations for you to sing along with.
+          <p className='lg:w-7/10 mt-4 font-normal text-base text-neutral-300 no-select text-center mx-auto'>
+            Step into a Karaoke haven with Synbox, effortlessly bringing any
+            Japanese song from YouTube to life. Just paste a link, and if the
+            song lacks lyrics, Synbox's use of OpenAI's Whisper generates
+            synchronized karaoke lyrics with romaji. For a deeper dive, we offer
+            varied translations to enrich your understanding and singing
+            experience. Synbox is the perfect stage for all Japanese music
+            lovers, regardless of language proficiency.
           </p>
         </div>
       </div>
-      {/* <div className='flex sm:mx-auto sm:w-3/4 h-20 lg:h-96 md:w-3/5 gap-2 flex-between'>
-        <Input placeholder='Paste youtube URL here' className='py-4' />
-        <Button size='icon'>
-          <AccountBoxIcon sx={{ fontSize: 36 }} />
-        </Button>
-      </div> */}
     </section>
   )
 }
