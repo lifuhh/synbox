@@ -9,18 +9,17 @@
 :root {
   --icon-top-offset: 15px; /* Adjust this value to what works for your layout */
   --background: #30011e;
-  --primary: #c2185b;
-  --primary-500: #c2185b;
-  --primary-600: #ad1457;
-  --secondary: #ff80ab;
-  --secondary-500: #ff80ab;
+  --primary: #ca195f;
+  --primary-500: #b51054;
+  --primary-600: #9f0048;
+  --secondary: #e74e8a;
+  --secondary-500: #e43478;
   --off-white: #f8f0fb;
-  --red: #ff5a5a;
   --dark-1: #30011e;
   --dark-2: #440229;
   --dark-3: #560231;
   --dark-4: #69023a;
-  --light-1: #ffffff;
+  --light-1: #ffeaf4;
   --light-2: #fbe9f6;
   --light-3: #d05d8f;
   --light-4: #e1bee7;
@@ -82,6 +81,10 @@
     @apply flex justify-end items-center;
   }
 
+  .small-regular {
+    @apply text-[14px] font-normal leading-[140%];
+  }
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 3px;
     height: 3px;
@@ -89,21 +92,26 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: #09090a;
+    background: var(--background);
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #5c5c7b;
-    border-radius: 50px;
+    background: var(--primary);
+    border-radius: 40px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #7878a3;
+    background: var(--secondary);
   }
 
-  /* Bottom bar */
-  .bottom-bar {
-    @apply z-50 flex-between w-full sticky bottom-0 rounded-t-[20px] bg-dark-2 px-5 py-4 md:hidden;
+  .controls {
+    transition: opacity 1.5s ease;
+    opacity: 1; /* Visible */
+  }
+
+  .controls.hidden {
+    opacity: 0; /* Hidden */
+    pointer-events: none; /* Prevent interaction when hidden */
   }
 
   /* File uploader */
@@ -121,6 +129,13 @@
 
   .font_noto_sans_jp_reg {
     font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .no-select {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
   }
 
   .font_noto_sans_jp_black_900 {
@@ -168,6 +183,12 @@
 
   .shad-button_ghost {
     @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
+  }
+
+  .DialogContent {
+    min-width: 300px;
+    background: white;
+    padding: 30px;
   }
 }
 

@@ -95,3 +95,12 @@ export interface YoutubeSearchItemSnippet {
   liveBroadcastContent: string
   publishTime: string
 }
+
+
+//* Lyrics Processing Types
+export interface UploadedSrtLine {
+  index: number
+  startTime: string
+  endTime: string
+  text: string
+}

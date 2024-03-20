@@ -3,11 +3,11 @@ import { Button } from '../ui/button'
 
 const FavouritesButton = () => {
   return (
-    <div className='flex align-middle justify-end w-48'>
-      <Button className='p-2 mx-2 text-white'>
-        <MenuIcon sx={{ fontSize: 32 }} />
-      </Button>
-    </div>
+    // <div className='flex w-48 align-end justify-end'>
+    <Button className='p-2 mx-4 text-white'>
+      <MenuIcon sx={{ fontSize: 32 }} />
+    </Button>
+    // </div>
   )
 }
 export default FavouritesButton

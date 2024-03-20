@@ -22,7 +22,7 @@ export const useGetLandingPagePlaylist = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_LANDING_PAGE_PLAYLIST],
     queryFn: () => getLandingPagePlaylist(),
-    // staleTime: 60000 * 30,
+    staleTime: 60000 * 30,
     refetchOnWindowFocus: false,
   })
 }

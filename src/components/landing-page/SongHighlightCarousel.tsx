@@ -1,3 +1,5 @@
+import Loader from '@/components/shared/Loader'
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Carousel,
@@ -9,21 +11,30 @@ import {
 } from '@/components/ui/carousel'
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import Autoplay from 'embla-carousel-autoplay'
-import { useEffect, useState } from 'react'
-import BottomBar from '../shared/BottomBar'
-import HomeCarouselItem from './HomeCarouselItem'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
-Autoplay.globalOptions = { delay: 4000 }
+import { useLockBodyScrollOnHover } from '@/hooks/useLockScrollOnHover'
+import { useGetLandingPagePlaylist } from '@/lib/react-query/queriesAndMutations'
+import SongHighlightCarouselItem from './SongHighlightCarouselItem'
 
-type HomeCarouselProps = {
-  items: formattedYoutubeVideoItemForCarousel[]
-}
+Autoplay.globalOptions = { delay: 7000 }
 
-const HomeCarousel = ({ items }: HomeCarouselProps) => {
+const SongHighlightCarousel = () => {
+  const { data: playlistData, isLoading: isPlaylistDataFetching } =
+    useGetLandingPagePlaylist()
+
+  const slidesNumber = useMemo(() => playlistData?.length, [playlistData])
+
+  const carouselRef = useRef<HTMLDivElement>(null)
+
+  //* UseEffect to prevent page from scrolling when user hovers over the carousel
+  useLockBodyScrollOnHover(carouselRef, 640)
+
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [current, setCurrent] = useState(1)
   const [count, setCount] = useState(0)
 
+  //* UseEffect for Carousel Animations (Embla specified)
   useEffect(() => {
     if (!api) {
       return
@@ -62,7 +73,7 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
 
     // Function to handle wheel event
     const handleWheel = (e: WheelEvent) => {
-      accumulatedDeltaY += e.deltaY
+      accumulatedDeltaY += e.deltaX
 
       if (!throttleTimeout) {
         throttleTimeout = setTimeout(() => {
@@ -75,7 +86,7 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
           accumulatedDeltaY = 0
           if (throttleTimeout) clearTimeout(throttleTimeout)
           throttleTimeout = null
-        }, 150) // Throttle timeout, adjust as needed for sensitivity
+        }, 100) // Throttle timeout, adjust as needed for sensitivity
       }
     }
 
@@ -84,7 +95,7 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
     api.on('select', () => {
       // Adjusted logic to ensure the middle card is considered as the current card
       // This might involve calculating the index based on your carousel's specific implementation details
-      const newIndex = api.selectedScrollSnap() + 1 - 1 // Adjusted to account for the middle card
+      const newIndex = api.selectedScrollSnap()
       setCurrent(newIndex)
     })
     // Add wheel event listener to the Embla container
@@ -100,31 +111,18 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
     }
   }, [api])
 
-  const slidesNumber = items.length
-
-  return (
-    <div className='overflow-hidden'>
-      <Carousel
-        opts={{
-          loop: true,
-          dragFree: true,
-          containScroll: 'trimSnaps',
-          startIndex: 1,
-        }}
-        setApi={setApi}
-        plugins={[Autoplay()]}>
-        <CarouselContent className='-ml-3'>
-          {items.map((item, itemIndex) => (
-            // <CarouselItem
-            //   key={itemIndex}
-            //   className='basis-1/3 px-3 border-4 border-sky-500'>
-            //   <h1>{item.title.slice(5, 10)}</h1>
-            // </CarouselItem>
-
+  const carouselItems = useMemo(
+    () =>
+      playlistData && slidesNumber
+        ? playlistData.map((item, itemIndex) => (
             <CarouselItem
               key={itemIndex}
-              className='md:basis-1/2 lg:basis-1/3 md:px-3'>
-              <HomeCarouselItem
+              className={`
+     sm:basis-2/5
+    sm:px-3
+    ${current == itemIndex ? 'z-30' : 'z-10'}
+    `}>
+              <SongHighlightCarouselItem
                 opacity={1}
                 index={itemIndex + 1}
                 currentIndex={current}
@@ -132,13 +130,36 @@ const HomeCarousel = ({ items }: HomeCarouselProps) => {
                 item={item}
               />
             </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+          ))
+        : '',
+    [playlistData, slidesNumber, current]
+  )
+
+  return (
+    <div className='w-full lg:w-7/12 h-96 mt-2 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
+      {isPlaylistDataFetching && !playlistData ? (
+        <Loader />
+      ) : (
+        <div ref={carouselRef} className={`overflow-hidden`}>
+          <Carousel
+            opts={{
+              loop: true,
+              dragFree: true,
+              containScroll: 'trimSnaps',
+              startIndex: 1,
+            }}
+            setApi={setApi}
+            plugins={[Autoplay()]}>
+            {/* //TODO: need to move this carousel down when fullscreened, current fix doesnt work */}
+            <CarouselContent className={`-ml-3`}>
+              {carouselItems}
+            </CarouselContent>
+            {/* <CarouselPrevious />
+            <CarouselNext /> */}
+          </Carousel>
+        </div>
+      )}
     </div>
   )
 }
-
-export default HomeCarousel
+export default SongHighlightCarousel

@@ -16,7 +16,7 @@ const SearchBar = () => {
   const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      console.log('search enter pressed & triggered')
+      // console.log('search enter pressed & triggered')
     }
   }
 

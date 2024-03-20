@@ -1,15 +1,12 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import TopBar from '@/components/shared/TopBar'
 
-import BottomBar from '@/components/shared/BottomBar'
-import TopBar from '@/components/topbar/TopBar'
+import { Outlet } from 'react-router-dom'
 
 const RootLayout = () => {
-  const location = useLocation()
-
   return (
-    <div className='w-full relative'>
+    <div className='w-full '>
       <TopBar />
-      <section className='flex flex-1 max-h-[calc(100vh-56px-56px)]'>
+      <section className='flex flex-1 h-full -my-14 '>
         {/* Outlet lets us show what's gonna be on the Landing Page later */}
         <Outlet />
       </section>

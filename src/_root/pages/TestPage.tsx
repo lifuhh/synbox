@@ -1,152 +1,72 @@
-import CaptionFileDrop from '@/components/captions/CaptionFileDrop'
-
-import { isKanji } from 'wanakana'
-
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import HeroGenerateLyricsSection from '@/components/generate-lyrics/HeroGenerateLyricsSection'
+import { useEffect, useState } from 'react'
 
 const TestPage = () => {
-  const containerStyleFirst: React.CSSProperties = {
-    width: '80vw', // 80% of the viewport width
-    display: 'flex',
-    justifyContent: 'start',
+  const [taskID, setTaskID] = useState(null)
+  const [jobId, setJobId] = useState<string | null>(null)
+  const [progress, setProgress] = useState<number>(0)
+
+  const videoId = 'gNieKej1GAM'
+
+  const startTranscription = async () => {
+    const existingTaskID = localStorage.getItem('taskID')
+    if (existingTaskID) {
+      alert('A task is already in progress. Please wait for it to complete.')
+      return
+    }
+    // const receivedTaskID = await callYourApiToStartTranscription(videoUrl);
+    localStorage.setItem('taskID', receivedTaskID)
+    setTaskID(receivedTaskID) // Update the taskID state, triggering the useEffect hook
   }
 
-  const containerStyleSecond: React.CSSProperties = {
-    width: '90vw', // 80% of the viewport width
-    display: 'flex',
-    justifyContent: 'end',
-  }
+  useEffect(() => {
+    const savedTaskID = localStorage.getItem('taskID')
+    if (savedTaskID) {
+      setTaskID(savedTaskID)
+    }
+  }, [])
 
-  const lyricsStyle: React.CSSProperties = {
-    fontSize: '4.2vw', // Adjust the font size based on the viewport width
-  }
+  useEffect(() => {
+    if (!taskID) return // If no taskID, do nothing
 
-  const engTranslationStyle: React.CSSProperties = {
-    fontSize: '2.1vw', // Adjust the font size based on the viewport width
-  }
+    const eventSource = new EventSource(`/progress-stream/${taskID}`)
 
-  // 知りたいその秘密ミステリアス
-
-  const lyrics1 = '知りたいその秘密ミステリアス'
-  const lyrics2 = '天才的なアイドル様'
-  const lyrics3 = '今日何食べた？'
-  const lyrics4 = 'あれもないないない'
-
-  const kanjiSeparator = (lyrics: string) => {
-    let charBuffer = ''
-    let kanjiBuffer = ''
-    const lyricsBlock = []
-
-    for (const char of lyrics) {
-      const charIsKanji = isKanji(char)
-
-      if (charIsKanji) {
-        if (charBuffer !== '') {
-          lyricsBlock.push(charBuffer)
-          charBuffer = ''
-        }
-        kanjiBuffer += char
+    eventSource.onmessage = function (event) {
+      const data = JSON.parse(event.data)
+      if (data.status === 'Completed') {
+        localStorage.removeItem('taskID') // Remove taskID from localStorage
+        setTaskID(null) // Reset the state
+        console.log('Transcription Completed')
+        // Handle completion (e.g., notify user, fetch results)
+        eventSource.close()
       } else {
-        if (kanjiBuffer !== '') {
-          lyricsBlock.push(kanjiBuffer)
-          kanjiBuffer = ''
-        }
-        charBuffer += char
+        setProgress(data.progress)
+        console.log('Progress Update: ', data.progress)
+        // Update progress in the UI
       }
     }
-
-    if (charBuffer !== '') {
-      lyricsBlock.push(charBuffer)
+    return () => {
+      eventSource.close()
     }
-    if (kanjiBuffer !== '') {
-      lyricsBlock.push(kanjiBuffer)
-    }
+  }, [taskID])
 
-    return lyricsBlock
-  }
-  const lyricsList = [
-    kanjiSeparator(lyrics1),
-    kanjiSeparator(lyrics2),
-    kanjiSeparator(lyrics3),
-    kanjiSeparator(lyrics4),
-  ]
+  //? Test socket
 
-  console.log(lyricsList)
+  // const unicodeStr =
+  //   '\u3053\u306e\u66f2[\u304d\u3087\u304f]\u306b\u306f\u539f\u4f5c[\u3052\u3093\u3055\u304f]\u306e\u7269\u8a9e[\u3082\u306e\u304c\u305f\u308a]\u304c\u3042\u3063\u3066\u3001\n\u7acb\u5834[\u305f\u3061\u3070]\u306e\u9055[\u3061\u304c]\u30462\u4eba[\u3075\u305f\u308a]\u304c\u6b8b\u9177[\u3056\u3093\u3053\u304f]\u306a\u4e16\u754c[\u305b\u304b\u3044]\u306e\u4e2d[\u306a\u304b]\u3067\u3059\u3054\u304f\u7f8e[\u3046\u3064\u304f]\u3057\u304f\u53cb\u60c5[\u3086\u3046\u3058\u3087\u3046]\u3092\u80b2[\u305d\u3060]\u3080\n\u305d\u3093\u306a\u66f2[\u304d\u3087\u304f]\u306b\u306a\u3063\u3066\u3044\u307e\u3059\u3002\u306a\u306e\u3067\u3001\n\u79c1[\u308f\u305f\u3057]\u3082\u305d\u306e\u7f8e[\u3046\u3064\u304f]\u3057\u3059\u304e\u308b\u512a[\u3084\u3055]\u3057\u3055\u3092\u6b4c[\u3046\u305f]\u306b\u4e57[\u306e]\u305b\u3089\u308c\u308b\u3088\u3046\u306b\u3001\n\u5fc3[\u3053\u3053\u308d]\u3092\u8fbc[\u3053]\u3081\u3066\u6b4c[\u3046\u305f]\u3044\u305f\u3044\u3068\u601d[\u304a\u3082]\u3044\u307e\u3059\u3002\n\u304a\u9858[\u306d\u304c]\u3044\u3057\u307e\u3059\u3002\n\u4eca[\u3044\u307e]\u3001\u9759[\u3057\u305a]\u304b\u306a\u591c[\u3088\u308b]\u306e\u4e2d[\u306a\u304b]\u3067\n\u7121[\u3080]\u8a08\u753b[\u3051\u3044\u304b\u304f]\u306b\u8eca[\u304f\u308b\u307e]\u3092\u8d70[\u306f\u3057]\u3089\u305b\u305f\n\u5de6[\u3072\u3060\u308a]\u96a3[\u3068\u306a\u308a]\u3001\u3042\u306a\u305f\u306e\n\u6a2a\u9854[\u3088\u3053\u304c\u304a]\u3092\u6708[\u3064\u304d]\u304c\u7167[\u3066]\u3089\u3057\u305f\n\u305f\u3060\u3001\u601d[\u304a\u3082]\u3044\u51fa[\u3067]\u3092\u63a2[\u3055\u304c]\u308b\u69d8[\u3088\u3046]\u306b\n\u8fbf[\u305f\u3069]\u308b\u69d8[\u3088\u3046]\u306b\u8a00\u8449[\u3053\u3068\u3070]\u3092\u7e4b[\u3064\u306a]\u304e\u5408[\u3042]\u308f\u305b\u308c\u3070\n\u3069\u3046\u3057\u3088\u3046\u3082\u306a\u304f\u6ea2[\u3042\u3075]\u308c\u3066\u304f\u308b\n\u65e5\u3005[\u3072\u3073]\u306e\u8a18\u61b6[\u304d\u304a\u304f]\n\u3042\u306a\u305f\u306e\u305d\u3070\u3067\u751f[\u3044]\u304d\u308b\u3068\u6c7a[\u304d]\u3081\u305f\u305d\u306e\u65e5[\u3072]\u304b\u3089\n\u5c11[\u3059\u3053]\u3057\u305a\u3064\u5909[\u304b]\u308f\u308a\u59cb[\u306f\u3058]\u3081\u305f\u4e16\u754c[\u305b\u304b\u3044]\n\u5f37[\u3064\u3088]\u304f\u5728[\u3042]\u308b\u3088\u3046\u306b\u5f31[\u3088\u308f]\u3055\u3092\u96a0[\u304b\u304f]\u3059\u3088\u3046\u306b\n\u6f14[\u3048\u3093]\u3058\u3066\u304d\u305f\u65e5\u3005[\u3072\u3073]\u306b\n\u3042\u308b\u65e5[\u3072]\u7a81\u7136[\u3068\u3064\u305c\u3093]\u73fe[\u3042\u3089\u308f]\u308c\u305f\u305d\u306e\u773c\u5dee[\u307e\u306a\u3056]\u3057\u304c\n\u77e5[\u3057]\u3089\u306a\u304b\u3063\u305f\u3053\u3068\u6559[\u304a\u3057]\u3048\u3066\u304f\u308c\u305f\n\u5b88[\u307e\u3082]\u308b\u3079\u304d\u3082\u306e\u304c\u3042\u308c\u3070\u305d\u308c\u3060\u3051\u3067\n\u3053\u3093\u306a\u306b\u3082\u5f37[\u3064\u3088]\u304f\u306a\u308c\u308b\u3093\u3060\n\u6df1[\u3075\u304b]\u3044\u6df1[\u3075\u304b]\u3044\u6697\u95c7[\u304f\u3089\u3084\u307f]\u306e\u4e2d[\u306a\u304b]\u3067\n\u51fa\u4f1a[\u3067\u3042]\u3044\u3001\u5171[\u3068\u3082]\u306b\u904e[\u3059]\u3054\u3057\u3066\u304d\u305f\n\u985e[\u305f\u3050\u3044]\u306e\u7121[\u306a]\u3044\u65e5\u3005[\u3072\u3073]\n\u5fc3[\u3053\u3053\u308d]\u5730[\u3058]\u3088\u304b\u3063\u305f\n\u3044\u3084\u3001\u5e78[\u3057\u3042\u308f]\u305b\u3060\u3063\u305f\n\u78ba[\u305f\u3057]\u304b\u306b\u307b\u3089\u6551[\u3059\u304f]\u308f\u308c\u305f\u3093\u3060\u3088\n\u3042\u306a\u305f\u306b\n\u308f\u305a\u304b\u306a\u5149[\u3072\u304b\u308a]\u3092\u6349[\u3068\u3089]\u3048\u3066\u8f1d[\u304b\u304c\u3084]\u3044\u305f\u306e\u306f\n\u307e\u308b\u3067\u6d41[\u306a\u304c]\u308c\u661f[\u307c\u3057]\u306e\u3088\u3046\u306a\u6d99[\u306a\u307f\u3060]\n\u4e0d\u5668\u7528[\u3076\u304d\u3088\u3046]\u306a\u547d[\u3044\u306e\u3061]\u304b\u3089\u6d41[\u306a\u304c]\u308c\u3066\u96f6[\u3053\u307c]\u308c\u843d[\u304a]\u3061\u305f\n\u7f8e[\u3046\u3064\u304f]\u3057\u3044\u6d99[\u306a\u307f\u3060]\n\u5f37[\u3064\u3088]\u304f\u5927[\u304a\u304a]\u304d\u306a\u4f53[\u304b\u3089\u3060]\u306b\u79d8[\u3072]\u3081\u305f\u512a[\u3084\u3055]\u3057\u3055\u3082\n\u3069\u3053\u304b\u82e6[\u304f\u308b]\u3057\u3052\u306a\u305d\u306e\u9854[\u304b\u304a]\u3082\n\u611b[\u3044\u3068]\u3057\u304f\u601d[\u304a\u3082]\u3046\u3093\u3060\n\u59ff\u5f62[\u3059\u304c\u305f\u304c\u305f]\u3058\u3083\u306a\u3044\u3093\u3060\n\u3084\u3063\u3068\u6c17\u4ed8[\u304d\u3065]\u3044\u305f\u3093\u3060\n\u7121\u60c5[\u3080\u3058\u3087\u3046]\u306b\u97ff[\u3072\u3073]\u304f\u9283\u58f0[\u3058\u3085\u3046\u305b\u3044]\u304c\u591c[\u3088\u308b]\u3092\u5f15[\u3072]\u304d\u88c2[\u3055]\u304f\n\u5225[\u308f\u304b]\u308c\u306e\u606f\u5439[\u3044\u3076\u304d]\u304c\u8972[\u304a\u305d]\u3044\u304b\u304b\u308b\n\u5239\u90a3[\u305b\u3064\u306a]\u306b\u8f1d[\u304b\u304c\u3084]\u3044\u305f\u7121\u6148\u60b2[\u3080\u3058\u3072]\u306a\u6d41[\u306a\u304c]\u308c\u661f[\u307c\u3057]\n\u7948[\u3044\u306e]\u308a\u306f\u305f\u3060\u5c4a[\u3068\u3069]\u304b\u305a\u306b\u6d88[\u304d]\u3048\u305f\n\u3053\u306e\u3001\u624b[\u3066]\u306e\u4e2d[\u306a\u304b]\u3067\u71c3[\u3082]\u3048\u5c3d[\u3064]\u304d\u305f\n\u91d1\u8272[\u304d\u3093\u3044\u308d]\u306e\u512a[\u3084\u3055]\u3057\u3044\u5f57\u661f[\u3059\u3044\u305b\u3044]\u3092\n\u7f8e[\u3046\u3064\u304f]\u3057\u3044\u305f\u3066\u304c\u307f\u3092\n\u6697\u95c7[\u304f\u3089\u3084\u307f]\u306e\u4e2d[\u306a\u304b]\u63e1[\u306b\u304e]\u308a\u7de0[\u3057]\u3081\u305f\n\u3042\u308a\u304c\u3068\u3046\u3054\u3056\u3044\u307e\u3057\u305f\u3002'
+  // const decoded = unicodeStr.replace(/\\u[\dA-F]{4}/gi, (match) => {
+  // Remove the '\u' part and parse the remaining hex number
+  //   return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16))
+  // })
+
+  // console.log(decoded)
+
+  // console.log({ videoId })
 
   return (
-    <div
-      className='absolute top-1/6 left-0 w-full h-full pointer-events-none  overflow-hidden'
-      style={{ zIndex: 1000 }}>
-      <div className='flex flex-col justify-between w-full h-9/10 border-red border-2 my-10'>
-        <div className='mt-2 w-full'>
-          <p
-            style={engTranslationStyle}
-            className='flex font_noto_sans_jp_black_900 justify-center font-outline-1'>
-            Couldn't beat her smile, it stirred up all the media
-          </p>
-        </div>
-
-        <div className='max-w-full max-h-85 rounded-lg border'>
-          <div className='flex flex-col justify-end m-4'>
-            <div style={containerStyleFirst}>
-              <p
-                style={lyricsStyle}
-                className='font-outline-1 font_noto_sans_jp_black_900'>
-                <ruby>
-                  無敵<rp>(</rp>
-                  <rt>むてき</rt>
-                  <rp>)</rp>
-                </ruby>
-                の
-                <ruby>
-                  笑顔<rp>(</rp>
-                  <rt>えがお</rt>
-                  <rp>)</rp>
-                </ruby>
-                で
-                <ruby>
-                  荒<rp>(</rp>
-                  <rt>あ</rt>
-                  <rp>)</rp>
-                </ruby>
-                らすメディア
-              </p>
-            </div>
-          </div>
-          <div className='flex justify-end m-4'>
-            <div style={containerStyleSecond}>
-              <p
-                style={lyricsStyle}
-                className='font-outline-1 font_noto_sans_jp_black_900'>
-                <ruby>
-                  知<rp>(</rp>
-                  <rt>し</rt>
-                  <rp>)</rp>
-                </ruby>
-                りたいその
-                <ruby>
-                  秘密
-                  <rp>(</rp>
-                  <rt>ひみつ</rt>
-                  <rp>)</rp>
-                </ruby>
-                ミステリアス
-                <ruby>
-                  今日何食
-                  <rp>(</rp>
-                  <rt>きょうなにた</rt>
-                  <rp>)</rp>
-                </ruby>
-                べた？
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className='flex mx-auto my-auto align-middle '>
+      <HeroGenerateLyricsSection />
     </div>
   )
 }

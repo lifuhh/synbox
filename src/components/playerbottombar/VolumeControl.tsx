@@ -2,30 +2,32 @@ import VolumeMuteIcon from '@mui/icons-material/VolumeMute'
 import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 
-import { useState } from 'react'
+import { useAppContext } from '@/context/AppContext'
+import { useCallback, useState } from 'react'
 import { Button } from '../ui/button'
 import { Slider } from '../ui/slider'
 
-interface VolumeControlProps {
-  volume: number
-  muted: boolean
-  handleVolumeChange: (value: number) => void
-  handleToggleMuted: () => void
-}
+const VolumeControl = () => {
+  const { muted, setPlayerMuted, volume, setVolume } = useAppContext()
 
-const VolumeControl: React.FC<VolumeControlProps> = ({
-  volume,
-  muted,
-  handleVolumeChange,
-  handleToggleMuted,
-}) => {
+  const handleToggleMuted = useCallback(() => {
+    setPlayerMuted(!muted)
+  }, [muted, setPlayerMuted])
+
+  const handleVolumeChange = useCallback(
+    (value: number) => {
+      // setMuted(value === 0)
+      setVolume(value)
+    },
+    [setVolume]
+  )
   const [isHovering, setIsHovering] = useState<boolean>(false)
 
   return (
     <div
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
-      className='flex-around'>
+      className='flex-around cursor-pointer'>
       <Button
         className='rounded-full'
         size='icon'
