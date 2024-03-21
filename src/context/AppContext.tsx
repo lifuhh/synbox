@@ -9,6 +9,8 @@ interface AppContextType {
   videoId: string
   volume: number
   processingStage: number
+  isFullscreen: boolean
+  // playing: boolean
   landingPageCarouselData: formattedYoutubeVideoItemForCarousel[]
   setPlayerMuted: (muted: boolean) => void
   setVideoId: (videoId: string) => void
@@ -19,6 +21,7 @@ interface AppContextType {
   ) => void
   playerControlsVisible: boolean
   setPlayerControlsVisible: (visibility: boolean) => void
+  setIsFullscreen: (isFullscreen: boolean) => void
 }
 
 const INITIAL_STATE = {
@@ -28,6 +31,7 @@ const INITIAL_STATE = {
   processingStage: 0,
   playerControlsVisible: true,
   landingPageCarouselData: [],
+  isFullscreen: false,
   setVideoId: (videoId: string) => {},
   setProcessingStage: (stage: number) => {},
   setVolume: (volume: number) => {},
@@ -36,6 +40,7 @@ const INITIAL_STATE = {
   setLandingPageCarouselData: (
     data: formattedYoutubeVideoItemForCarousel[]
   ) => {},
+  setIsFullscreen: (isFullscreen: boolean) => {},
 }
 const AppContext = createContext<AppContextType>(INITIAL_STATE)
 
@@ -49,6 +54,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [landingPageCarouselData, setLandingPageCarouselData] = useState<
     formattedYoutubeVideoItemForCarousel[]
   >([])
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
 
   // const navigate = useNavigate()
 
@@ -69,13 +75,15 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     muted,
     setPlayerMuted,
     processingStage,
-    landingPageCarouselData,
     setProcessingStage,
+    landingPageCarouselData,
+    setLandingPageCarouselData,
     volume,
     setVolume,
     playerControlsVisible,
     setPlayerControlsVisible,
-    setLandingPageCarouselData,
+    isFullscreen,
+    setIsFullscreen,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

@@ -8,12 +8,11 @@ import AppLogo from '../topbar/NowPlayingDisplayInfo'
 import { useAppContext } from '@/context/AppContext'
 
 const TopBar = () => {
-  const { playerControlsVisible } = useAppContext()
+  const { playerControlsVisible, isFullscreen } = useAppContext()
 
   const location = useLocation() // Use the useLocation hook to access the current route
   const isVideoPlayer = location.pathname.includes('/v/')
   // Determine the background opacity based on the pathname
-  const topbarOpacity = isVideoPlayer ? 'bg-opacity-0' : 'bg-opacity-80'
   const buttonVisibility = isVideoPlayer ? 'hidden' : 'visible'
   // const pathname = window.location.pathname
   // console.log('Pathname in topbar is')
@@ -24,10 +23,14 @@ const TopBar = () => {
     // <section className='topbar sticky top-0 bg'>
     <section
       className={`topbar sticky top-0 z-100 controls ${
-        playerControlsVisible ? 'visible block h-14' : 'hidden'
+        isFullscreen ? 'hidden' : 'block'
       }`}>
       <nav
-        className={`flex-between h-14 w-full bg-dark-1 ${topbarOpacity} sm:px-12`}>
+        className={`flex-between h-14 w-full bg-dark-1 ${
+          isVideoPlayer ? 'bg-opacity-0' : 'bg-opacity-80'
+        } sm:px-12
+         ${playerControlsVisible ? '' : 'hidden'}
+        `}>
         <AppLogo />
         {/* <div className='flex-end pb-2 justify-end lg:gap-2 w-48'>
           <AccountBoxIcon

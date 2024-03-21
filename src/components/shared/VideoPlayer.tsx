@@ -1,5 +1,5 @@
 import { useAppContext } from '@/context/AppContext'
-import { ForwardedRef, useEffect } from 'react'
+import { ForwardedRef, useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 
 interface VideoPlayerProps {
@@ -33,6 +33,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 }) => {
   // const handlePlayerReady = () => {}
   const { setPlayerControlsVisible } = useAppContext()
+  const [videoEnded, setVideoEnded] = useState(false)
 
   //? UseEffect to handle delay in dismissing controls visibility when playing video
   useEffect(() => {
@@ -70,6 +71,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     handlePlay()
   }
 
+  const handleVideoEnded = () => {
+    handleEnded()
+    setVideoEnded(playing)
+  }
+
   return (
     <>
       <ReactPlayer
@@ -94,13 +100,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onStart={handleStart}
         onPlay={handlePlay}
         onSeek={(e) => console.log('onSeek', e)}
-        onEnded={handleEnded}
+        onEnded={handleVideoEnded}
         onError={(e) => console.log('onError', e)}
         onProgress={handleProgress}
         onDuration={handleDuration}
         onPause={handlePause}
       />
-      {playing ? (
+      {playing || videoEnded ? (
         <div className='absolute top-0 left-0 w-full h-full bg-black bg-opacity-0 flex justify-center items-center text-white'></div>
       ) : (
         ''

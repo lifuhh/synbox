@@ -46,8 +46,8 @@ const SongHighlightCarousel = () => {
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap())
 
-    let accumulatedDeltaY = 0 // Accumulator for deltaY values
-    const deltaYThreshold = 100 // Threshold to trigger scroll, adjust as needed
+    let accumulatedDeltaX = 0 // Accumulator for deltaY values
+    const deltaXThreshold = 50 // Threshold to trigger scroll, adjust as needed
     let throttleTimeout: ReturnType<typeof setTimeout> | null = null // Throttle timeout
 
     // function to handle left/right arrow key press
@@ -73,17 +73,17 @@ const SongHighlightCarousel = () => {
 
     // Function to handle wheel event
     const handleWheel = (e: WheelEvent) => {
-      accumulatedDeltaY += e.deltaX
+      accumulatedDeltaX += e.deltaX
 
       if (!throttleTimeout) {
         throttleTimeout = setTimeout(() => {
-          if (accumulatedDeltaY > deltaYThreshold) {
+          if (accumulatedDeltaX > deltaXThreshold) {
             api.scrollNext() // Scroll to next slide
-          } else if (accumulatedDeltaY < -deltaYThreshold) {
+          } else if (accumulatedDeltaX < -deltaXThreshold) {
             api.scrollPrev() // Scroll to previous slide
           }
           // Reset accumulator and throttle timeout after action
-          accumulatedDeltaY = 0
+          accumulatedDeltaX = 0
           if (throttleTimeout) clearTimeout(throttleTimeout)
           throttleTimeout = null
         }, 100) // Throttle timeout, adjust as needed for sensitivity

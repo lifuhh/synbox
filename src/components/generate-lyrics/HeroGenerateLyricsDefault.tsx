@@ -56,8 +56,8 @@ const HeroGenerateLyricsDefault = ({
 
       <div className='p-4 max-w-7xl  mx-auto z-10 w-full gap-4 lg:gap-0 flex-between xl:flex-around flex-col xl:h-96'>
         <h1 className='text-4xl md:text-6xl lg:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-2 no-select'>
-          {/* AI-Powered Japanese Karaoke */}
-          Placeholder
+          AI-Powered Japanese Karaoke
+          {/* Placeholder */}
         </h1>
         <div className='sm:mx-auto w-full sm:w-4/5 flex-between gap-4 overflow-visible relative'>
           <Input
