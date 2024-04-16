@@ -1,18 +1,43 @@
+import HeroGenerateLyricsError from '@/components/generate-lyrics/HeroGenerateLyricsError'
+import HeroGenerateLyricsExists from '@/components/generate-lyrics/HeroGenerateLyricsExists'
+
 import { useAppContext } from '@/context/AppContext'
+
 import { useState } from 'react'
 import HeroGenerateLyricsDefault from './HeroGenerateLyricsDefault'
+import HeroGenerateLyricsProcessing from './HeroGenerateLyricsProcessing'
+
+const exist = 'K1Tz2yNmamI'
+const noExist = 'qDL3zhB8-MM'
 
 const HeroGenerateLyricsSection = () => {
   const { processingStage, setProcessingStage } = useAppContext()
-  const [loading, setLoading] = useState(false)
+  const [inputVideoId, setInputVideoId] = useState<string>('')
 
-  let heroContent
-  if (processingStage === 0) {
-    heroContent = (
-      <HeroGenerateLyricsDefault loading={loading} setLoading={setLoading} />
-    )
+  const [subStage, setSubStage] = useState<number>(1)
+
+  const renderComponent = () => {
+    switch (processingStage) {
+      case 1:
+        return (
+          <HeroGenerateLyricsDefault
+            setProcessingStage={setProcessingStage}
+            setInputVideoId={setInputVideoId}
+          />
+        )
+      case 2:
+        return <HeroGenerateLyricsProcessing subStage={subStage} />
+      case 3:
+        return <HeroGenerateLyricsExists />
+      case 4:
+        return <HeroGenerateLyricsError />
+    }
   }
 
-  return <section className='px-4 mt-14'>{heroContent}</section>
+  return (
+    <>
+      <section className='px-4 mt-14'>{renderComponent()}</section>
+    </>
+  )
 }
 export default HeroGenerateLyricsSection

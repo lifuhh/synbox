@@ -3,6 +3,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 
 import { Button } from '@/components/ui/button'
 
+//TODO: can probably replace this component with a card & list items instead
 const PopularSongsTable = () => {
   const test_elements = [
     { position: 1, mass: 12.011, symbol: 'C', name: 'Carbon' },

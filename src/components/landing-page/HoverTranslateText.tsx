@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import React, { memo, useEffect, useRef, useState } from 'react'
 
+//TODO: dont think this component works, remove it
 const HoverTranslateText = ({
   text,
   revealText,

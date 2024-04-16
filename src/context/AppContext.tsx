@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 interface AppContextType {
   muted: boolean
@@ -28,7 +27,7 @@ const INITIAL_STATE = {
   videoId: '',
   volume: 0.2,
   muted: true,
-  processingStage: 0,
+  processingStage: 1,
   playerControlsVisible: true,
   landingPageCarouselData: [],
   isFullscreen: false,
@@ -45,16 +44,16 @@ const INITIAL_STATE = {
 const AppContext = createContext<AppContextType>(INITIAL_STATE)
 
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [videoId, setVideoId] = useState<string>('')
   const [muted, setPlayerMuted] = useState<boolean>(true)
+  const [videoId, setVideoId] = useState<string>('')
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
   const [playerControlsVisible, setPlayerControlsVisible] =
     useState<boolean>(true)
   const [volume, setVolume] = useState<number>(0.2)
-  const [processingStage, setProcessingStage] = useState<number>(0)
+  const [processingStage, setProcessingStage] = useState<number>(1)
   const [landingPageCarouselData, setLandingPageCarouselData] = useState<
     formattedYoutubeVideoItemForCarousel[]
-  >([])
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
+  >([]) //* This should be unnecessary
 
   // const navigate = useNavigate()
 

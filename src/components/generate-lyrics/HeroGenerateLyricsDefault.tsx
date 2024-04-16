@@ -3,17 +3,17 @@ import { Input } from '@/components/ui/input'
 import { YouTubeUrlValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
 import { useDisclosure } from '@mantine/hooks'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Spotlight } from '../ui/Spotlight'
 
 interface HeroGenerateLyricsDefaultProps {
-  loading: boolean
-  setLoading: (loading: boolean) => void
+  setProcessingStage: (stage: number) => void
+  setInputVideoId: (videoId: string) => void
 }
 
 const HeroGenerateLyricsDefault = ({
-  loading,
-  setLoading,
+  setProcessingStage,
+  setInputVideoId,
 }: HeroGenerateLyricsDefaultProps) => {
   const [inputValue, setInputValue] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -43,7 +43,12 @@ const HeroGenerateLyricsDefault = ({
     if (validationSuccess) {
       // If the URL is valid, you can proceed with your logic here
       // For example, fetching the lyrics or any other action
-      console.log('Valid YouTube URL:', extractVideoId(inputValue))
+      const extractedVidId = extractVideoId(inputValue)
+      if (extractedVidId) {
+        setInputVideoId(extractedVidId)
+        console.log('Valid YouTube URL:', extractedVidId)
+      }
+      setProcessingStage(1)
     } else {
       // If the submit button is clicked without a valid URL, show an error
       setErrorMessage('Please enter a valid YouTube URL before submitting.')
@@ -56,8 +61,8 @@ const HeroGenerateLyricsDefault = ({
 
       <div className='p-4 max-w-7xl  mx-auto z-10 w-full gap-4 lg:gap-0 flex-between xl:flex-around flex-col xl:h-96'>
         <h1 className='text-4xl md:text-6xl lg:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-2 no-select'>
-          AI-Powered Japanese Karaoke
-          {/* Placeholder */}
+          {/* AI-Powered Japanese Karaoke */}
+          Placeholder
         </h1>
         <div className='sm:mx-auto w-full sm:w-4/5 flex-between gap-4 overflow-visible relative'>
           <Input
@@ -67,7 +72,13 @@ const HeroGenerateLyricsDefault = ({
             // border-2 border-primary-500/40 hover:border-primary-500/90
             // focus:ring-0 focus:ring-violet-300
             // focus:outline-none focus:ring-0 focus:ring-teal-300
-            className={`py-6 focus:ring-transparent hover:border-secondary border-2 border-white ${
+            className={`py-6 focus:ring-transparent ${
+              inputValue.length > 0
+                ? validationSuccess
+                  ? 'hover:border-green-500'
+                  : 'hover:border-red-700'
+                : 'hover:border-secondary'
+            }  border-2 border-white ${
               inputValue.length > 0
                 ? validationSuccess
                   ? 'focus:border-green-500'

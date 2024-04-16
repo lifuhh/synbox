@@ -2,17 +2,14 @@ import { Toaster } from '@/components/ui/toaster'
 import { Route, Routes } from 'react-router-dom'
 import RootLayout from './_root/RootLayout'
 import { LandingPage, PlayerPage, TestPage } from './_root/pages'
-// import { useEffect, useState } from 'react'
 import '@mantine/core/styles.css'
 import './globals.css'
 
-import { MantineProvider } from '@mantine/core'
-import AppProvider from './context/AppContext'
+
 
 const App = () => {
   return (
-    <MantineProvider defaultColorScheme='auto'>
-      <AppProvider>
+
         <main className='flex h-screen'>
           <Routes>
             {/* auth routes */}
@@ -28,8 +25,7 @@ const App = () => {
           </Routes>
           <Toaster />
         </main>
-      </AppProvider>
-    </MantineProvider>
+
   )
 }
 export default App

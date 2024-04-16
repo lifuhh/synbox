@@ -32,6 +32,8 @@ const PlayerPage = () => {
   const [romajiEnabled, setRomajiEnabled] = useState<boolean>(true)
   const [lyricsVisibility, setLyricsVisibility] = useState<boolean>(true)
 
+
+  //TODO: wrong - fix this
   useEffect(() => {
     if (videoId) setStateVideoId(videoId)
   }, [videoId])
@@ -64,6 +66,7 @@ const PlayerPage = () => {
     // setTestStartTime(performance.now())
   }, [])
 
+  //? requestAnimationFrame tester - to change to use accordingly for lyrics
   useEffect(() => {
     //! RAF gives a timestamp actually
     const testAnimationFrameCallback = (timestamp: number) => {

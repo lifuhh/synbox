@@ -190,8 +190,36 @@
     background: white;
     padding: 30px;
   }
+
+  .invisible-ring {
+    --tw-ring-color: rgba(0, 0, 0, 0); /* Set to fully transparent */
+    --tw-ring-offset-color: rgba(0, 0, 0, 0); /* Set to fully transparent */
+  }
 }
 
+.marquee {
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+
+.marquee span {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.playlist-item:hover .marquee span {
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
 /* Top Search Bar slideup animation control */
 
 .slide-up-animation,

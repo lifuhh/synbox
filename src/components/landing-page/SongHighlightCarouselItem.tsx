@@ -24,6 +24,8 @@ const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
   itemCount,
   item,
 }) => {
+  console.log({ item })
+
   const [cardStyle, setCardStyle] = useState<CSSProperties>({})
   const requestRef = useRef<number>()
   const navigate = useNavigate()

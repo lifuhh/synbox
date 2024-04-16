@@ -84,6 +84,22 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   useEffect(() => {
     const currentPath = location.pathname
 
+    const exitFullscreen = () => {
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (document.mozCancelFullScreen) {
+        /* Firefox */
+        document.mozCancelFullScreen()
+      } else if (document.webkitExitFullscreen) {
+        /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen()
+      } else if (document.msExitFullscreen) {
+        /* IE/Edge */
+        document.msExitFullscreen()
+      }
+      setIsFullscreen(false)
+    }
+
     // Check if we are not on the specific route
     if (currentPath !== '/v/') {
       // Call exitFullscreen when we are navigating away from the specific route
@@ -97,22 +113,6 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       setIsFullscreen(false)
     }
   }, [location, setIsFullscreen])
-
-  const exitFullscreen = () => {
-    if (document.exitFullscreen) {
-      document.exitFullscreen()
-    } else if (document.mozCancelFullScreen) {
-      /* Firefox */
-      document.mozCancelFullScreen()
-    } else if (document.webkitExitFullscreen) {
-      /* Chrome, Safari and Opera */
-      document.webkitExitFullscreen()
-    } else if (document.msExitFullscreen) {
-      /* IE/Edge */
-      document.msExitFullscreen()
-    }
-    setIsFullscreen(false)
-  }
 
   const openFullscreen = (elem) => {
     if (elem.requestFullscreen) {
@@ -130,34 +130,74 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     setIsFullscreen(true)
   }
 
-  const handleFullscreen = () => {
-    // Check if any element is currently in fullscreen mode
+  const handleFullscreen = useCallback(() => {
     if (
       !document.fullscreenElement &&
-      !document.mozFullScreenElement &&
       !document.webkitFullscreenElement &&
+      !document.mozFullScreenElement &&
       !document.msFullscreenElement
     ) {
       // No element is in fullscreen, enter fullscreen mode
-      openFullscreen(document.documentElement) // You can also use document.body
-      setIsFullscreen(true)
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen() // Standard method
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen() // Firefox
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen() // Chrome, Safari, and Opera
+      } else if (document.documentElement.msRequestFullscreen) {
+        document.documentElement.msRequestFullscreen() // IE/Edge
+      }
+
+      setIsFullscreen(true) // Update the state to reflect entering fullscreen
     } else {
-      setIsFullscreen(false)
       // An element is already in fullscreen, exit fullscreen mode
       if (document.exitFullscreen) {
         document.exitFullscreen() // Standard method
       } else if (document.mozCancelFullScreen) {
-        /* Firefox */
         document.mozCancelFullScreen() // Firefox
       } else if (document.webkitExitFullscreen) {
-        /* Chrome, Safari and Opera */
         document.webkitExitFullscreen() // Chrome, Safari, and Opera
       } else if (document.msExitFullscreen) {
-        /* IE/Edge */
         document.msExitFullscreen() // IE/Edge
       }
+
+      setIsFullscreen(false) // Update the state to reflect exiting fullscreen
     }
-  }
+  }, [setIsFullscreen])
+
+  // Effect to add and remove event listener for "Esc" key press
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        handleFullscreen()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscKey)
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey)
+    }
+  }, [handleFullscreen])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === ' ') {
+        event.preventDefault()
+        // Check if the pressed key is the spacebar
+        handlePlayPause() // Toggle play/pause
+      }
+    }
+
+    // Add event listener for 'keydown' event on the document
+    document.addEventListener('keydown', handleKeyDown)
+
+    // Cleanup function to remove event listener when component unmounts
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handlePlayPause])
 
   return (
     <div
