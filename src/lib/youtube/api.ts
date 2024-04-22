@@ -34,7 +34,7 @@ export async function getLandingPagePlaylist(): Promise<
   if (!response) throw new Error('Failed to fetch playlist items')
 
   const processedResponse = formatYoutubePlaylistResponse(response.data)
-
+  console.log('Successfully fetched response')
   console.log(processedResponse)
 
   return processedResponse

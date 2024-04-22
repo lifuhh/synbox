@@ -21,7 +21,7 @@ import FavouritesDropdownItem from './FavouritesDropdownItem'
 const FavouritesDropdownButton = ({
   buttonVisibility,
 }: {
-  buttonVisibility: boolean
+  buttonVisibility: string
 }) => {
   return (
     <DropdownMenu>

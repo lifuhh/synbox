@@ -2,7 +2,7 @@ import { cn } from '@/utils/cn'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 
-export const HoverEffect = ({
+export const InfiniteScrollGallery = ({
   items,
   className,
 }: {
@@ -22,6 +22,9 @@ export const HoverEffect = ({
         className
       )}>
       {items.map((item, idx) => (
+
+
+        //TODO: Style individual infinite scroll gallery cards here
         <div
           key={item?.link}
           className='relative group  block p-2 h-full w-full cursor-pointer'

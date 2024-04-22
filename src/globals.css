@@ -292,6 +292,14 @@
   padding: 8px; /* Optional, for some spacing around the text */
 }
 
+.unselectable {
+  pointer-events: none;
+  user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* Safari/Chrome/Opera */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
 .scrolling-text {
   display: inline-block;
   animation: scrollText 20s linear infinite;

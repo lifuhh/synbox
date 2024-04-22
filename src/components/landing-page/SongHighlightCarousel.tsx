@@ -20,6 +20,7 @@ import SongHighlightCarouselItem from './SongHighlightCarouselItem'
 Autoplay.globalOptions = { delay: 7000 }
 
 const SongHighlightCarousel = () => {
+  //TODO: move this to top level App() - figure out how to modify tsquery to access this variable
   const { data: playlistData, isLoading: isPlaylistDataFetching } =
     useGetLandingPagePlaylist()
 

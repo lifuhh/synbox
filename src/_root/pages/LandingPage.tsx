@@ -34,7 +34,7 @@ const LandingPage = () => {
         className='p-4'
       />
       {/* //? This is the Carousel + Leaderboard (placeholder) */}
-      <section className='w-full flex flex-col lg:flex-row gap-4'>
+      <section className='w-full flex flex-col lg:flex-row gap-4 '>
         <SongHighlightCarousel />
         <PopularSongsTable />
       </section>

@@ -23,23 +23,27 @@ const PopularSongsTable = () => {
     { position: 58, mass: 140.12, symbol: 'dgadga', name: 'Cerium' },
   ]
 
-  const test_rows = test_elements.map((element) => (
-    <Table.Tr key={element.symbol}>
-      <Table.Td>
-        {/* //TODO: fix containment issue */}
-        <div className='flex flex-between align-middle' key={element.mass}>
-          <p className='whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[300px]'>
-            YOASOBI - 優しい彗星 / THE FIRST TAKE
-            {/* AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA */}
-          </p>
-          <Button variant='outline' size='icon' className=''>
-            <PlayArrowIcon className='h-4 w-4' />
-          </Button>
-        </div>
-      </Table.Td>
-      {/* <Table.Td>{element.mass}</Table.Td> */}
-    </Table.Tr>
-  ))
+  const test_rows = test_elements.map((element) => {
+
+    return (
+      <Table.Tr key={element.symbol}>
+        <Table.Td>
+          {/* //TODO: fix containment issue */}
+          <div
+            className='flex flex-between align-middle playlist-item'
+            key={element.mass}>
+            <div className='whitespace-nowrap overflow-hidden max-w-[300px] marquee unselectable'>
+              <span className=''>YOASOBI - 優しい彗星 / THE FIRST TAKE</span>
+            </div>
+            <Button variant='outline' size='icon' className=''>
+              <PlayArrowIcon className='h-4 w-4' />
+            </Button>
+          </div>
+        </Table.Td>
+        {/* <Table.Td>{element.mass}</Table.Td> */}
+      </Table.Tr>
+    )
+  })
 
   return (
     <div className=' w-full mx-auto lg:ml-6 lg:w-5/12 xl:w-4/12 mt-10 lg:mt-2 h-96 rounded-md overflow-y-auto custom-scrollbar'>

@@ -31,6 +31,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tabler/icons-react": "^3.0.1",
     "@tanstack/react-query": "^5.18.1",
+    "@tanstack/react-query-devtools": "^5.29.2",
     "@types/youtube": "^0.0.50",
     "appwrite": "^13.0.1",
     "axios": "^1.6.7",

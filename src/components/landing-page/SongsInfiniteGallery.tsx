@@ -1,5 +1,5 @@
 import { Spotlight } from '../ui/Spotlight'
-import { HoverEffect } from './HoverEffect'
+import { InfiniteScrollGallery } from './InfiniteScrollGallery'
 
 const sample_data = [
   {
@@ -90,7 +90,7 @@ const SongsInfiniteGallery = () => {
         fill='pink'
       />
       <div className='max-w-full mx-auto px-8'>
-        <HoverEffect items={sample_data} />
+        <InfiniteScrollGallery items={sample_data} />
       </div>
       {/*  
       {Array.from({ length: 25 }, (_, index) => (

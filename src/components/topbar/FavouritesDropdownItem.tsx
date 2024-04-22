@@ -15,7 +15,7 @@ const FavouritesDropdownItem = () => {
           src={thumbnailUrl}
           className='h-14 w-auto object-cover rounded-xs'
         />
-        <div className='marquee px-2'>
+        <div className='marquee px-2 unselectable'>
           <span>{title}</span>
         </div>
         <Button variant='ghost' className='px-2 ml-2 hover:bg-primary'>

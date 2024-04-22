@@ -1,7 +1,5 @@
 import { Button } from '@/components/ui/button'
-import QueueMusicOutlinedIcon from '@mui/icons-material/QueueMusicOutlined'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { Moon, Sun } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { GitHubIcon } from '../svgicons'
 import CommandSearch from '../topbar/CommandSearch'
