@@ -74,7 +74,6 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
   ])
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-
     acceptedFiles.forEach((file: File) => {
       const fileName = file.name
       const extension = fileName.split('.').pop()
@@ -92,14 +91,11 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
           setSrtUploaded(true)
           setCurrentParsedSrt(parsedContent)
           setSrtFileName(trimmedFileName)
-
         } else if (extension == 'txt') {
-
           const parsedContent = parseRomajiFile(content)
           setTxtUploaded(true)
           setCurrentParsedRomaji(parsedContent)
           setTxtFileName(trimmedFileName)
-
         }
       }
       reader.readAsText(file)
@@ -154,7 +150,7 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
     <div className='h-72 border-4 border-slate-800'>
       <div
         {...getRootProps({ className: 'dropzone' })}
-        className='cursor-pointer border-4 border-dark-4 h-48'>
+        className='h-48 cursor-pointer border-4 border-dark-4'>
         <input {...getInputProps()} />
         {isDragActive ? (
           <p className='text-center'>
@@ -169,7 +165,7 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
       </div>
       <div className='min-w-9/10'>
         {srtUploaded ? (
-          <div className='border-2 flex-between'>
+          <div className='flex-between border-2'>
             <div>
               <h1>Srt Uploaded: {srtFileName}</h1>
               <h1>Srt Length: {currentParsedSrt.length}</h1>
@@ -178,12 +174,8 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
               className='rounded-full'
               size='icon'
               variant='ghost'
-              onClick={removeSrtFile}
-              
-              >
-              <HighlightOffIcon sx={{ fontSize: 32 }}
-              
-              />
+              onClick={removeSrtFile}>
+              <HighlightOffIcon sx={{ fontSize: 32 }} />
               <span className='sr-only'>Delete Srt Upload</span>
             </Button>
           </div>
@@ -191,7 +183,7 @@ const LyricsUploadStageOne: React.FC<LyricsUploadStageOneProps> = ({
           <h1 className='border-2'>Srt Not Uploaded</h1>
         )}
         {txtUploaded ? (
-          <div className='border-2 flex-between'>
+          <div className='flex-between border-2'>
             <div>
               <h1>Txt Uploaded: {txtFileName}</h1>
               <h1>Txt Length: {currentParsedRomaji.length}</h1>

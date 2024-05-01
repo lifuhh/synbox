@@ -78,7 +78,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   const formattedPlayed = useMemo(() => formatTimeDisplay(played), [played])
   const formattedDuration = useMemo(
     () => formatTimeDisplay(duration),
-    [duration]
+    [duration],
   )
 
   useEffect(() => {
@@ -201,7 +201,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
 
   return (
     <div
-      className={`fixed bottom-0 inset-x-0  bg-gray bg-dark-3 ${
+      className={`bg-gray fixed inset-x-0  bottom-0 bg-dark-3 ${
         playing
           ? isFullscreen
             ? 'bg-opacity-0'
@@ -219,7 +219,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
           onValueChange={(value) => handleSeekChange(value[0])}
         />
       </div>
-      <div className='flex items-center justify-between sm:mx-2 py-2'>
+      <div className='flex items-center justify-between py-2 sm:mx-2'>
         <div className='flex items-center lg:mr-6'>
           <Button className='rounded-full' size='icon' variant='ghost'>
             <SkipPreviousIcon />
@@ -244,17 +244,17 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
 
           <VolumeControl />
           <div className='flex-between ml-2'>
-            <span className='text-center hidden sm:inline w-12'>
+            <span className='hidden w-12 text-center sm:inline'>
               {formattedPlayed}
             </span>
-            <span className='text-center w-4 hidden sm:inline'>{' / '}</span>
-            <span className='text-center hidden sm:inline'>
+            <span className='hidden w-4 text-center sm:inline'>{' / '}</span>
+            <span className='hidden text-center sm:inline'>
               {formattedDuration}
             </span>
           </div>
         </div>
 
-        <div className='flex items-center justify-end gap-1 md:gap-2 ml-6'>
+        <div className='ml-6 flex items-center justify-end gap-1 md:gap-2'>
           {/* //! Shuffle Play */}
           <Button
             className='rounded-full'
@@ -279,14 +279,14 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             variant='ghost'
             onClick={handleToggleRomajiDisplay}>
             {romajiEnabled ? (
-              <SubtitlesIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+              <SubtitlesIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (
-              <SubtitlesOffIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+              <SubtitlesOffIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             )}
             <span className='sr-only'>Toggle Romaji</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
-            <SettingsIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+            <SettingsIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             <span className='sr-only'>Settings</span>
           </Button>
           {/* //*TODO: Handle Dismissing Top Bar & Bottom Bar to make more space  */}
@@ -296,9 +296,9 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             variant='ghost'
             onClick={handleFullscreen}>
             {isFullscreen ? (
-              <FullscreenExitIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+              <FullscreenExitIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (
-              <FullscreenIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+              <FullscreenIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             )}
             <span className='sr-only'>Fullscreen</span>
           </Button>

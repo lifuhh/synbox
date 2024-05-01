@@ -1,6 +1,7 @@
 import { cn } from '@/utils/cn'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useState } from 'react'
+import { MouseEventHandler, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const InfiniteScrollGallery = ({
   items,
@@ -9,27 +10,34 @@ export const InfiniteScrollGallery = ({
   items: {
     title: string
     description: string
-    link: string
+    vidUrl: string
+    videoId: string
   }[]
   className?: string
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const navigate = useNavigate()
+
+  const handleGalleryItemClick =
+    (videoId: string): MouseEventHandler<HTMLDivElement> =>
+    () => {
+      navigate(`/v/${videoId}`, { state: { videoId: videoId } })
+    }
 
   return (
     <div
       className={cn(
-        'grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3  py-10',
+        'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  py-4',
         className
       )}>
       {items.map((item, idx) => (
-
-
         //TODO: Style individual infinite scroll gallery cards here
         <div
-          key={item?.link}
-          className='relative group  block p-2 h-full w-full cursor-pointer'
+          key={item?.videoId}
+          className='relative group block p-2 h-full w-full cursor-pointer'
           onMouseEnter={() => setHoveredIndex(idx)}
-          onMouseLeave={() => setHoveredIndex(null)}>
+          onMouseLeave={() => setHoveredIndex(null)}
+          onClick={handleGalleryItemClick(item.videoId)}>
           <AnimatePresence>
             {hoveredIndex === idx && (
               <motion.span
@@ -49,7 +57,16 @@ export const InfiniteScrollGallery = ({
           </AnimatePresence>
           <Card>
             <CardTitle>{item.title}</CardTitle>
-            <CardDescription>{item.description}</CardDescription>
+
+            <img
+              src={item.vidUrl}
+              height='1080'
+              width='1920'
+              className=' h-52 w-full object-cover rounded-xl group-hover/card:shadow-xl'
+              alt='thumbnail'
+            />
+            {/* <CardDescription>{item.description}</CardDescription> */}
+            {/* <CardDescription>{item.videoId}</CardDescription> */}
           </Card>
         </div>
       ))}
@@ -67,15 +84,16 @@ export const Card = ({
   return (
     <div
       className={cn(
-        'rounded-2xl h-72 w-full p-4 overflow-hidden bg-dark-4 border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20',
+        'rounded-2xl h-72 w-full p-2 overflow-hidden bg-dark-4 border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20 playlist-item',
         className
       )}>
       <div className='relative z-50'>
-        <div className='p-4'>{children}</div>
+        <div className='p-2'>{children}</div>
       </div>
     </div>
   )
 }
+
 export const CardTitle = ({
   className,
   children,
@@ -84,9 +102,13 @@ export const CardTitle = ({
   children: React.ReactNode
 }) => {
   return (
-    <h4 className={cn('text-zinc-100 font-bold tracking-wide mt-4', className)}>
-      {children}
-    </h4>
+    <div
+      className={cn(
+        'text-zinc-100 font-bold tracking-wide mb-4 marquee',
+        className
+      )}>
+      <span>{children}</span>
+    </div>
   )
 }
 export const CardDescription = ({

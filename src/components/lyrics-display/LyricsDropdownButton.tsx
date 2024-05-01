@@ -36,7 +36,7 @@ const LyricsDropdownButton: React.FC<LyricsDropdownButtonProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const handleUploadClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     event.stopPropagation()
     // Additional logic for handling the upload click can go here
@@ -76,18 +76,18 @@ const LyricsDropdownButton: React.FC<LyricsDropdownButtonProps> = ({
             <span className='sr-only'>Captions</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className='w-56 mb-3 ml-32 bg-primary cursor-pointer'>
+        <DropdownMenuContent className='mb-3 ml-32 w-56 cursor-pointer bg-primary'>
           <DropdownMenuGroup>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='cursor-pointer'>
                 Choose Lyrics
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
-                <DropdownMenuSubContent className=' bg-primary mr-1 -my-2'>
+                <DropdownMenuSubContent className=' -my-2 mr-1 bg-primary'>
                   <DialogTrigger asChild>
                     <DropdownMenuItem
                       onClick={handleUploadClick}
-                      className='cursor-pointer flex align-middle justify-center'>
+                      className='flex cursor-pointer justify-center align-middle'>
                       Upload Lyrics
                     </DropdownMenuItem>
                   </DialogTrigger>
@@ -113,7 +113,7 @@ const LyricsDropdownButton: React.FC<LyricsDropdownButtonProps> = ({
                 Choose Translation
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
-                <DropdownMenuSubContent className=' bg-primary mr-1 -my-20 pt-1.5'>
+                <DropdownMenuSubContent className=' -my-20 mr-1 bg-primary pt-1.5'>
                   <DropdownMenuItem className='cursor-pointer'>
                     English
                   </DropdownMenuItem>

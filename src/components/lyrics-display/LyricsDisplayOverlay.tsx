@@ -27,23 +27,23 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({ romajiEnabled }) => {
       className={`absolute left-0 top-0 w-full ${
         playerControlsVisible ? 'h-9/10' : 'h-full'
       } pointer-events-none z-40`}>
-      <div className='flex flex-col justify-end md:justify-between w-full h-full'>
+      <div className='flex h-full w-full flex-col justify-end md:justify-between'>
         {/* Translation Div */}
-        <div className='md:pt-4 md:pb-0 w-full'>
-          <p className='flex font_noto_sans_jp_black_900 justify-center font-outline-1 text-2vw'>
+        <div className='w-full md:pb-0 md:pt-4'>
+          <p className='font_noto_sans_jp_black_900 font-outline-1 flex justify-center text-2vw'>
             {/* Couldn't beat her smile, it stirred up all the media */}
             Testing Testing Translations Here Testing Testing
           </p>
         </div>
 
         {/* Lyrics Div */}
-        <div className='w-full md:flex-1 flex flex-col justify-end py-4 md:pb-3'>
-          <div className='lg:mx-4 pl-2 sm:pl-4'>
+        <div className='flex w-full flex-col justify-end py-4 md:flex-1 md:pb-3'>
+          <div className='pl-2 sm:pl-4 lg:mx-4'>
             <div style={containerStyleFirst}>
               <LyricTextLine htmlContent={placeholderLyric1} />
             </div>
           </div>
-          <div className='flex justify-end lg:mx-4 sm:pr-2'>
+          <div className='flex justify-end sm:pr-2 lg:mx-4'>
             <div style={containerStyleSecond}>
               <LyricTextLine htmlContent={placeholderLyric2} />
             </div>
@@ -51,7 +51,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({ romajiEnabled }) => {
         </div>
         {romajiEnabled && (
           <div className='pb-2'>
-            <p className='flex font_noto_sans_jp_black_900 justify-center font-outline-1 text-2.4vw'>
+            <p className='font_noto_sans_jp_black_900 font-outline-1 flex justify-center text-2.4vw'>
               {/* Couldn't beat her smile, it stirred up all the media */}
               Testing Testing Testing Testing Testing
             </p>

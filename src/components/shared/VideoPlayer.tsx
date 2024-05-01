@@ -85,17 +85,19 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           youtube: {
             playerVars: {
               rel: 0,
+              hl: 'ja',
             },
           },
         }}
         width='100%'
         height='100%'
-        url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3&rel=0`}
+        url={`https://www.youtube.com/embed/${videoId}?cc_load_policy=0&rel=0`}
+        // url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3&rel=0`}
         muted={muted}
         volume={volume}
         playing={playing}
         loop={loop}
-        controls={false}
+        controls={true}
         onReady={handleReady}
         onStart={handleStart}
         onPlay={handlePlay}

@@ -32,7 +32,6 @@ const PlayerPage = () => {
   const [romajiEnabled, setRomajiEnabled] = useState<boolean>(true)
   const [lyricsVisibility, setLyricsVisibility] = useState<boolean>(true)
 
-
   //TODO: wrong - fix this
   useEffect(() => {
     if (videoId) setStateVideoId(videoId)
@@ -111,7 +110,7 @@ const PlayerPage = () => {
         playerRef.current.seekTo(newPlayedTime)
       }
     },
-    [duration]
+    [duration],
   )
 
   const handleSeekMouseDown = useCallback(() => {
@@ -126,7 +125,7 @@ const PlayerPage = () => {
         playerRef.current.seekTo(parseFloat(e.currentTarget.value))
       }
     },
-    []
+    [],
   )
 
   const handleProgress = useCallback(() => {
@@ -161,7 +160,7 @@ const PlayerPage = () => {
       {/* Lyrics Display Controller */}
       {lyricsVisibility ? <LyricsDisplay romajiEnabled={romajiEnabled} /> : ''}
       <div
-        className={`relative aspect-video w-full h-full border-2  border-primary border-opacity-5 ${
+        className={`relative aspect-video h-full w-full border-2  border-primary border-opacity-5 ${
           playerControlsVisible ? '' : 'cursor-none'
         } ${isFullscreen ? 'mt-14' : ''} `}>
         {stateVideoId && (
