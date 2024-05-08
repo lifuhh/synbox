@@ -1,7 +1,9 @@
 import { cn } from '@/utils/cn'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MouseEventHandler, useState } from 'react'
+import { debounce } from 'lodash'
+import { MouseEventHandler, memo, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useOverflow } from '@/hooks/useOverflow'
 
 export const InfiniteScrollGallery = ({
   items,
@@ -94,23 +96,26 @@ export const Card = ({
   )
 }
 
-export const CardTitle = ({
-  className,
-  children,
-}: {
-  className?: string
-  children: React.ReactNode
-}) => {
-  return (
-    <div
-      className={cn(
-        'marquee mb-4 font-bold tracking-wide text-zinc-100',
-        className,
-      )}>
-      <span>{children}</span>
-    </div>
-  )
-}
+export const CardTitle = memo(
+  ({ className, children }: { className?: string; children: string }) => {
+    const textRef = useRef<HTMLSpanElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    useOverflow(textRef, containerRef, 'marquee')
+
+    return (
+      <div
+        ref={containerRef}
+        className={cn(
+          'marquee mb-4 font-bold tracking-wide text-zinc-100',
+          className,
+        )}>
+        <span ref={textRef}>{children}</span>
+      </div>
+    )
+  },
+)
+
 export const CardDescription = ({
   className,
   children,
