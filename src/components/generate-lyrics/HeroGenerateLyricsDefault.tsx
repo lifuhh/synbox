@@ -30,7 +30,7 @@ const HeroGenerateLyricsDefault = ({
     if (!result.success) {
       // If validation fails, display the error message
       setErrorMessage(
-        result.error.errors.map((error) => error.message).join(', ')
+        result.error.errors.map((error) => error.message).join(', '),
       )
     } else {
       console.log('Video ID Acquired: ' + extractVideoId(value))
@@ -56,15 +56,15 @@ const HeroGenerateLyricsDefault = ({
   }
 
   return (
-    <div className='md:h-[25rem] w-full rounded-md flex items-top md:justify-center pt-10 bg-dark-1/[0.15] antialiased bg-grid-white/[0.90] relative  overflow-hidden'>
-      <Spotlight className='-top-8 left-10 md:left-60 md:-top-20' fill='pink' />
+    <div className='items-top bg-grid-white/[0.90] relative flex w-full overflow-hidden rounded-md bg-dark-1/[0.15] pt-10 antialiased md:h-[25rem]  md:justify-center'>
+      <Spotlight className='-top-8 left-10 md:-top-20 md:left-60' fill='pink' />
 
-      <div className='p-4 max-w-7xl  mx-auto z-10 w-full gap-4 lg:gap-0 flex-between xl:flex-around flex-col xl:h-96'>
-        <h1 className='text-4xl md:text-6xl lg:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-2 no-select'>
+      <div className='flex-between xl:flex-around  z-10 mx-auto w-full max-w-7xl flex-col gap-4 p-4 lg:gap-0 xl:h-96'>
+        <h1 className='no-select bg-opacity-50 bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text pb-2 text-center text-4xl font-bold text-transparent md:text-6xl lg:text-7xl'>
           {/* AI-Powered Japanese Karaoke */}
           Placeholder
         </h1>
-        <div className='sm:mx-auto w-full sm:w-4/5 flex-between gap-4 overflow-visible relative'>
+        <div className='flex-between relative w-full gap-4 overflow-visible sm:mx-auto sm:w-4/5'>
           <Input
             value={inputValue}
             onChange={handleInputChange}
@@ -86,7 +86,7 @@ const HeroGenerateLyricsDefault = ({
                 : 'focus:border-secondary'
             } `}
           />
-          <div className='absolute -bottom-20 left-0 pt-2 w-full h-20'>
+          <div className='absolute -bottom-20 left-0 h-20 w-full pt-2'>
             {errorMessage && inputValue?.length > 0 && (
               <div className='text-red-500'>{errorMessage}</div>
             )}
@@ -102,14 +102,14 @@ const HeroGenerateLyricsDefault = ({
             }
             variant='default'
             role='combobox'
-            className='w-[120px] py-6 border-2 border-primary-500/40 hover:border-primary-500/90 hover:bg-gray-200/20'>
+            className='w-[120px] border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20'>
             Sing This!
           </Button>
         </div>
 
         {/* Display error message or success message */}
 
-        <p className='lg:w-7/10 mt-4 font-normal text-base text-neutral-300 no-select text-center mx-auto'>
+        <p className='lg:w-7/10 no-select mx-auto mt-4 text-center text-base font-normal text-neutral-300'>
           Step into a Karaoke haven with Synbox, effortlessly bringing any
           Japanese song from YouTube to life. Just paste a link, and if the song
           lacks lyrics, Synbox's use of OpenAI's Whisper generates synchronized

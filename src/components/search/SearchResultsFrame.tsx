@@ -6,14 +6,14 @@ interface SearchResultsFrameProps {
 }
 
 const SearchResultsFrame: React.FC<SearchResultsFrameProps> = ({
-  children,
   className,
   isOpen,
+  children,
   onSelect,
 }) => {
   return (
     <ul
-      className={`absolute bg-white shadow-md rounded-md grid gap-1 p-2 top-full left-0 z-50 w-full ${
+      className={`absolute left-0 top-full z-50 grid w-full gap-1 rounded-md bg-white p-2 shadow-md ${
         isOpen ? 'block' : 'hidden'
       } ${className || ''}`}
       onSelect={onSelect}>

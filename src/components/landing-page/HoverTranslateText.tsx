@@ -26,7 +26,7 @@ const HoverTranslateText = ({
   }, [])
 
   const mouseMoveHandler = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     const clientX = event.clientX
     const relativeX = clientX - left
@@ -54,16 +54,16 @@ const HoverTranslateText = ({
           clipPath: `inset(0 ${100 - widthPercentage}% 0 0)`,
         }}
         transition={{ duration: 0.2 }}
-        className='absolute w-full h-full'
+        className='absolute h-full w-full'
         style={{
           backgroundColor: isMouseOver ? 'bg-red' : 'transparent',
         }}>
-        <p className='text-lg font-bold select-none text-primary-600'>
+        <p className='select-none text-lg font-bold text-primary-600'>
           {revealText}
         </p>
       </motion.div>
       <p
-        className='text-lg font-bold select-none'
+        className='select-none text-lg font-bold'
         style={{ color: 'white', position: 'relative' }}>
         {text}
       </p>

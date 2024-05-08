@@ -20,8 +20,8 @@ const SearchResultTextDisplayer: React.FC<SearchResultTextDisplayerProps> = ({
   }
 
   return (
-    <div className='grid gap-0.5 text-xs shrink-0'>
-      <p className='font-medium text-red'>{title}</p>
+    <div className='grid shrink-0 gap-0.5 text-xs'>
+      <p className='text-red font-medium'>{title}</p>
       <p className='text-xs text-gray-500 dark:text-gray-400'>{misc}</p>
     </div>
   )
