@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 // Hook to check if the text overflows its container
-export function useOverflow(textRef, containerRef, overflowClass) {
+export function useOverflow(textRef, containerRef, overflowClass: string) {
   useEffect(() => {
     const checkIfOverflows = () => {
       const textWidth = textRef.current?.offsetWidth ?? 0
@@ -12,7 +12,7 @@ export function useOverflow(textRef, containerRef, overflowClass) {
         containerRef.current?.classList.remove(overflowClass)
       }
     }
-
+    // test
     // Check once on mount
     checkIfOverflows()
   }, [textRef, containerRef, overflowClass])
