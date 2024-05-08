@@ -3,7 +3,7 @@ import SearchBar from './SearchBar'
 const SearchBarContainer = () => {
   return (
     <>
-      <div className='flex-between flex-col max-w-full relative z-20'>
+      <div className='flex-between relative z-20 max-w-full flex-col'>
         <SearchBar />
       </div>
     </>

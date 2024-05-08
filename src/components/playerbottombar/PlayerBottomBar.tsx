@@ -20,6 +20,7 @@ import SkipNextIcon from '@mui/icons-material/SkipNext'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 // import ClosedCaptionOffIcon from '@mui/icons-material/ClosedCaptionOff';
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import SubtitlesIcon from '@mui/icons-material/Subtitles'
 import SubtitlesOffIcon from '@mui/icons-material/SubtitlesOff'
 import React from 'react'
@@ -66,9 +67,8 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleToggleLyricsVisibility,
 }) => {
   console.log('Player Bottom Bar re-rendered...')
-  const [isFullScreen, setIsFullScreen] = React.useState(false)
-  const { playerControlsVisible } = useAppContext()
-  const navigate = useNavigate()
+  const { playerControlsVisible, isFullscreen, setIsFullscreen } =
+    useAppContext()
   const location = useLocation()
 
   const getCurrentPlayedPercentage = useCallback(() => {
@@ -78,41 +78,41 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   const formattedPlayed = useMemo(() => formatTimeDisplay(played), [played])
   const formattedDuration = useMemo(
     () => formatTimeDisplay(duration),
-    [duration]
+    [duration],
   )
 
   useEffect(() => {
     const currentPath = location.pathname
 
+    const exitFullscreen = () => {
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (document.mozCancelFullScreen) {
+        /* Firefox */
+        document.mozCancelFullScreen()
+      } else if (document.webkitExitFullscreen) {
+        /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen()
+      } else if (document.msExitFullscreen) {
+        /* IE/Edge */
+        document.msExitFullscreen()
+      }
+      setIsFullscreen(false)
+    }
+
     // Check if we are not on the specific route
     if (currentPath !== '/v/') {
-      setIsFullScreen(false)
       // Call exitFullscreen when we are navigating away from the specific route
       exitFullscreen()
+      setIsFullscreen(false)
     }
 
     // Optional: If you also want to handle component unmount, you can include the exitFullscreen call in the cleanup function
     return () => {
-      setIsFullScreen(false)
       exitFullscreen()
+      setIsFullscreen(false)
     }
-  }, [location, setIsFullScreen])
-
-  const exitFullscreen = () => {
-    if (document.exitFullscreen) {
-      document.exitFullscreen()
-    } else if (document.mozCancelFullScreen) {
-      /* Firefox */
-      document.mozCancelFullScreen()
-    } else if (document.webkitExitFullscreen) {
-      /* Chrome, Safari and Opera */
-      document.webkitExitFullscreen()
-    } else if (document.msExitFullscreen) {
-      /* IE/Edge */
-      document.msExitFullscreen()
-    }
-    setIsFullScreen(false)
-  }
+  }, [location, setIsFullscreen])
 
   const openFullscreen = (elem) => {
     if (elem.requestFullscreen) {
@@ -127,43 +127,89 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       /* IE/Edge */
       elem.msRequestFullscreen() // IE/Edge
     }
-    setIsFullScreen(true)
+    setIsFullscreen(true)
   }
 
-  const handleFullscreen = () => {
-    // Check if any element is currently in fullscreen mode
+  const handleFullscreen = useCallback(() => {
     if (
       !document.fullscreenElement &&
-      !document.mozFullScreenElement &&
       !document.webkitFullscreenElement &&
+      !document.mozFullScreenElement &&
       !document.msFullscreenElement
     ) {
       // No element is in fullscreen, enter fullscreen mode
-      openFullscreen(document.documentElement) // You can also use document.body
-      setIsFullScreen(true)
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen() // Standard method
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen() // Firefox
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen() // Chrome, Safari, and Opera
+      } else if (document.documentElement.msRequestFullscreen) {
+        document.documentElement.msRequestFullscreen() // IE/Edge
+      }
+
+      setIsFullscreen(true) // Update the state to reflect entering fullscreen
     } else {
       // An element is already in fullscreen, exit fullscreen mode
       if (document.exitFullscreen) {
         document.exitFullscreen() // Standard method
       } else if (document.mozCancelFullScreen) {
-        /* Firefox */
         document.mozCancelFullScreen() // Firefox
       } else if (document.webkitExitFullscreen) {
-        /* Chrome, Safari and Opera */
         document.webkitExitFullscreen() // Chrome, Safari, and Opera
       } else if (document.msExitFullscreen) {
-        /* IE/Edge */
         document.msExitFullscreen() // IE/Edge
       }
-      setIsFullScreen(false)
+
+      setIsFullscreen(false) // Update the state to reflect exiting fullscreen
     }
-  }
+  }, [setIsFullscreen])
+
+  // Effect to add and remove event listener for "Esc" key press
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        handleFullscreen()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscKey)
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey)
+    }
+  }, [handleFullscreen])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === ' ') {
+        event.preventDefault()
+        // Check if the pressed key is the spacebar
+        handlePlayPause() // Toggle play/pause
+      }
+    }
+
+    // Add event listener for 'keydown' event on the document
+    document.addEventListener('keydown', handleKeyDown)
+
+    // Cleanup function to remove event listener when component unmounts
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handlePlayPause])
 
   return (
     <div
-      className={`fixed bottom-0 inset-x-0  bg-gray bg-dark-3 ${
-        isFullScreen ? 'bg-opacity-15' : 'bg-opacity-45'
-      } controls ${playerControlsVisible ? 'visible' : 'hidden'} `}>
+      className={`bg-gray fixed inset-x-0  bottom-0 bg-dark-3 ${
+        playing
+          ? isFullscreen
+            ? 'bg-opacity-0'
+            : 'bg-opacity-15'
+          : 'bg-opacity-100'
+      } controls ${
+        playerControlsVisible ? 'visible bg-opacity-15' : 'hidden'
+      } `}>
       <div className='h-1 cursor-pointer'>
         <Slider
           defaultValue={[0]}
@@ -173,7 +219,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
           onValueChange={(value) => handleSeekChange(value[0])}
         />
       </div>
-      <div className='flex items-center justify-between sm:mx-2 py-2'>
+      <div className='flex items-center justify-between py-2 sm:mx-2'>
         <div className='flex items-center lg:mr-6'>
           <Button className='rounded-full' size='icon' variant='ghost'>
             <SkipPreviousIcon />
@@ -198,17 +244,17 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
 
           <VolumeControl />
           <div className='flex-between ml-2'>
-            <span className='text-center hidden sm:inline'>
+            <span className='hidden w-12 text-center sm:inline'>
               {formattedPlayed}
             </span>
-            <span className='text-center w-4 hidden sm:inline'>{' / '}</span>
-            <span className='text-center hidden sm:inline'>
+            <span className='hidden w-4 text-center sm:inline'>{' / '}</span>
+            <span className='hidden text-center sm:inline'>
               {formattedDuration}
             </span>
           </div>
         </div>
 
-        <div className='flex items-center justify-end gap-1 md:gap-2 ml-6'>
+        <div className='ml-6 flex items-center justify-end gap-1 md:gap-2'>
           {/* //! Shuffle Play */}
           <Button
             className='rounded-full'
@@ -233,14 +279,14 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             variant='ghost'
             onClick={handleToggleRomajiDisplay}>
             {romajiEnabled ? (
-              <SubtitlesIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+              <SubtitlesIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (
-              <SubtitlesOffIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+              <SubtitlesOffIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             )}
             <span className='sr-only'>Toggle Romaji</span>
           </Button>
           <Button className='rounded-full' size='icon' variant='ghost'>
-            <SettingsIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+            <SettingsIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             <span className='sr-only'>Settings</span>
           </Button>
           {/* //*TODO: Handle Dismissing Top Bar & Bottom Bar to make more space  */}
@@ -249,7 +295,11 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             size='icon'
             variant='ghost'
             onClick={handleFullscreen}>
-            <FullscreenIcon className='w-4 h-4' sx={{ fontSize: 32 }} />
+            {isFullscreen ? (
+              <FullscreenExitIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
+            ) : (
+              <FullscreenIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
+            )}
             <span className='sr-only'>Fullscreen</span>
           </Button>
         </div>
@@ -258,4 +308,4 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   )
 }
 
-export default React.memo(PlayerBottomBar)
+export const MemoizedPlayerBottomBar = React.memo(PlayerBottomBar)

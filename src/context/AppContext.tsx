@@ -1,14 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
-import { createContext, useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { createContext, useContext, useState } from 'react'
 
 interface AppContextType {
   muted: boolean
   videoId: string
   volume: number
   processingStage: number
+  isFullscreen: boolean
+  // playing: boolean
   landingPageCarouselData: formattedYoutubeVideoItemForCarousel[]
   setPlayerMuted: (muted: boolean) => void
   setVideoId: (videoId: string) => void
@@ -19,15 +20,17 @@ interface AppContextType {
   ) => void
   playerControlsVisible: boolean
   setPlayerControlsVisible: (visibility: boolean) => void
+  setIsFullscreen: (isFullscreen: boolean) => void
 }
 
 const INITIAL_STATE = {
   videoId: '',
   volume: 0.2,
   muted: true,
-  processingStage: 0,
+  processingStage: 1,
   playerControlsVisible: true,
   landingPageCarouselData: [],
+  isFullscreen: false,
   setVideoId: (videoId: string) => {},
   setProcessingStage: (stage: number) => {},
   setVolume: (volume: number) => {},
@@ -36,19 +39,21 @@ const INITIAL_STATE = {
   setLandingPageCarouselData: (
     data: formattedYoutubeVideoItemForCarousel[]
   ) => {},
+  setIsFullscreen: (isFullscreen: boolean) => {},
 }
 const AppContext = createContext<AppContextType>(INITIAL_STATE)
 
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [videoId, setVideoId] = useState<string>('')
   const [muted, setPlayerMuted] = useState<boolean>(true)
+  const [videoId, setVideoId] = useState<string>('')
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
   const [playerControlsVisible, setPlayerControlsVisible] =
     useState<boolean>(true)
   const [volume, setVolume] = useState<number>(0.2)
-  const [processingStage, setProcessingStage] = useState<number>(0)
+  const [processingStage, setProcessingStage] = useState<number>(1)
   const [landingPageCarouselData, setLandingPageCarouselData] = useState<
     formattedYoutubeVideoItemForCarousel[]
-  >([])
+  >([]) //* This should be unnecessary
 
   // const navigate = useNavigate()
 
@@ -69,13 +74,15 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     muted,
     setPlayerMuted,
     processingStage,
-    landingPageCarouselData,
     setProcessingStage,
+    landingPageCarouselData,
+    setLandingPageCarouselData,
     volume,
     setVolume,
     playerControlsVisible,
     setPlayerControlsVisible,
-    setLandingPageCarouselData,
+    isFullscreen,
+    setIsFullscreen,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

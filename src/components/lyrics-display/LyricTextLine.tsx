@@ -16,8 +16,8 @@ const LyricTextLine: React.FC<LyricsTextLineProps> = ({
   return (
     <p
       className={cn(
-        'font-outline-1 font_noto_sans_jp_black_900 sm:pl-2 text-4.2vw',
-        className
+        'font-outline-1 font_noto_sans_jp_black_900 text-4.2vw sm:pl-2',
+        className,
       )}
       dangerouslySetInnerHTML={createMarkup(htmlContent)}
     />

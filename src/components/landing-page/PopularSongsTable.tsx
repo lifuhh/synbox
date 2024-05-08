@@ -2,8 +2,13 @@ import { Table } from '@mantine/core'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 
 import { Button } from '@/components/ui/button'
+import { MouseEventHandler } from 'react'
+import { useNavigate } from 'react-router-dom'
 
+//TODO: can probably replace this component with a card & list items instead
 const PopularSongsTable = () => {
+  const navigate = useNavigate()
+
   const test_elements = [
     { position: 1, mass: 12.011, symbol: 'C', name: 'Carbon' },
     { position: 7, mass: 14.007, symbol: 'N', name: 'Nitrogen' },
@@ -22,23 +27,36 @@ const PopularSongsTable = () => {
     { position: 58, mass: 140.12, symbol: 'dgadga', name: 'Cerium' },
   ]
 
-  const test_rows = test_elements.map((element) => (
-    <Table.Tr key={element.symbol}>
-      <Table.Td>
-        {/* //TODO: fix containment issue */}
-        <div className='flex flex-between align-middle' key={element.mass}>
-          <p className='whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[300px]'>
-            YOASOBI - 優しい彗星 / THE FIRST TAKE
-            {/* AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA */}
-          </p>
-          <Button variant='outline' size='icon' className=''>
-            <PlayArrowIcon className='h-4 w-4' />
-          </Button>
-        </div>
-      </Table.Td>
-      {/* <Table.Td>{element.mass}</Table.Td> */}
-    </Table.Tr>
-  ))
+  const handleTestRowClick =
+    (videoId: string): MouseEventHandler<HTMLButtonElement> =>
+    () => {
+      navigate(`/v/${videoId}`, { state: { videoId: videoId } })
+    }
+
+  const test_rows = test_elements.map((element) => {
+    return (
+      <Table.Tr key={element.symbol}>
+        <Table.Td>
+          {/* //TODO: fix containment issue */}
+          <div
+            className='flex flex-between align-middle playlist-item'
+            key={element.mass}>
+            <div className='whitespace-nowrap overflow-hidden max-w-[300px] marquee unselectable'>
+              <span className=''>YOASOBI - 優しい彗星 / THE FIRST TAKE</span>
+            </div>
+            <Button
+              variant='outline'
+              size='icon'
+              className=''
+              onClick={handleTestRowClick('EaA6NlH80wg')}>
+              <PlayArrowIcon className='h-4 w-4' />
+            </Button>
+          </div>
+        </Table.Td>
+        {/* <Table.Td>{element.mass}</Table.Td> */}
+      </Table.Tr>
+    )
+  })
 
   return (
     <div className=' w-full mx-auto lg:ml-6 lg:w-5/12 xl:w-4/12 mt-10 lg:mt-2 h-96 rounded-md overflow-y-auto custom-scrollbar'>

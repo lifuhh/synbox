@@ -1,5 +1,5 @@
 import LyricsDisplay from '@/components/lyrics-display/LyricsDisplayOverlay'
-import PlayerBottomBar from '@/components/playerbottombar/PlayerBottomBar'
+import { MemoizedPlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
   console.log('PlayerPage re-rendered...')
-  const { playerControlsVisible, muted, setPlayerMuted, volume } =
+  const { playerControlsVisible, muted, setPlayerMuted, volume, isFullscreen } =
     useAppContext()
 
   //* Video ID state
@@ -32,6 +32,7 @@ const PlayerPage = () => {
   const [romajiEnabled, setRomajiEnabled] = useState<boolean>(true)
   const [lyricsVisibility, setLyricsVisibility] = useState<boolean>(true)
 
+  //TODO: wrong - fix this
   useEffect(() => {
     if (videoId) setStateVideoId(videoId)
   }, [videoId])
@@ -64,6 +65,7 @@ const PlayerPage = () => {
     // setTestStartTime(performance.now())
   }, [])
 
+  //? requestAnimationFrame tester - to change to use accordingly for lyrics
   useEffect(() => {
     //! RAF gives a timestamp actually
     const testAnimationFrameCallback = (timestamp: number) => {
@@ -108,7 +110,7 @@ const PlayerPage = () => {
         playerRef.current.seekTo(newPlayedTime)
       }
     },
-    [duration]
+    [duration],
   )
 
   const handleSeekMouseDown = useCallback(() => {
@@ -123,7 +125,7 @@ const PlayerPage = () => {
         playerRef.current.seekTo(parseFloat(e.currentTarget.value))
       }
     },
-    []
+    [],
   )
 
   const handleProgress = useCallback(() => {
@@ -158,9 +160,9 @@ const PlayerPage = () => {
       {/* Lyrics Display Controller */}
       {lyricsVisibility ? <LyricsDisplay romajiEnabled={romajiEnabled} /> : ''}
       <div
-        className={`relative aspect-video w-full h-full border-2 -my-14 border-primary border-opacity-5 ${
-          playerControlsVisible ? '' : 'my-0 cursor-none'
-        }`}>
+        className={`relative aspect-video h-full w-full border-2  border-primary border-opacity-5 ${
+          playerControlsVisible ? '' : 'cursor-none'
+        } ${isFullscreen ? 'mt-14' : ''} `}>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}
@@ -177,7 +179,7 @@ const PlayerPage = () => {
           />
         )}
       </div>
-      <PlayerBottomBar
+      <MemoizedPlayerBottomBar
         playing={playing}
         loop={loop}
         played={played}

@@ -24,6 +24,17 @@ const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
   itemCount,
   item,
 }) => {
+  /*   channel
+"Ayase / YOASOBI"
+description
+"ストリーミング/ダウンロード絶賛配信中\nhttps://orcd.co/taisho_romance\n\nMusic : Ayase (https://twitt..."
+thumbnailUrl
+"https://i.ytimg.com/vi/wJQ9ig_d8yY/hqdefault.jpg"
+title
+"YOASOBI「大正浪漫」Official Music Video"
+videoId
+"wJQ9ig_d8yY" */
+
   const [cardStyle, setCardStyle] = useState<CSSProperties>({})
   const requestRef = useRef<number>()
   const navigate = useNavigate()
@@ -70,13 +81,13 @@ const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
   }, [currentIndex, itemCount, index])
 
   return (
-    <div style={{ opacity }} className='scale-75 min-h-100'>
+    <div style={{ opacity }} className='min-h-100 scale-75'>
       <div style={cardStyle}>
         <CardContainer>
-          <CardBody className='bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-[30rem] h-auto rounded-xl p-6 border'>
+          <CardBody className='group/card relative h-auto w-[30rem] rounded-xl border border-black/[0.1] bg-gray-50 p-6 dark:border-white/[0.2] dark:bg-black dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1]'>
             <CardItem
               translateZ='50'
-              className='text-xl font-bold text-neutral-600 dark:text-white min-h-12 max-h-12'>
+              className='max-h-12 min-h-12 text-xl font-bold text-neutral-600 dark:text-white'>
               {item.title}
             </CardItem>
 
@@ -84,31 +95,31 @@ const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
               translateZ='100'
               // rotateX={20}
               // rotateZ={-10}
-              className='w-full mt-4'>
+              className='mt-4 w-full'>
               <img
                 src={item.thumbnailUrl}
                 height='1080'
                 width='1920'
-                className='h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl'
+                className='h-60 w-full rounded-xl object-cover group-hover/card:shadow-xl'
                 alt='thumbnail'
               />
             </CardItem>
             <CardItem
               as='p'
               translateZ='60'
-              className='text-neutral-500 text-sm max-w-sm mt-2 min-h-12 max-h-12 dark:text-neutral-300'>
+              className='mt-2 max-h-12 min-h-12 max-w-sm text-sm text-neutral-500 dark:text-neutral-300'>
               {item.description}
             </CardItem>
-            <div className='flex justify-between items-center mt-10'>
+            <div className='mt-10 flex items-center justify-between'>
               <CardItem
                 translateZ={10}
                 // translateX={-30}
                 as='button'
-                className='px-4 py-2 rounded-xl text-xs font-normal dark:text-white text-blue-900'>
+                className='rounded-xl px-4 py-2 text-xs font-normal text-blue-900 dark:text-white'>
                 {item.channel}
               </CardItem>
               <button
-                className='px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold'
+                className='rounded-xl bg-black px-4 py-2 text-xs font-bold text-white dark:bg-white dark:text-black'
                 onClick={handleNavigate}>
                 <CardItem
                   translateZ={10}

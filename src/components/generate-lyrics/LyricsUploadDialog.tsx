@@ -109,7 +109,7 @@ const LyricsUploadDialog = () => {
         </DialogHeader>
         <div>Placeholder Content</div>
         <DialogFooter>
-          <div className='flex flex-between flex-col align-middle'>
+          <div className='flex-between flex flex-col align-middle'>
             Placeholder Footer
           </div>
         </DialogFooter>

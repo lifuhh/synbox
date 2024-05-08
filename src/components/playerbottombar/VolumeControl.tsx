@@ -19,7 +19,7 @@ const VolumeControl = () => {
       // setMuted(value === 0)
       setVolume(value)
     },
-    [setVolume]
+    [setVolume],
   )
   const [isHovering, setIsHovering] = useState<boolean>(false)
 
@@ -49,7 +49,7 @@ const VolumeControl = () => {
           max={1}
           step={0.01}
           onValueChange={(value) => handleVolumeChange(value[0])}
-          className={` w-32 z-10 transform transition-opacity duration-5000 ${
+          className={` duration-5000 z-10 w-32 transform transition-opacity ${
             isHovering ? 'opacity-100' : 'opacity-0'
           }`}
           value={[volume]}

@@ -190,8 +190,36 @@
     background: white;
     padding: 30px;
   }
+
+  .invisible-ring {
+    --tw-ring-color: rgba(0, 0, 0, 0); /* Set to fully transparent */
+    --tw-ring-offset-color: rgba(0, 0, 0, 0); /* Set to fully transparent */
+  }
 }
 
+.marquee {
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+
+.marquee span {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.playlist-item:hover .marquee span {
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
 /* Top Search Bar slideup animation control */
 
 .slide-up-animation,
@@ -262,6 +290,14 @@
   width: 100%; /* Adjust the width as needed */
   max-width: 100%; /* Ensure it doesn't grow beyond its container */
   padding: 8px; /* Optional, for some spacing around the text */
+}
+
+.unselectable {
+  pointer-events: none;
+  user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* Safari/Chrome/Opera */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
 .scrolling-text {
