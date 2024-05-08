@@ -6,7 +6,7 @@ import CommandSearch from '../topbar/CommandSearch'
 import AppLogo from '../topbar/NowPlayingDisplayInfo'
 
 import { useAppContext } from '@/context/AppContext'
-import FavouritesDropdownButton from '../topbar/FavouritesDropdown'
+import FavouritesDropdownButton from '../topbar/FavouritesDropdownButton'
 
 const TopBar = () => {
   const { playerControlsVisible, isFullscreen } = useAppContext()
@@ -23,7 +23,7 @@ const TopBar = () => {
   return (
     // <section className='topbar sticky top-0 bg'>
     <section
-      className={`topbar sticky top-0 z-100 controls ${
+      className={`topbar controls sticky top-0 z-100 ${
         isFullscreen ? 'hidden' : 'block'
       }`}>
       <nav
@@ -40,13 +40,13 @@ const TopBar = () => {
           />
           <FavouritesButton />
         </div> */}
-        <div className='flex items-center ml-auto gap-3 mr-2'>
+        <div className='ml-auto mr-2 flex items-center gap-3'>
           <CommandSearch isVideoPlayer={isVideoPlayer} />
           <Button
             variant='outline'
             size='icon'
             className={`border-primary hover:border-white ${buttonVisibility}`}>
-            <GitHubIcon className='fill-white scale-75' />
+            <GitHubIcon className='scale-75 fill-white' />
             <span className='sr-only'>GitHub Button</span>
           </Button>
           <FavouritesDropdownButton buttonVisibility={buttonVisibility} />
