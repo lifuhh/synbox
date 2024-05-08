@@ -10,15 +10,15 @@ const FavouritesDropdownItem = () => {
 
   return (
     <DropdownMenuItem>
-      <div className='flex w-full h-full justify-center items-center playlist-item'>
+      <div className='playlist-item flex h-full w-full items-center justify-center'>
         <img
           src={thumbnailUrl}
-          className='h-14 w-auto object-cover rounded-xs'
+          className='rounded-xs h-14 w-auto object-cover'
         />
-        <div className='marquee px-2 unselectable'>
+        <div className='marquee unselectable px-2'>
           <span>{title}</span>
         </div>
-        <Button variant='ghost' className='px-2 ml-2 hover:bg-primary'>
+        <Button variant='ghost' className='ml-2 px-2 hover:bg-primary'>
           <RemoveCircleOutlineIcon />
         </Button>
       </div>
