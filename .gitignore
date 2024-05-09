@@ -13,6 +13,8 @@ dist
 dist-ssr
 *.local
 cgpt_training
+pnpm-lock.yaml
+
 
 # Editor directories and files
 .vscode/*

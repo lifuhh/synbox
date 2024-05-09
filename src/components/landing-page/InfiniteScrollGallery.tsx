@@ -1,7 +1,7 @@
 import { cn } from '@/utils/cn'
 import { AnimatePresence, motion } from 'framer-motion'
-import { debounce } from 'lodash'
-import { MouseEventHandler, memo, useEffect, useRef, useState } from 'react'
+// import { debounce } from 'lodash'
+import { MouseEventHandler, memo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useOverflow } from '@/hooks/useOverflow'
 

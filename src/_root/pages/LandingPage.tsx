@@ -4,14 +4,14 @@ import HoverTranslateText from '@/components/landing-page/HoverTranslateText'
 import PopularSongsTable from '@/components/landing-page/PopularSongsTable'
 import SongHighlightCarousel from '@/components/landing-page/SongHighlightCarousel'
 import SongsInfiniteGallery from '@/components/landing-page/SongsInfiniteGallery'
-import BottomBar from '@/components/shared/BottomBar'
+import HomeFooter from '@/components/shared/HomeFooter'
 
 import { Divider } from '@mantine/core'
 
 const LandingPage = () => {
   return (
     //* <!-- This is the main container for the landing page -->
-    <section className='overflow-y-scroll flex flex-col flex-1 py-2 md:px-10 custom-scrollbar'>
+    <section className='custom-scrollbar flex flex-1 flex-col overflow-y-scroll py-2 md:px-10'>
       {/* //? This is the song URL input area >> convert to component */}
       <HeroGenerateLyricsSection />
       {/* //TODO: Figure out how to do the mouseover to reveal different text */}
@@ -26,7 +26,7 @@ const LandingPage = () => {
       <Divider
         my='xs'
         label={
-          <h1 className='text-2xl font_noto_sans_jp_black_900 font-bold text-light-2 pointer-events-none'>
+          <h1 className='font_noto_sans_jp_black_900 pointer-events-none text-2xl font-bold text-light-2'>
             おすすめ
           </h1>
         }
@@ -34,14 +34,14 @@ const LandingPage = () => {
         className='p-4'
       />
       {/* //? This is the Carousel + Leaderboard (placeholder) */}
-      <section className='w-full flex flex-col lg:flex-row gap-4 '>
+      <section className='flex w-full flex-col gap-4 lg:flex-row '>
         <SongHighlightCarousel />
         <PopularSongsTable />
       </section>
       <Divider
         my='xs'
         label={
-          <h1 className='text-2xl font-bold text-light-2 pointer-events-none'>
+          <h1 className='pointer-events-none text-2xl font-bold text-light-2'>
             Gallery
           </h1>
         }
@@ -49,7 +49,7 @@ const LandingPage = () => {
         className='p-4'
       />
       <SongsInfiniteGallery />
-      <BottomBar />
+      <HomeFooter />
     </section>
   )
 }
