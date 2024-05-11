@@ -158,7 +158,7 @@ const PlayerPage = () => {
   return (
     <>
       {/* Lyrics Display Controller */}
-      {lyricsVisibility ? <LyricsDisplay romajiEnabled={romajiEnabled} /> : ''}
+      {/* {lyricsVisibility ? <LyricsDisplay romajiEnabled={romajiEnabled} /> : ''} */}
       <div
         className={`relative aspect-video h-full w-full border-2  border-primary border-opacity-5 ${
           playerControlsVisible ? '' : 'cursor-none'

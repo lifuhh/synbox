@@ -9,8 +9,6 @@ const Practice = () => {
         <div>Test</div>
       </div>
     )
-
-    return '1'
   }
 
   return (

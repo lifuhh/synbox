@@ -59,10 +59,10 @@ const HeroGenerateLyricsDefault = ({
     <div className='items-top bg-grid-white/[0.90] relative flex w-full overflow-hidden rounded-md bg-dark-1/[0.15] pt-10 antialiased md:h-[25rem]  md:justify-center'>
       <Spotlight className='-top-8 left-10 md:-top-20 md:left-60' fill='pink' />
 
-      <div className='flex-between xl:flex-around  z-10 mx-auto w-full max-w-7xl flex-col gap-4 p-4 lg:gap-0 xl:h-96'>
+      <div className='flex-between xl:flex-around z-10 mx-auto w-full max-w-7xl flex-col gap-4 p-4 lg:gap-0 xl:h-96'>
         <h1 className='no-select bg-opacity-50 bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text pb-2 text-center text-4xl font-bold text-transparent md:text-6xl lg:text-7xl'>
-          {/* AI-Powered Japanese Karaoke */}
-          Placeholder
+          AI-Powered Japanese Karaoke
+          {/* Placeholder */}
         </h1>
         <div className='flex-between relative w-full gap-4 overflow-visible sm:mx-auto sm:w-4/5'>
           <Input
@@ -110,13 +110,8 @@ const HeroGenerateLyricsDefault = ({
         {/* Display error message or success message */}
 
         <p className='lg:w-7/10 no-select mx-auto mt-4 text-center text-base font-normal text-neutral-300'>
-          Step into a Karaoke haven with Synbox, effortlessly bringing any
-          Japanese song from YouTube to life. Just paste a link, and if the song
-          lacks lyrics, Synbox's use of OpenAI's Whisper generates synchronized
-          karaoke lyrics with romaji. For a deeper dive, we offer varied
-          translations to enrich your understanding and singing experience.
-          Synbox is the perfect stage for all Japanese music lovers, regardless
-          of language proficiency.
+          Transform YouTube videos into your personalized Japanese karaoke
+          stage, with instant lyrics and translations
         </p>
       </div>
     </div>
