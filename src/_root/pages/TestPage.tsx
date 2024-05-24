@@ -20,10 +20,10 @@ const TestPage = () => {
   }
 
   return (
-    <div className='flex flex-col mx-auto my-auto flex-between'>
+    <div className='flex-between mx-auto my-auto flex flex-col'>
       <HeroGenerateLyricsSection />
       <Divider my={'xl'} />
-      <div className='flex gap-10 justify-center w-full'>
+      <div className='flex w-full justify-center gap-10'>
         <Button variant='outline' onClick={decreaseStage}>
           Prev
         </Button>

@@ -201,7 +201,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
 
   return (
     <div
-      className={`bg-gray fixed inset-x-0  bottom-0 bg-dark-3 ${
+      className={`bg-gray fixed inset-x-0 bottom-0 bg-dark-3 ${
         playing
           ? isFullscreen
             ? 'bg-opacity-0'
