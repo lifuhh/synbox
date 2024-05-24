@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button'
-import SettingsIcon from '@mui/icons-material/Settings'
 import { useLocation } from 'react-router-dom'
 import { GitHubIcon } from '../svgicons'
 import CommandSearch from '../topbar/CommandSearch'
@@ -7,6 +6,7 @@ import AppLogo from '../topbar/NowPlayingDisplayInfo'
 
 import { useAppContext } from '@/context/AppContext'
 import FavouritesDropdownButton from '../topbar/FavouritesDropdownButton'
+import ProfileButton from '../topbar/ProfileButton'
 
 const TopBar = () => {
   const { playerControlsVisible, isFullscreen } = useAppContext()
@@ -42,21 +42,15 @@ const TopBar = () => {
         </div> */}
         <div className='ml-auto mr-2 flex items-center gap-3'>
           <CommandSearch isVideoPlayer={isVideoPlayer} />
-          <Button
+          {/* <Button
             variant='outline'
             size='icon'
             className={`border-primary hover:border-white ${buttonVisibility}`}>
             <GitHubIcon className='scale-75 fill-white' />
             <span className='sr-only'>GitHub Button</span>
-          </Button>
+          </Button> */}
           <FavouritesDropdownButton buttonVisibility={buttonVisibility} />
-          <Button
-            variant='outline'
-            size='icon'
-            className={` border-primary hover:border-white ${buttonVisibility}`}>
-            <SettingsIcon className='fill-white' />
-            <span className='sr-only'>Toggle Settings</span>
-          </Button>
+          <ProfileButton />
         </div>
       </nav>
     </section>

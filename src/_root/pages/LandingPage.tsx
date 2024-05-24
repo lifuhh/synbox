@@ -48,6 +48,17 @@ const LandingPage = () => {
         labelPosition='center'
         className='p-4'
       />
+      {/* //TODO: Payment stuff Component */}
+      <Divider
+        my='xs'
+        label={
+          <h1 className='pointer-events-none text-2xl font-bold text-light-2'>
+            Gallery
+          </h1>
+        }
+        labelPosition='center'
+        className='p-4'
+      />
       <SongsInfiniteGallery />
       <HomeFooter />
     </section>
