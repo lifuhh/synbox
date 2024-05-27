@@ -2,6 +2,7 @@ import HeroGenerateLyricsSection from '@/components/generate-lyrics/HeroGenerate
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import HoverTranslateText from '@/components/landing-page/HoverTranslateText'
 import PopularSongsTable from '@/components/landing-page/PopularSongsTable'
+import PricingTable from '@/components/landing-page/PricingTable'
 import SongHighlightCarousel from '@/components/landing-page/SongHighlightCarousel'
 import SongsInfiniteGallery from '@/components/landing-page/SongsInfiniteGallery'
 import HomeFooter from '@/components/shared/HomeFooter'
@@ -31,7 +32,7 @@ const LandingPage = () => {
           </h1>
         }
         labelPosition='center'
-        className='p-4'
+        className=' p-4'
       />
       {/* //? This is the Carousel + Leaderboard (placeholder) */}
       <section className='flex w-full flex-col gap-4 lg:flex-row '>
@@ -42,12 +43,13 @@ const LandingPage = () => {
         my='xs'
         label={
           <h1 className='pointer-events-none text-2xl font-bold text-light-2'>
-            Gallery
+            Pricing
           </h1>
         }
         labelPosition='center'
         className='p-4'
       />
+      <PricingTable />
       {/* //TODO: Payment stuff Component */}
       <Divider
         my='xs'

@@ -14,7 +14,7 @@ dist-ssr
 *.local
 cgpt_training
 pnpm-lock.yaml
-
+bun.lockb
 
 # Editor directories and files
 .vscode/*
