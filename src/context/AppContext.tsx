@@ -1,9 +1,26 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { getCurrentUser } from '@/lib/appwrite/api'
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import { createContext, useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+export const INITIAL_USER = {
+  id: '',
+  name: '',
+  // username: '',
+  // subscription: '',
+}
 
 interface AppContextType {
+  //* Auth
+  user: typeof INITIAL_USER
+  isLoading: boolean
+  isAuthenticated: boolean
+  setUser: (user: typeof INITIAL_USER) => void
+  setIsAuthenticated: (isAuthenticated: boolean) => void
+  checkAuthUser: () => Promise<boolean>
+  //* Player stuff
   muted: boolean
   videoId: string
   volume: number
@@ -16,7 +33,7 @@ interface AppContextType {
   setVolume: (volume: number) => void
   setProcessingStage: (stage: number) => void
   setLandingPageCarouselData: (
-    data: formattedYoutubeVideoItemForCarousel[]
+    data: formattedYoutubeVideoItemForCarousel[],
   ) => void
   playerControlsVisible: boolean
   setPlayerControlsVisible: (visibility: boolean) => void
@@ -24,6 +41,14 @@ interface AppContextType {
 }
 
 const INITIAL_STATE = {
+  //* Auth stuff
+  user: INITIAL_USER,
+  isLoading: false,
+  isAuthenticated: false,
+  setUser: (user: typeof INITIAL_USER) => {},
+  setIsAuthenticated: () => {},
+  checkAuthUser: async () => false as boolean,
+  //* Player stuff
   videoId: '',
   volume: 0.2,
   muted: true,
@@ -37,13 +62,49 @@ const INITIAL_STATE = {
   setPlayerMuted: (muted: boolean) => {},
   setPlayerControlsVisible: (visibility: boolean) => {},
   setLandingPageCarouselData: (
-    data: formattedYoutubeVideoItemForCarousel[]
+    data: formattedYoutubeVideoItemForCarousel[],
   ) => {},
   setIsFullscreen: (isFullscreen: boolean) => {},
 }
 const AppContext = createContext<AppContextType>(INITIAL_STATE)
 
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate()
+
+  //* Auth Stuff
+  const [user, setUser] = useState<typeof INITIAL_USER>(INITIAL_USER)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+
+  const checkAuthUser = async () => {
+    setIsLoading(true)
+
+    try {
+      const currentUser = await getCurrentUser()
+
+      if (currentUser) {
+        setUser({
+          id: currentUser.$id,
+          name: currentUser.name,
+          // username: currentUser.username,
+          // subscription: currentUser.subscription,
+        })
+        console.log('This is user')
+        console.log(user)
+        setIsAuthenticated(true)
+        return true
+      }
+
+      return false
+    } catch (error) {
+      console.log(error)
+      return false
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  //* Player Stuff
   const [muted, setPlayerMuted] = useState<boolean>(true)
   const [videoId, setVideoId] = useState<string>('')
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
@@ -54,8 +115,6 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [landingPageCarouselData, setLandingPageCarouselData] = useState<
     formattedYoutubeVideoItemForCarousel[]
   >([]) //* This should be unnecessary
-
-  // const navigate = useNavigate()
 
   //TODO: Can add localstorage stuff here, for example
   // useEffect(() => {
@@ -69,6 +128,12 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   // }, []);
 
   const value = {
+    user,
+    setUser,
+    isLoading,
+    isAuthenticated,
+    setIsAuthenticated,
+    checkAuthUser,
     videoId,
     setVideoId,
     muted,

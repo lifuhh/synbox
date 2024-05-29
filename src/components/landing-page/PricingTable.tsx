@@ -61,7 +61,7 @@ const PricingTable = () => {
   ]
 
   return (
-    <div className='grid grid-cols-1 gap-10 text-center lg:grid-cols-2'>
+    <div className='mx-10 grid grid-cols-1 gap-10 py-10 text-center lg:grid-cols-2'>
       <TooltipProvider>
         {pricingPlans.map(({ plan, tagline, quota, features }) => {
           const price =
@@ -70,11 +70,14 @@ const PricingTable = () => {
           return (
             <div
               key={plan}
-              className={cn('relative rounded-2xl bg-white shadow-lg', {
-                'border-2 border-secondary shadow-secondary-500':
-                  plan === 'Pro',
-                'border border-gray-200': plan !== 'Pro',
-              })}>
+              className={cn(
+                'relative rounded-2xl bg-secondary-500 bg-opacity-20 shadow-lg',
+                {
+                  'border-2 border-secondary shadow-secondary-500':
+                    plan === 'Pro',
+                  'border border-gray-200': plan !== 'Pro',
+                },
+              )}>
               {plan === 'Pro' && (
                 <div className='absolute -top-5 left-0 right-0 mx-auto w-32 rounded-full bg-gradient-to-r  from-primary-500 to-secondary  px-3 py-2 text-sm font-medium text-white'>
                   Upgrade now
@@ -82,24 +85,24 @@ const PricingTable = () => {
               )}
 
               <div className='p-5'>
-                <h3 className='font-display my-3 text-center text-3xl font-bold text-primary'>
+                <h3 className='font-display my-3 text-center text-3xl font-bold text-secondary'>
                   {plan}
                 </h3>
-                <p className='text-gray-600'>{tagline}</p>
+                <p className='text-white'>{tagline}</p>
                 <p className='font-display my-5 text-6xl font-semibold text-secondary'>
                   ${price}
                 </p>
-                <p className='text-gray-600'>
+                <p className='text-white'>
                   {price == 0 ? 'Free To Use' : 'One-time Payment'}
                 </p>
               </div>
 
-              <div className='flex h-20 items-center justify-center border-b border-t border-gray-200 bg-gray-50'>
-                <div className='flex items-center space-x-1 text-black'>
+              <div className='flex h-20 items-center justify-center border-b border-t border-primary bg-secondary-500'>
+                <div className='flex items-center space-x-1 text-white'>
                   <p>{quota.toLocaleString()} Songs/mo included</p>
                   <Tooltip delayDuration={300}>
                     <TooltipTrigger className='ml-1.5 cursor-default'>
-                      <HelpCircle className='h-4 w-4 text-zinc-500' />
+                      <HelpCircle className='text-white-500 h-4 w-4' />
                     </TooltipTrigger>
                     <TooltipContent className='w-80 p-2'>
                       How many songs you can translate per month
@@ -113,22 +116,22 @@ const PricingTable = () => {
                   <li key={text} className='flex space-x-5'>
                     <div className='flex-shrink-0'>
                       {negative ? (
-                        <Minus className='h-6 w-6 text-gray-300' />
+                        <Minus className='h-6 w-6 text-white' />
                       ) : (
-                        <Check className='h-6 w-6 text-primary' />
+                        <Check className='h-6 w-6 text-white' />
                       )}
                     </div>
                     {footnote ? (
                       <div className='flex items-center space-x-1'>
                         <p
-                          className={cn('text-gray-900', {
-                            'text-gray-400': negative,
+                          className={cn('text-white', {
+                            'text-white': negative,
                           })}>
                           {text}
                         </p>
                         <Tooltip delayDuration={300}>
                           <TooltipTrigger className='ml-1.5 cursor-default'>
-                            <HelpCircle className='h-4 w-4 text-zinc-500' />
+                            <HelpCircle className='h-4 w-4 text-white' />
                           </TooltipTrigger>
                           <TooltipContent className='w-80 p-2'>
                             {footnote}
@@ -137,7 +140,7 @@ const PricingTable = () => {
                       </div>
                     ) : (
                       <p
-                        className={cn('text-gray-900', {
+                        className={cn('text-white', {
                           'text-gray-400': negative,
                         })}>
                         {text}

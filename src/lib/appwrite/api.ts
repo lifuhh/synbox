@@ -1,28 +1,58 @@
 import { ID, Query } from 'appwrite'
 import { account, appwriteConfig, avatars, databases, storage } from './config'
 
+export async function signInGoogleAccount() {
+  try {
+    const session = await account.createOAuth2Session(
+      'google',
+      'http://localhost:5173/',
+      'http://localhost:5173/fail',
+    )
+    console.log('Logged In!')
+
+    return session
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getCurrentUser() {
+  try {
+    const currentAccount = await account.get()
+
+    // const currentUser = await databases.listDocuments(
+    //   appwriteConfig.databaseId,
+    //   appwriteConfig.userCollectionId,
+    //   [Query.equal('accountId', currentAccount.$id)]
+    // )
+
+    if (!currentAccount) throw Error('No user found')
+
+    // return currentUser.documents[0]
+    return currentAccount
+
+    //
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 // ROUGH SKETCH OF FUNCTION
 export async function addLyricsToSong(lyricsFile: File) {
-
   //* Validate file successfully parsed
-  if(!lyricsFile) throw Error('No file found')
-
-
+  if (!lyricsFile) throw Error('No file found')
 
   try {
     const uploadedLyricsFile = await storage.createFile(
       appwriteConfig.storageId,
       ID.unique(),
-      lyricsFile
+      lyricsFile,
     )
     return uploadedLyricsFile
   } catch (error) {
     console.log(error)
   }
 }
-
-
 
 //! export async function createPost(post: INewPost) {
 //   try {
@@ -67,7 +97,6 @@ export async function addLyricsToSong(lyricsFile: File) {
 //     console.log(error)
 //   }
 // }
-
 
 //! export async function uploadFile(file: File) {
 //   try {

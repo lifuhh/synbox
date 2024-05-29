@@ -111,7 +111,7 @@ const HeroGenerateLyricsDefault = ({
 
         <p className='lg:w-7/10 no-select mx-auto mt-4 text-center text-base font-normal text-neutral-300'>
           Transform YouTube videos into your personalized Japanese karaoke
-          stage, with instant lyrics and translations
+          stage, with AI-generated, accurately synced lyrics and translations
         </p>
       </div>
     </div>

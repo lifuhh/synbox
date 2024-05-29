@@ -6,7 +6,11 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 
-import { addLyricsToSong } from '../appwrite/api'
+import {
+  addLyricsToSong,
+  getCurrentUser,
+  signInGoogleAccount,
+} from '../appwrite/api'
 import { getLandingPagePlaylist, getYoutubeSearchResults } from '../youtube/api'
 
 import { QUERY_KEYS } from './queryKeys'
@@ -16,6 +20,12 @@ import { QUERY_KEYS } from './queryKeys'
 //     mutationFn: (user: INewUser) => createUserAccount(user),
 //   })
 // }
+
+export const useSignInGoogleAccount = () => {
+  return useMutation({
+    mutationFn: () => signInGoogleAccount(),
+  })
+}
 
 //?TEST_DRIVE_QUERY
 export const useGetLandingPagePlaylist = () => {

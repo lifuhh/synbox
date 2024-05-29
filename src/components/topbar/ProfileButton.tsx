@@ -20,8 +20,9 @@ import {
 } from 'lucide-react'
 import { GitHubIcon } from '../svgicons'
 import { Button } from '../ui/button'
+import LoginDropdownButton from './LoginDropdownButton'
 
-const ProfileButton = () => {
+const ProfileButtonDropdown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -70,19 +71,10 @@ const ProfileButton = () => {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className='unselectable cursor-default bg-dark-2' />
-        <DropdownMenuItem className='cursor-pointer'>
-          <LogIn className='mr-2 h-4 w-4' />
-          <span>Login</span>
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        {/* <DropdownMenuItem className='cursor-pointer'>
-          <LogOut className='mr-2 h-4 w-4' />
-          <span>Log out</span>
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem> */}
+        <LoginDropdownButton />
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
 
-export default ProfileButton
+export default ProfileButtonDropdown
