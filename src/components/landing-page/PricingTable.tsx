@@ -25,8 +25,8 @@ const PricingTable = () => {
           footnote: '',
         },
         {
-          text: '3 song translations per day',
-          footnote: 'The maximum number of songs you can translate per day',
+          text: '3 song translations per month',
+          footnote: 'The maximum number of songs you can translate per month',
         },
         {
           text: 'Access to playlist features',
@@ -49,8 +49,8 @@ const PricingTable = () => {
           footnote: '',
         },
         {
-          text: '50 song translations per day',
-          footnote: 'The maximum number of songs you can translate per day',
+          text: '50 song translations per month',
+          footnote: 'The maximum number of songs you can translate per month',
         },
         {
           text: 'Access to playlist features',
