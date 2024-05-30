@@ -34,11 +34,11 @@
 
 @layer base {
   * {
-    @apply box-border list-none p-0 m-0 scroll-smooth;
+    @apply m-0 box-border list-none scroll-smooth p-0 antialiased;
   }
 
   body {
-    @apply text-white min-h-screen font-inter;
+    @apply min-h-screen font-inter text-white;
     background-image: url('/assets/images/triangulate.png');
     background-size: cover; /* Cover the entire viewport */
     background-position: center; /* Center the image in the viewport */
@@ -58,27 +58,27 @@
 @layer utilities {
   /* UTILITIES */
   .invert-white {
-    @apply invert brightness-0 transition;
+    @apply brightness-0 invert transition;
   }
 
   .flex-around {
-    @apply flex justify-around items-center;
+    @apply flex items-center justify-around;
   }
 
   .flex-center {
-    @apply flex justify-center items-center;
+    @apply flex items-center justify-center;
   }
 
   .flex-between {
-    @apply flex justify-between items-center;
+    @apply flex items-center justify-between;
   }
 
   .flex-start {
-    @apply flex justify-start items-center;
+    @apply flex items-center justify-start;
   }
 
   .flex-end {
-    @apply flex justify-end items-center;
+    @apply flex items-center justify-end;
   }
 
   .small-regular {
@@ -116,19 +116,23 @@
 
   /* File uploader */
   .file_uploader-img {
-    @apply h-80 lg:h-[480px] w-full rounded-[24px] object-cover object-top;
+    @apply h-80 w-full rounded-[24px] object-cover object-top lg:h-[480px];
   }
 
   .file_uploader-label {
-    @apply text-light-4 text-center small-regular w-full p-4 border-t border-t-dark-4;
+    @apply small-regular w-full border-t border-t-dark-4 p-4 text-center text-light-4;
   }
 
   .file_uploader-box {
-    @apply flex-center flex-col p-7 h-20 lg:h-[300px];
+    @apply flex-center h-20 flex-col p-7 lg:h-[300px];
   }
 
   .font_noto_sans_jp_reg {
     font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .ytp-pause-overlay-container {
+    display: none !important;
   }
 
   .no-select {
@@ -165,30 +169,46 @@
   }
 
   .shad-input {
-    @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    @apply h-12 border-none bg-dark-4 ring-offset-light-3 placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 !important;
   }
 
   .shad-textarea {
-    @apply h-36 bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    @apply h-36 rounded-xl border-none bg-dark-3 ring-offset-light-3 focus-visible:ring-1 focus-visible:ring-offset-1 !important;
   }
 
   /* Button */
   .shad-button_primary {
-    @apply bg-primary-500 hover:bg-primary-500 text-light-1 flex gap-2 !important;
+    @apply flex gap-2 bg-primary-500 text-light-1 hover:bg-primary-500 !important;
   }
 
   .shad-button_dark_4 {
-    @apply h-12 bg-dark-4 px-5 text-light-1 flex gap-2 !important;
+    @apply flex h-12 gap-2 bg-dark-4 px-5 text-light-1 !important;
   }
 
   .shad-button_ghost {
-    @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
+    @apply flex items-center justify-start gap-4 hover:bg-transparent hover:text-white !important;
   }
 
   .DialogContent {
     min-width: 300px;
     background: white;
     padding: 30px;
+  }
+
+  .overlay-lyrics-text {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(1px);
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.5) 40%,
+      rgba(0, 0, 0, 0.2) 70%,
+      rgba(0, 0, 0, 0) 100%,
+      rgba(0, 0, 0, 0.2) 70%,
+      rgba(0, 0, 0, 0.7) 0%
+    );
+    /* border-radius: 10px; */
+    padding: 10px;
   }
 
   .invisible-ring {

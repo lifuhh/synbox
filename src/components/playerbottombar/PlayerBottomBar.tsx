@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
 } from 'react'
 import ReactPlayer from 'react-player'
 import LyricsDropdownButton from '../lyrics-display/LyricsDropdownButton'
@@ -43,7 +44,8 @@ interface PlayerBottomBarProps {
   handleSeekMouseUp: (e: MouseEvent<HTMLInputElement>) => void
   handleProgress: (state: { played: number; loaded: number }) => void
   handleToggleLoop: () => void
-  handleToggleRomajiDisplay: () => void
+  handleToggleRomajiVisibility: () => void
+  handleToggleTranslationVisibility: () => void
   handleToggleLyricsVisibility: (visibility: boolean) => void
   playerRef: ForwardedRef<ReactPlayer>
 }
@@ -63,12 +65,18 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleSeekMouseUp,
   handleProgress,
   handleToggleLoop,
-  handleToggleRomajiDisplay,
+  handleToggleRomajiVisibility,
+  handleToggleTranslationVisibility,
   handleToggleLyricsVisibility,
 }) => {
+  const bottomBarRef = useRef<HTMLDivElement>(null)
   console.log('Player Bottom Bar re-rendered...')
-  const { playerControlsVisible, isFullscreen, setIsFullscreen } =
-    useAppContext()
+  const {
+    playerControlsVisible,
+    isFullscreen,
+    setIsFullscreen,
+    setBottomBarHeight,
+  } = useAppContext()
   const location = useLocation()
 
   const getCurrentPlayedPercentage = useCallback(() => {
@@ -81,6 +89,14 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     [duration],
   )
 
+  //? Calculate Bottom Bar Height
+  useEffect(() => {
+    if (bottomBarRef.current && setBottomBarHeight) {
+      setBottomBarHeight(bottomBarRef.current.offsetHeight)
+    }
+  }, [bottomBarRef, setBottomBarHeight])
+
+  //TODO: Full screen thing - change to screenfull lib
   useEffect(() => {
     const currentPath = location.pathname
 
@@ -198,18 +214,24 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [handlePlayPause])
+  //TODO: Full screen thing END - change to screenfull lib
 
   return (
+    // <div
+    //   className={`fixed inset-x-0 bottom-0 bg-dark-3
+    //   ${
+    //     playing
+    //       ? isFullscreen
+    //         ? 'bg-opacity-0'
+    //         : 'bg-opacity-15'
+    //       : 'bg-opacity-100'
+    //   }
+    //   controls ${playerControlsVisible ? 'visible bg-opacity-15' : 'hidden'}
+
+    //   `}>
     <div
-      className={`bg-gray fixed inset-x-0 bottom-0 bg-dark-3 ${
-        playing
-          ? isFullscreen
-            ? 'bg-opacity-0'
-            : 'bg-opacity-15'
-          : 'bg-opacity-100'
-      } controls ${
-        playerControlsVisible ? 'visible bg-opacity-15' : 'hidden'
-      } `}>
+      ref={bottomBarRef}
+      className={`controls fixed inset-x-0 bottom-0 bg-dark-3 ${playerControlsVisible ? 'visible' : 'hidden'}`}>
       <div className='h-1 cursor-pointer'>
         <Slider
           defaultValue={[0]}
@@ -243,11 +265,11 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
           </Button>
 
           <VolumeControl />
-          <div className='flex-between ml-2'>
+          <div className='flex-between unselectable ml-2'>
             <span className='hidden w-12 text-center sm:inline'>
               {formattedPlayed}
             </span>
-            <span className='hidden w-4 text-center sm:inline'>{' / '}</span>
+            <span className='hidden w-4 text-center sm:inline'>{'/'}</span>
             <span className='hidden text-center sm:inline'>
               {formattedDuration}
             </span>
@@ -277,7 +299,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleToggleRomajiDisplay}>
+            onClick={handleToggleRomajiVisibility}>
             {romajiEnabled ? (
               <SubtitlesIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (

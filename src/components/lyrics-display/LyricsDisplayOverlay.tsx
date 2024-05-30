@@ -1,77 +1,83 @@
-import { useEffect, useMemo, useState } from 'react'
-
 import { useAppContext } from '@/context/AppContext'
 import { formatLyricsLineSrt } from '@/utils'
+import { useEffect, useMemo, useState } from 'react'
 import { isKanji, toRomaji } from 'wanakana'
 import LyricTextLine from './LyricTextLine'
 
 interface LyricsDisplayProps {
-  romajiEnabled: boolean
+  romajiVisibility: boolean
+  translationVisibility: boolean
 }
 
-//! Lyrics Display overlay is z-40
-const LyricsDisplay: React.FC<LyricsDisplayProps> = ({ romajiEnabled }) => {
-  const { playerControlsVisible } = useAppContext()
+const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
+  romajiVisibility: romajiVisibility,
+  translationVisibility: translationVisibility,
+}) => {
+  const { playerControlsVisible, bottomBarHeight } = useAppContext()
 
   // 知りたいその秘密ミステリアス
   const [firstLineIndex, setFirstLineIndex] = useState<number>(0)
   const [secondLineIndex, setSecondLineIndex] = useState<number>(1)
+  const [overlayHeight, setOverlayHeight] = useState('h-full')
+
+  const translationTest = ''
+  const lyricsTest =
+    '<ruby>無敵<rp>(</rp><rt>むてき</rt><rp>)</rp></ruby>の<ruby>笑顔<rp>(</rp><rt>えがお</rt><rp>)</rp></ruby>で<ruby>荒<rp>(</rp><rt>あ</rt><rp>)</rp></ruby>らすメディア'
+  const romajiTest = ''
 
   const placeholderLyric1 =
     '<ruby>無敵<rp>(</rp><rt>むてき</rt><rp>)</rp></ruby>の<ruby>笑顔<rp>(</rp><rt>えがお</rt><rp>)</rp></ruby>で<ruby>荒<rp>(</rp><rt>あ</rt><rp>)</rp></ruby>らすメディア . . . . . ♪'
   const placeholderLyric2 =
     '<ruby>知<rp>(</rp><rt>し</rt><rp>)</rp></ruby>りたいその<ruby>秘密<rp>(</rp><rt>ひみつ</rt><rp>)</rp></ruby>ミステリアス<ruby>今日何食<rp>(</rp><rt>きょうなにた</rt><rp>)</rp></ruby>べた？'
 
+  const getOverlayHeight = useMemo(() => {
+    return playerControlsVisible ? `calc(100% - ${bottomBarHeight}px)` : '100%'
+  }, [playerControlsVisible, bottomBarHeight])
+
   return (
     <div
-      className={`absolute left-0 top-0 w-full ${
-        playerControlsVisible ? 'h-9/10' : 'h-full'
-      } pointer-events-none z-40`}>
+      className='player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-30 w-full'
+      style={{ height: getOverlayHeight }}>
       <div className='flex h-full w-full flex-col justify-end md:justify-between'>
-        {/* Translation Div */}
-        <div className='w-full md:pb-0 md:pt-4'>
+        {/* OLD Translation Div */}
+        {/* <div className='w-full md:pb-0 md:pt-4'>
           <p className='font_noto_sans_jp_black_900 font-outline-1 flex justify-center text-2vw'>
-            {/* Couldn't beat her smile, it stirred up all the media */}
             Testing Testing Translations Here Testing Testing
           </p>
-        </div>
+        </div> */}
 
         {/* Lyrics Div */}
-        <div className='flex w-full flex-col justify-end py-4 md:flex-1 md:pb-3'>
-          <div className='pl-2 sm:pl-4 lg:mx-4'>
-            <div style={containerStyleFirst}>
-              <LyricTextLine htmlContent={placeholderLyric1} />
+        <div className='flex w-full flex-col justify-end md:flex-1'>
+          {/* //? Div Container for all lyrics display */}
+          <div className='overlay-lyrics-text pb-2'>
+            {/* //! Romaji Layer */}
+            {romajiVisibility && (
+              <div className=' pb-2'>
+                <p className='font_noto_sans_jp_black_900 font-outline-1 flex justify-center text-2.4vw'>
+                  {/* Couldn't beat her smile, it stirred up all the media */}
+                  Testing Testing Testing Testing Testing
+                </p>
+              </div>
+            )}
+            {/* //! Japanese Layer */}
+            <div className='mx-auto flex w-full justify-center '>
+              <LyricTextLine htmlContent={lyricsTest} />
             </div>
-          </div>
-          <div className='flex justify-end sm:pr-2 lg:mx-4'>
-            <div style={containerStyleSecond}>
-              <LyricTextLine htmlContent={placeholderLyric2} />
-            </div>
+
+            {/* //! Translation Layer */}
+            {translationVisibility && (
+              <div className=''>
+                <p className='font_noto_sans_jp_black_900 font-outline-1 flex justify-center text-2.4vw'>
+                  {/* Couldn't beat her smile, it stirred up all the media */}
+                  Testing Testing Testing Testing Testing
+                </p>
+              </div>
+            )}
           </div>
         </div>
-        {romajiEnabled && (
-          <div className='pb-2'>
-            <p className='font_noto_sans_jp_black_900 font-outline-1 flex justify-center text-2.4vw'>
-              {/* Couldn't beat her smile, it stirred up all the media */}
-              Testing Testing Testing Testing Testing
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )
-}
-
-const containerStyleFirst: React.CSSProperties = {
-  width: '90vw', // 90% of the viewport width
-  display: 'flex',
-  justifyContent: 'start',
-}
-
-const containerStyleSecond: React.CSSProperties = {
-  width: '90vw', // 90% of the viewport width
-  display: 'flex',
-  justifyContent: 'end',
 }
 
 export default LyricsDisplay

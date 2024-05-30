@@ -38,6 +38,9 @@ interface AppContextType {
   playerControlsVisible: boolean
   setPlayerControlsVisible: (visibility: boolean) => void
   setIsFullscreen: (isFullscreen: boolean) => void
+  //* Calculate Bottombar Height
+  bottomBarHeight: number
+  setBottomBarHeight: React.Dispatch<React.SetStateAction<number>> | undefined
 }
 
 const INITIAL_STATE = {
@@ -65,6 +68,9 @@ const INITIAL_STATE = {
     data: formattedYoutubeVideoItemForCarousel[],
   ) => {},
   setIsFullscreen: (isFullscreen: boolean) => {},
+  // Calculate Bottombar Height
+  bottomBarHeight: 0,
+  setBottomBarHeight: undefined,
 }
 const AppContext = createContext<AppContextType>(INITIAL_STATE)
 
@@ -103,6 +109,9 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(false)
     }
   }
+
+  //* Bottom Bar Height Stuff
+  const [bottomBarHeight, setBottomBarHeight] = useState(0)
 
   //* Player Stuff
   const [muted, setPlayerMuted] = useState<boolean>(true)
@@ -148,6 +157,8 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setPlayerControlsVisible,
     isFullscreen,
     setIsFullscreen,
+    bottomBarHeight,
+    setBottomBarHeight,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

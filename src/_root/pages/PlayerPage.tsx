@@ -1,5 +1,5 @@
-import LyricsDisplay from '@/components/lyrics-display/LyricsDisplayOverlay'
-import { MemoizedPlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
+import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverlay'
+import { MemoizedPlayerBottomBar as PlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -28,9 +28,11 @@ const PlayerPage = () => {
   const testRafId = useRef<number>(0)
   const testCounter = useRef<number>(0)
 
-  //* Lyrics-related state
-  const [romajiEnabled, setRomajiEnabled] = useState<boolean>(true)
+  //* Lyrics-display related state
+  const [romajiVisibility, setRomajiVisibility] = useState<boolean>(true)
   const [lyricsVisibility, setLyricsVisibility] = useState<boolean>(true)
+  const [translationVisibility, setTranslationVisibility] =
+    useState<boolean>(true)
 
   //TODO: wrong - fix this
   useEffect(() => {
@@ -51,8 +53,14 @@ const PlayerPage = () => {
     setLoop(!loop)
   }, [loop]) // Add dependencies if any
 
-  const handleToggleRomajiDisplay = useCallback(() => {
-    setRomajiEnabled((prevRomajiEnabled) => !prevRomajiEnabled)
+  const handleToggleRomajiVisibility = useCallback(() => {
+    setRomajiVisibility((prevRomajiEnabled) => !prevRomajiEnabled)
+  }, [])
+
+  const handleToggleTranslationVisibility = useCallback(() => {
+    setTranslationVisibility(
+      (prevTranslationVisibility) => !prevTranslationVisibility,
+    )
   }, [])
 
   const handleToggleLyricsVisibility = useCallback((visibility: boolean) => {
@@ -158,9 +166,17 @@ const PlayerPage = () => {
   return (
     <>
       {/* Lyrics Display Controller */}
-      {/* {lyricsVisibility ? <LyricsDisplay romajiEnabled={romajiEnabled} /> : ''} */}
+      {lyricsVisibility ? (
+        <LyricsDisplayOverlay
+          romajiVisibility={romajiVisibility}
+          translationVisibility={translationVisibility}
+        />
+      ) : (
+        ''
+      )}
+      {/* //TODO: Added unselectable to youtube player, need to add at top level to play video if video is paused and user clicks on screen */}
       <div
-        className={`relative aspect-video h-full w-full border-2 border-primary border-opacity-5 ${
+        className={`${playing ? 'unselectable' : ''} relative aspect-video h-full w-full border-2 border-primary border-opacity-5 ${
           playerControlsVisible ? '' : 'cursor-none'
         } ${isFullscreen ? 'mt-14' : ''} `}>
         {stateVideoId && (
@@ -179,13 +195,13 @@ const PlayerPage = () => {
           />
         )}
       </div>
-      <MemoizedPlayerBottomBar
+      <PlayerBottomBar
         playing={playing}
         loop={loop}
         played={played}
         duration={duration}
         playerRef={playerRef}
-        romajiEnabled={romajiEnabled}
+        romajiEnabled={romajiVisibility}
         handlePlay={handlePlay}
         handlePause={handlePause}
         handlePlayPause={handlePlayPause}
@@ -194,7 +210,8 @@ const PlayerPage = () => {
         handleSeekMouseUp={handleSeekMouseUp}
         handleProgress={handleProgress}
         handleToggleLoop={handleToggleLoop}
-        handleToggleRomajiDisplay={handleToggleRomajiDisplay}
+        handleToggleRomajiVisibility={handleToggleRomajiVisibility}
+        handleToggleTranslationVisibility={handleToggleTranslationVisibility}
         handleToggleLyricsVisibility={handleToggleLyricsVisibility}
       />
     </>
