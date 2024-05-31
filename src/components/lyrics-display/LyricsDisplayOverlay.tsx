@@ -16,9 +16,8 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   const { playerControlsVisible, bottomBarHeight } = useAppContext()
 
   // 知りたいその秘密ミステリアス
-  const [firstLineIndex, setFirstLineIndex] = useState<number>(0)
-  const [secondLineIndex, setSecondLineIndex] = useState<number>(1)
-  const [overlayHeight, setOverlayHeight] = useState('h-full')
+  // const [firstLineIndex, setFirstLineIndex] = useState<number>(0)
+  // const [secondLineIndex, setSecondLineIndex] = useState<number>(1)
 
   const translationTest = ''
   const lyricsTest =
