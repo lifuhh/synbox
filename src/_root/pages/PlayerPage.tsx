@@ -73,7 +73,7 @@ const PlayerPage = () => {
     // setTestStartTime(performance.now())
   }, [])
 
-  //? requestAnimationFrame tester - to change to use accordingly for lyrics
+  //? `requestAnimationFrame` tester - to change to use accordingly for lyrics
   useEffect(() => {
     //! RAF gives a timestamp actually
     const testAnimationFrameCallback = (timestamp: number) => {
@@ -140,7 +140,6 @@ const PlayerPage = () => {
     if (!playerRef.current) return null
 
     const secondsLapsed = playerRef.current.getCurrentTime()
-
     //? This fires every second
     // console.log({ secondsLapsed })
 

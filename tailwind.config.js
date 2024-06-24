@@ -67,6 +67,7 @@ module.exports = {
       fontSize: {
         '2vw': '2vw',
         '2.4vw': '2.4vw',
+        '3.5vw': '3.5vw',
         '4.2vw': '4.2vw',
       },
       keyframes: {

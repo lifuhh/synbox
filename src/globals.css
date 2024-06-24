@@ -127,10 +127,6 @@
     @apply flex-center h-20 flex-col p-7 lg:h-[300px];
   }
 
-  .font_noto_sans_jp_reg {
-    font-family: 'Noto Sans JP', sans-serif;
-  }
-
   .ytp-pause-overlay-container {
     display: none !important;
   }
@@ -142,13 +138,13 @@
     -webkit-user-select: none;
   }
 
+  .font_noto_sans_jp_reg {
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
   .font_noto_sans_jp_black_900 {
     font-family: 'Noto Sans JP', sans-serif;
     font-weight: 900;
-  }
-
-  .font_mochiy_pop_one {
-    font-family: 'Mochiy Pop One', sans-serif;
   }
 
   .font_doki_doki {
