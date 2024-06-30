@@ -27,9 +27,9 @@ const HeroGenerateLyricsSection = () => {
         )
       case 2:
         return <HeroGenerateLyricsProcessing subStage={subStage} />
-      case 3:
+      case 200:
         return <HeroGenerateLyricsExists />
-      case 4:
+      case 404:
         return <HeroGenerateLyricsError />
     }
   }

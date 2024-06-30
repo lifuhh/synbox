@@ -103,7 +103,7 @@ const HeroGenerateLyricsDefault = ({
             variant='default'
             role='combobox'
             className='w-[120px] border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20'>
-            Sing This!
+            Generate Lyrics
           </Button>
         </div>
 

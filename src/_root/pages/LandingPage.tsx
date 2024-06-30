@@ -15,7 +15,6 @@ const LandingPage = () => {
     <section className='custom-scrollbar flex flex-1 flex-col overflow-y-scroll py-2 md:px-10'>
       {/* //? This is the song URL input area >> convert to component */}
       <HeroGenerateLyricsSection />
-      {/* //TODO: Figure out how to do the mouseover to reveal different text */}
       {/* <Divider
         my='xs'
         label={
@@ -24,6 +23,7 @@ const LandingPage = () => {
         labelPosition='center'
         className='p-4'
       /> */}
+      {/* //TODO: Figure out how to do the mouseover to reveal different text */}
       <Divider
         my='xs'
         label={
