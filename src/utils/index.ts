@@ -19,7 +19,7 @@ import { isKanji, toRomaji } from 'wanakana'
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
 
 export function formatYoutubePlaylistResponse(
-  data: YoutubePlaylistApiResponse
+  data: YoutubePlaylistApiResponse,
 ): formattedYoutubeVideoItemForCarousel[] {
   const items = data.items.map(
     (item: YoutubePlaylistItem): formattedYoutubeVideoItemForCarousel => {
@@ -31,27 +31,27 @@ export function formatYoutubePlaylistResponse(
         description: trimLength(
           item.snippet.description,
           maxDescriptionLength,
-          true
+          true,
         ),
         thumbnailUrl: item.snippet.thumbnails.high.url,
         videoId: item.snippet.resourceId?.videoId,
       }
-    }
+    },
   )
 
   const shuffledResults = shuffleArray(
-    items
+    items,
   ) as formattedYoutubeVideoItemForCarousel[]
 
   return shuffledResults.slice(0, 20)
 }
 
 export function formatYoutubeSearchResponse(
-  data: YoutubeSearchApiResponse
+  data: YoutubeSearchApiResponse,
 ): formattedSearchResult[] {
   const maxSearchResultsTitleLength = 22
 
-  console.log('formatting search response')
+  // console.log('formatting search response')
 
   const items = data.items.map(
     (item: YoutubeSearchItem): formattedSearchResult => {
@@ -59,16 +59,16 @@ export function formatYoutubeSearchResponse(
         title: trimLength(
           item.snippet.title,
           maxSearchResultsTitleLength,
-          false
+          false,
         ),
         channel: item.snippet.channelTitle,
         thumbnailUrl: item.snippet.thumbnails.default.url,
         videoId: item.id.videoId,
       }
-    }
+    },
   )
 
-  console.log(items)
+  // console.log(items)
 
   return items
 }
@@ -88,7 +88,7 @@ export function formatTimeDisplay(seconds: number) {
   const remainingSeconds = seconds % 60
   const remainingMinutes = minutes % 60
   return `${hours ? `${hours}:` : ''}${pad(remainingMinutes)}:${pad(
-    remainingSeconds
+    remainingSeconds,
   )}`
 }
 
@@ -108,7 +108,7 @@ export function formatLyricsLineSrt(lyric: string, romaji: string) {
   //? Generates [ ["知", "shi"], ["秘密", "himitsu"] ]
   const kanjiRomajiMatches = kanjiToRomajiMatcher(
     Array.from(separatedLyrics),
-    romaji
+    romaji,
   )
 
   let finalProcessedLyricsLine = ''
@@ -124,21 +124,21 @@ export function formatLyricsLineSrt(lyric: string, romaji: string) {
 
         if (romaji.includes('EDITME_')) {
           hiraganaOfKanji = getCorrespondingHiraganaFromList(
-            splitRomajiIntoSyllables(romaji.split('EDITME_')[1].toLowerCase())
+            splitRomajiIntoSyllables(romaji.split('EDITME_')[1].toLowerCase()),
           )
           finalProcessedLyricsLine += generateRubySnippet(
             kanji,
             hiraganaOfKanji,
-            true
+            true,
           )
         } else {
           hiraganaOfKanji = getCorrespondingHiraganaFromList(
-            splitRomajiIntoSyllables(romaji.toLowerCase())
+            splitRomajiIntoSyllables(romaji.toLowerCase()),
           )
           finalProcessedLyricsLine += generateRubySnippet(
             kanji,
             hiraganaOfKanji,
-            false
+            false,
           )
         }
       } else {
@@ -151,7 +151,7 @@ export function formatLyricsLineSrt(lyric: string, romaji: string) {
 
 //* Given '出会い、共「に過ごし」てき、日々', returns ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"]
 function splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(
-  lyrics: string
+  lyrics: string,
 ): string[] {
   let charBuffer = ''
   let kanjiBuffer = ''
@@ -195,13 +195,13 @@ function splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(
 //? Given ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"] and romaji "deai itomo ni sugoshi teki hibi", returns [ ["出会", "deai"], ["共", "tomo"] ]
 function kanjiToRomajiMatcher(
   lyrics: string[],
-  romaji: string
+  romaji: string,
 ): [string, string][] {
   let nospaceRomaji = romaji.replace(/\s/g, '')
-  console.log('This is lyrics List')
-  console.log(lyrics)
-  console.log('This is nospace romaji: ')
-  console.log(nospaceRomaji)
+  // console.log('This is lyrics List')
+  // console.log(lyrics)
+  // console.log('This is nospace romaji: ')
+  // console.log(nospaceRomaji)
 
   const lyricsList = lyrics
 
@@ -216,7 +216,7 @@ function kanjiToRomajiMatcher(
 
     //! If chunk IS kanji
     if (isKanji(lyricsChunk)) {
-      console.log('This is kanji chunk: ' + lyricsChunk)
+      // console.log('This is kanji chunk: ' + lyricsChunk)
 
       if (lyricsList.length >= 1) {
         let nextLyricsText = lyricsList[0]
@@ -275,14 +275,14 @@ function kanjiToRomajiMatcher(
 
         //* Process case 1 and 4
         const nextLyricsChunkRomaji = adjustPronunciationInRomaji(
-          toRomaji(nextLyricsText)
+          toRomaji(nextLyricsText),
         )
 
-        console.log('This is next lyrics chunk: ' + nextLyricsChunkRomaji)
+        // console.log('This is next lyrics chunk: ' + nextLyricsChunkRomaji)
 
         const nextLyricsChunkRomajiRegex = new RegExp(
           nextLyricsChunkRomaji,
-          'i'
+          'i',
         )
 
         const match = nospaceRomaji.match(nextLyricsChunkRomajiRegex)
@@ -299,11 +299,11 @@ function kanjiToRomajiMatcher(
 
           const kanjiMatchedRomajiChunk = nospaceRomaji.slice(
             0,
-            nextLyricsChunkRomajiIndex
+            nextLyricsChunkRomajiIndex,
           )
 
-          console.log('IMPORTANT')
-          console.log('This is kanji matched chunk: ' + kanjiMatchedRomajiChunk)
+          // console.log('IMPORTANT')
+          // console.log('This is kanji matched chunk: ' + kanjiMatchedRomajiChunk)
 
           // let nextLyricsChunkRomajiIndex = nospaceRomaji.search(
           //   nextLyricsChunkRomajiRegex
@@ -337,9 +337,9 @@ function kanjiToRomajiMatcher(
 
           // 3. Slice off the matched romaji from nospaceRomaji
           nospaceRomaji = nospaceRomaji.slice(nextLyricsChunkRomajiIndex)
-          console.log(
-            'This is post processing nospace romaji: ' + nospaceRomaji
-          )
+          // console.log(
+          // 'This is post processing nospace romaji: ' + nospaceRomaji,
+          // )
         }
       } else {
         // 2. If no more items in separatedLyrics, then the rest of the romaji is the romaji for the kanji
@@ -358,10 +358,10 @@ function kanjiToRomajiMatcher(
     }
   }
 
-  console.log('This is kanji romaji match')
-  kanjiRomajiMatches.forEach((subArray) => {
-    console.log(subArray)
-  })
+  // console.log('This is kanji romaji match')
+  // kanjiRomajiMatches.forEach((subArray) => {
+  // console.log(subArray)
+  // })
   return kanjiRomajiMatches
 }
 
@@ -379,7 +379,7 @@ function adjustPronunciationInRomaji(romajiSubstring: string): string {
 function generateRubySnippet(
   kanji: string,
   hiragana: string,
-  error: boolean
+  error: boolean,
 ): string {
   if (error) {
     return `<ruby>${kanji}<rp>(</rp><rt>EDITME: ${hiragana}</rt><rp>)</rp></ruby>`

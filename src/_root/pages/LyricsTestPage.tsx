@@ -67,8 +67,6 @@ const LyricsTestPage: React.FC<LyricsDisplayProps> = ({
     fetchSrt()
   }, [])
 
-  console.log(lyricsArr)
-
   const handlePrev = () => {
     setIndex((prevIndex) => Math.max(prevIndex - 1, 0))
   }

@@ -52,6 +52,7 @@
     "react-player": "^2.14.1",
     "react-resizable-panels": "^2.0.9",
     "react-router-dom": "^6.21.3",
+    "screenfull": "^6.0.2",
     "srt-parser-2": "^1.2.3",
     "tailwindcss-animate": "^1.0.7",
     "wanakana": "^5.3.1",

@@ -17,7 +17,7 @@ const YoutubeApiKey = import.meta.env.VITE_GOOGLE_API_KEY
 export async function getLandingPagePlaylist(): Promise<
   formattedYoutubeVideoItemForCarousel[]
 > {
-  console.log('fetching landing page playlist')
+  // console.log('fetching landing page playlist')
 
   const response = await axios.get<YoutubePlaylistApiResponse>(
     `https://www.googleapis.com/youtube/v3/playlistItems`,
@@ -34,8 +34,8 @@ export async function getLandingPagePlaylist(): Promise<
   if (!response) throw new Error('Failed to fetch playlist items')
 
   const processedResponse = formatYoutubePlaylistResponse(response.data)
-  console.log('Successfully fetched response')
-  console.log(processedResponse)
+  // console.log('Successfully fetched response')
+  // console.log(processedResponse)
 
   return processedResponse
 }
@@ -43,7 +43,7 @@ export async function getLandingPagePlaylist(): Promise<
 export async function getYoutubeSearchResults(
   searchTerm: string
 ): Promise<formattedSearchResult[]> {
-  console.log('fetching search results for ' + searchTerm)
+  // console.log('fetching search results for ' + searchTerm)
 
   //! Search Replacement
   const response = tempData
@@ -65,15 +65,15 @@ export async function getYoutubeSearchResults(
   //   }
   // )
 
-  console.log(response)
+  // console.log(response)
 
   if (!response) throw new Error('Failed to fetch search results')
 
   const processedResponse = formatYoutubeSearchResponse(response)
   // const processedResponse = formatYoutubeSearchResponse(response.data)
 
-  console.log('response finished processing')
-  console.log(processedResponse)
+  // console.log('response finished processing')
+  // console.log(processedResponse)
 
   return processedResponse
 }

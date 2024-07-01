@@ -22,11 +22,11 @@ const CommandSearch: React.FC<CommandSearchProps> = ({ isVideoPlayer }) => {
   const [open, setOpen] = useState(false)
 
   const handleCommandItemClick = () => {
-    console.log('waw clicked command')
+    // console.log('waw clicked command')
   }
 
   const handleCommandItemNavigate = (videoId: string) => {
-    console.log('waw clicked command item: ' + videoId)
+    // console.log('waw clicked command item: ' + videoId)
   }
 
   useEffect(() => {

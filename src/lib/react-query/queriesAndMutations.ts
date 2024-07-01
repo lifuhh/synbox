@@ -10,6 +10,7 @@ import {
   addLyricsToSong,
   getCurrentUser,
   signInGoogleAccount,
+  uploadHardCodedLyrics,
 } from '../appwrite/api'
 import { getLandingPagePlaylist, getYoutubeSearchResults } from '../youtube/api'
 
@@ -46,5 +47,27 @@ export const useGetYoutubeSearchResults = (searchTerm: string) => {
 export const useAddLyricsToSong = () => {
   return useMutation({
     mutationFn: (lyricsFile: File) => addLyricsToSong(lyricsFile),
+  })
+}
+
+interface HardCodedLyricsData {
+  full_lyrics: string
+  plain_lyrics: string
+  romaji: string
+  eng_translation: string
+  chi_translation: string
+  labelled_full_lyrics: string
+}
+export const useUploadHardCodedLyrics = () => {
+  // const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      songId,
+      lyricsData,
+    }: {
+      songId: string
+      lyricsData: HardCodedLyricsData
+    }) => uploadHardCodedLyrics(songId, lyricsData),
   })
 }

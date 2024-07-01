@@ -54,6 +54,40 @@ export async function addLyricsToSong(lyricsFile: File) {
   }
 }
 
+interface HardCodedLyricsData {
+  full_lyrics: string
+  plain_lyrics: string
+  romaji: string
+  eng_translation: string
+  chi_translation: string
+  labelled_full_lyrics: string
+}
+
+export async function uploadHardCodedLyrics(
+  songId: string,
+  lyrics: HardCodedLyricsData,
+) {
+  if (!songId) throw Error('No songId found')
+
+  console.log('Lyrics received')
+  console.log(lyrics)
+
+  try {
+    const uploadHardCodedLyrics = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.lyricsId,
+      songId,
+      { ...lyrics, visit_count: 0 },
+    )
+
+    if (!uploadHardCodedLyrics) throw Error('Lyrics not uploaded successfully')
+
+    return uploadHardCodedLyrics
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 //! export async function createPost(post: INewPost) {
 //   try {
 //     // Upload file to appwrite storage

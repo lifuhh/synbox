@@ -17,11 +17,12 @@ const LyricTextLine: React.FC<LyricsTextLineProps> = ({
     <div>
       <p
         className={cn(
-          'font-outline-1 font_noto_sans_jp_black_900',
+          'font-outline-1 font_noto_sans_jp_black_900 align-middle leading-normal',
           className,
           'text-2vw',
         )}
         dangerouslySetInnerHTML={createMarkup(htmlContent)}
+        
       />
     </div>
   )

@@ -1,7 +1,4 @@
 const Practice = () => {
-  const testFn = () => {
-    console.log('test')
-  }
 
   const TestJSX = () => {
     return (

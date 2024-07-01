@@ -8,7 +8,7 @@ import BaseReactPlayer from 'react-player/base'
 import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
-  console.log('PlayerPage re-rendered...')
+  // console.log('PlayerPage re-rendered...')
   const { playerControlsVisible, muted, setPlayerMuted, volume, isFullscreen } =
     useAppContext()
 
@@ -68,7 +68,7 @@ const PlayerPage = () => {
   }, [])
 
   const handlePlay = useCallback(() => {
-    console.log('onPlay')
+    // console.log('onPlay')
     setPlaying(true)
     // setTestStartTime(performance.now())
   }, [])
@@ -99,14 +99,14 @@ const PlayerPage = () => {
   }, [playing])
 
   const handlePause = useCallback(() => {
-    console.log('onPause')
+    // console.log('onPause')
     setPlaying(false)
   }, [])
 
   const handleStart = useCallback(() => {
-    console.log('video started playing')
+    // console.log('video started playing')
     setPlaying(true)
-    console.log(performance.now())
+    // console.log(performance.now())
   }, [])
 
   const handleSeekChange = useCallback(
@@ -141,11 +141,7 @@ const PlayerPage = () => {
 
     const secondsLapsed = playerRef.current.getCurrentTime()
     //? This fires every second
-    // console.log({ secondsLapsed })
-
     const curPlayed = Math.floor(parseInt(secondsLapsed.toFixed(0)))
-
-    // console.log('This is handle progress + curPlayed: + ' + curPlayed)
 
     setPlayed(curPlayed)
     // setLoaded(loaded)
@@ -153,12 +149,12 @@ const PlayerPage = () => {
 
   //* When ended, go to next track [to be implemented]
   const handleEnded = useCallback(() => {
-    console.log('onEnded')
+    // console.log('onEnded')
     setPlaying(loop)
   }, [loop])
 
   const handleDuration = useCallback((duration: number) => {
-    console.log('onDuration', duration)
+    // console.log('onDuration', duration)
     setDuration(duration)
   }, [])
 
