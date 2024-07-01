@@ -80,6 +80,10 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   const location = useLocation()
 
   const getCurrentPlayedPercentage = useCallback(() => {
+    if (isNaN(played) || isNaN(duration) || duration === 0) {
+      return 0
+    }
+
     return parseFloat((played / duration).toFixed(3))
   }, [duration, played])
 
@@ -97,105 +101,105 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   }, [bottomBarRef, setBottomBarHeight])
 
   //TODO: Full screen thing - change to screenfull lib
-  useEffect(() => {
-    const currentPath = location.pathname
+  // useEffect(() => {
+  //   const currentPath = location.pathname
 
-    const exitFullscreen = () => {
-      if (document.exitFullscreen) {
-        document.exitFullscreen()
-      } else if (document.mozCancelFullScreen) {
-        /* Firefox */
-        document.mozCancelFullScreen()
-      } else if (document.webkitExitFullscreen) {
-        /* Chrome, Safari and Opera */
-        document.webkitExitFullscreen()
-      } else if (document.msExitFullscreen) {
-        /* IE/Edge */
-        document.msExitFullscreen()
-      }
-      setIsFullscreen(false)
-    }
+  //   const exitFullscreen = () => {
+  //     if (document.exitFullscreen) {
+  //       document.exitFullscreen()
+  //     } else if (document.mozCancelFullScreen) {
+  //       /* Firefox */
+  //       document.mozCancelFullScreen()
+  //     } else if (document.webkitExitFullscreen) {
+  //       /* Chrome, Safari and Opera */
+  //       document.webkitExitFullscreen()
+  //     } else if (document.msExitFullscreen) {
+  //       /* IE/Edge */
+  //       document.msExitFullscreen()
+  //     }
+  //     setIsFullscreen(false)
+  //   }
 
-    // Check if we are not on the specific route
-    if (currentPath !== '/v/') {
-      // Call exitFullscreen when we are navigating away from the specific route
-      exitFullscreen()
-      setIsFullscreen(false)
-    }
+  //   // Check if we are not on the specific route
+  //   if (currentPath !== '/v/') {
+  //     // Call exitFullscreen when we are navigating away from the specific route
+  //     exitFullscreen()
+  //     setIsFullscreen(false)
+  //   }
 
-    // Optional: If you also want to handle component unmount, you can include the exitFullscreen call in the cleanup function
-    return () => {
-      exitFullscreen()
-      setIsFullscreen(false)
-    }
-  }, [location, setIsFullscreen])
+  //   // Optional: If you also want to handle component unmount, you can include the exitFullscreen call in the cleanup function
+  //   return () => {
+  //     exitFullscreen()
+  //     setIsFullscreen(false)
+  //   }
+  // }, [location, setIsFullscreen])
 
-  const openFullscreen = (elem) => {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen() // Standard method
-    } else if (elem.mozRequestFullScreen) {
-      /* Firefox */
-      elem.mozRequestFullScreen() // Firefox
-    } else if (elem.webkitRequestFullscreen) {
-      /* Chrome, Safari & Opera */
-      elem.webkitRequestFullscreen() // Chrome, Safari, and Opera
-    } else if (elem.msRequestFullscreen) {
-      /* IE/Edge */
-      elem.msRequestFullscreen() // IE/Edge
-    }
-    setIsFullscreen(true)
-  }
+  // const openFullscreen = (elem) => {
+  //   if (elem.requestFullscreen) {
+  //     elem.requestFullscreen() // Standard method
+  //   } else if (elem.mozRequestFullScreen) {
+  //     /* Firefox */
+  //     elem.mozRequestFullScreen() // Firefox
+  //   } else if (elem.webkitRequestFullscreen) {
+  //     /* Chrome, Safari & Opera */
+  //     elem.webkitRequestFullscreen() // Chrome, Safari, and Opera
+  //   } else if (elem.msRequestFullscreen) {
+  //     /* IE/Edge */
+  //     elem.msRequestFullscreen() // IE/Edge
+  //   }
+  //   setIsFullscreen(true)
+  // }
 
-  const handleFullscreen = useCallback(() => {
-    if (
-      !document.fullscreenElement &&
-      !document.webkitFullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.msFullscreenElement
-    ) {
-      // No element is in fullscreen, enter fullscreen mode
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen() // Standard method
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen() // Firefox
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen() // Chrome, Safari, and Opera
-      } else if (document.documentElement.msRequestFullscreen) {
-        document.documentElement.msRequestFullscreen() // IE/Edge
-      }
+  // const handleFullscreen = useCallback(() => {
+  //   if (
+  //     !document.fullscreenElement &&
+  //     !document.webkitFullscreenElement &&
+  //     !document.mozFullScreenElement &&
+  //     !document.msFullscreenElement
+  //   ) {
+  //     // No element is in fullscreen, enter fullscreen mode
+  //     if (document.documentElement.requestFullscreen) {
+  //       document.documentElement.requestFullscreen() // Standard method
+  //     } else if (document.documentElement.mozRequestFullScreen) {
+  //       document.documentElement.mozRequestFullScreen() // Firefox
+  //     } else if (document.documentElement.webkitRequestFullscreen) {
+  //       document.documentElement.webkitRequestFullscreen() // Chrome, Safari, and Opera
+  //     } else if (document.documentElement.msRequestFullscreen) {
+  //       document.documentElement.msRequestFullscreen() // IE/Edge
+  //     }
 
-      setIsFullscreen(true) // Update the state to reflect entering fullscreen
-    } else {
-      // An element is already in fullscreen, exit fullscreen mode
-      if (document.exitFullscreen) {
-        document.exitFullscreen() // Standard method
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen() // Firefox
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen() // Chrome, Safari, and Opera
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen() // IE/Edge
-      }
+  //     setIsFullscreen(true) // Update the state to reflect entering fullscreen
+  //   } else {
+  //     // An element is already in fullscreen, exit fullscreen mode
+  //     if (document.exitFullscreen) {
+  //       document.exitFullscreen() // Standard method
+  //     } else if (document.mozCancelFullScreen) {
+  //       document.mozCancelFullScreen() // Firefox
+  //     } else if (document.webkitExitFullscreen) {
+  //       document.webkitExitFullscreen() // Chrome, Safari, and Opera
+  //     } else if (document.msExitFullscreen) {
+  //       document.msExitFullscreen() // IE/Edge
+  //     }
 
-      setIsFullscreen(false) // Update the state to reflect exiting fullscreen
-    }
-  }, [setIsFullscreen])
+  //     setIsFullscreen(false) // Update the state to reflect exiting fullscreen
+  //   }
+  // }, [setIsFullscreen])
 
   // Effect to add and remove event listener for "Esc" key press
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        handleFullscreen()
-      }
-    }
+  // useEffect(() => {
+  //   const handleEscKey = (event: KeyboardEvent) => {
+  //     if (event.key === 'Escape') {
+  //       event.preventDefault()
+  //       handleFullscreen()
+  //     }
+  //   }
 
-    document.addEventListener('keydown', handleEscKey)
+  //   document.addEventListener('keydown', handleEscKey)
 
-    return () => {
-      document.removeEventListener('keydown', handleEscKey)
-    }
-  }, [handleFullscreen])
+  //   return () => {
+  //     document.removeEventListener('keydown', handleEscKey)
+  //   }
+  // }, [handleFullscreen])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -316,7 +320,8 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleFullscreen}>
+            // onClick={handleFullscreen}
+          >
             {isFullscreen ? (
               <FullscreenExitIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (

@@ -165,14 +165,15 @@ const PlayerPage = () => {
   return (
     <>
       {/* Lyrics Display Controller */}
-      {lyricsVisibility ? (
-        <LyricsDisplayOverlay
-          romajiVisibility={romajiVisibility}
-          translationVisibility={translationVisibility}
-        />
-      ) : (
-        ''
-      )}
+      {/* {lyricsVisibility ? ( */}
+      <LyricsDisplayOverlay
+        playerRef={playerRef}
+        romajiVisibility={romajiVisibility}
+        translationVisibility={translationVisibility}
+      />
+      {/* ) : ( */}
+      {/* '' */}
+      {/* )} */}
       {/* //TODO: Added unselectable to youtube player, need to add at top level to play video if video is paused and user clicks on screen */}
       <div
         className={`${playing ? 'unselectable' : ''} relative aspect-video h-full w-full border-2 border-primary border-opacity-5 ${

@@ -1,10 +1,15 @@
 import LyricTextLine from '@/components/lyrics-display/LyricTextLine'
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import { useAppContext } from '@/context/AppContext'
+import { useEffect, useMemo, useState } from 'react'
 import srtParser2 from 'srt-parser-2'
 
 // 優しい彗星
 
+interface LyricsDisplayProps {
+  romajiVisibility: boolean
+  translationVisibility: boolean
+}
 interface LyricsLineType {
   id: string
   startTime: string
@@ -14,11 +19,19 @@ interface LyricsLineType {
   text: string
 }
 
-const LyricsTestPage = () => {
+const LyricsTestPage: React.FC<LyricsDisplayProps> = ({
+  romajiVisibility: romajiVisibility,
+  translationVisibility: translationVisibility,
+}) => {
+  const { playerControlsVisible, bottomBarHeight } = useAppContext()
   const [index, setIndex] = useState<number>(6)
   const [lyricsArr, setLyricsArr] = useState<LyricsLineType[]>([])
   const [lyricsArrEng, setLyricsArrEng] = useState<string[]>([])
   const [lyricsArrRomaji, setLyricsArrRomaji] = useState<string[]>([])
+
+  const getOverlayHeight = useMemo(() => {
+    return playerControlsVisible ? `calc(100% - ${bottomBarHeight}px)` : '100%'
+  }, [playerControlsVisible, bottomBarHeight])
 
   useEffect(() => {
     const fetchSrt = async () => {
@@ -71,11 +84,13 @@ const LyricsTestPage = () => {
   // const romajiLyricsTest = 'Ima Shizukana yoru no nakade'
 
   return (
-    <section className='flex flex-1 flex-col items-center justify-end'>
+    <section
+      className='flex flex-1 flex-col items-center justify-end'
+      style={{ height: getOverlayHeight }}>
       {/* //! Japanese Lyrics & Romaji */}
       <LyricTextLine
         htmlContent={lyricsArr ? lyricsArr[index]?.text : ''}
-        romajiContent={lyricsArr ? lyricsArrRomaji[index] : ''}
+        // romajiContent={lyricsArr ? lyricsArrRomaji[index] : ''}
         className='font_noto_sans_jp_reg font-outline-1 text-3.5vw'
       />
 
@@ -86,7 +101,7 @@ const LyricsTestPage = () => {
       />
 
       {/* Dummy buttons to navigate lyrics */}
-      <div className='mt-4 flex space-x-4'>
+      <div className='my-4 flex space-x-4'>
         <Button
           onClick={handlePrev}
           className='rounded bg-blue-500 px-4 py-2 text-white'>

@@ -69,6 +69,7 @@ module.exports = {
         '2.4vw': '2.4vw',
         '3.5vw': '3.5vw',
         '4.2vw': '4.2vw',
+        '5vw': '5vw',
       },
       keyframes: {
         'accordion-down': {
