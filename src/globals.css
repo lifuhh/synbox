@@ -70,34 +70,35 @@
     /* text-shadow: 0 0 4px yellow; Adjust offset as needed */
   }
 
-  ruby {
+  .lyric-text-line {
+    letter-spacing: var(--kanji-spacing, 0);
+  }
+
+  .lyric-text-line ruby {
     display: inline-flex;
     flex-direction: column-reverse;
     vertical-align: bottom;
     font-size: inherit;
+    margin-top: 0;
+    padding-top: 0;
+    letter-spacing: var(--kanji-spacing, 0);
   }
 
-  rb {
+  .lyric-text-line rb {
     display: inline-flex;
     justify-content: center;
-    letter-spacing: -0.1em;
     font-size: 1em;
   }
 
-  rt {
-    transform: translateY(0.4em); /* Adjust this value to move rt up or down */
-    font-size: 0.46em; /* Adjust as needed */
+  /* furigana */
+  .lyric-text-line ruby rt {
+    transform: translateY(0.6em);
+    font-size: 0.45em;
     text-align: center;
+    letter-spacing: -0.04em;
+    margin-top: 0;
+    padding-top: 0;
   }
-
-  /* rt {
-    display: inline-flex;
-    text-align: center;
-    justify-content: center;
-    font-size: 60%;
-    letter-spacing: -0.05em;
-    transform: translateY(-90%);
-  } */
 }
 
 @layer utilities {

@@ -8,6 +8,8 @@ import BaseReactPlayer from 'react-player/base'
 import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
+
+
   // console.log('PlayerPage re-rendered...')
   const { playerControlsVisible, muted, setPlayerMuted, volume, isFullscreen } =
     useAppContext()

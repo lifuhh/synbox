@@ -9,7 +9,7 @@ export enum QUERY_KEYS {
   
   //* Lyrics Keys
 
-
+  GET_LYRICS_BY_SONG_ID = 'getLyricsBySongId'
 
   //* Translation Keys
 

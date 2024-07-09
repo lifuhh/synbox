@@ -9,6 +9,7 @@ import {
 import {
   addLyricsToSong,
   getCurrentUser,
+  getSongLyricsById,
   signInGoogleAccount,
   uploadHardCodedLyrics,
 } from '../appwrite/api'
@@ -41,6 +42,14 @@ export const useGetYoutubeSearchResults = (searchTerm: string) => {
     queryKey: [QUERY_KEYS.GET_YOUTUBE_SEARCH_RESULTS, searchTerm],
     enabled: !!searchTerm,
     queryFn: () => getYoutubeSearchResults(searchTerm),
+  })
+}
+
+export const useGetLyricsBySongId = (songId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_LYRICS_BY_SONG_ID, songId],
+    enabled: !!songId,
+    queryFn: () => getSongLyricsById(songId),
   })
 }
 

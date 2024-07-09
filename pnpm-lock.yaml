@@ -140,6 +140,9 @@ importers:
       srt-parser-2:
         specifier: ^1.2.3
         version: 1.2.3
+      sse.js:
+        specifier: github:mpetazzoni/sse.js
+        version: https://codeload.github.com/mpetazzoni/sse.js/tar.gz/e321328997444c167df78910754f738fe2100043
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.3)
@@ -2704,6 +2707,10 @@ packages:
   srt-parser-2@1.2.3:
     resolution: {integrity: sha512-dANP1AyJTI503H0/kXwRza+7QxDB3BqeFvEKTF4MI9lQcBe8JbRUQTKVIGzGABJCwBovEYavZ2Qsdm/s8XKz8A==}
     hasBin: true
+
+  sse.js@https://codeload.github.com/mpetazzoni/sse.js/tar.gz/e321328997444c167df78910754f738fe2100043:
+    resolution: {tarball: https://codeload.github.com/mpetazzoni/sse.js/tar.gz/e321328997444c167df78910754f738fe2100043}
+    version: 2.5.0
 
   string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
@@ -5348,6 +5355,8 @@ snapshots:
   source-map@0.5.7: {}
 
   srt-parser-2@1.2.3: {}
+
+  sse.js@https://codeload.github.com/mpetazzoni/sse.js/tar.gz/e321328997444c167df78910754f738fe2100043: {}
 
   string-width@4.2.3:
     dependencies:

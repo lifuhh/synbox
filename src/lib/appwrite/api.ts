@@ -54,6 +54,25 @@ export async function addLyricsToSong(lyricsFile: File) {
   }
 }
 
+export async function getSongLyricsById(songId: string) {
+  if (!songId) throw Error('No songId found')
+
+  try {
+    const songLyrics = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.lyricsId,
+      songId,
+    )
+
+    if (!songLyrics) throw Error('No lyrics found')
+
+    return songLyrics
+  } catch (error) {
+    console.log(error)
+  }
+
+}
+
 interface HardCodedLyricsData {
   full_lyrics: string
   plain_lyrics: string

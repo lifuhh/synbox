@@ -12,7 +12,7 @@ interface HardCodedLyricsData {
   labelled_full_lyrics: string
 }
 
-const TestPage = () => {
+const TestUploadPage = () => {
   const { mutate: uploadHardCodedLyrics } = useUploadHardCodedLyrics()
 
   const [data, setData] = useState<HardCodedLyricsData>({
@@ -32,12 +32,12 @@ const TestPage = () => {
     )
   }
 
-  const id = 'EaA6NlH80wg'
+  const id = 'PYhCIS29gtc'
 
   useEffect(() => {
     const fetchSrt = async () => {
       const response = await fetch(
-        '/src/components/generate-lyrics/test_data/yss_orig.srt',
+        '/src/components/generate-lyrics/test_data/to_upload/orig.srt',
       )
       const srtText = await response.text()
       const srtParser = new srtParser2()
@@ -45,7 +45,7 @@ const TestPage = () => {
       const parsedPlainLyrics = parsedLyrics.map((item) => item.text)
 
       const responseEng = await fetch(
-        '/src/components/generate-lyrics/test_data/yss_eng.txt',
+        '/src/components/generate-lyrics/test_data/to_upload/eng.txt',
       )
       const engText = await responseEng.text()
       const engLines = engText
@@ -54,7 +54,7 @@ const TestPage = () => {
         .filter((line) => line.length > 0)
 
       const responseChi = await fetch(
-        '/src/components/generate-lyrics/test_data/yss_chi.txt',
+        '/src/components/generate-lyrics/test_data/to_upload/chi.txt',
       )
       const chiText = await responseChi.text()
       const chiLines = chiText
@@ -63,7 +63,7 @@ const TestPage = () => {
         .filter((line) => line.length > 0)
 
       const responseRomaji = await fetch(
-        '/src/components/generate-lyrics/test_data/yss_romaji.txt',
+        '/src/components/generate-lyrics/test_data/to_upload/romaji.txt',
       )
       const romajiText = await responseRomaji.text()
       const romajiLines = romajiText
@@ -71,25 +71,48 @@ const TestPage = () => {
         .map((line) => line.trim())
         .filter((line) => line.length > 0)
 
+      //* Kanji Processing Section
       const kanjiAnno = await fetch(
-        '/src/components/generate-lyrics/test_data/yss_kanji.txt',
+        '/src/components/generate-lyrics/test_data/to_upload/kanji.txt',
       )
       const kanjiAnnoText = await kanjiAnno.text()
-      const kanjiAnnoLines = kanjiAnnoText
-        .split('\n')
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0)
+      let labelledLyrics = []
 
-      const annotationsObject: { [key: string]: string } = {}
-      kanjiAnnoLines.forEach((line, index) => {
-        // Use the original line as the value
-        annotationsObject[parsedPlainLyrics[index]] = line
-      })
+      if (kanjiAnnoText.trim().length > 0) {
+        const kanjiAnnoLines = kanjiAnnoText
+          .split('\n')
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0)
 
-      const labelledLyrics = parsedLyrics.map((item) => ({
-        ...item,
-        text: convertToRuby(annotationsObject[item.text] || item.text),
-      }))
+        const annotationsObject = {}
+        kanjiAnnoLines.forEach((line, index) => {
+          // Use the original line as the value
+          annotationsObject[parsedPlainLyrics[index]] = line
+        })
+
+        labelledLyrics = parsedLyrics.map((item) => ({
+          ...item,
+          text: convertToRuby(annotationsObject[item.text] || item.text),
+        }))
+      } else {
+        labelledLyrics = [] // Set to an empty string if the file is empty
+      }
+
+      // const kanjiAnnoLines = kanjiAnnoText
+      //   .split('\n')
+      //   .map((line) => line.trim())
+      //   .filter((line) => line.length > 0)
+
+      // const annotationsObject: { [key: string]: string } = {}
+      // kanjiAnnoLines.forEach((line, index) => {
+      //   // Use the original line as the value
+      //   annotationsObject[parsedPlainLyrics[index]] = line
+      // })
+
+      // const labelledLyrics = parsedLyrics.map((item) => ({
+      //   ...item,
+      //   text: convertToRuby(annotationsObject[item.text] || item.text),
+      // }))
 
       // console.log(labelledLyrics)
 
@@ -105,7 +128,7 @@ const TestPage = () => {
     }
 
     fetchSrt()
-  }, [])
+  })
 
   const testPageUploader = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -122,4 +145,4 @@ const TestPage = () => {
     </div>
   )
 }
-export default TestPage
+export default TestUploadPage
