@@ -32,7 +32,7 @@ const TopBar = () => {
         } sm:px-4
          ${playerControlsVisible ? '' : 'hidden'}
         `}>
-        <AppLogo />
+        {playerControlsVisible && <AppLogo />}
         {/* <div className='flex-end pb-2 justify-end lg:gap-2 w-48'>
           <AccountBoxIcon
             sx={{ fontSize: 50 }}
@@ -40,8 +40,9 @@ const TopBar = () => {
           />
           <FavouritesButton />
         </div> */}
-        <div className='ml-auto mr-2 flex items-center gap-3'>
-          <CommandSearch isVideoPlayer={isVideoPlayer} />
+        <div
+          className={`ml-auto mr-2 flex items-center gap-3 ${playerControlsVisible ? '' : 'hidden'} `}>
+          {/* <CommandSearch isVideoPlayer={isVideoPlayer} /> */}
           {/* <Button
             variant='outline'
             size='icon'

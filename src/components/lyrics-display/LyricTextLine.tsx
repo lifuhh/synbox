@@ -29,7 +29,7 @@ const LyricTextLine: React.FC<LyricsTextLineProps> = ({
     <div style={divStyle}>
       <p
         className={cn(
-          'lyric-text-line font-outline-1 font_noto_sans_jp_black_900 align-middle leading-normal',
+          'lyric-text-line font-outline-1 font_noto_sans_jp_black_900 text-balance align-middle leading-normal',
           className,
           'text-2vw',
         )}

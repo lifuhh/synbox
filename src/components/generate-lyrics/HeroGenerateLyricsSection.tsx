@@ -26,7 +26,15 @@ const HeroGenerateLyricsSection = () => {
           />
         )
       case 2:
-        return <HeroGenerateLyricsProcessing subStage={subStage} />
+        return (
+          <HeroGenerateLyricsProcessing
+            subStage={subStage}
+            setSubStage={setSubStage}
+            videoId={inputVideoId}
+            setInputVideoId={setInputVideoId}
+            setProcessingStage={setProcessingStage}
+          />
+        )
       case 200:
         return <HeroGenerateLyricsExists />
       case 404:

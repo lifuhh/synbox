@@ -74,13 +74,15 @@
     letter-spacing: var(--kanji-spacing, 0);
   }
 
+  .lyric-text-line p {
+    line-height: 1;
+  }
+
   .lyric-text-line ruby {
     display: inline-flex;
     flex-direction: column-reverse;
     vertical-align: bottom;
     font-size: inherit;
-    margin-top: 0;
-    padding-top: 0;
     letter-spacing: var(--kanji-spacing, 0);
   }
 
@@ -98,6 +100,7 @@
     letter-spacing: -0.04em;
     margin-top: 0;
     padding-top: 0;
+    line-height: 1;
   }
 }
 

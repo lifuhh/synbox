@@ -10,6 +10,8 @@ interface LyricsDisplayProps {
   romajiVisibility: boolean
   translationVisibility: boolean
   playerRef: React.MutableRefObject<BaseReactPlayer<ReactPlayer> | null>
+  playing: boolean
+  setPlaying: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface LyricsLineType {
@@ -25,6 +27,8 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   romajiVisibility,
   translationVisibility,
   playerRef,
+  playing,
+  setPlaying,
 }) => {
   //TODO: Delete later - testing getting song lyrics by ID
   const { data: testLyrics, isLoading: isTestLyricsFetching } =
@@ -160,23 +164,23 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
   return (
     <div
-      className='player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-30 w-full'
+      className={`player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full`}
       style={{ height: getOverlayHeight }}>
       <div className='flex h-full w-full flex-col justify-end text-center'>
         {/* //! Translation Toggle-able */}
         <LyricTextLine
           htmlContent={lyricsArrEng ? currentEngLyric : ''}
           className='!font_noto_sans_reg mb-0 !text-2.4vw'
-          divStyle={{ marginTop: '3rem', border: '1px solid red' }}
+          // divStyle={{ marginTop: '3rem', border: '1px solid red' }}
         />
 
         {/* //! Main Lyrics */}
         <LyricTextLine
           className='!font-outline-4 !text-3.5vw'
           htmlContent={lyricsArr ? currentJpLyric : ''}
-          divStyle={{ border: '1px solid yellow ' }}
+          // divStyle={{ border: '1px solid yellow ' }}
           //! Control kanji spacing here
-          kanjiSpacing='0.14em'
+          kanjiSpacing='0.12em'
           lang='ja'
         />
 

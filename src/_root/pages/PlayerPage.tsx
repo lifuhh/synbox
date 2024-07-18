@@ -8,8 +8,6 @@ import BaseReactPlayer from 'react-player/base'
 import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
-
-
   // console.log('PlayerPage re-rendered...')
   const { playerControlsVisible, muted, setPlayerMuted, volume, isFullscreen } =
     useAppContext()
@@ -82,8 +80,9 @@ const PlayerPage = () => {
       // console.log(timestamp)
       testCounter.current++
       if (playerRef.current) {
-        const videoPlayedTime = playerRef.current.getCurrentTime().toFixed(3)
-        if (testCounter.current % 60 === 0) console.log({ videoPlayedTime })
+        //? Test code for getting current time every 60 frames in console
+        // const videoPlayedTime = playerRef.current.getCurrentTime().toFixed(3)
+        // if (testCounter.current % 60 === 0) console.log({ videoPlayedTime })
 
         testRafId.current = requestAnimationFrame(testAnimationFrameCallback)
       }
@@ -160,6 +159,11 @@ const PlayerPage = () => {
     setDuration(duration)
   }, [])
 
+  const handlePlayerPageClick = () => {
+    console.log('Handled player page click')
+    handlePlayPause()
+  }
+
   return (
     <>
       {/* Lyrics Display Controller */}
@@ -168,15 +172,18 @@ const PlayerPage = () => {
         playerRef={playerRef}
         romajiVisibility={romajiVisibility}
         translationVisibility={translationVisibility}
+        playing={playing}
+        setPlaying={setPlaying}
       />
       {/* ) : ( */}
       {/* '' */}
       {/* )} */}
       {/* //TODO: Added unselectable to youtube player, need to add at top level to play video if video is paused and user clicks on screen */}
       <div
-        className={`${playing ? 'unselectable' : ''} relative aspect-video h-full w-full border-2 border-primary border-opacity-5 ${
-          playerControlsVisible ? '' : 'cursor-none'
-        } ${isFullscreen ? 'mt-14' : ''} `}>
+        //${playing ? 'unselectable' : ''}
+        className={`
+        
+        relative aspect-video h-full w-full border-2 border-primary border-opacity-5 ${isFullscreen ? 'mt-14' : ''} `}>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}
@@ -185,6 +192,7 @@ const PlayerPage = () => {
             playing={playing}
             volume={volume}
             muted={muted}
+            setPlayerMuted={setPlayerMuted}
             handlePlay={handlePlay}
             handleProgress={handleProgress}
             handleDuration={handleDuration}

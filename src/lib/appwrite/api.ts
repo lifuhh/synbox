@@ -1,6 +1,7 @@
 import { ID, Query } from 'appwrite'
 import { account, appwriteConfig, avatars, databases, storage } from './config'
 
+//TODO: Experimental - doesnt work - to be implemented
 export async function signInGoogleAccount() {
   try {
     const session = await account.createOAuth2Session(
@@ -13,6 +14,45 @@ export async function signInGoogleAccount() {
     return session
   } catch (error) {
     console.log(error)
+  }
+}
+
+export async function getSongLyricsById(songId: string) {
+  if (!songId) throw Error('No songId given')
+
+  try {
+    const lyrics = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.lyricsId,
+      songId,
+    )
+
+    if (!lyrics) return Error('No video Id given')
+
+    // ? logger for debugging lyrics
+    // if (lyrics) {
+    //   console.log('Lyrics Found')
+    //   console.log(typeof lyrics)
+    //   console.log(typeof lyrics.full_lyrics)
+    //   console.log(lyrics.full_lyrics)
+    // }
+
+    return lyrics
+  } catch (error) {
+    if (error instanceof Error) {
+      if (
+        error.message === 'Document with the requested ID could not be found.'
+      ) {
+        return null
+      } else {
+        console.error('An unexpected error occurred:', error)
+        throw error
+      }
+    } else {
+      // Handle the case where error is not an Error object
+      console.error('An unexpected error occurred of unknown type:', error)
+      throw new Error('An unknown error occurred')
+    }
   }
 }
 
@@ -54,25 +94,6 @@ export async function addLyricsToSong(lyricsFile: File) {
   }
 }
 
-export async function getSongLyricsById(songId: string) {
-  if (!songId) throw Error('No songId found')
-
-  try {
-    const songLyrics = await databases.getDocument(
-      appwriteConfig.databaseId,
-      appwriteConfig.lyricsId,
-      songId,
-    )
-
-    if (!songLyrics) throw Error('No lyrics found')
-
-    return songLyrics
-  } catch (error) {
-    console.log(error)
-  }
-
-}
-
 interface HardCodedLyricsData {
   full_lyrics: string
   plain_lyrics: string
@@ -106,61 +127,3 @@ export async function uploadHardCodedLyrics(
     console.log(error)
   }
 }
-
-//! export async function createPost(post: INewPost) {
-//   try {
-//     // Upload file to appwrite storage
-//     const uploadedFile = await uploadFile(post.file[0])
-
-//     if (!uploadedFile) throw Error
-
-//     // Get file url
-//     const fileUrl = getFilePreview(uploadedFile.$id)
-//     if (!fileUrl) {
-//       console.log('Deleting file cuz fileUrl issue')
-//       await deleteFile(uploadedFile.$id)
-//       throw Error
-//     }
-
-//     // Convert tags into array - replace all empty strings with '' and split by comma
-//     const tags = post.tags?.replace(/ /g, '').split(',') || []
-
-//     // Create post
-//     const newPost = await databases.createDocument(
-//       appwriteConfig.databaseId,
-//       appwriteConfig.postCollectionId,
-//       ID.unique(),
-//       {
-//         creator: post.userId,
-//         caption: post.caption,
-//         imageUrl: fileUrl,
-//         imageId: uploadedFile.$id,
-//         location: post.location,
-//         tags: tags,
-//       }
-//     )
-
-//     if (!newPost) {
-//       await deleteFile(uploadedFile.$id)
-//       throw Error
-//     }
-
-//     return newPost
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
-//! export async function uploadFile(file: File) {
-//   try {
-//     const uploadedFile = await storage.createFile(
-//       appwriteConfig.storageId,
-//       ID.unique(),
-//       file
-//     )
-
-//     return uploadedFile
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }

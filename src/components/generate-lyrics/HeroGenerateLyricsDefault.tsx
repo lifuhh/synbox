@@ -48,7 +48,7 @@ const HeroGenerateLyricsDefault = ({
         setInputVideoId(extractedVidId)
         console.log('Valid YouTube URL:', extractedVidId)
       }
-      setProcessingStage(1)
+      setProcessingStage(2)
     } else {
       // If the submit button is clicked without a valid URL, show an error
       setErrorMessage('Please enter a valid YouTube URL before submitting.')
@@ -64,7 +64,7 @@ const HeroGenerateLyricsDefault = ({
           AI-Powered Japanese Karaoke
           {/* Placeholder */}
         </h1>
-        <div className='flex-between relative w-full gap-4 overflow-visible sm:mx-auto sm:w-4/5'>
+        <div className='flex-between relative flex w-full flex-col gap-4 overflow-visible sm:mx-auto sm:w-4/5 md:flex-row'>
           <Input
             value={inputValue}
             onChange={handleInputChange}
@@ -102,7 +102,7 @@ const HeroGenerateLyricsDefault = ({
             }
             variant='default'
             role='combobox'
-            className='w-[120px] border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20'>
+            className='w-1/3 border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20 md:w-4/12 lg:w-1/4'>
             Generate Lyrics
           </Button>
         </div>

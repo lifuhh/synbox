@@ -1,6 +1,8 @@
 import { useAppContext } from '@/context/AppContext'
+import { Box, Button, Group, LoadingOverlay } from '@mantine/core'
 import { ForwardedRef, useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
+import PlayerOverlay from './PlayerOverlay'
 
 interface VideoPlayerProps {
   videoId: string // The video ID to play
@@ -8,6 +10,7 @@ interface VideoPlayerProps {
   loop: boolean // Whether the video should loop on end
   volume: number // The volume level of the video (0-1)
   muted: boolean // Whether the video is muted
+  setPlayerMuted: (muted: boolean) => void
   handlePlay: () => void
   handleDuration: (duration: number) => void
   handleProgress: () => void
@@ -29,10 +32,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   handleProgress,
   volume,
   muted,
+  setPlayerMuted,
   playerRef,
 }) => {
   // const handlePlayerReady = () => {}
-  const { setPlayerControlsVisible } = useAppContext()
+  const {
+    setPlayerControlsVisible,
+    playerOverlayVisible,
+    playerOverlayVisibleHandler,
+  } = useAppContext()
   const [videoEnded, setVideoEnded] = useState(false)
 
   //? UseEffect to handle delay in dismissing controls visibility when playing video
@@ -63,11 +71,30 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
   }, [setPlayerControlsVisible, playing])
 
+  useEffect(() => {
+    if (muted && !playing && !playerOverlayVisible) {
+      playerOverlayVisibleHandler.open()
+    }
+  }, [muted, playerOverlayVisible, playerOverlayVisibleHandler, playing])
+
   const handlePause = () => {
     console.log('VideoPlayer.tsx player has been paused')
   }
 
   const handleReady = () => {
+    console.log('Handle Ready triggered')
+
+    if (muted) {
+      console.log('Click Play lol!')
+    } else {
+      handlePlay()
+    }
+  }
+
+  const handleInitMutedPlay = () => {
+    console.log('Init Muted Play clicked')
+    setPlayerMuted(false)
+    playerOverlayVisibleHandler.close()
     handlePlay()
   }
 
@@ -76,8 +103,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setVideoEnded(playing)
   }
 
+  const testToggleOverlay = () => {
+    console.log('Toggled test overlay ')
+    playerOverlayVisibleHandler.toggle()
+  }
+
   return (
     <>
+      <LoadingOverlay
+        visible={playerOverlayVisible}
+        zIndex={40}
+        overlayProps={{ radius: 'sm', blur: 15 }}
+        loaderProps={{
+          children: <PlayerOverlay handleInitMutedPlay={handleInitMutedPlay} />,
+        }}
+      />
       <ReactPlayer
         className='absolute left-0 right-0 top-0'
         ref={playerRef}

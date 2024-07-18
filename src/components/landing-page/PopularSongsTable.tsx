@@ -59,9 +59,9 @@ const PopularSongsTable = () => {
         verticalSpacing='xs'
         highlightOnHover
         className=' bg-dark-3 bg-opacity-15 '>
-        <Table.Thead className=' pointer-events-none bg-dark-4'>
+        <Table.Thead className=' pointer-events-none bg-primary'>
           <Table.Tr>
-            <Table.Th className='text-center'>
+            <Table.Th className='py-3 text-center'>
               <p>Top 50</p>
             </Table.Th>
           </Table.Tr>

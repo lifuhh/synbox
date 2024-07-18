@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { getCurrentUser } from '@/lib/appwrite/api'
 import { formattedYoutubeVideoItemForCarousel } from '@/types'
+import { useDisclosure } from '@mantine/hooks'
 import { createContext, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -41,6 +42,12 @@ interface AppContextType {
   //* Calculate Bottombar Height
   bottomBarHeight: number
   setBottomBarHeight: React.Dispatch<React.SetStateAction<number>> | undefined
+  playerOverlayVisible: boolean
+  playerOverlayVisibleHandler: {
+    open: () => void
+    close: () => void
+    toggle: () => void
+  }
 }
 
 const INITIAL_STATE = {
@@ -53,7 +60,7 @@ const INITIAL_STATE = {
   checkAuthUser: async () => false as boolean,
   //* Player stuff
   videoId: '',
-  volume: 0.2,
+  volume: 0,
   muted: true,
   processingStage: 1,
   playerControlsVisible: true,
@@ -71,6 +78,12 @@ const INITIAL_STATE = {
   // Calculate Bottombar Height
   bottomBarHeight: 0,
   setBottomBarHeight: undefined,
+  playerOverlayVisible: false,
+  playerOverlayVisibleHandler: {
+    open: () => {},
+    close: () => {},
+    toggle: () => {},
+  },
 }
 const AppContext = createContext<AppContextType>(INITIAL_STATE)
 
@@ -119,11 +132,14 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
   const [playerControlsVisible, setPlayerControlsVisible] =
     useState<boolean>(true)
-  const [volume, setVolume] = useState<number>(0.2)
+  // set initial volume here
+  const [volume, setVolume] = useState<number>(0.3)
   const [processingStage, setProcessingStage] = useState<number>(1)
   const [landingPageCarouselData, setLandingPageCarouselData] = useState<
     formattedYoutubeVideoItemForCarousel[]
   >([]) //* This should be unnecessary
+  const [playerOverlayVisible, playerOverlayVisibleHandler] =
+    useDisclosure(false)
 
   //TODO: Can add localstorage stuff here, for example
   // useEffect(() => {
@@ -159,6 +175,8 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setIsFullscreen,
     bottomBarHeight,
     setBottomBarHeight,
+    playerOverlayVisible,
+    playerOverlayVisibleHandler,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

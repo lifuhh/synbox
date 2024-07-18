@@ -13,7 +13,7 @@ const HomeFooter = () => {
     <div className='flex-between bottom-0 left-0 z-10 h-14 w-full flex-col md:mt-10'>
       <div className='flex-around'>
         <div className='flex'>
-          <h1 className='text-bold whitespace-nowrap font-semibold'>
+          <h1 className=' whitespace-nowrap text-pretty font-semibold'>
             Built With
           </h1>
         </div>
@@ -146,9 +146,9 @@ const Icons = {
         y2='208'
         fill='none'
         stroke='currentColor'
-        stroke-linecap='round'
-        stroke-linejoin='round'
-        stroke-width='16'></line>
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth='16'></line>
       <line
         x1='192'
         y1='40'
@@ -156,9 +156,9 @@ const Icons = {
         y2='192'
         fill='none'
         stroke='currentColor'
-        stroke-linecap='round'
-        stroke-linejoin='round'
-        stroke-width='16'></line>
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth='16'></line>
     </svg>
   ),
   python: (props: IconProps) => (

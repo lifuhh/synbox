@@ -14,7 +14,7 @@ const PricingTable = () => {
     {
       plan: 'Free',
       tagline: 'For everyone',
-      quota: 3,
+      quota: 2,
       features: [
         {
           text: 'Unlimited access to songs',
@@ -25,8 +25,8 @@ const PricingTable = () => {
           footnote: '',
         },
         {
-          text: '3 song translations per month',
-          footnote: 'The maximum number of songs you can translate per month',
+          text: '2 song transcriptions daily',
+          footnote: 'The maximum number of songs you can transcribe per day',
         },
         {
           text: 'Access to playlist features',
@@ -49,8 +49,8 @@ const PricingTable = () => {
           footnote: '',
         },
         {
-          text: '50 song translations per month',
-          footnote: 'The maximum number of songs you can translate per month',
+          text: '50 song transcriptions daily',
+          footnote: 'The maximum number of songs you can transcribe per day',
         },
         {
           text: 'Access to playlist features',
@@ -99,12 +99,14 @@ const PricingTable = () => {
 
               <div className='flex h-20 items-center justify-center border-b border-t border-primary bg-secondary-500'>
                 <div className='flex items-center space-x-1 text-white'>
-                  <p>{quota.toLocaleString()} Songs/mo included</p>
+                  <p>
+                    {quota.toLocaleString()} Daily Song Transcriptions Included
+                  </p>
                   <Tooltip delayDuration={300}>
                     <TooltipTrigger className='ml-1.5 cursor-default'>
                       <HelpCircle className='text-white-500 h-4 w-4' />
                     </TooltipTrigger>
-                    <TooltipContent className='w-80 p-2'>
+                    <TooltipContent className='w-80 border-white bg-secondary p-2 text-white'>
                       How many songs you can translate per month
                     </TooltipContent>
                   </Tooltip>
@@ -133,7 +135,7 @@ const PricingTable = () => {
                           <TooltipTrigger className='ml-1.5 cursor-default'>
                             <HelpCircle className='h-4 w-4 text-white' />
                           </TooltipTrigger>
-                          <TooltipContent className='w-80 p-2'>
+                          <TooltipContent className='w-80 bg-secondary p-2 text-white'>
                             {footnote}
                           </TooltipContent>
                         </Tooltip>
