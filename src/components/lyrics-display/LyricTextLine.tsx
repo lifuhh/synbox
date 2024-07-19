@@ -7,6 +7,7 @@ interface LyricsTextLineProps {
   divStyle?: React.CSSProperties
   kanjiSpacing?: string
   lang?: string
+  useBlur?: boolean
 }
 
 const LyricTextLine: React.FC<LyricsTextLineProps> = ({
@@ -15,6 +16,7 @@ const LyricTextLine: React.FC<LyricsTextLineProps> = ({
   divStyle,
   kanjiSpacing = '0.2em',
   lang,
+  useBlur = false,
 }) => {
   const createMarkup = (html: string) => {
     return { __html: DOMPurify.sanitize(html) }
@@ -26,7 +28,12 @@ const LyricTextLine: React.FC<LyricsTextLineProps> = ({
       : {}
 
   return (
-    <div style={divStyle}>
+    <div
+      style={divStyle}
+      className={cn(
+        className,
+        { 'lyric-text-line-wrapper': useBlur }, // Conditionally apply the wrapper class
+      )}>
       <p
         className={cn(
           'lyric-text-line font-outline-1 font_noto_sans_jp_black_900 text-balance align-middle leading-normal',

@@ -32,7 +32,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 }) => {
   //TODO: Delete later - testing getting song lyrics by ID
   const { data: testLyrics, isLoading: isTestLyricsFetching } =
-    useGetLyricsBySongId('EaA6NlH80wg')
+    useGetLyricsBySongId('4DxL6IKmXx4')
 
   //TODO: Fix display lyrics naturally and correctly - this is a hack (part A)
   const [dummyState, setDummyState] = useState(0)
@@ -47,10 +47,12 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   const [currentIndex, setCurrentIndex] = useState(-1)
   const [lyricsArr, setLyricsArr] = useState<LyricsLineType[]>([])
   const [lyricsArrEng, setLyricsArrEng] = useState<string[]>([])
+  const [lyricsArrChi, setLyricsArrChi] = useState<string[]>([])
   const [lyricsArrRomaji, setLyricsArrRomaji] = useState<string[]>([])
   const [currentJpLyric, setCurrentJpLyric] = useState('')
   const [currentRomajiLyric, setCurrentRomajiLyric] = useState('')
   const [currentEngLyric, setCurrentEngLyric] = useState('')
+  const [currentChiLyric, setCurrentChiLyric] = useState('')
 
   //* For shifting lyrics up when bottombar is visible
   const getOverlayHeight = useMemo(() => {
@@ -59,43 +61,11 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
   //! For test fetch lyrics
   useEffect(() => {
-    const fetchSrt = async () => {
-      const response = await fetch(
-        '/src/components/generate-lyrics/test_data/yss_orig.srt',
-      )
-      const srtText = await response.text()
-      const srtParser = new srtParser2()
-      const parsedLyrics = srtParser.fromSrt(srtText)
-      // setLyricsArr(parsedLyrics)
-      setLyricsArr(JSON.parse(testStr))
-
-      const responseEng = await fetch(
-        '/src/components/generate-lyrics/test_data/yss_eng.txt',
-      )
-      const engText = await responseEng.text()
-      const engLines = engText
-        .split('\n')
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0)
-      setLyricsArrEng(engLines)
-
-      const responseRomaji = await fetch(
-        '/src/components/generate-lyrics/test_data/yss_romaji.txt',
-      )
-      const romajiText = await responseRomaji.text()
-      const romajiLines = romajiText
-        .split('\n')
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0)
-      setLyricsArrRomaji(romajiLines)
-    }
-
     if (testLyrics) {
       setLyricsArr(JSON.parse(testLyrics.labelled_full_lyrics))
       setLyricsArrEng(JSON.parse(testLyrics.eng_translation))
+      setLyricsArrChi(JSON.parse(testLyrics.chi_translation))
       setLyricsArrRomaji(JSON.parse(testLyrics.romaji))
-    } else {
-      fetchSrt()
     }
   }, [testLyrics])
 
@@ -136,10 +106,12 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
           setCurrentJpLyric(lyricsArr[newIndex].text)
           setCurrentRomajiLyric(lyricsArrRomaji[newIndex] || '')
           setCurrentEngLyric(lyricsArrEng[newIndex] || '')
+          setCurrentChiLyric(lyricsArrChi[newIndex] || '')
         } else {
           setCurrentJpLyric('')
           setCurrentRomajiLyric('')
           setCurrentEngLyric('')
+          setCurrentChiLyric('')
         }
       }
 
@@ -156,6 +128,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     findCurrentIndex,
     lyricsArr,
     lyricsArrEng,
+    lyricsArrChi,
     lyricsArrRomaji,
     playerRef,
     dummyState,
@@ -169,25 +142,27 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
       <div className='flex h-full w-full flex-col justify-end text-center'>
         {/* //! Translation Toggle-able */}
         <LyricTextLine
-          htmlContent={lyricsArrEng ? currentEngLyric : ''}
-          className='!font_noto_sans_reg mb-0 !text-2.4vw'
+          // htmlContent={lyricsArrEng ? currentEngLyric : ''}
+          htmlContent={lyricsArrChi ? currentChiLyric : ''}
+          className='!font_noto_sans_reg !text-2.4vw'
+          useBlur={true}
           // divStyle={{ marginTop: '3rem', border: '1px solid red' }}
         />
-
         {/* //! Main Lyrics */}
         <LyricTextLine
-          className='!font-outline-4 !text-3.5vw'
+          className='!font-outline-4 mb-0 !text-3.5vw'
           htmlContent={lyricsArr ? currentJpLyric : ''}
           // divStyle={{ border: '1px solid yellow ' }}
           //! Control kanji spacing here
-          kanjiSpacing='0.12em'
+          kanjiSpacing='0.14em'
           lang='ja'
+          useBlur={true}
         />
-
         {/* //! Romaji Toggleable */}
         <LyricTextLine
           htmlContent={lyricsArrRomaji ? currentRomajiLyric : ''}
           className='!font_noto_sans_reg mb-2 mt-0'
+          useBlur={false}
         />
       </div>
     </div>

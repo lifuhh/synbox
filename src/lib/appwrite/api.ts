@@ -45,7 +45,7 @@ export async function getSongLyricsById(songId: string) {
       ) {
         return null
       } else {
-        console.error('An unexpected error occurred:', error)
+        console.error('An unexpected error occurred: ', error)
         throw error
       }
     } else {
