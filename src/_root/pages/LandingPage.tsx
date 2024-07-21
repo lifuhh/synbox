@@ -6,15 +6,18 @@ import PricingTable from '@/components/landing-page/PricingTable'
 import SongHighlightCarousel from '@/components/landing-page/SongHighlightCarousel'
 import SongsInfiniteGallery from '@/components/landing-page/SongsInfiniteGallery'
 import HomeFooter from '@/components/shared/HomeFooter'
+import { Helmet } from 'react-helmet-async'
 
 import { Divider } from '@mantine/core'
 
 const LandingPage = () => {
-
-
   return (
     //* <!-- This is the main container for the landing page -->
     <section className='custom-scrollbar flex flex-1 flex-col overflow-y-scroll py-2 md:px-10'>
+      <Helmet>
+        <title>Home | Synbox</title>
+        <meta name='Synbox Homepage' content='Synbox - AI Powered Karaoke' />
+      </Helmet>
       {/* //? This is the song URL input area >> convert to component */}
       <HeroGenerateLyricsSection />
       {/* <Divider

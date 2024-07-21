@@ -1,6 +1,7 @@
 import { useUploadHardCodedLyrics } from '@/lib/react-query/queriesAndMutations'
 import { Button } from '@mantine/core'
 import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import srtParser2 from 'srt-parser-2'
 
 interface HardCodedLyricsData {
@@ -15,6 +16,8 @@ interface HardCodedLyricsData {
 const TestUploadPage = () => {
   const { mutate: uploadHardCodedLyrics } = useUploadHardCodedLyrics()
 
+  const id = 'fMiJTwnKe-M'
+
   const [data, setData] = useState<HardCodedLyricsData>({
     full_lyrics: '',
     plain_lyrics: '',
@@ -24,15 +27,17 @@ const TestUploadPage = () => {
   })
 
   const convertToRuby = (annotatedLine) => {
-    return annotatedLine.replace(
+    const rubyLines = annotatedLine.replace(
       /([一-龯々]+)\[([^\]]+)\]/g,
       (match, kanji, reading) => {
         return `<ruby>${kanji}<rp>(</rp><rt>${reading}</rt><rp>)</rp></ruby>`
       },
     )
-  }
 
-  const id = '4DxL6IKmXx4'
+    const validatedLine = rubyLines.replace(/\[[^\]]+\]/g, '')
+
+    return validatedLine
+  }
 
   useEffect(() => {
     const fetchSrt = async () => {
@@ -76,7 +81,14 @@ const TestUploadPage = () => {
         '/src/components/generate-lyrics/test_data/to_upload/kanji.txt',
       )
       const kanjiAnnoText = await kanjiAnno.text()
-      let labelledLyrics = []
+      let labelledLyrics: {
+        text: string
+        id: string
+        startTime: string
+        startSeconds: number
+        endTime: string
+        endSeconds: number
+      }[] = []
 
       if (kanjiAnnoText.trim().length > 0) {
         const kanjiAnnoLines = kanjiAnnoText
@@ -132,12 +144,43 @@ const TestUploadPage = () => {
 
   const testPageUploader = (e: React.MouseEvent) => {
     e.preventDefault()
-    uploadHardCodedLyrics({ songId: id, lyricsData: data })
+    uploadHardCodedLyrics(
+      { songId: id, lyricsData: data },
+      // {
+      //   onSuccess: async () => {
+      //     await clearFileContents()
+      //   },
+      // },
+    )
+  }
+
+  const clearFileContents = async () => {
+    const filesToClear = [
+      '/src/components/generate-lyrics/test_data/to_upload/orig.srt',
+      '/src/components/generate-lyrics/test_data/to_upload/eng.txt',
+      '/src/components/generate-lyrics/test_data/to_upload/chi.txt',
+      '/src/components/generate-lyrics/test_data/to_upload/romaji.txt',
+      '/src/components/generate-lyrics/test_data/to_upload/kanji.txt',
+    ]
+
+    for (const filePath of filesToClear) {
+      await fetch(filePath, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: '' }),
+      })
+    }
   }
 
   return (
     <div className='flex-between mx-auto my-auto flex flex-col'>
-      <div className='flex w-full justify-center gap-10'>
+      <Helmet>
+        <title>Test Upload Page | Synbox</title>
+      </Helmet>
+      <div className='flex w-full flex-col justify-center gap-10'>
+        <p>{id}</p>
         <Button variant='outline' onClick={testPageUploader}>
           Upload
         </Button>

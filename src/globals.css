@@ -103,28 +103,28 @@
     line-height: 1;
   }
 
-  .lyric-text-line-wrapper {
-    position: relative;
-    display: inline-block; /* Ensure the blur wrapper only spans the text content */
-  }
-
   .lyric-text-line {
     position: relative;
     z-index: 1;
   }
 
-  .lyric-text-line::before {
+  .lyric-text-line-wrapper {
+    position: relative;
+    display: inline-block; /* Ensure the blur wrapper only spans the text content */
+  }
+
+  .lyric-text-line-wrapper::before {
     content: '';
     position: absolute;
-    top: -0.2em; /* Adjust as needed */
-    bottom: -0.2em; /* Adjust as needed */
-    left: -0.2em; /* Adjust as needed */
-    right: -0.2em; /* Adjust as needed */
-    background: rgb(0, 0, 0, 0.35);
-    filter: blur(12px); /* Increase blur effect */
+    top: -0.1em; /* Adjust as needed */
+    bottom: -0.1em; /* Adjust as needed */
+    left: -0.1em; /* Adjust as needed */
+    right: -0.1em; /* Adjust as needed */
+    background: rgb(0, 0, 0, 0.14);
+    filter: blur(10px); /* Increase blur effect */
     z-index: -1; /* Place it behind the text */
     border-radius: 8px; /* Rounded corners */
-    padding: 0.2em;
+    padding: 0.1em;
   }
 }
 

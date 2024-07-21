@@ -3,6 +3,7 @@ import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
+import { useLocation } from 'react-router-dom'
 import srtParser2 from 'srt-parser-2'
 import LyricTextLine from './LyricTextLine'
 
@@ -31,8 +32,19 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   setPlaying,
 }) => {
   //TODO: Delete later - testing getting song lyrics by ID
+
+  const location = useLocation()
+  useEffect(() => {
+    const pathSegments = location.pathname.split('/')
+    const newVideoId = pathSegments[pathSegments.length - 1]
+    if (newVideoId) {
+      setVideoId(newVideoId)
+    }
+  }, [location])
+
+  const [videoId, setVideoId] = useState<string | null>(null)
   const { data: testLyrics, isLoading: isTestLyricsFetching } =
-    useGetLyricsBySongId('4DxL6IKmXx4')
+    useGetLyricsBySongId(videoId || '')
 
   //TODO: Fix display lyrics naturally and correctly - this is a hack (part A)
   const [dummyState, setDummyState] = useState(0)
@@ -135,36 +147,73 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     noOp,
   ])
 
+  const shouldUseBlurJp = useMemo(
+    () => currentJpLyric.trim() !== '',
+    [currentJpLyric],
+  )
+  const shouldUseBlurRomaji = useMemo(
+    () => currentRomajiLyric.trim() !== '',
+    [currentRomajiLyric],
+  )
+  const shouldUseBlurEng = useMemo(
+    () => currentEngLyric.trim() !== '',
+    [currentEngLyric],
+  )
+  const shouldUseBlurChi = useMemo(
+    () => currentChiLyric.trim() !== '',
+    [currentChiLyric],
+  )
+
+  const isContentSame = (content1: string, content2: string) => {
+    return content1.trim().toLowerCase() === content2.trim().toLowerCase()
+  }
+
   return (
     <div
       className={`player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full`}
       style={{ height: getOverlayHeight }}>
-      <div className='flex h-full w-full flex-col justify-end text-center'>
-        {/* //! Translation Toggle-able */}
-        <LyricTextLine
-          // htmlContent={lyricsArrEng ? currentEngLyric : ''}
-          htmlContent={lyricsArrChi ? currentChiLyric : ''}
-          className='!font_noto_sans_reg !text-2.4vw'
-          useBlur={true}
-          // divStyle={{ marginTop: '3rem', border: '1px solid red' }}
-        />
-        {/* //! Main Lyrics */}
-        <LyricTextLine
-          className='!font-outline-4 mb-0 !text-3.5vw'
-          htmlContent={lyricsArr ? currentJpLyric : ''}
-          // divStyle={{ border: '1px solid yellow ' }}
-          //! Control kanji spacing here
-          kanjiSpacing='0.14em'
-          lang='ja'
-          useBlur={true}
-        />
-        {/* //! Romaji Toggleable */}
-        <LyricTextLine
-          htmlContent={lyricsArrRomaji ? currentRomajiLyric : ''}
-          className='!font_noto_sans_reg mb-2 mt-0'
-          useBlur={false}
-        />
-      </div>
+      {playing && (
+        <div className='flex h-full w-full flex-col justify-end text-center'>
+          {/* //! Translation Toggle-able */}
+
+          {/* {!isContentSame(currentEngLyric, currentJpLyric) && (
+            <LyricTextLine
+              htmlContent={lyricsArrEng ? currentEngLyric : ''}
+              className='!font_noto_sans_reg !text-2.4vw'
+              // useBlur={shouldUseBlurEng}
+              useBlur={false}
+            />
+          )} */}
+          {/* //? Chinese */}
+          {!isContentSame(currentChiLyric, currentJpLyric) && (
+            <LyricTextLine
+              htmlContent={lyricsArrChi ? currentChiLyric : ''}
+              className='!font_noto_sans_reg !text-2.4vw'
+              // useBlur={shouldUseBlurChi}
+              useBlur={false}
+            />
+          )}
+          {/* //! Main Lyrics */}
+          <LyricTextLine
+            className='!font-outline-4 mb-0 !text-3.5vw'
+            htmlContent={lyricsArr ? currentJpLyric : ''}
+            // divStyle={{ border: '1px solid yellow ' }}
+            //! Control kanji spacing here
+            kanjiSpacing='0.14em'
+            lang='ja'
+            useBlur={shouldUseBlurJp}
+          />
+          {/* //! Romaji Toggleable */}
+          {!isContentSame(currentRomajiLyric, currentJpLyric) && (
+            <LyricTextLine
+              htmlContent={lyricsArrRomaji ? currentRomajiLyric : ''}
+              className='!font_noto_sans_reg mb-2 mt-0'
+              // useBlur={shouldUseBlurRomaji}
+              useBlur={false}
+            />
+          )}
+        </div>
+      )}
     </div>
   )
 }

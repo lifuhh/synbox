@@ -3,6 +3,7 @@ import { MemoizedPlayerBottomBar as PlayerBottomBar } from '@/components/playerb
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
 import { useParams } from 'react-router-dom'
@@ -166,6 +167,9 @@ const PlayerPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Player Page | Synbox</title>
+      </Helmet>
       {/* Lyrics Display Controller */}
       {/* {lyricsVisibility ? ( */}
       <LyricsDisplayOverlay
