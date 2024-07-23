@@ -43,7 +43,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   } = useAppContext()
   const [videoEnded, setVideoEnded] = useState(false)
 
-  //? UseEffect to handle delay in dismissing controls visibility when playing video
+  //? Handle delay in dismissing controls visibility when playing video
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> // Declare timer to use it inside clearTimeout
 
@@ -51,7 +51,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       clearTimeout(timer) // Clear any existing timer on mouse move
       setPlayerControlsVisible(true) // Show the controls on mouse move
 
-      // Set a new timer to hide the controls after 1.7 seconds of no mouse movement
+      //? Used to set timer to hide the controls after X milliseconds of no mouse movement
       if (playing) {
         // Check if the video is playing
         timer = setTimeout(() => {

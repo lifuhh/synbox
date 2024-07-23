@@ -42,6 +42,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     }
   }, [location])
 
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const [videoId, setVideoId] = useState<string | null>(null)
   const { data: testLyrics, isLoading: isTestLyricsFetching } =
     useGetLyricsBySongId(videoId || '')
@@ -173,28 +174,32 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
       className={`player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full`}
       style={{ height: getOverlayHeight }}>
       {playing && (
-        <div className='flex h-full w-full flex-col justify-end text-center'>
+        <div
+          className={`lyric-container flex h-full w-full flex-col justify-end text-center ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
           {/* //! Translation Toggle-able */}
-
-          {/* {!isContentSame(currentEngLyric, currentJpLyric) && (
+          {/* //? English */}
+          {!isContentSame(currentEngLyric, currentJpLyric) && (
             <LyricTextLine
+              key={currentEngLyric}
               htmlContent={lyricsArrEng ? currentEngLyric : ''}
               className='!font_noto_sans_reg !text-2.4vw'
               // useBlur={shouldUseBlurEng}
               useBlur={false}
             />
-          )} */}
+          )}
           {/* //? Chinese */}
-          {!isContentSame(currentChiLyric, currentJpLyric) && (
+          {/* {!isContentSame(currentChiLyric, currentJpLyric) && (
             <LyricTextLine
+              key={currentChiLyric}
               htmlContent={lyricsArrChi ? currentChiLyric : ''}
               className='!font_noto_sans_reg !text-2.4vw'
               // useBlur={shouldUseBlurChi}
               useBlur={false}
             />
-          )}
+          )} */}
           {/* //! Main Lyrics */}
           <LyricTextLine
+            key={currentJpLyric}
             className='!font-outline-4 mb-0 !text-3.5vw'
             htmlContent={lyricsArr ? currentJpLyric : ''}
             // divStyle={{ border: '1px solid yellow ' }}
@@ -206,6 +211,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
           {/* //! Romaji Toggleable */}
           {!isContentSame(currentRomajiLyric, currentJpLyric) && (
             <LyricTextLine
+              key={currentRomajiLyric}
               htmlContent={lyricsArrRomaji ? currentRomajiLyric : ''}
               className='!font_noto_sans_reg mb-2 mt-0'
               // useBlur={shouldUseBlurRomaji}

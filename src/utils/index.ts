@@ -16,7 +16,44 @@ import {
 
 import { isKanji, toRomaji } from 'wanakana'
 
+// ? Function to shuffle array randomly
+export const shuffleArray = (array: unknown[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
+
+// ? Function to trim long text into "..." if longer than given maxLength
+export function trimLength(text: string, maxLength: number, trail: boolean) {
+  const tooLong = text.length > maxLength
+
+  const editedText = tooLong ? text.substring(0, maxLength) : text
+
+  return trail ? (tooLong ? editedText + '...' : editedText) : editedText
+}
+
+//?Function to display time properly for Video Time Display
+export function formatTimeDisplay(seconds: number) {
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const remainingSeconds = seconds % 60
+  const remainingMinutes = minutes % 60
+  return `${hours ? `${hours}:` : ''}${pad(remainingMinutes)}:${pad(
+    remainingSeconds,
+  )}`
+}
+
+// ? Helper function to pad 0 in front of time when single digit numbers appear
+function pad(string: number) {
+  return ('0' + string).slice(-2)
+}
+
+// ? Function to convert uploaded File to URL - for file uploads
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
+
+// ? Youtube helper functions
 
 export function formatYoutubePlaylistResponse(
   data: YoutubePlaylistApiResponse,
@@ -51,8 +88,6 @@ export function formatYoutubeSearchResponse(
 ): formattedSearchResult[] {
   const maxSearchResultsTitleLength = 22
 
-  // console.log('formatting search response')
-
   const items = data.items.map(
     (item: YoutubeSearchItem): formattedSearchResult => {
       return {
@@ -68,37 +103,13 @@ export function formatYoutubeSearchResponse(
     },
   )
 
-  // console.log(items)
-
   return items
 }
 
-export function trimLength(text: string, maxLength: number, trail: boolean) {
-  const tooLong = text.length > maxLength
+//! Everything below is Deprecated >>>
 
-  const editedText = tooLong ? text.substring(0, maxLength) : text
-
-  return trail ? (tooLong ? editedText + '...' : editedText) : editedText
-}
-
-//* Video Time Display Functions
-export function formatTimeDisplay(seconds: number) {
-  const minutes = Math.floor(seconds / 60)
-  const hours = Math.floor(minutes / 60)
-  const remainingSeconds = seconds % 60
-  const remainingMinutes = minutes % 60
-  return `${hours ? `${hours}:` : ''}${pad(remainingMinutes)}:${pad(
-    remainingSeconds,
-  )}`
-}
-
-function pad(string: number) {
-  return ('0' + string).slice(-2)
-}
-
-//* LYRICS PROCESSING FUNCTIONS
-
-//! This is the core processing function
+// ! Deprecated - Old LYRICS PROCESSING FUNCTIONS
+//? This is the core processing function
 //* Given '知りたいその秘密ミステリアス' and 'shiritai sono himitsu misuteriasu', returns the HTML for the lyrics w/ furigana
 export function formatLyricsLineSrt(lyric: string, romaji: string) {
   //? Generates ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"]
@@ -453,7 +464,7 @@ function isJapSpecialCharacter(char: string): boolean {
   )
 }
 
-//* Lyrics Dropzone Helpers
+//? Deprecated - Lyrics Dropzone Helpers
 //! Stage One - parse Srt File into array of
 //! { index: number, startTime: string, endTime: string, text: string }
 export function parseSrt(srt: string): UploadedSrtLine[] {
@@ -545,12 +556,4 @@ export const extractVideoId = (youtubeUrl: string): string | null => {
   }
 
   return null
-}
-
-export const shuffleArray = (array: unknown[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[array[i], array[j]] = [array[j], array[i]]
-  }
-  return array
 }

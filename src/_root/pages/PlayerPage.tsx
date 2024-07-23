@@ -179,9 +179,6 @@ const PlayerPage = () => {
         playing={playing}
         setPlaying={setPlaying}
       />
-      {/* ) : ( */}
-      {/* '' */}
-      {/* )} */}
       {/* //TODO: Added unselectable to youtube player, need to add at top level to play video if video is paused and user clicks on screen */}
       <div
         //${playing ? 'unselectable' : ''}

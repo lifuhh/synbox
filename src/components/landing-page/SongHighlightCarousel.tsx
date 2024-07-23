@@ -1,6 +1,5 @@
 import Loader from '@/components/shared/Loader'
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Carousel,
   CarouselContent,
@@ -9,7 +8,6 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel'
-import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import Autoplay from 'embla-carousel-autoplay'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
@@ -132,13 +130,13 @@ const SongHighlightCarousel = () => {
             </CarouselItem>
           ))
         : '',
-    [playlistData, slidesNumber, current]
+    [playlistData, slidesNumber, current],
   )
 
   return (
-    <div className='w-full lg:w-7/12 h-96 mt-2 bg-dark-3 bg-opacity-15 py-8 px-4 flex items-center justify-center rounded-md'>
-      {isPlaylistDataFetching && !playlistData ? (
-        <Loader />
+    <div className='mt-2 flex h-96 w-full items-center justify-center rounded-md bg-dark-3 bg-opacity-15 px-4 py-8 lg:w-7/12'>
+      {isPlaylistDataFetching || !playlistData ? (
+        <Loader color='#fbe9f6' />
       ) : (
         <div ref={carouselRef} className={`overflow-hidden`}>
           <Carousel

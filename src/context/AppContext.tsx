@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { getCurrentUser } from '@/lib/appwrite/api'
-import { formattedYoutubeVideoItemForCarousel } from '@/types'
 import { useDisclosure } from '@mantine/hooks'
 import { createContext, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -28,14 +27,10 @@ interface AppContextType {
   processingStage: number
   isFullscreen: boolean
   // playing: boolean
-  landingPageCarouselData: formattedYoutubeVideoItemForCarousel[]
   setPlayerMuted: (muted: boolean) => void
   setVideoId: (videoId: string) => void
   setVolume: (volume: number) => void
   setProcessingStage: (stage: number) => void
-  setLandingPageCarouselData: (
-    data: formattedYoutubeVideoItemForCarousel[],
-  ) => void
   playerControlsVisible: boolean
   setPlayerControlsVisible: (visibility: boolean) => void
   setIsFullscreen: (isFullscreen: boolean) => void
@@ -64,16 +59,12 @@ const INITIAL_STATE = {
   muted: true,
   processingStage: 1,
   playerControlsVisible: true,
-  landingPageCarouselData: [],
   isFullscreen: false,
   setVideoId: (videoId: string) => {},
   setProcessingStage: (stage: number) => {},
   setVolume: (volume: number) => {},
   setPlayerMuted: (muted: boolean) => {},
   setPlayerControlsVisible: (visibility: boolean) => {},
-  setLandingPageCarouselData: (
-    data: formattedYoutubeVideoItemForCarousel[],
-  ) => {},
   setIsFullscreen: (isFullscreen: boolean) => {},
   // Calculate Bottombar Height
   bottomBarHeight: 0,
@@ -135,9 +126,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   // set initial volume here
   const [volume, setVolume] = useState<number>(0.3)
   const [processingStage, setProcessingStage] = useState<number>(1)
-  const [landingPageCarouselData, setLandingPageCarouselData] = useState<
-    formattedYoutubeVideoItemForCarousel[]
-  >([]) //* This should be unnecessary
+
   const [playerOverlayVisible, playerOverlayVisibleHandler] =
     useDisclosure(false)
 
@@ -165,8 +154,6 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setPlayerMuted,
     processingStage,
     setProcessingStage,
-    landingPageCarouselData,
-    setLandingPageCarouselData,
     volume,
     setVolume,
     playerControlsVisible,

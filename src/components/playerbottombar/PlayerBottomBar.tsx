@@ -101,7 +101,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     }
   }, [bottomBarRef, setBottomBarHeight])
 
-  //TODO: Full screen thing - change to screenfull lib
+  //? Screenfull lib to handle toggling of full screen
   const handleFullscreen = useCallback(() => {
     if (screenfull.isEnabled) {
       screenfull.toggle()
@@ -114,6 +114,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     }
   }, [setIsFullscreen])
 
+  //TODO: Supposed to toggle playpause when user hits space - doesnt work - why? fix 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === ' ') {

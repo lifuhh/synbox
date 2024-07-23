@@ -1,9 +1,10 @@
 import { cn } from '@/utils/cn'
+
 import { AnimatePresence, motion } from 'framer-motion'
 // import { debounce } from 'lodash'
+import { useOverflow } from '@/hooks/useOverflow'
 import { MouseEventHandler, memo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useOverflow } from '@/hooks/useOverflow'
 
 export const InfiniteScrollGallery = ({
   items,

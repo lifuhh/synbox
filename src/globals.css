@@ -60,80 +60,10 @@
       'pnum' 1,
       'lnum' 1; /* Add font features if necessary */
   }
-
-  .font-outline-1 {
-    text-shadow: 0 0 10px var(--primary-600);
-    /* text-shadow: 0 0 10px yellow; Adjust offset as needed */
-  }
-  .font-outline-4 {
-    text-shadow: 0 0 10px var(--primary-600);
-    /* text-shadow: 0 0 4px yellow; Adjust offset as needed */
-  }
-
-  .lyric-text-line {
-    letter-spacing: var(--kanji-spacing, 0);
-  }
-
-  .lyric-text-line p {
-    line-height: 1;
-  }
-
-  .lyric-text-line ruby {
-    display: inline-flex;
-    flex-direction: column-reverse;
-    vertical-align: bottom;
-    font-size: inherit;
-    letter-spacing: var(--kanji-spacing, 0);
-  }
-
-  .lyric-text-line rb {
-    display: inline-flex;
-    justify-content: center;
-    font-size: 1em;
-  }
-
-  /* furigana */
-  .lyric-text-line ruby rt {
-    transform: translateY(0.6em);
-    font-size: 0.45em;
-    text-align: center;
-    letter-spacing: -0.04em;
-    margin-top: 0;
-    padding-top: 0;
-    line-height: 1;
-  }
-
-  .lyric-text-line {
-    position: relative;
-    z-index: 1;
-  }
-
-  .lyric-text-line-wrapper {
-    position: relative;
-    display: inline-block; /* Ensure the blur wrapper only spans the text content */
-  }
-
-  .lyric-text-line-wrapper::before {
-    content: '';
-    position: absolute;
-    top: -0.1em; /* Adjust as needed */
-    bottom: -0.1em; /* Adjust as needed */
-    left: -0.1em; /* Adjust as needed */
-    right: -0.1em; /* Adjust as needed */
-    background: rgb(0, 0, 0, 0.14);
-    filter: blur(10px); /* Increase blur effect */
-    z-index: -1; /* Place it behind the text */
-    border-radius: 8px; /* Rounded corners */
-    padding: 0.1em;
-  }
 }
 
 @layer utilities {
   /* UTILITIES */
-  .invert-white {
-    @apply brightness-0 invert transition;
-  }
-
   .flex-around {
     @apply flex items-center justify-around;
   }
@@ -154,10 +84,7 @@
     @apply flex items-center justify-end;
   }
 
-  .small-regular {
-    @apply text-[14px] font-normal leading-[140%];
-  }
-
+  /* ? Customize appearance of scrollbar START */
   .custom-scrollbar::-webkit-scrollbar {
     width: 3px;
     height: 3px;
@@ -176,7 +103,9 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--secondary);
   }
+  /* ? Customize appearance of scrollbar END */
 
+  /* TODO Used in TopBar & PlayerBottomBar - For animation when disappearing? Figure this out START */
   .controls {
     transition: opacity 1.5s ease;
     opacity: 1; /* Visible */
@@ -186,23 +115,7 @@
     opacity: 0; /* Hidden */
     pointer-events: none; /* Prevent interaction when hidden */
   }
-
-  /* File uploader */
-  .file_uploader-img {
-    @apply h-80 w-full rounded-[24px] object-cover object-top lg:h-[480px];
-  }
-
-  .file_uploader-label {
-    @apply small-regular w-full border-t border-t-dark-4 p-4 text-center text-light-4;
-  }
-
-  .file_uploader-box {
-    @apply flex-center h-20 flex-col p-7 lg:h-[300px];
-  }
-
-  .ytp-pause-overlay-container {
-    display: none !important;
-  }
+  /* TODO Used in TopBar & PlayerBottomBar - For animation when disappearing? Figure this out END */
 
   .no-select {
     user-select: none;
@@ -232,6 +145,7 @@
 
 @layer components {
   /* SHADCN COMPONENTS */
+  /* ? ShadCN css START */
   /* Form */
   .shad-form_label {
     @apply text-white !important;
@@ -262,12 +176,11 @@
     @apply flex items-center justify-start gap-4 hover:bg-transparent hover:text-white !important;
   }
 
-  .DialogContent {
-    min-width: 300px;
-    background: white;
-    padding: 30px;
-  }
+  /* ? ShadCN css END */
 
+  /* ! My Custom CSS stuff */
+
+  /* TODO: Check whether this is a better overlay for lyrics START */
   .overlay-lyrics-text {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(1px);
@@ -283,128 +196,129 @@
     /* border-radius: 10px; */
     padding: 10px;
   }
+  /* TODO: Check whether this is a better overlay for lyrics END */
 
+  /* ? Used to remove focus ring from buttons - think it's counter UX - see if want to use */
   .invisible-ring {
     --tw-ring-color: rgba(0, 0, 0, 0); /* Set to fully transparent */
     --tw-ring-offset-color: rgba(0, 0, 0, 0); /* Set to fully transparent */
   }
-}
 
-.marquee {
-  white-space: nowrap;
-  overflow: hidden;
-  position: relative;
-}
-
-.marquee span {
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-
-.playlist-item:hover .marquee span {
-  animation: marquee 20s linear infinite;
-}
-
-@keyframes marquee {
-  0% {
-    transform: translate(0, 0);
+  /* ? Marquee - Moving Text on hover START */
+  .marquee {
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
   }
-  100% {
-    transform: translate(-100%, 0);
-  }
-}
-/* Top Search Bar slideup animation control */
 
-.slide-up-animation,
-.slide-down-animation {
-  will-change: transform, opacity;
-}
-
-@keyframes slideUp {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
+  .marquee span {
+    display: inline-block;
+    transition: transform 0.3s ease;
   }
-  100% {
-    transform: translateY(-100%);
+
+  .playlist-item:hover .marquee span {
+    animation: marquee 20s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(-100%, 0);
+    }
+  }
+  /* ? Marquee - Moving Text on hover END */
+
+  /* ? Used to prevent an element from being selectable - e.g. overlays */
+  .unselectable {
+    pointer-events: none;
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari/Chrome/Opera */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+  }
+
+  /* ? Used for lyrics display outline - amethyst glow */
+  .font-outline-1 {
+    text-shadow: 0 0 10px var(--primary-600);
+    /* text-shadow: 0 0 10px yellow; Adjust offset as needed */
+  }
+  .font-outline-4 {
+    text-shadow: 0 0 10px var(--primary-600);
+    /* text-shadow: 0 0 4px yellow; Adjust offset as needed */
+  }
+
+  /* ? Used for spacing of kanji characters */
+  .lyric-text-line {
+    letter-spacing: var(--kanji-spacing, 0);
+  }
+
+  .lyric-text-line p {
+    line-height: 1;
+  }
+
+  /* ? Customize appearance of furigana on top of kanji characters START */
+  .lyric-text-line ruby {
+    display: inline-flex;
+    flex-direction: column-reverse;
+    vertical-align: bottom;
+    font-size: inherit;
+    letter-spacing: var(--kanji-spacing, 0);
+  }
+
+  .lyric-text-line rb {
+    display: inline-flex;
+    justify-content: center;
+    font-size: 1em;
+  }
+
+  /* furigana */
+  .lyric-text-line ruby rt {
+    transform: translateY(0.6em);
+    font-size: 0.45em;
+    text-align: center;
+    letter-spacing: -0.04em;
+    margin-top: 0;
+    padding-top: 0;
+    line-height: 1;
+  }
+
+  .lyric-text-line {
+    position: relative;
+    z-index: 1;
+    transition: all 0.2s ease-out;
+  }
+  /* ? Customize appearance of furigana on top of kanji characters END */
+
+  /* ? Apply shadow behind lyrics to make them more visible on any videos START */
+  .lyric-text-line-wrapper {
+    position: relative;
+    display: inline-block; /* Ensure the blur wrapper only spans the text content */
+  }
+
+  .lyric-text-line-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -0.1em; /* Adjust as needed */
+    bottom: -0.1em; /* Adjust as needed */
+    left: -0.1em; /* Adjust as needed */
+    right: -0.1em; /* Adjust as needed */
+    background: rgb(0, 0, 0, 0.14);
+    filter: blur(10px); /* Increase blur effect */
+    z-index: -1; /* Place it behind the text */
+    border-radius: 8px; /* Rounded corners */
+    padding: 0.1em;
+  }
+  /* ? Apply shadow behind lyrics to make them more visible on any videos END */
+
+  .lyric-container {
+    transition: opacity 0.2s ease-out;
+  }
+  .fade-out {
     opacity: 0;
   }
-}
-
-@keyframes slideDown {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
+  .fade-in {
     opacity: 1;
-  }
-}
-
-@keyframes slideSearchToggleIconUp {
-  0% {
-    transform: translateY(0) rotateX(0deg);
-  }
-  100% {
-    transform: translateY(calc(-100% - var(--icon-top-offset, 0px)))
-      rotateX(-180deg);
-  }
-}
-
-@keyframes slideSearchToggleIconDown {
-  0% {
-    transform: translateY(calc(-100% - var(--icon-top-offset, 0px)))
-      rotateX(-180deg);
-  }
-  100% {
-    transform: translateY(0) rotateX(0deg);
-  }
-}
-.slide-up-animation {
-  animation: slideUp 0.4s forwards; /* 'forwards' keeps the div in the final state */
-}
-
-.slide-down-animation {
-  animation: slideDown 0.4s forwards; /* 'forwards' will apply the styles of the last keyframe after the animation ends */
-}
-
-.slide-search-toggle-icon-up-animation {
-  animation: slideSearchToggleIconUp 0.4s forwards;
-}
-
-.slide-search-toggle-icon-down-animation {
-  animation: slideSearchToggleIconDown 0.4s forwards;
-}
-
-.scrolling-text-container {
-  overflow: hidden; /* Hide overflow */
-  white-space: nowrap; /* Keep text in a single line */
-  width: 100%; /* Adjust the width as needed */
-  max-width: 100%; /* Ensure it doesn't grow beyond its container */
-  padding: 8px; /* Optional, for some spacing around the text */
-}
-
-.unselectable {
-  pointer-events: none;
-  user-select: none; /* Standard syntax */
-  -webkit-user-select: none; /* Safari/Chrome/Opera */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-}
-
-.scrolling-text {
-  display: inline-block;
-  animation: scrollText 20s linear infinite;
-  overflow-x: hidden;
-}
-
-@keyframes scrollText {
-  0%,
-  100% {
-    transform: translateX(0%);
-  }
-  90% {
-    transform: translateX(-100%);
   }
 }

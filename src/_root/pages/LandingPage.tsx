@@ -39,9 +39,11 @@ const LandingPage = () => {
         labelPosition='center'
         className=' p-4'
       />
-      {/* //? This is the Carousel + Leaderboard (placeholder) */}
       <section className='flex w-full flex-col gap-4 lg:flex-row '>
+        {/* //? Song Carousel */}
         <SongHighlightCarousel />
+
+        {/* //? Songs Top 50 Leaderboard */}
         <PopularSongsTable />
       </section>
       <Divider
@@ -54,6 +56,7 @@ const LandingPage = () => {
         labelPosition='center'
         className='p-4'
       />
+      {/* //? Pricing */}
       <PricingTable />
       {/* //TODO: Payment stuff Component */}
       <Divider
@@ -66,7 +69,10 @@ const LandingPage = () => {
         labelPosition='center'
         className='p-4'
       />
+      {/* //? Infinite Gallery */}
       <SongsInfiniteGallery />
+
+      {/* //? Footer with tech used & personal links */}
       <HomeFooter />
     </section>
   )

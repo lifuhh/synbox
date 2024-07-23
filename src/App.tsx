@@ -4,12 +4,13 @@ import { Route, Routes } from 'react-router-dom'
 import RootLayout from './_root/RootLayout'
 import {
   LandingPage,
+  LyricsTestPage,
   PlayerPage,
+  TestGeneratePage,
+  TestRequestPage,
   TestStreamPage,
   TestUploadPage,
 } from './_root/pages'
-import LyricsTestPage from './_root/pages/LyricsTestPage'
-import TestGeneratePage from './_root/pages/TestGeneratePage'
 import './globals.css'
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
           <Route path='/test' element={<TestGeneratePage />} />
           <Route path='/test2' element={<TestStreamPage />} />
           <Route path='/test_upload' element={<TestUploadPage />} />
+          <Route path='/test_request' element={<TestRequestPage />} />
           <Route
             path='/lyricstest'
             element={
