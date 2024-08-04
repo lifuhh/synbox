@@ -136,7 +136,7 @@ const SongHighlightCarousel = () => {
   return (
     <div className='mt-2 flex h-96 w-full items-center justify-center rounded-md bg-dark-3 bg-opacity-15 px-4 py-8 lg:w-7/12'>
       {isPlaylistDataFetching || !playlistData ? (
-        <Loader color='#fbe9f6' />
+        <Loader color='#e74e8a' />
       ) : (
         <div ref={carouselRef} className={`overflow-hidden`}>
           <Carousel

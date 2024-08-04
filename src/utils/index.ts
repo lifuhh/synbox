@@ -106,6 +106,101 @@ export function formatYoutubeSearchResponse(
   return items
 }
 
+//? Converts "PT3M40S" to "03:40"
+export function formatDuration(duration: string): string {
+  if (!duration) return '-00:01'
+
+  if (typeof duration === 'string' && duration.startsWith('PT')) {
+    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/)
+
+    if (match) {
+      const hours = match[1] ? parseInt(match[1].replace('H', '')) : 0
+      const minutes = match[2] ? parseInt(match[2].replace('M', '')) : 0
+      const seconds = match[3] ? parseInt(match[3].replace('S', '')) : 0
+
+      const paddedMinutes = minutes.toString().padStart(2, '0')
+      const paddedSeconds = seconds.toString().padStart(2, '0')
+
+      if (hours > 0) {
+        const paddedHours = hours.toString().padStart(2, '0')
+        return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`
+      } else {
+        return `${paddedMinutes}:${paddedSeconds}`
+      }
+    } else {
+      return '-00:01'
+    }
+  } else {
+    const totalSeconds =
+      typeof duration === 'number' ? duration : parseInt(duration)
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = totalSeconds % 60
+
+    const paddedMinutes = minutes.toString().padStart(2, '0')
+    const paddedSeconds = seconds.toString().padStart(2, '0')
+
+    if (hours > 0) {
+      const paddedHours = hours.toString().padStart(2, '0')
+      return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`
+    } else {
+      return `${paddedMinutes}:${paddedSeconds}`
+    }
+  }
+}
+
+export function formatCountToString(count: number | string): string {
+  if (!count) return '-1'
+
+  if (typeof count === 'string') {
+    count = parseInt(count)
+  }
+
+  // Convert "752531" to "752K"
+  if (count >= 1000000) {
+    return (count / 1000000).toFixed(1) + 'M'
+  } else if (count >= 1000) {
+    return (count / 1000).toFixed(1) + 'K'
+  } else {
+    return count.toString()
+  }
+}
+
+export const extractVideoId = (input: string): string | null => {
+  // Check if the input is already a valid 11-character video ID
+  if (/^[\w-]{11}$/.test(input)) {
+    return input
+  }
+
+  // Regular expression for finding a YouTube video ID in various URL formats
+  const videoIdPattern =
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^#&?]{11})/
+
+  // If the URL doesn't start with 'http://' or 'https://', prepend 'https://'
+  const fullUrl =
+    input.startsWith('http://') || input.startsWith('https://')
+      ? input
+      : `https://${input}`
+
+  try {
+    const match = fullUrl.match(videoIdPattern)
+    if (match && match[1]) {
+      return match[1]
+    }
+
+    // If no match found using regex, try parsing as URL
+    const parsedUrl = new URL(fullUrl)
+    const videoId = parsedUrl.searchParams.get('v')
+    if (videoId && videoId.length === 11) {
+      return videoId
+    }
+  } catch (error) {
+    console.error('Error parsing YouTube URL:', error)
+  }
+
+  return null
+}
+
 //! Everything below is Deprecated >>>
 
 // ! Deprecated - Old LYRICS PROCESSING FUNCTIONS
@@ -529,31 +624,4 @@ export function stageThreeKanjiPairExtractor(allLyrics: string[]): {
 export function stageThreeKeyExtractor(key: string): string {
   const parts = key.split('___')
   return parts[0]
-}
-
-export const extractVideoId = (youtubeUrl: string): string | null => {
-  // Regular expression for finding a YouTube video ID in various URL formats
-  const videoIdPattern =
-    /(?:v=|\/)([0-9A-Za-z_-]{11})|youtu\.be\/([0-9A-Za-z_-]{11})/
-
-  const match = youtubeUrl.match(videoIdPattern)
-  if (match) {
-    // Check which group has the match
-    const videoId = match[1] ? match[1] : match[2]
-
-    // Further validation if the video ID is part of a query string
-    const parsedUrl = new URL(youtubeUrl)
-    const queryParams = parsedUrl.searchParams
-    // This check ensures that 'v' parameter is present and the videoId is from the 'v' parameter
-    if (queryParams.has('v') && videoId === queryParams.get('v')) {
-      return videoId
-    }
-
-    // If the video ID didn't come from the 'v' parameter but was successfully extracted
-    if (videoId) {
-      return videoId
-    }
-  }
-
-  return null
 }

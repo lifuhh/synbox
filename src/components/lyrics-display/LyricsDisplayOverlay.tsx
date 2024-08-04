@@ -1,11 +1,10 @@
 import { useAppContext } from '@/context/AppContext'
 import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
 import { useLocation } from 'react-router-dom'
-import srtParser2 from 'srt-parser-2'
-import LyricTextLine from './LyricTextLine'
+import { MemoizedLyricTextLine } from './LyricTextLine'
 
 interface LyricsDisplayProps {
   romajiVisibility: boolean
@@ -24,6 +23,12 @@ interface LyricsLineType {
   text: string
 }
 
+interface RenderedLyricsType {
+  jp: React.ReactNode[]
+  eng: React.ReactNode[]
+  romaji: React.ReactNode[]
+}
+
 const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   romajiVisibility,
   translationVisibility,
@@ -31,9 +36,14 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   playing,
   setPlaying,
 }) => {
-  //TODO: Delete later - testing getting song lyrics by ID
-
   const location = useLocation()
+
+  const [videoId, setVideoId] = useState<string | null>(null)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
+  const { data: testLyrics, isLoading: isTestLyricsFetching } =
+    useGetLyricsBySongId(videoId || '')
+
   useEffect(() => {
     const pathSegments = location.pathname.split('/')
     const newVideoId = pathSegments[pathSegments.length - 1]
@@ -42,14 +52,8 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     }
   }, [location])
 
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const [videoId, setVideoId] = useState<string | null>(null)
-  const { data: testLyrics, isLoading: isTestLyricsFetching } =
-    useGetLyricsBySongId(videoId || '')
-
   //TODO: Fix display lyrics naturally and correctly - this is a hack (part A)
   const [dummyState, setDummyState] = useState(0)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const noOp = () => {
     // This is a no-op function that just reads the dummy state.
     // It's intended to mimic the effect of console.log triggering a re-render.
@@ -62,25 +66,64 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   const [lyricsArrEng, setLyricsArrEng] = useState<string[]>([])
   const [lyricsArrChi, setLyricsArrChi] = useState<string[]>([])
   const [lyricsArrRomaji, setLyricsArrRomaji] = useState<string[]>([])
-  const [currentJpLyric, setCurrentJpLyric] = useState('')
-  const [currentRomajiLyric, setCurrentRomajiLyric] = useState('')
-  const [currentEngLyric, setCurrentEngLyric] = useState('')
-  const [currentChiLyric, setCurrentChiLyric] = useState('')
 
-  //* For shifting lyrics up when bottombar is visible
-  const getOverlayHeight = useMemo(() => {
-    return playerControlsVisible ? `calc(100% - ${bottomBarHeight}px)` : '100%'
-  }, [playerControlsVisible, bottomBarHeight])
+  const [isEntering, setIsEntering] = useState(false)
+  const [isExiting, setIsExiting] = useState(false)
 
-  //! For test fetch lyrics
+  // New state for pre-rendered lyrics and styles
+  const [renderedLyrics, setRenderedLyrics] = useState<RenderedLyricsType>({
+    jp: [],
+    eng: [],
+    romaji: [],
+  })
+  const [lyricsStyles, setLyricsStyles] = useState<React.CSSProperties[]>([])
+
+  //! Pre-render all types of lyrics - KEY to performance
   useEffect(() => {
-    if (testLyrics) {
-      setLyricsArr(JSON.parse(testLyrics.labelled_full_lyrics))
-      setLyricsArrEng(JSON.parse(testLyrics.eng_translation))
-      setLyricsArrChi(JSON.parse(testLyrics.chi_translation))
-      setLyricsArrRomaji(JSON.parse(testLyrics.romaji))
+    if (lyricsArr.length > 0) {
+      const renderedJp = lyricsArr.map((lyric, index) => (
+        <MemoizedLyricTextLine
+          key={`${index}-jp-${lyric.id}`}
+          htmlContent={lyric.text}
+          className={`font-outline-4 mb-0 !text-3.5vw`}
+          lang='ja'
+          //TODO: blur is too ugly, need to find a better way to do this or else just dont add
+          // useBlur={lyric.text.trim() !== ''}
+        />
+      ))
+
+      const renderedEng = lyricsArrEng.map((lyric, index) => (
+        <MemoizedLyricTextLine
+          key={`${index}-eng`}
+          htmlContent={lyric}
+          className={`!font_noto_sans_reg font-outline-4 !text-2.4vw`}
+        />
+      ))
+
+      const renderedRomaji = lyricsArrRomaji.map((lyric, index) => (
+        <MemoizedLyricTextLine
+          key={`${index}-romaji`}
+          htmlContent={lyric}
+          className={`font-outline-4 !font_noto_sans_reg mb-2 mt-0`}
+        />
+      ))
+
+      setRenderedLyrics({
+        jp: renderedJp,
+        eng: renderedEng,
+        romaji: renderedRomaji,
+      })
+
+      const styles = lyricsArr.map(
+        () => ({ '--kanji-spacing': '0.14em' }) as React.CSSProperties,
+      )
+      setLyricsStyles(styles)
     }
-  }, [testLyrics])
+  }, [lyricsArr, lyricsArrEng, lyricsArrRomaji])
+  // const [currentJpLyric, setCurrentJpLyric] = useState('')
+  // const [currentRomajiLyric, setCurrentRomajiLyric] = useState('')
+  // const [currentEngLyric, setCurrentEngLyric] = useState('')
+  // const [currentChiLyric, setCurrentChiLyric] = useState('')
 
   const findCurrentIndex = useCallback(
     (currentTime: number) => {
@@ -99,8 +142,25 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     [lyricsArr],
   )
 
+  //* For shifting lyrics up when bottombar is visible
+  const getOverlayHeight = useMemo(() => {
+    return playerControlsVisible ? `calc(100% - ${bottomBarHeight}px)` : '100%'
+  }, [playerControlsVisible, bottomBarHeight])
+
+  //! For test fetch lyrics
+  useEffect(() => {
+    if (testLyrics) {
+      setLyricsArr(JSON.parse(testLyrics.labelled_full_lyrics))
+      setLyricsArrEng(JSON.parse(testLyrics.eng_translation))
+      setLyricsArrChi(JSON.parse(testLyrics.chi_translation))
+      setLyricsArrRomaji(JSON.parse(testLyrics.romaji))
+    }
+  }, [testLyrics])
+
   useEffect(() => {
     let animationFrameId: number
+    let transitionOutTimer: NodeJS.Timeout
+    let transitionInTimer: NodeJS.Timeout
 
     const animate = () => {
       if (!playerRef.current) return
@@ -111,21 +171,21 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
       const newIndex = findCurrentIndex(currentTime)
 
       if (newIndex !== currentIndex) {
-        //TODO: Fix display lyrics naturally and correctly - this is a hack (part B)
         noOp()
-        // console.log({ newIndex, currentIndex })
-        setCurrentIndex(newIndex)
-        if (newIndex !== -1) {
-          setCurrentJpLyric(lyricsArr[newIndex].text)
-          setCurrentRomajiLyric(lyricsArrRomaji[newIndex] || '')
-          setCurrentEngLyric(lyricsArrEng[newIndex] || '')
-          setCurrentChiLyric(lyricsArrChi[newIndex] || '')
-        } else {
-          setCurrentJpLyric('')
-          setCurrentRomajiLyric('')
-          setCurrentEngLyric('')
-          setCurrentChiLyric('')
-        }
+        setIsTransitioning(true)
+        setIsExiting(true)
+
+        // Transition out
+        transitionOutTimer = setTimeout(() => {
+          setCurrentIndex(newIndex)
+          setIsExiting(false)
+          setIsEntering(true)
+
+          // Transition in
+          transitionInTimer = setTimeout(() => {
+            setIsEntering(false)
+          }, 200) // 0.2 seconds for fade-in
+        }, 100) // 0.1 seconds for fade-out
       }
 
       animationFrameId = requestAnimationFrame(animate)
@@ -135,35 +195,21 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
     return () => {
       cancelAnimationFrame(animationFrameId)
+      clearTimeout(transitionOutTimer)
+      clearTimeout(transitionInTimer)
     }
-  }, [
-    currentIndex,
-    findCurrentIndex,
-    lyricsArr,
-    lyricsArrEng,
-    lyricsArrChi,
-    lyricsArrRomaji,
-    playerRef,
-    dummyState,
-    noOp,
-  ])
+  }, [currentIndex, findCurrentIndex, playerRef])
 
-  const shouldUseBlurJp = useMemo(
-    () => currentJpLyric.trim() !== '',
-    [currentJpLyric],
-  )
-  const shouldUseBlurRomaji = useMemo(
-    () => currentRomajiLyric.trim() !== '',
-    [currentRomajiLyric],
-  )
-  const shouldUseBlurEng = useMemo(
-    () => currentEngLyric.trim() !== '',
-    [currentEngLyric],
-  )
-  const shouldUseBlurChi = useMemo(
-    () => currentChiLyric.trim() !== '',
-    [currentChiLyric],
-  )
+  const currentLyric = useMemo(() => {
+    if (currentIndex === -1 || !lyricsArr[currentIndex])
+      return { jp: '', romaji: '', eng: '', chi: '' }
+    return {
+      jp: lyricsArr[currentIndex].text,
+      romaji: lyricsArrRomaji[currentIndex] || '',
+      eng: lyricsArrEng[currentIndex] || '',
+      chi: lyricsArrChi[currentIndex] || '',
+    }
+  }, [currentIndex, lyricsArr, lyricsArrRomaji, lyricsArrEng, lyricsArrChi])
 
   const isContentSame = (content1: string, content2: string) => {
     return content1.trim().toLowerCase() === content2.trim().toLowerCase()
@@ -173,51 +219,54 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     <div
       className={`player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full`}
       style={{ height: getOverlayHeight }}>
-      {playing && (
+      {/* {playing && ( */}
+      {true && (
         <div
-          className={`lyric-container flex h-full w-full flex-col justify-end text-center ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
+          className={`lyric-container flex h-full w-full flex-col justify-end text-center `}>
           {/* //! Translation Toggle-able */}
           {/* //? English */}
-          {!isContentSame(currentEngLyric, currentJpLyric) && (
-            <LyricTextLine
-              key={currentEngLyric}
-              htmlContent={lyricsArrEng ? currentEngLyric : ''}
-              className='!font_noto_sans_reg !text-2.4vw'
-              // useBlur={shouldUseBlurEng}
-              useBlur={false}
-            />
-          )}
+          {translationVisibility &&
+            !isContentSame(currentLyric.eng, currentLyric.jp) && (
+              <div
+                className={`${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
+                {renderedLyrics.eng[currentIndex]}
+              </div>
+            )}
           {/* //? Chinese */}
-          {/* {!isContentSame(currentChiLyric, currentJpLyric) && (
-            <LyricTextLine
-              key={currentChiLyric}
-              htmlContent={lyricsArrChi ? currentChiLyric : ''}
-              className='!font_noto_sans_reg !text-2.4vw'
-              // useBlur={shouldUseBlurChi}
-              useBlur={false}
-            />
-          )} */}
+          {/* {translationVisibility &&
+            !isContentSame(currentLyric.chi, currentLyric.jp) && (
+              <LyricTextLine
+                key={`chi-${currentIndex}`}
+                htmlContent={currentLyric.chi}
+                className={`!font_noto_sans_reg !text-2.4vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}
+                useBlur={false}
+              />
+            )} */}
           {/* //! Main Lyrics */}
-          <LyricTextLine
-            key={currentJpLyric}
-            className='!font-outline-4 mb-0 !text-3.5vw'
-            htmlContent={lyricsArr ? currentJpLyric : ''}
-            // divStyle={{ border: '1px solid yellow ' }}
-            //! Control kanji spacing here
+          {renderedLyrics.jp[currentIndex] && (
+            <div
+              style={lyricsStyles[currentIndex]}
+              className={`!text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
+              {renderedLyrics.jp[currentIndex]}
+            </div>
+          )}
+          {/* <LyricTextLine
+            key={`jp-${currentIndex}`}
+            className={`!font-outline-4 mb-0 !text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}
+            htmlContent={currentLyric.jp}
             kanjiSpacing='0.14em'
             lang='ja'
             useBlur={shouldUseBlurJp}
-          />
+          /> */}
+
           {/* //! Romaji Toggleable */}
-          {!isContentSame(currentRomajiLyric, currentJpLyric) && (
-            <LyricTextLine
-              key={currentRomajiLyric}
-              htmlContent={lyricsArrRomaji ? currentRomajiLyric : ''}
-              className='!font_noto_sans_reg mb-2 mt-0'
-              // useBlur={shouldUseBlurRomaji}
-              useBlur={false}
-            />
-          )}
+          {romajiVisibility &&
+            !isContentSame(currentLyric.romaji, currentLyric.jp) && (
+              <div
+                className={`${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
+                {renderedLyrics.romaji[currentIndex]}
+              </div>
+            )}
         </div>
       )}
     </div>

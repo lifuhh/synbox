@@ -1,8 +1,11 @@
 import { z } from 'zod'
 
-const YouTubeUrlRegex: RegExp =
-  /(?:v=|\/)([0-9A-Za-z_-]{11})|youtu\.be\/([0-9A-Za-z_-]{11})/
+const YouTubeUrlOrIdRegex: RegExp =
+  /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)?([\w-]{11})(?:\S+)?$|^([\w-]{11})$/
 
-export const YouTubeUrlValidation = z.string().trim().regex(YouTubeUrlRegex, {
-  message: 'Invalid YouTube URL',
-})
+export const YouTubeUrlOrIdValidation = z
+  .string()
+  .trim()
+  .regex(YouTubeUrlOrIdRegex, {
+    message: 'Invalid YouTube URL or video ID',
+  })

@@ -108,7 +108,7 @@ export const CardTitle = memo(
       <div
         ref={containerRef}
         className={cn(
-          'marquee mb-4  font-bold tracking-wide text-zinc-100',
+          'marquee mb-4 font-bold tracking-wide text-zinc-100',
           className,
         )}>
         <span ref={textRef} className='whitespace-nowrap'>

@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { useLocation } from 'react-router-dom'
 import { GitHubIcon } from '../svgicons'
-import CommandSearch from '../topbar/CommandSearch'
 import AppLogo from '../topbar/AppLogo'
+import CommandSearch from '../topbar/CommandSearch'
 
 import { useAppContext } from '@/context/AppContext'
 import FavouritesDropdownButton from '../topbar/FavouritesDropdownButton'

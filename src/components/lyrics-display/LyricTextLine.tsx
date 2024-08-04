@@ -1,5 +1,6 @@
 import { cn } from '@/utils/cn'
 import DOMPurify from 'dompurify'
+import React, { useMemo } from 'react'
 
 interface LyricsTextLineProps {
   htmlContent: string
@@ -18,9 +19,9 @@ const LyricTextLine: React.FC<LyricsTextLineProps> = ({
   lang,
   useBlur = false,
 }) => {
-  const createMarkup = (html: string) => {
-    return { __html: DOMPurify.sanitize(html) }
-  }
+  const sanitizedHtmlContent = useMemo(() => {
+    return { __html: DOMPurify.sanitize(htmlContent) }
+  }, [htmlContent])
 
   const pStyle: React.CSSProperties =
     lang === 'ja'
@@ -41,10 +42,10 @@ const LyricTextLine: React.FC<LyricsTextLineProps> = ({
           'text-2vw',
         )}
         style={pStyle}
-        dangerouslySetInnerHTML={createMarkup(htmlContent)}
+        dangerouslySetInnerHTML={sanitizedHtmlContent}
       />
     </div>
   )
 }
 
-export default LyricTextLine
+export const MemoizedLyricTextLine = React.memo(LyricTextLine)

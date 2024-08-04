@@ -8,6 +8,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react'
 import ReactPlayer from 'react-player'
 import screenfull from 'screenfull'
@@ -29,7 +30,6 @@ import React from 'react'
 import VolumeControl from './VolumeControl'
 
 import { useAppContext } from '@/context/AppContext'
-import { useLocation } from 'react-router-dom'
 
 interface PlayerBottomBarProps {
   playing: boolean
@@ -48,7 +48,7 @@ interface PlayerBottomBarProps {
   handleToggleRomajiVisibility: () => void
   handleToggleTranslationVisibility: () => void
   handleToggleLyricsVisibility: (visibility: boolean) => void
-  playerRef: ForwardedRef<ReactPlayer>
+  playerRef: React.MutableRefObject<ReactPlayer | null>
 }
 
 const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
@@ -78,7 +78,6 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     setIsFullscreen,
     setBottomBarHeight,
   } = useAppContext()
-  const location = useLocation()
 
   const getCurrentPlayedPercentage = useCallback(() => {
     if (isNaN(played) || isNaN(duration) || duration === 0) {
@@ -114,7 +113,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     }
   }, [setIsFullscreen])
 
-  //TODO: Supposed to toggle playpause when user hits space - doesnt work - why? fix 
+  //TODO: Supposed to toggle playpause when user hits space - doesnt work - why? fix
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === ' ') {

@@ -13,7 +13,13 @@ import {
   signInGoogleAccount,
   uploadHardCodedLyrics,
 } from '../appwrite/api'
-import { getLandingPagePlaylist, getYoutubeSearchResults } from '../youtube/api'
+import {
+  getLandingPagePlaylist,
+  getYoutubeSearchResults,
+  getYoutubeVideoInfo,
+} from '../youtube/api'
+
+import { validateVideoById } from '../synbox-flask/api'
 
 import { QUERY_KEYS } from './queryKeys'
 
@@ -22,6 +28,17 @@ import { QUERY_KEYS } from './queryKeys'
 //     mutationFn: (user: INewUser) => createUserAccount(user),
 //   })
 // }
+
+export const useValidateVideoById = (videoId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.VALIDATE_VIDEO_BY_ID, videoId],
+    queryFn: () => validateVideoById(videoId),
+    enabled: !!videoId,
+    staleTime: 10 * 60 * 1000,
+    // onSuccess: (data) => console.log('Query succeeded:', data),
+    // onError: (error) => console.error('Query failed:', error),
+  })
+}
 
 export const useSignInGoogleAccount = () => {
   return useMutation({
@@ -34,6 +51,14 @@ export const useGetLandingPagePlaylist = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_LANDING_PAGE_PLAYLIST],
     queryFn: () => getLandingPagePlaylist(),
+  })
+}
+
+export const useGetYoutubeVideoInfo = (videoId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_YOUTUBE_VIDEO_INFO, videoId],
+    queryFn: () => getYoutubeVideoInfo(videoId),
+    enabled: !!videoId,
   })
 }
 

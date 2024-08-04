@@ -1,8 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { YouTubeUrlValidation } from '@/lib/validation'
+import { YouTubeUrlOrIdValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
-import { useDisclosure } from '@mantine/hooks'
 import { useState } from 'react'
 import { Spotlight } from '../ui/Spotlight'
 
@@ -22,36 +21,47 @@ const HeroGenerateLyricsDefault = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setInputValue(value)
-    setErrorMessage('') // Reset error message on new input
     setValidationSuccess(false) // Reset validation success on new input
+    if (value === '') {
+      // Clear error message when input is empty
+      setErrorMessage('')
+      return
+    }
 
     // Validate the input
-    const result = YouTubeUrlValidation.safeParse(value)
+    const result = YouTubeUrlOrIdValidation.safeParse(value)
     if (!result.success) {
       // If validation fails, display the error message
       setErrorMessage(
         result.error.errors.map((error) => error.message).join(', '),
       )
     } else {
-      console.log('Video ID Acquired: ' + extractVideoId(value))
-      // If validation succeeds, set success state
-      setValidationSuccess(true)
+      const extractedVidId = extractVideoId(value)
+      if (extractedVidId) {
+        setValidationSuccess(true)
+        setErrorMessage('')
+        console.log('Input value:', value)
+        console.log('Extracted ID:', extractedVidId)
+      } else {
+        setErrorMessage('Unable to extract a valid video ID')
+      }
     }
   }
 
   const handleSubmit = () => {
     if (validationSuccess) {
-      // If the URL is valid, you can proceed with your logic here
-      // For example, fetching the lyrics or any other action
       const extractedVidId = extractVideoId(inputValue)
       if (extractedVidId) {
         setInputVideoId(extractedVidId)
-        console.log('Valid YouTube URL:', extractedVidId)
+        console.log('Valid YouTube URL or video ID:', extractedVidId)
+        setProcessingStage(2)
+      } else {
+        setErrorMessage('Unable to extract a valid video ID')
       }
-      setProcessingStage(2)
     } else {
-      // If the submit button is clicked without a valid URL, show an error
-      setErrorMessage('Please enter a valid YouTube URL before submitting.')
+      setErrorMessage(
+        'Please enter a valid YouTube URL or video ID before submitting.',
+      )
     }
   }
 
@@ -95,15 +105,12 @@ const HeroGenerateLyricsDefault = ({
             )}
           </div>
           <Button
-            onClick={
-              validationSuccess
-                ? handleSubmit
-                : () => console.log('Invalid URL')
-            }
+            onClick={inputValue?.length > 0 ? handleSubmit : () => {}}
+            disabled={errorMessage && errorMessage != '' ? true : false}
             variant='default'
             role='combobox'
             className='w-1/3 border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20 md:w-4/12 lg:w-1/4'>
-            Generate Lyrics
+            Try Now!
           </Button>
         </div>
 

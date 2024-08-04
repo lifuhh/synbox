@@ -1,6 +1,8 @@
 import {
   YoutubePlaylistApiResponse,
   YoutubeSearchApiResponse,
+  YoutubeSearchItem,
+  YoutubeSearchResultInfo,
   formattedSearchResult,
   formattedYoutubeVideoItemForCarousel,
 } from '@/types'
@@ -13,6 +15,46 @@ import axios from 'axios'
 const YoutubeApiKey = import.meta.env.VITE_GOOGLE_API_KEY
 
 //?TEST_DRIVE_QUERY
+
+export async function getSongInfoById(
+  videoId: string,
+): Promise<YoutubeSearchItem> {
+  const response = await axios.get<YoutubeSearchItem>(
+    `https://www.googleapis.com/youtube/v3/videos`,
+    {
+      //TODO: check params and types of this req
+      params: {
+        key: YoutubeApiKey,
+        part: ['snippet', 'statistics', 'contentDetails'],
+        id: videoId,
+      },
+    },
+  )
+
+  if (!response) throw new Error('Failed to fetch vid details')
+
+  // TODO: write a formatter for this req
+  // const formattedResponse =
+
+  return {
+    kind: '',
+    etag: '',
+    id: {
+      kind: '',
+      videoId: '',
+    },
+    snippet: {
+      publishedAt: '',
+      channelId: '',
+      title: '',
+      description: '',
+      thumbnails: undefined,
+      channelTitle: '',
+      liveBroadcastContent: '',
+      publishTime: '',
+    },
+  }
+}
 
 export async function getLandingPagePlaylist(): Promise<
   formattedYoutubeVideoItemForCarousel[]
@@ -28,7 +70,7 @@ export async function getLandingPagePlaylist(): Promise<
         playlistId: 'PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz',
         maxResults: 50,
       },
-    }
+    },
   )
 
   if (!response) throw new Error('Failed to fetch playlist items')
@@ -40,8 +82,51 @@ export async function getLandingPagePlaylist(): Promise<
   return processedResponse
 }
 
+export async function getYoutubeVideoInfo(
+  videoId: string,
+): Promise<YoutubeSearchResultInfo> {
+  console.log('YT API: Getting info for vid id: ' + videoId)
+
+  const response = await axios.get<YoutubeSearchApiResponse>(
+    `https://www.googleapis.com/youtube/v3/videos`,
+    {
+      params: {
+        key: YoutubeApiKey,
+        part: 'snippet,statistics,contentDetails',
+        id: videoId,
+      },
+    },
+  )
+
+  if (!response) throw new Error('Failed to fetch video info')
+
+  const songResults = response.data.items
+
+  if (songResults.length === 0) {
+    throw new Error('No video found for this video ID')
+  }
+
+  const songInfo = songResults[0]
+  const songData = {
+    id: songInfo.id,
+    title: songInfo.snippet.title,
+    channelTitle: songInfo.snippet.channelTitle,
+    description: songInfo.snippet.description,
+    tags: songInfo.snippet.tags || [],
+    defaultAudioLanguage: songInfo.snippet.defaultAudioLanguage || '',
+    thumbnail: getHighestResThumbnail(songInfo.snippet.thumbnails),
+    duration: songInfo.contentDetails.duration,
+    statistics: songInfo.statistics,
+  }
+
+  console.log('Song Data received from youtube')
+  console.log(songData)
+
+  return songData
+}
+
 export async function getYoutubeSearchResults(
-  searchTerm: string
+  searchTerm: string,
 ): Promise<formattedSearchResult[]> {
   // console.log('fetching search results for ' + searchTerm)
 
@@ -76,6 +161,19 @@ export async function getYoutubeSearchResults(
   // console.log(processedResponse)
 
   return processedResponse
+}
+
+function getHighestResThumbnail(thumbnails: any) {
+  const resolutionOrder = ['maxres', 'standard', 'high', 'medium', 'default']
+
+  for (const res of resolutionOrder) {
+    if (thumbnails[res] && thumbnails[res].url) {
+      return thumbnails[res].url
+    }
+  }
+
+  // If no thumbnail is found, return a default or placeholder URL
+  return 'https://example.com/placeholder-thumbnail.jpg'
 }
 
 const tempData: YoutubeSearchApiResponse = {

@@ -37,6 +37,9 @@ module.exports = {
         'light-2': '#FBE9F6', // Light magenta for subtle backgrounds
         'light-3': '#D05D8F', // A mid-light magenta for less prominent UI elements
         'light-4': '#E1BEE7', // A pale magenta for hover states or disabled elements
+        destructive: '#FBE9F6',
+        'destructive-foreground': '#CA195F',
+        accent: '',
       },
 
       screens: {

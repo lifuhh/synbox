@@ -8,6 +8,7 @@ import React, {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, CardContainer, CardItem } from '../ui/3d-card'
+import { Button } from '../ui/button'
 
 type SongHighlightCarouselItemProps = {
   opacity: number
@@ -81,53 +82,55 @@ videoId
   }, [currentIndex, itemCount, index])
 
   return (
-    <div style={{ opacity }} className='min-h-100 scale-75'>
+    <div style={{ opacity }} className=' scale-75'>
       <div style={cardStyle}>
         <CardContainer>
-          <CardBody className='group/card relative h-auto w-[30rem] rounded-xl border border-black/[0.1] bg-gray-50 p-6 dark:border-white/[0.2] dark:bg-black dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1]'>
+          <CardBody className='group/card relative h-auto w-[30rem] rounded-xl border border-black/[0.1]  bg-gray-100 p-6 dark:border-white/[0.2] dark:bg-black dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1]'>
             <CardItem
               translateZ='50'
-              className='max-h-12 min-h-12 text-xl font-bold text-neutral-600 dark:text-white'>
+              as='button'
+              className='max-h-12 min-h-12 text-left text-xl font-bold text-primary dark:text-primary'
+              onClick={handleNavigate}>
               {item.title}
             </CardItem>
-
             <CardItem
               translateZ='100'
-              // rotateX={20}
-              // rotateZ={-10}
-              className='mt-4 w-full'>
+              rotateX={10}
+              rotateZ={-3}
+              className='my-2 w-full'>
               <img
                 src={item.thumbnailUrl}
                 height='1080'
                 width='1920'
-                className='h-60 w-full rounded-xl object-cover group-hover/card:shadow-xl'
+                className='unselectable h-60 w-full rounded-xl object-cover group-hover/card:shadow-xl'
                 alt='thumbnail'
               />
             </CardItem>
-            <CardItem
+            {/* <CardItem
               as='p'
               translateZ='60'
-              className='mt-2 max-h-12 min-h-12 max-w-sm text-sm text-neutral-500 dark:text-neutral-300'>
+              className='unselectable text-md mb-2 max-w-sm text-neutral-500 dark:text-neutral-300'>
               {item.description}
-            </CardItem>
-            <div className='mt-10 flex items-center justify-between'>
+            </CardItem> */}
+            <div className='mt-6 flex justify-between'>
               <CardItem
                 translateZ={10}
                 // translateX={-30}
-                as='button'
-                className='rounded-xl px-4 py-2 text-xs font-normal text-blue-900 dark:text-white'>
+                // as='button'
+                className='text-md unselectable rounded-xl px-4 py-1 font-normal text-secondary dark:text-white'>
                 {item.channel}
               </CardItem>
-              <button
-                className='rounded-xl bg-black px-4 py-2 text-xs font-bold text-white dark:bg-white dark:text-black'
-                onClick={handleNavigate}>
+              <Button
+                className='rounded-xl px-4 py-2 text-sm font-bold text-white'
+                onClick={handleNavigate}
+                variant={'secondary'}>
                 <CardItem
                   translateZ={10}
                   // translateX={30}
                 >
-                  {item.videoId}
+                  Watch Now
                 </CardItem>
-              </button>
+              </Button>
             </div>
           </CardBody>
         </CardContainer>

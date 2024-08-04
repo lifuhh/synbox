@@ -5,10 +5,7 @@ import { useAppContext } from '@/context/AppContext'
 
 import { useState } from 'react'
 import HeroGenerateLyricsDefault from './HeroGenerateLyricsDefault'
-import HeroGenerateLyricsProcessing from './HeroGenerateLyricsProcessing'
-
-const exist = 'K1Tz2yNmamI'
-const noExist = 'qDL3zhB8-MM'
+import HeroGenerateLyricsProcessing from './HeroGenerateLyricsValidation'
 
 const HeroGenerateLyricsSection = () => {
   const { processingStage, setProcessingStage } = useAppContext()
