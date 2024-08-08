@@ -21,19 +21,15 @@ interface AppContextType {
   setIsAuthenticated: (isAuthenticated: boolean) => void
   checkAuthUser: () => Promise<boolean>
   //* Player stuff
-  muted: boolean
   videoId: string
   volume: number
   processingStage: number
-  isFullscreen: boolean
   // playing: boolean
-  setPlayerMuted: (muted: boolean) => void
   setVideoId: (videoId: string) => void
   setVolume: (volume: number) => void
   setProcessingStage: (stage: number) => void
   playerControlsVisible: boolean
   setPlayerControlsVisible: (visibility: boolean) => void
-  setIsFullscreen: (isFullscreen: boolean) => void
   //* Calculate Bottombar Height
   bottomBarHeight: number
   setBottomBarHeight: React.Dispatch<React.SetStateAction<number>> | undefined
@@ -56,16 +52,12 @@ const INITIAL_STATE = {
   //* Player stuff
   videoId: '',
   volume: 0,
-  muted: true,
   processingStage: 1,
   playerControlsVisible: true,
-  isFullscreen: false,
   setVideoId: (videoId: string) => {},
   setProcessingStage: (stage: number) => {},
   setVolume: (volume: number) => {},
-  setPlayerMuted: (muted: boolean) => {},
   setPlayerControlsVisible: (visibility: boolean) => {},
-  setIsFullscreen: (isFullscreen: boolean) => {},
   // Calculate Bottombar Height
   bottomBarHeight: 0,
   setBottomBarHeight: undefined,
@@ -118,9 +110,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [bottomBarHeight, setBottomBarHeight] = useState(0)
 
   //* Player Stuff
-  const [muted, setPlayerMuted] = useState<boolean>(true)
   const [videoId, setVideoId] = useState<string>('')
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
   const [playerControlsVisible, setPlayerControlsVisible] =
     useState<boolean>(true)
   // set initial volume here
@@ -150,16 +140,12 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     checkAuthUser,
     videoId,
     setVideoId,
-    muted,
-    setPlayerMuted,
     processingStage,
     setProcessingStage,
     volume,
     setVolume,
     playerControlsVisible,
     setPlayerControlsVisible,
-    isFullscreen,
-    setIsFullscreen,
     bottomBarHeight,
     setBottomBarHeight,
     playerOverlayVisible,

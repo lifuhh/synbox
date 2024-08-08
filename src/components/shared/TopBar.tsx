@@ -5,11 +5,14 @@ import AppLogo from '../topbar/AppLogo'
 import CommandSearch from '../topbar/CommandSearch'
 
 import { useAppContext } from '@/context/AppContext'
+import { fullscreenAtom } from '@/context/atoms'
+import { useAtomValue } from 'jotai'
 import FavouritesDropdownButton from '../topbar/FavouritesDropdownButton'
 import ProfileButton from '../topbar/ProfileButton'
 
 const TopBar = () => {
-  const { playerControlsVisible, isFullscreen } = useAppContext()
+  const { playerControlsVisible } = useAppContext()
+  const isFullscreen = useAtomValue(fullscreenAtom)
 
   const location = useLocation() // Use the useLocation hook to access the current route
   const isVideoPlayer = location.pathname.includes('/v/')

@@ -15,6 +15,18 @@ const TestRequestPage = () => {
     loaderVisibilityHandler.open()
   }
 
+  const handleStepOne = () => {
+    //
+  }
+
+  const handleStepTwo = () => {
+    //
+  }
+
+  const handleStepThree = () => {
+    //
+  }
+
   return (
     <div className='mt-14 flex w-full flex-col'>
       <Helmet>
@@ -25,14 +37,14 @@ const TestRequestPage = () => {
           <DialogTrigger asChild>
             <div className='flex flex-col'>
               <Button variant={'default'} onClick={handleOpenOverlay}>
-                Test
+                Toggle Overlay
               </Button>
               <Divider my='xl' />
               <div className='flex flex-col gap-4'>
-                <Button variant={'default'}>Default</Button>
-                <Button variant={'secondary'}>Secondary</Button>
-                <Button variant={'destructive'}>Destructive</Button>
-                <Button variant={'outline'}>Outline</Button>
+                <Button variant={'default'}>One</Button>
+                <Button variant={'secondary'}>Two</Button>
+                <Button variant={'destructive'}>Three</Button>
+                <Button variant={'outline'}>Four</Button>
                 <Button variant={'ghost'}>Ghost</Button>
                 <Button variant={'link'}>Link</Button>
               </div>

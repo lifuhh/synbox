@@ -1,5 +1,7 @@
 import { useAppContext } from '@/context/AppContext'
-import { Box, Button, Group, LoadingOverlay } from '@mantine/core'
+import { mutedAtom } from '@/context/atoms'
+import { LoadingOverlay } from '@mantine/core'
+import { useAtom } from 'jotai'
 import { ForwardedRef, useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import PlayerOverlay from './PlayerOverlay'
@@ -9,8 +11,6 @@ interface VideoPlayerProps {
   playing: boolean // Whether the video is currently playing
   loop: boolean // Whether the video should loop on end
   volume: number // The volume level of the video (0-1)
-  muted: boolean // Whether the video is muted
-  setPlayerMuted: (muted: boolean) => void
   handlePlay: () => void
   handleDuration: (duration: number) => void
   handleProgress: () => void
@@ -31,8 +31,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   handleDuration,
   handleProgress,
   volume,
-  muted,
-  setPlayerMuted,
   playerRef,
 }) => {
   // const handlePlayerReady = () => {}
@@ -42,6 +40,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     playerOverlayVisibleHandler,
   } = useAppContext()
   const [videoEnded, setVideoEnded] = useState(false)
+  const [muted, setMuted] = useAtom(mutedAtom)
+
+  //TODO: This is a typeguard - understand this better
+  if (!playerRef || typeof playerRef === 'function') {
+    throw new Error('playerRef must be a MutableRefObject')
+  }
 
   //? Handle delay in dismissing controls visibility when playing video
   useEffect(() => {
@@ -82,18 +86,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }
 
   const handleReady = () => {
-    console.log('Handle Ready triggered')
-
-    if (muted) {
-      console.log('Click Play lol!')
-    } else {
-      handlePlay()
+    if (!playerRef.current) return
+    
+    if (playerRef.current.getInternalPlayer()) {
+      setMuted(playerRef.current.getInternalPlayer().isMuted())
+      //? sync app muted state with player muted state
     }
   }
 
   const handleInitMutedPlay = () => {
     console.log('Init Muted Play clicked')
-    setPlayerMuted(false)
+    setMuted(false)
     playerOverlayVisibleHandler.close()
     handlePlay()
   }
@@ -157,4 +160,5 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     </>
   )
 }
+
 export default VideoPlayer

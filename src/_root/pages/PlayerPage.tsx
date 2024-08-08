@@ -2,6 +2,8 @@ import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverl
 import { MemoizedPlayerBottomBar as PlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
+import { fullscreenAtom, mutedAtom } from '@/context/atoms'
+import { useAtom, useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import ReactPlayer from 'react-player'
@@ -10,8 +12,10 @@ import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
   // console.log('PlayerPage re-rendered...')
-  const { playerControlsVisible, muted, setPlayerMuted, volume, isFullscreen } =
-    useAppContext()
+  const { volume } = useAppContext()
+  const [muted, setMuted] = useAtom(mutedAtom)
+  const isFullscreen = useAtomValue(fullscreenAtom)
+  // const playerControlsVisible = useAtomValue(playerControlVisibilityAtom)
 
   //* Video ID state
   const { videoId } = useParams() // Extract videoId from route parameters
@@ -69,10 +73,10 @@ const PlayerPage = () => {
   }, [])
 
   const handlePlay = useCallback(() => {
-    // console.log('onPlay')
     setPlaying(true)
+    if (muted) setMuted(false)
     // setTestStartTime(performance.now())
-  }, [])
+  }, [muted, setMuted])
 
   //? `requestAnimationFrame` tester - to change to use accordingly for lyrics
   useEffect(() => {
@@ -163,6 +167,7 @@ const PlayerPage = () => {
   const handlePlayerPageClick = () => {
     console.log('Handled player page click')
     handlePlayPause()
+    if (muted) setMuted(false)
   }
 
   return (
@@ -192,8 +197,6 @@ const PlayerPage = () => {
             loop={loop}
             playing={playing}
             volume={volume}
-            muted={muted}
-            setPlayerMuted={setPlayerMuted}
             handlePlay={handlePlay}
             handleProgress={handleProgress}
             handleDuration={handleDuration}

@@ -7,12 +7,16 @@ import { useCallback, useState } from 'react'
 import { Button } from '../ui/button'
 import { Slider } from '../ui/slider'
 
+import { mutedAtom } from '@/context/atoms'
+import { useAtom } from 'jotai'
+
 const VolumeControl = () => {
-  const { muted, setPlayerMuted, volume, setVolume } = useAppContext()
+  const { volume, setVolume } = useAppContext()
+  const [muted, setMuted] = useAtom(mutedAtom)
 
   const handleToggleMuted = useCallback(() => {
-    setPlayerMuted(!muted)
-  }, [muted, setPlayerMuted])
+    setMuted(!muted)
+  }, [muted, setMuted])
 
   const handleVolumeChange = useCallback(
     (value: number) => {

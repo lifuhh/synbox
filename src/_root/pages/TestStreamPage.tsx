@@ -35,7 +35,7 @@ const FormattedLyrics = ({ lyrics }) => {
 }
 
 const ComparedLyrics = ({ englishLyrics, chineseLyrics }) => {
-  let englishLines = Array.isArray(englishLyrics)
+  const englishLines = Array.isArray(englishLyrics)
     ? englishLyrics
     : englishLyrics.split('\n')
   const chineseLines = Array.isArray(chineseLyrics)
@@ -76,8 +76,7 @@ const ComparedLyrics = ({ englishLyrics, chineseLyrics }) => {
     return <div className='flex w-full justify-center gap-4'></div>
   } else {
     //TODO: Test code - remove when using real data
-
-    englishLines = [...englishLines, 'Wow Testing Failure']
+    // englishLines = [...englishLines, 'Wow Testing Failure']
   }
 
   return (
@@ -107,7 +106,7 @@ const TestStreamPage = () => {
     setIsStreaming(true)
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/stream_conversation')
+      const response = await fetch('http://127.0.0.1:8080/stream_conversation')
 
       if (!response.ok) throw new Error('Network response was not ok')
       if (!response.body)
@@ -224,12 +223,12 @@ const TestStreamPage = () => {
           </div>
         </div>
         <div>
-            <h1 className='mb-4 text-center text-sm font-bold'>
-                Original Lyrics
-            </h1>
-            <div className='rounded-md bg-white/60 p-4 text-black'>
-                <FormattedLyrics lyrics={origLyrics} />
-            </div>
+          <h1 className='mb-4 text-center text-sm font-bold'>
+            Original Lyrics
+          </h1>
+          <div className='rounded-md bg-white/60 p-4 text-black'>
+            <FormattedLyrics lyrics={origLyrics} />
+          </div>
         </div>
       </div>
     </div>

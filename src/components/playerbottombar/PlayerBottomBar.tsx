@@ -30,6 +30,8 @@ import React from 'react'
 import VolumeControl from './VolumeControl'
 
 import { useAppContext } from '@/context/AppContext'
+import { fullscreenAtom } from '@/context/atoms'
+import { useAtom } from 'jotai'
 
 interface PlayerBottomBarProps {
   playing: boolean
@@ -72,12 +74,9 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
 }) => {
   const bottomBarRef = useRef<HTMLDivElement>(null)
   // console.log('Player Bottom Bar re-rendered...')
-  const {
-    playerControlsVisible,
-    isFullscreen,
-    setIsFullscreen,
-    setBottomBarHeight,
-  } = useAppContext()
+  const { playerControlsVisible, setBottomBarHeight } = useAppContext()
+
+  const [isFullscreen, setIsFullscreen] = useAtom(fullscreenAtom)
 
   const getCurrentPlayedPercentage = useCallback(() => {
     if (isNaN(played) || isNaN(duration) || duration === 0) {
