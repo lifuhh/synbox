@@ -10,7 +10,6 @@ import HeroGenerateLyricsProcessing from './HeroGenerateLyricsValidation'
 const HeroGenerateLyricsSection = () => {
   const { processingStage, setProcessingStage } = useAppContext()
   const [inputVideoId, setInputVideoId] = useState<string>('')
-
   const [subStage, setSubStage] = useState<number>(1)
 
   const renderComponent = () => {
@@ -20,6 +19,7 @@ const HeroGenerateLyricsSection = () => {
           <HeroGenerateLyricsDefault
             setProcessingStage={setProcessingStage}
             setInputVideoId={setInputVideoId}
+            inputVideoId={inputVideoId}
           />
         )
       case 2:

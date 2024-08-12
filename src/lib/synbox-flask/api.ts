@@ -2,22 +2,50 @@ import axios from 'axios'
 
 const FlaskBEAddress = import.meta.env.VITE_SYNBOX_BE_URL
 
-export async function validateVideoById(videoId: string) {
-  if (!videoId) throw new Error('No video ID provided')
+interface StreamData {
+  type: 'update' | 'data' | 'vid_info'
+  data: string | number
+}
 
-  try {
-    const response = await axios.get(
-      `${FlaskBEAddress}/validate?q=https://www.youtube.com/watch?v=${videoId}`,
-      { headers: { 'Content-Type': 'application/json' } },
-    )
+export async function streamValidateVideoById(id: string) {
+  if (!id) throw new Error('No video ID provided')
 
-    console.log(response.data)
+  // const response = await fetch(`${FlaskBEAddress}/stream`, {
+  //   method: 'POST',
+  //   body: JSON.stringify({ id }),
+  //   headers: {
+  //     'Content-type': 'application/json; charset=UTF-8',
+  //   },
+  // })
 
-    if (!response) throw new Error('Validation request failed, please try again')
+  const response = await fetch(`http://127.0.0.1:8080/test`, {
+    method: 'POST',
+    body: JSON.stringify({ id }),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
 
-    return response.data
-  } catch (error) {
-    console.error('Error validating video:', error)
-    throw error
+  if (!response.ok) throw new Error('Network response was not ok')
+  if (!response.body)
+    throw new Error('ReadableStream not yet supported in this browser')
+
+  const reader = response.body!.getReader()
+  const decoder = new TextDecoder()
+
+  const result: StreamData[] = []
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    const chunk = decoder.decode(value)
+    const updates = chunk.split('\n').filter(Boolean)
+    updates.forEach((update) => {
+      result.push(JSON.parse(update))
+    })
   }
+
+  return result
 }

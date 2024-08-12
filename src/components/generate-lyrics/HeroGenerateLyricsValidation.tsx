@@ -1,11 +1,12 @@
 import {
   useGetLyricsBySongId,
   useGetYoutubeVideoInfo,
+  useStreamValidateVideoById,
   useValidateVideoById,
 } from '@/lib/react-query/queriesAndMutations'
 import { formatCountToString, formatDuration } from '@/utils'
 import { useDisclosure } from '@mantine/hooks'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import JSONPretty from 'react-json-pretty'
 import { useNavigate } from 'react-router-dom'
 import Loader from '../shared/Loader'
@@ -30,10 +31,7 @@ const HeroGenerateLyricsValidation = ({
 }: HeroGenerateLyricsValidationProps) => {
   const navigate = useNavigate()
 
-  const { data: vidValidationInfo, isLoading: vidValidationInfoFetching } =
-    useValidateVideoById(videoId)
-
-  const [dialogOpen, setDialogStatus] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [loaderVisible, loaderVisibilityHandler] = useDisclosure(false)
 
   //TODO: Auto redirect for if there's lyrics, set this up in the future
@@ -54,10 +52,48 @@ const HeroGenerateLyricsValidation = ({
     setInputVideoId('')
   }
 
+  const handleStreamClick = useCallback(() => {
+    if (!isLoading) {
+      mutate(id, {
+        onSuccess: (data) => {
+          const result = { id, data }
+          setStreamResult(result)
+          // Save to query cache
+          queryClient.setQueryData(['streamResult', id], result)
+        },
+      })
+    }
+  }, [id, isLoading, mutate, queryClient])
+
+
+
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isLoading) {
+        event.preventDefault()
+        event.returnValue = '' // Standard way to trigger a confirmation dialog
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [isLoading])
+
+  
+  useEffect(() => {
+    if (streamResult) {
+      setStreamResult(streamResult)
+    }
+  }, [streamResult])
+
   const handleGenerate = () => {
     if (!vidValidationInfo) return
 
-    setDialogStatus(true)
+    setDialogOpen(true)
     loaderVisibilityHandler.open()
     const { vid_info, subtitle_info } = vidValidationInfo
     const { vid_id } = vid_info
@@ -151,7 +187,7 @@ const HeroGenerateLyricsValidation = ({
             </Button>
           </DialogTrigger>
           <RequestDialog
-            setDialogStatus={setDialogStatus}
+            setDialogOpen={setDialogOpen}
             loaderVisible={loaderVisible}
             loaderVisibilityHandler={loaderVisibilityHandler}
           />
@@ -164,90 +200,3 @@ const HeroGenerateLyricsValidation = ({
   )
 }
 export default HeroGenerateLyricsValidation
-
-// audio_path
-// :
-// "./output/track/ojJe-t0yU7g.m4a"
-// error_msg
-// :
-// null
-// subtitle_info
-// :
-// exist
-// :
-// true
-// ext
-// :
-// ".vtt"
-// path
-// :
-// "./output/track/ojJe-t0yU7g.ja.vtt"
-// [[Prototype]]
-// :
-// Object
-// validated
-// :
-// true
-// validation_info
-// :
-// categories
-// :
-// ['People & Blogs']
-// channel_name
-// :
-// "tuki.(15)"
-// description : "blablabla"
-// language
-// :
-// "ja"
-// title
-// :
-// "tuki.『ひゅるりらぱっぱ』Official Audio"
-// uploader
-// :
-// "tuki.(15)"
-// [[Prototype]]
-// :
-// Object
-// vid_info
-// :
-// categories
-// :
-// ['People & Blogs']
-// channel_name
-// :
-// "tuki.(15)"
-// description : "blablabla"
-// duration
-// :
-// 200
-// id
-// :
-// "ojJe-t0yU7g"
-// language
-// :
-// "ja"
-// likes
-// :
-// 22147
-// playable_in_embed
-// :
-// true
-// thumbnail
-// :
-// "https://i.ytimg.com/vi/ojJe-t0yU7g/maxresdefault.jpg"
-// title
-// :
-// "tuki.『ひゅるりらぱっぱ』Official Audio"
-// uploader
-// :
-// "tuki.(15)"
-// views
-// :
-// 504287
-// [[Prototype]]
-// :
-// Object
-// [[Prototype]]
-// :
-// Object

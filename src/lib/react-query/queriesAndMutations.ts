@@ -19,24 +19,15 @@ import {
   getYoutubeVideoInfo,
 } from '../youtube/api'
 
-import { validateVideoById } from '../synbox-flask/api'
-
+import { streamValidateVideoById } from '../synbox-flask/api'
 import { QUERY_KEYS } from './queryKeys'
 
-// export const useCreateUserAccount = () => {
-//   return useMutation({
-//     mutationFn: (user: INewUser) => createUserAccount(user),
-//   })
-// }
-
-export const useValidateVideoById = (videoId: string) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.VALIDATE_VIDEO_BY_ID, videoId],
-    queryFn: () => validateVideoById(videoId),
-    enabled: !!videoId,
-    staleTime: 10 * 60 * 1000,
-    // onSuccess: (data) => console.log('Query succeeded:', data),
-    // onError: (error) => console.error('Query failed:', error),
+export const useStreamValidateVideoById = () => {
+  return useMutation({
+    mutationFn: (id: string) => streamValidateVideoById(id),
+    onError: (error) => {
+      console.error('Error streaming data:', error)
+    },
   })
 }
 

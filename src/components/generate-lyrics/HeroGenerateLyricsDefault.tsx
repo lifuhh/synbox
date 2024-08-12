@@ -1,22 +1,42 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { setStreamResultAtom, streamResultAtom } from '@/context/atoms'
+import { useStreamValidateVideoById } from '@/lib/react-query/queriesAndMutations'
 import { YouTubeUrlOrIdValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
-import { useState } from 'react'
+import { useDisclosure } from '@mantine/hooks'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai/react'
+import { useEffect, useState } from 'react'
+import RequestDialog from '../shared/RequestDialog'
 import { Spotlight } from '../ui/Spotlight'
+import { Dialog, DialogTrigger } from '../ui/dialog'
 
 interface HeroGenerateLyricsDefaultProps {
   setProcessingStage: (stage: number) => void
   setInputVideoId: (videoId: string) => void
+  inputVideoId: string
 }
 
 const HeroGenerateLyricsDefault = ({
   setProcessingStage,
   setInputVideoId,
+  inputVideoId,
 }: HeroGenerateLyricsDefaultProps) => {
   const [inputValue, setInputValue] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [validationSuccess, setValidationSuccess] = useState(false)
+
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [loaderVisible, loaderVisibilityHandler] = useDisclosure(false)
+
+  const {
+    mutate,
+    data: streamData,
+    variables: streamVariables,
+    isPending: isPendingStream,
+    isError: isErrorStream,
+    error: streamErrorMsg,
+  } = useStreamValidateVideoById()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -40,8 +60,7 @@ const HeroGenerateLyricsDefault = ({
       if (extractedVidId) {
         setValidationSuccess(true)
         setErrorMessage('')
-        console.log('Input value:', value)
-        console.log('Extracted ID:', extractedVidId)
+        setInputVideoId(extractedVidId)
       } else {
         setErrorMessage('Unable to extract a valid video ID')
       }
@@ -50,20 +69,25 @@ const HeroGenerateLyricsDefault = ({
 
   const handleSubmit = () => {
     if (validationSuccess) {
-      const extractedVidId = extractVideoId(inputValue)
-      if (extractedVidId) {
-        setInputVideoId(extractedVidId)
-        console.log('Valid YouTube URL or video ID:', extractedVidId)
-        setProcessingStage(2)
-      } else {
-        setErrorMessage('Unable to extract a valid video ID')
-      }
-    } else {
-      setErrorMessage(
-        'Please enter a valid YouTube URL or video ID before submitting.',
-      )
+      setDialogOpen(true)
+      mutate(inputVideoId)
     }
   }
+
+  const streamResult = useAtomValue(streamResultAtom)
+  const setStreamResult = useSetAtom(setStreamResultAtom)
+
+  useEffect(() => {
+    if (streamData && streamVariables) {
+      const id = streamVariables
+      const result = { id, streamData }
+
+      console.log('This is result', result)
+
+      // Update the atom state
+      setStreamResult(result)
+    }
+  }, [streamData, streamVariables, setStreamResult])
 
   return (
     <div className='items-top bg-grid-white/[0.90] relative flex w-full overflow-hidden rounded-md bg-dark-1/[0.15] pt-10 antialiased md:h-[25rem]  md:justify-center'>
@@ -104,14 +128,24 @@ const HeroGenerateLyricsDefault = ({
               <div className='text-green-500'>URL is valid!</div>
             )}
           </div>
-          <Button
-            onClick={inputValue?.length > 0 ? handleSubmit : () => {}}
-            disabled={errorMessage && errorMessage != '' ? true : false}
-            variant='default'
-            role='combobox'
-            className='w-1/3 border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20 md:w-4/12 lg:w-1/4'>
-            Try Now!
-          </Button>
+          <Dialog open={dialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                onClick={inputValue?.length > 0 ? handleSubmit : () => {}}
+                disabled={errorMessage && errorMessage != '' ? true : false}
+                variant='default'
+                role='combobox'
+                className='w-1/3 border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20 md:w-4/12 lg:w-1/4'>
+                Try Now!
+              </Button>
+            </DialogTrigger>
+            <RequestDialog
+              videoId={inputVideoId}
+              setDialogOpen={setDialogOpen}
+              loaderVisible={loaderVisible}
+              loaderVisibilityHandler={loaderVisibilityHandler}
+            />
+          </Dialog>
         </div>
 
         {/* Display error message or success message */}

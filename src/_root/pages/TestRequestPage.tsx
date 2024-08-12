@@ -7,11 +7,11 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 
 const TestRequestPage = () => {
-  const [dialogOpen, setDialogStatus] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [loaderVisible, loaderVisibilityHandler] = useDisclosure(false)
 
   const handleOpenOverlay = () => {
-    setDialogStatus(true)
+    setDialogOpen(true)
     loaderVisibilityHandler.open()
   }
 
@@ -51,7 +51,7 @@ const TestRequestPage = () => {
             </div>
           </DialogTrigger>
           <RequestDialog
-            setDialogStatus={setDialogStatus}
+            setDialogOpen={setDialogOpen}
             loaderVisible={loaderVisible}
             loaderVisibilityHandler={loaderVisibilityHandler}
           />

@@ -201,6 +201,40 @@ export const extractVideoId = (input: string): string | null => {
   return null
 }
 
+export const createAppwriteIdFromYoutubeId = (id: string): string => {
+  if (validateYoutubeIdForAppwrite(id)) {
+    return id
+  }
+  return encodeYoutubeIdForAppwrite(id)
+}
+
+export const getYouTubeIdFromAppwriteId = (appwriteId: string): string => {
+  if (appwriteId.startsWith('yt_')) {
+    return decodeYoutubeIdForAppwrite(appwriteId)
+  }
+  return appwriteId
+}
+
+const validateYoutubeIdForAppwrite = (id: string): boolean => {
+  const validChars = /^[a-zA-Z0-9_]{1,36}$/
+  return validChars.test(id) && !id.startsWith('_')
+}
+
+const encodeYoutubeIdForAppwrite = (id: string): string => {
+  const prefix = 'yt_'
+  const encodedId = btoa(id)
+  return `${prefix}${encodedId}`
+}
+
+const decodeYoutubeIdForAppwrite = (id: string): string => {
+  const prefix = 'yt_'
+  if (id.startsWith(prefix)) {
+    const encodedPart = id.slice(prefix.length)
+    return atob(encodedPart)
+  }
+  throw new Error('Invalid encoded ID format')
+}
+
 //! Everything below is Deprecated >>>
 
 // ! Deprecated - Old LYRICS PROCESSING FUNCTIONS
