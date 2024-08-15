@@ -1,20 +1,21 @@
-import Loader from '@/components/shared/Loader'
 import {
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Divider, Paper, Text } from '@mantine/core'
+import { Divider, Loader, Paper, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { DialogDescription } from '@radix-ui/react-dialog'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 
 import { streamResultAtom } from '@/context/atoms'
+import { validateJSON } from '@/utils'
 import { useAtomValue } from 'jotai/react'
 
 interface RequestDialogProps {
+  videoId: string
   setDialogOpen: (open: boolean) => void
   loaderVisible: boolean
   loaderVisibilityHandler: {
@@ -24,32 +25,94 @@ interface RequestDialogProps {
   }
 }
 
-const RequestDialog: React.FC<RequestDialogProps> = ({
-  setDialogOpen,
-  loaderVisible,
-  loaderVisibilityHandler,
-}) => {
-  const maxDuration = 2000
-  const minDuration = 1000
+interface StreamMessageProps {
+  type: string
+  data: string | object
+}
 
-  const streamResult = useAtomValue(streamResultAtom)
-  console.log('This is stream data')
-  console.log(streamResult)
+const RequestDialog: React.FC<RequestDialogProps> = ({
+  videoId,
+  setDialogOpen,
+}) => {
+  const [isStreaming, setIsStreaming] = useState(false)
+  const [streamMessages, setStreamMessages] = useState<StreamMessageProps[]>([])
+  const [updateMessages, setUpdateMessages] = useState<string[]>([])
+  const [accumulatedMessages, setAccumulatedMessages] = useState<
+    StreamMessageProps[]
+  >([])
+  useEffect(() => {
+    // Reset states when videoId changes
+    setIsStreaming(false)
+    setStreamMessages([])
+    setUpdateMessages([])
+    let isCancelled = false // Used to cancel the fetch when videoId changes
+
+    if (!videoId || isStreaming) return
+
+    setIsStreaming(true)
+
+    const handleDialogOpen = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8080/test`, {
+          method: 'POST',
+          body: JSON.stringify({ videoId }),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!response.ok) throw new Error('Network response was not ok')
+        if (!response.body)
+          throw new Error('ReadableStream not yet supported in this browser')
+        const reader = response.body.getReader()
+        const decoder = new TextDecoder()
+
+        while (true) {
+          if (isCancelled) {
+            reader.cancel()
+            break
+          }
+
+          const { done, value } = await reader.read()
+          if (done) break
+
+          const chunk = decoder.decode(value)
+          const lines = chunk.split('\n')
+
+          lines.forEach((line) => {
+            if (validateJSON(line)) {
+              const content = JSON.parse(line)
+
+              if (content['type'] == 'update' || content['type'] == 'data') {
+                setUpdateMessages((prev) => [...prev, content['data']])
+              }
+            }
+          })
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error('Error:', error)
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsStreaming(false)
+        }
+      }
+    }
+
+    handleDialogOpen()
+
+    // Cleanup function to cancel the fetch if videoId changes or component unmounts
+    return () => {
+      isCancelled = true
+      setIsStreaming(false)
+    }
+  }, [videoId, isStreaming])
 
   const handleClose = () => {
     setDialogOpen(false)
   }
-
-  useEffect(() => {
-    const randomTimeout =
-      Math.floor(Math.random() * (maxDuration - minDuration + 1)) + minDuration
-
-    const timeoutId = setTimeout(() => {
-      loaderVisibilityHandler.close()
-    }, randomTimeout)
-
-    return () => clearTimeout(timeoutId)
-  }, [loaderVisibilityHandler])
 
   return (
     <DialogContent
@@ -62,26 +125,14 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
         <DialogDescription>Dialog Desc</DialogDescription>
       </DialogHeader>
 
-      <div className='m-4'>
-        <div>
-          {loaderVisible ? (
-            <Loader color='#55f2cb' />
-          ) : (
-            <div>
-              {streamResult &&
-                streamResult.streamData &&
-                streamResult.streamData.map((item, index) => (
-                  <div key={index}>
-                    {item.type === 'update' && <p>Update: {item.data}</p>}
-                    {item.type === 'data' && <p>Data: {item.data}</p>}
-                    {item.type === 'vid_info' && (
-                      <p>Video Info: {JSON.stringify(item.data)}</p>
-                    )}
-                  </div>
-                ))}
-            </div>
-          )}
-        </div>
+      <div className='flex-between m-4 flex flex-col items-center'>
+        <Text size='xl'>Video ID: {videoId}</Text>
+        {updateMessages.map((message, index) => (
+          <Paper key={index} className='m-2 p-4'>
+            <Text size='sm'>{message}</Text>
+          </Paper>
+        ))}
+        {isStreaming && <Loader color='red' type='dots' />}
       </div>
 
       <DialogFooter>
@@ -89,7 +140,6 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
           type='button'
           variant='default'
           onClick={handleClose}
-          // border-cyan-500 bg-cyan-500
           className=' invisible-ring text-md text-light-1 hover:border-primary hover:bg-light-1 hover:text-primary hover:outline-1'>
           Close
         </Button>

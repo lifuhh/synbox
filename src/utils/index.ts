@@ -25,6 +25,15 @@ export const shuffleArray = (array: unknown[]) => {
   return array
 }
 
+export const validateJSON = (text: string) => {
+  try {
+    JSON.parse(text)
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
 // ? Function to trim long text into "..." if longer than given maxLength
 export function trimLength(text: string, maxLength: number, trail: boolean) {
   const tooLong = text.length > maxLength

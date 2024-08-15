@@ -6,7 +6,7 @@ import { YouTubeUrlOrIdValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
 import { useDisclosure } from '@mantine/hooks'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import RequestDialog from '../shared/RequestDialog'
 import { Spotlight } from '../ui/Spotlight'
 import { Dialog, DialogTrigger } from '../ui/dialog'
@@ -18,25 +18,16 @@ interface HeroGenerateLyricsDefaultProps {
 }
 
 const HeroGenerateLyricsDefault = ({
-  setProcessingStage,
   setInputVideoId,
   inputVideoId,
 }: HeroGenerateLyricsDefaultProps) => {
   const [inputValue, setInputValue] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [validationSuccess, setValidationSuccess] = useState(false)
-
   const [dialogOpen, setDialogOpen] = useState(false)
   const [loaderVisible, loaderVisibilityHandler] = useDisclosure(false)
 
-  const {
-    mutate,
-    data: streamData,
-    variables: streamVariables,
-    isPending: isPendingStream,
-    isError: isErrorStream,
-    error: streamErrorMsg,
-  } = useStreamValidateVideoById()
+  const previousInputRef = useRef<string | null>(null)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -69,25 +60,20 @@ const HeroGenerateLyricsDefault = ({
 
   const handleSubmit = () => {
     if (validationSuccess) {
-      setDialogOpen(true)
-      mutate(inputVideoId)
+      // Check if the input is different from the previous input
+      if (previousInputRef.current !== inputValue) {
+        // Reset the dialog to a clean state
+        setDialogOpen(false)
+        setTimeout(() => setDialogOpen(true), 0) // Close and reopen the dialog to reset it
+      } else {
+        setDialogOpen(true)
+      }
+      
+      // Update the previous input ref with the current input value
+      previousInputRef.current = inputValue
     }
   }
 
-  const streamResult = useAtomValue(streamResultAtom)
-  const setStreamResult = useSetAtom(setStreamResultAtom)
-
-  useEffect(() => {
-    if (streamData && streamVariables) {
-      const id = streamVariables
-      const result = { id, streamData }
-
-      console.log('This is result', result)
-
-      // Update the atom state
-      setStreamResult(result)
-    }
-  }, [streamData, streamVariables, setStreamResult])
 
   return (
     <div className='items-top bg-grid-white/[0.90] relative flex w-full overflow-hidden rounded-md bg-dark-1/[0.15] pt-10 antialiased md:h-[25rem]  md:justify-center'>
