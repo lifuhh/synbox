@@ -16,6 +16,7 @@ interface VideoPlayerProps {
   handleProgress: () => void
   handleStart: () => void
   handleEnded: () => void
+  handlePlayPause: () => void
   playerRef: ForwardedRef<ReactPlayer>
   // Add methods for handling playback control (play, pause, seek)
   // and volume control (setVolume, toggleMute)
@@ -28,6 +29,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   handlePlay,
   handleEnded,
   handleStart,
+  handlePlayPause,
   handleDuration,
   handleProgress,
   volume,
@@ -47,7 +49,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     throw new Error('playerRef must be a MutableRefObject')
   }
 
-  //? Handle delay in dismissing controls visibility when playing video
+  //? Handle delay in dismissing bottom bar controls visibility when playing video
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> // Declare timer to use it inside clearTimeout
 
@@ -60,7 +62,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         // Check if the video is playing
         timer = setTimeout(() => {
           setPlayerControlsVisible(false)
-        }, 1900)
+        }, 4000)
       }
     }
 
@@ -87,7 +89,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const handleReady = () => {
     if (!playerRef.current) return
-    
+
     if (playerRef.current.getInternalPlayer()) {
       setMuted(playerRef.current.getInternalPlayer().isMuted())
       //? sync app muted state with player muted state
@@ -153,7 +155,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onPause={handlePause}
       />
       {playing || videoEnded ? (
-        <div className='absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-0 text-white'></div>
+        <div
+          className='absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-0 text-white'
+          onClick={handlePlayPause}></div>
       ) : (
         ''
       )}

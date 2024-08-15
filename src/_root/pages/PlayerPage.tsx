@@ -1,5 +1,6 @@
 import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverlay'
 import { MemoizedPlayerBottomBar as PlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
+import PlayPauseAnimation from '@/components/shared/PlayPauseAnimation'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import { fullscreenAtom, mutedAtom } from '@/context/atoms'
@@ -50,9 +51,30 @@ const PlayerPage = () => {
     setLoaded(0)
   }
 
+  const handlePause = useCallback(() => {
+    // console.log('onPause')
+    setPlaying(false)
+  }, [])
+
+  const handlePlay = useCallback(() => {
+    setPlaying(true)
+    if (muted) setMuted(false)
+    // setTestStartTime(performance.now())
+  }, [muted, setMuted])
+
+  const [showPlayPauseAnimation, setShowPlayPauseAnimation] = useState(false)
   const handlePlayPause = useCallback(() => {
+    setShowPlayPauseAnimation(true)
     setPlaying(!playing)
   }, [playing])
+
+  const handleAnimationComplete = useCallback(() => {
+    setShowPlayPauseAnimation(false)
+  }, [])
+
+  // const handlePlayPause = useCallback(() => {
+  //   setPlaying(!playing)
+  // }, [playing])
 
   const handleToggleLoop = useCallback(() => {
     setLoop(!loop)
@@ -71,12 +93,6 @@ const PlayerPage = () => {
   const handleToggleLyricsVisibility = useCallback((visibility: boolean) => {
     setLyricsVisibility(visibility)
   }, [])
-
-  const handlePlay = useCallback(() => {
-    setPlaying(true)
-    if (muted) setMuted(false)
-    // setTestStartTime(performance.now())
-  }, [muted, setMuted])
 
   //? `requestAnimationFrame` tester - to change to use accordingly for lyrics
   useEffect(() => {
@@ -103,11 +119,6 @@ const PlayerPage = () => {
       cancelAnimationFrame(testRafId.current)
     }
   }, [playing])
-
-  const handlePause = useCallback(() => {
-    // console.log('onPause')
-    setPlaying(false)
-  }, [])
 
   const handleStart = useCallback(() => {
     // console.log('video started playing')
@@ -198,12 +209,20 @@ const PlayerPage = () => {
             playing={playing}
             volume={volume}
             handlePlay={handlePlay}
+            handlePlayPause={handlePlayPause}
             handleProgress={handleProgress}
             handleDuration={handleDuration}
             handleStart={handleStart}
             handleEnded={handleEnded}
           />
         )}
+        {/* {showPlayPauseAnimation && (
+          <PlayPauseAnimation
+            isPlaying={playing}
+            visible={showPlayPauseAnimation}
+            onAnimationComplete={handleAnimationComplete}
+          />
+        )} */}
       </div>
       <PlayerBottomBar
         playing={playing}

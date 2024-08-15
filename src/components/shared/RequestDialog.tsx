@@ -4,115 +4,37 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Divider, Loader, Paper, Text } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+import { useStreamingApi } from '@/hooks/useStreamApi'
+import { Loader, Paper, Text } from '@mantine/core'
 import { DialogDescription } from '@radix-ui/react-dialog'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from '../ui/button'
-
-import { streamResultAtom } from '@/context/atoms'
-import { validateJSON } from '@/utils'
-import { useAtomValue } from 'jotai/react'
 
 interface RequestDialogProps {
   videoId: string
-  setDialogOpen: (open: boolean) => void
-  loaderVisible: boolean
-  loaderVisibilityHandler: {
-    open: () => void
-    close: () => void
-    toggle: () => void
-  }
-}
-
-interface StreamMessageProps {
-  type: string
-  data: string | object
+  handleClose: () => void
 }
 
 const RequestDialog: React.FC<RequestDialogProps> = ({
   videoId,
-  setDialogOpen,
+  handleClose,
 }) => {
-  const [isStreaming, setIsStreaming] = useState(false)
-  const [streamMessages, setStreamMessages] = useState<StreamMessageProps[]>([])
-  const [updateMessages, setUpdateMessages] = useState<string[]>([])
-  const [accumulatedMessages, setAccumulatedMessages] = useState<
-    StreamMessageProps[]
-  >([])
+  const { isStreaming, updateMessages, resetStream } = useStreamingApi(videoId)
+
   useEffect(() => {
-    // Reset states when videoId changes
-    setIsStreaming(false)
-    setStreamMessages([])
-    setUpdateMessages([])
-    let isCancelled = false // Used to cancel the fetch when videoId changes
+    console.log('RequestDialog: videoId changed, resetting stream')
+    resetStream()
+  }, [videoId, resetStream])
 
-    if (!videoId || isStreaming) return
+  useEffect(() => {
+    console.log('RequestDialog: Streaming state changed:', isStreaming)
+  }, [isStreaming])
 
-    setIsStreaming(true)
+  useEffect(() => {
+    console.log('RequestDialog: Update messages changed:', updateMessages)
+  }, [updateMessages])
 
-    const handleDialogOpen = async () => {
-      try {
-        const response = await fetch(`http://127.0.0.1:8080/test`, {
-          method: 'POST',
-          body: JSON.stringify({ videoId }),
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (!response.ok) throw new Error('Network response was not ok')
-        if (!response.body)
-          throw new Error('ReadableStream not yet supported in this browser')
-        const reader = response.body.getReader()
-        const decoder = new TextDecoder()
-
-        while (true) {
-          if (isCancelled) {
-            reader.cancel()
-            break
-          }
-
-          const { done, value } = await reader.read()
-          if (done) break
-
-          const chunk = decoder.decode(value)
-          const lines = chunk.split('\n')
-
-          lines.forEach((line) => {
-            if (validateJSON(line)) {
-              const content = JSON.parse(line)
-
-              if (content['type'] == 'update' || content['type'] == 'data') {
-                setUpdateMessages((prev) => [...prev, content['data']])
-              }
-            }
-          })
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          console.error('Error:', error)
-        }
-      } finally {
-        if (!isCancelled) {
-          setIsStreaming(false)
-        }
-      }
-    }
-
-    handleDialogOpen()
-
-    // Cleanup function to cancel the fetch if videoId changes or component unmounts
-    return () => {
-      isCancelled = true
-      setIsStreaming(false)
-    }
-  }, [videoId, isStreaming])
-
-  const handleClose = () => {
-    setDialogOpen(false)
-  }
+  console.log('RequestDialog rendering, isStreaming:', isStreaming)
 
   return (
     <DialogContent
@@ -127,14 +49,13 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
 
       <div className='flex-between m-4 flex flex-col items-center'>
         <Text size='xl'>Video ID: {videoId}</Text>
+        {isStreaming && <Loader color='violet' type='dots' />}
         {updateMessages.map((message, index) => (
           <Paper key={index} className='m-2 p-4'>
             <Text size='sm'>{message}</Text>
           </Paper>
         ))}
-        {isStreaming && <Loader color='red' type='dots' />}
       </div>
-
       <DialogFooter>
         <Button
           type='button'

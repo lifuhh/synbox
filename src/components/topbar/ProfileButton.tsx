@@ -13,6 +13,7 @@ import PersonIcon from '@mui/icons-material/Person'
 import {
   CreditCard,
   LifeBuoy,
+  ListMusic,
   LogIn,
   LogOut,
   Settings,
@@ -46,6 +47,11 @@ const ProfileButtonDropdown = () => {
           <DropdownMenuItem className='cursor-pointer'>
             <User className='mr-2 h-4 w-4' />
             <span>Profile</span>
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem className='cursor-pointer'>
+            <ListMusic className='mr-2 h-4 w-4' />
+            <span>Playlist</span>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem className='cursor-pointer'>

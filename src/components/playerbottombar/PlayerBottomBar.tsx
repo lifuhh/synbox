@@ -112,7 +112,6 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     }
   }, [setIsFullscreen])
 
-  //TODO: Supposed to toggle playpause when user hits space - doesnt work - why? fix
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === ' ') {
@@ -129,6 +128,30 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [handlePlayPause])
+
+  //* Player controls icon animations
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(!isSettingsOpen)
+    // Add your logic here to open/close the settings dropdown
+  }
+
+  const handleButtonHover = (buttonId: string) => {
+    setHoveredButton(buttonId)
+  }
+
+  const handleButtonLeave = () => {
+    setHoveredButton(null)
+  }
+
+  const getButtonStyle = (buttonId: string) => {
+    return {
+      opacity: hoveredButton === buttonId ? 1 : 0.7,
+      transition: 'opacity 0.15s ease-in-out',
+    }
+  }
 
   return (
     // <div
@@ -157,15 +180,24 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       </div>
       <div className='flex items-center justify-between py-2 sm:mx-2'>
         <div className='flex items-center lg:mr-6'>
-          <Button className='rounded-full' size='icon' variant='ghost'>
-            <SkipPreviousIcon />
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onMouseEnter={() => handleButtonHover('previous')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('previous')}>
+            <SkipPreviousIcon sx={{ fontSize: 32 }} />
             <span className='sr-only'>Previous track</span>
           </Button>
           <Button
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handlePlayPause}>
+            onClick={handlePlayPause}
+            onMouseEnter={() => handleButtonHover('playPause')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('playPause')}>
             {playing ? (
               <PauseIcon sx={{ fontSize: 32 }} />
             ) : (
@@ -173,21 +205,33 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             )}
             <span className='sr-only'>Play</span>
           </Button>
-          <Button className='rounded-full' size='icon' variant='ghost'>
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onMouseEnter={() => handleButtonHover('next')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('next')}>
             <SkipNextIcon sx={{ fontSize: 32 }} />
             <span className='sr-only'>Next track</span>
           </Button>
 
-          <VolumeControl />
-          <div className='flex-between unselectable ml-2'>
-            <span className='hidden w-12 text-center sm:inline'>
-              {formattedPlayed}
-            </span>
-            <span className='hidden w-4 text-center sm:inline'>{'/'}</span>
-            <span className='hidden text-center sm:inline'>
-              {formattedDuration}
-            </span>
-          </div>
+          <VolumeControl
+            onMouseEnter={(buttonId) => handleButtonHover(buttonId)}
+            onMouseLeave={handleButtonLeave}
+            getButtonStyle={getButtonStyle}
+            timeDisplay={
+              <div className='flex-between unselectable ml-2'>
+                <span className='hidden w-12 text-center sm:inline'>
+                  {formattedPlayed}
+                </span>
+                <span className='hidden w-4 text-center sm:inline'>{'/'}</span>
+                <span className='hidden text-center sm:inline'>
+                  {formattedDuration}
+                </span>
+              </div>
+            }
+          />
         </div>
 
         <div className='ml-6 flex items-center justify-end gap-1 md:gap-2'>
@@ -196,7 +240,10 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleToggleLoop}>
+            onClick={handleToggleLoop}
+            onMouseEnter={() => handleButtonHover('loop')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('loop')}>
             {loop ? (
               <RepeatOnIcon sx={{ fontSize: 32 }} />
             ) : (
@@ -213,7 +260,10 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleToggleRomajiVisibility}>
+            onClick={handleToggleRomajiVisibility}
+            onMouseEnter={() => handleButtonHover('romaji')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('romaji')}>
             {romajiEnabled ? (
               <SubtitlesIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (
@@ -221,7 +271,19 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             )}
             <span className='sr-only'>Toggle Romaji</span>
           </Button>
-          <Button className='rounded-full' size='icon' variant='ghost'>
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onClick={handleSettingsClick}
+            onMouseEnter={() => handleButtonHover('settings')}
+            onMouseLeave={handleButtonLeave}
+            style={{
+              ...getButtonStyle('settings'),
+              transition:
+                'opacity 0.2s ease-in-out, transform 0.18s ease-in-out',
+              transform: isSettingsOpen ? 'rotate(30deg)' : 'rotate(0deg)',
+            }}>
             <SettingsIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             <span className='sr-only'>Settings</span>
           </Button>
@@ -230,7 +292,10 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleFullscreen}>
+            onClick={handleFullscreen}
+            onMouseEnter={() => handleButtonHover('fullscreen')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('fullscreen')}>
             {isFullscreen ? (
               <FullscreenExitIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (
