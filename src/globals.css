@@ -147,6 +147,7 @@
 
   /* TODO Used in TopBar & PlayerBottomBar - For animation when disappearing? Figure this out START */
   .controls {
+    z-index: 999;
     transition: opacity 1.5s ease;
     opacity: 1; /* Visible */
   }

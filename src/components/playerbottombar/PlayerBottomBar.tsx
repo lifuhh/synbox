@@ -30,8 +30,8 @@ import React from 'react'
 import VolumeControl from './VolumeControl'
 
 import { useAppContext } from '@/context/AppContext'
-import { fullscreenAtom } from '@/context/atoms'
-import { useAtom } from 'jotai'
+import { fullscreenAtom, mutedAtom } from '@/context/atoms'
+import { useAtom, useAtomValue } from 'jotai'
 
 interface PlayerBottomBarProps {
   playing: boolean
@@ -40,6 +40,7 @@ interface PlayerBottomBarProps {
   duration: number
   romajiEnabled: boolean
   handlePlay: () => void
+  handleInitMutedPlay: () => void
   handlePause: () => void
   handlePlayPause: () => void
   handleSeekMouseDown: () => void
@@ -61,6 +62,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   romajiEnabled,
   playerRef,
   handlePlay,
+  handleInitMutedPlay,
   handlePause,
   handlePlayPause,
   handleSeekMouseDown,
@@ -77,6 +79,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   const { playerControlsVisible, setBottomBarHeight } = useAppContext()
 
   const [isFullscreen, setIsFullscreen] = useAtom(fullscreenAtom)
+  const muted = useAtomValue(mutedAtom)
 
   const getCurrentPlayedPercentage = useCallback(() => {
     if (isNaN(played) || isNaN(duration) || duration === 0) {
@@ -194,7 +197,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handlePlayPause}
+            onClick={muted ? handleInitMutedPlay : handlePlayPause}
             onMouseEnter={() => handleButtonHover('playPause')}
             onMouseLeave={handleButtonLeave}
             style={getButtonStyle('playPause')}>

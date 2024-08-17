@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
   // console.log('PlayerPage re-rendered...')
-  const { volume } = useAppContext()
+  const { volume, playerOverlayVisibleHandler } = useAppContext()
   const [muted, setMuted] = useAtom(mutedAtom)
   const isFullscreen = useAtomValue(fullscreenAtom)
   // const playerControlsVisible = useAtomValue(playerControlVisibilityAtom)
@@ -23,6 +23,7 @@ const PlayerPage = () => {
   const [stateVideoId, setStateVideoId] = useState<string | null>(null)
 
   //* Video Player state
+  const [isPlayerReady, setIsPlayerReady] = useState(false)
   const [playing, setPlaying] = useState<boolean>(muted ? false : true)
   const [seeking, setSeeking] = useState<boolean>(false)
   const [played, setPlayed] = useState<number>(0)
@@ -51,6 +52,13 @@ const PlayerPage = () => {
     setLoaded(0)
   }
 
+  const handleInitMutedPlay = () => {
+    console.log('Init Muted Play clicked')
+    setMuted(false)
+    playerOverlayVisibleHandler.close()
+    handlePlay()
+  }
+
   const handlePause = useCallback(() => {
     // console.log('onPause')
     setPlaying(false)
@@ -58,6 +66,7 @@ const PlayerPage = () => {
 
   const handlePlay = useCallback(() => {
     setPlaying(true)
+    // playerOverlayVisibleHandler.close()
     if (muted) setMuted(false)
     // setTestStartTime(performance.now())
   }, [muted, setMuted])
@@ -187,14 +196,15 @@ const PlayerPage = () => {
         <title>Player Page | Synbox</title>
       </Helmet>
       {/* Lyrics Display Controller */}
-      {/* {lyricsVisibility ? ( */}
-      <LyricsDisplayOverlay
-        playerRef={playerRef}
-        romajiVisibility={romajiVisibility}
-        translationVisibility={translationVisibility}
-        playing={playing}
-        setPlaying={setPlaying}
-      />
+      {lyricsVisibility && isPlayerReady && (
+        <LyricsDisplayOverlay
+          playerRef={playerRef}
+          romajiVisibility={romajiVisibility}
+          translationVisibility={translationVisibility}
+          playing={playing}
+          setPlaying={setPlaying}
+        />
+      )}
       {/* //TODO: Added unselectable to youtube player, need to add at top level to play video if video is paused and user clicks on screen */}
       <div
         //${playing ? 'unselectable' : ''}
@@ -209,11 +219,13 @@ const PlayerPage = () => {
             playing={playing}
             volume={volume}
             handlePlay={handlePlay}
+            handleInitMutedPlay={handleInitMutedPlay}
             handlePlayPause={handlePlayPause}
             handleProgress={handleProgress}
             handleDuration={handleDuration}
             handleStart={handleStart}
             handleEnded={handleEnded}
+            setIsPlayerReady={setIsPlayerReady}
           />
         )}
         {/* {showPlayPauseAnimation && (
@@ -231,6 +243,7 @@ const PlayerPage = () => {
         duration={duration}
         playerRef={playerRef}
         romajiEnabled={romajiVisibility}
+        handleInitMutedPlay={handleInitMutedPlay}
         handlePlay={handlePlay}
         handlePause={handlePause}
         handlePlayPause={handlePlayPause}

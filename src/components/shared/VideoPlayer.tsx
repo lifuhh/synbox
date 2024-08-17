@@ -4,7 +4,7 @@ import { LoadingOverlay } from '@mantine/core'
 import { useAtom } from 'jotai'
 import { ForwardedRef, useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
-import PlayerOverlay from './PlayerOverlay'
+import PlayerMutedOverlay from './PlayerMutedOverlay'
 
 interface VideoPlayerProps {
   videoId: string // The video ID to play
@@ -16,7 +16,9 @@ interface VideoPlayerProps {
   handleProgress: () => void
   handleStart: () => void
   handleEnded: () => void
+  handleInitMutedPlay: () => void
   handlePlayPause: () => void
+  setIsPlayerReady: () => void
   playerRef: ForwardedRef<ReactPlayer>
   // Add methods for handling playback control (play, pause, seek)
   // and volume control (setVolume, toggleMute)
@@ -29,9 +31,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   handlePlay,
   handleEnded,
   handleStart,
+  handleInitMutedPlay,
   handlePlayPause,
   handleDuration,
   handleProgress,
+  setIsPlayerReady,
   volume,
   playerRef,
 }) => {
@@ -92,15 +96,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     if (playerRef.current.getInternalPlayer()) {
       setMuted(playerRef.current.getInternalPlayer().isMuted())
-      //? sync app muted state with player muted state
+      setIsPlayerReady(true) // Add this line
     }
-  }
-
-  const handleInitMutedPlay = () => {
-    console.log('Init Muted Play clicked')
-    setMuted(false)
-    playerOverlayVisibleHandler.close()
-    handlePlay()
   }
 
   const handleVideoEnded = () => {
@@ -118,9 +115,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       <LoadingOverlay
         visible={playerOverlayVisible}
         zIndex={40}
+        // elementProps={{ onClick: handleInitMutedPlay }}
         overlayProps={{ radius: 'sm', blur: 15 }}
         loaderProps={{
-          children: <PlayerOverlay handleInitMutedPlay={handleInitMutedPlay} />,
+          children: (
+            <PlayerMutedOverlay handleInitMutedPlay={handleInitMutedPlay} />
+          ),
         }}
       />
       <ReactPlayer

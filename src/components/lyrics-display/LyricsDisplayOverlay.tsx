@@ -50,7 +50,9 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     if (newVideoId) {
       setVideoId(newVideoId)
     }
-  }, [location])
+
+    if (!playerRef.current) return
+  }, [location, playerRef])
 
   //TODO: Fix display lyrics naturally and correctly - this is a hack (part A)
   const [dummyState, setDummyState] = useState(0)
@@ -215,25 +217,60 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     return content1.trim().toLowerCase() === content2.trim().toLowerCase()
   }
 
+  //TODO: remove after testing
+  useEffect(() => {
+    console.log('LyricsDisplay mounted')
+    return () => console.log('LyricsDisplay unmounted')
+  }, [])
+
+  useEffect(() => {
+    console.log('videoId changed:', videoId)
+  }, [videoId])
+
+  useEffect(() => {
+    console.log('testLyrics received:', testLyrics)
+  }, [testLyrics])
+
+  useEffect(() => {
+    console.log('lyricsArr updated:', lyricsArr)
+    console.log('currentIndex:', currentIndex)
+  }, [lyricsArr, currentIndex])
+
   return (
     <div
       className={`player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full`}
       style={{ height: getOverlayHeight }}>
+      {renderedLyrics.jp.length === 0 && <div>Loading lyrics...</div>}
       {/* {playing && ( */}
-      {true && (
+      <div
+        className={`lyric-container flex h-full w-full flex-col justify-end text-center `}>
+        {/* //TODO: Test code, remove after testing */}
         <div
-          className={`lyric-container flex h-full w-full flex-col justify-end text-center `}>
-          {/* //! Translation Toggle-able */}
-          {/* //? English */}
-          {translationVisibility &&
-            !isContentSame(currentLyric.eng, currentLyric.jp) && (
-              <div
-                className={`${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
-                {renderedLyrics.eng[currentIndex]}
-              </div>
-            )}
-          {/* //? Chinese */}
-          {/* {translationVisibility &&
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            background: 'white',
+            color: 'black',
+            zIndex: 9999,
+          }}>
+          Current Index: {currentIndex}
+          <br />
+          Lyrics Length: {lyricsArr.length}
+          <br />
+          Is Transitioning: {isTransitioning ? 'Yes' : 'No'}
+        </div>
+        {/* //! Translation Toggle-able */}
+        {/* //? English */}
+        {translationVisibility &&
+          !isContentSame(currentLyric.eng, currentLyric.jp) && (
+            <div
+              className={`${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
+              {renderedLyrics.eng[currentIndex]}
+            </div>
+          )}
+        {/* //? Chinese */}
+        {/* {translationVisibility &&
             !isContentSame(currentLyric.chi, currentLyric.jp) && (
               <LyricTextLine
                 key={`chi-${currentIndex}`}
@@ -242,15 +279,15 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
                 useBlur={false}
               />
             )} */}
-          {/* //! Main Lyrics */}
-          {renderedLyrics.jp[currentIndex] && (
-            <div
-              style={lyricsStyles[currentIndex]}
-              className={`!text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
-              {renderedLyrics.jp[currentIndex]}
-            </div>
-          )}
-          {/* <LyricTextLine
+        {/* //! Main Lyrics */}
+        {renderedLyrics.jp[currentIndex] && (
+          <div
+            style={lyricsStyles[currentIndex]}
+            className={`!text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
+            {renderedLyrics.jp[currentIndex]}
+          </div>
+        )}
+        {/* <LyricTextLine
             key={`jp-${currentIndex}`}
             className={`!font-outline-4 mb-0 !text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}
             htmlContent={currentLyric.jp}
@@ -259,16 +296,16 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
             useBlur={shouldUseBlurJp}
           /> */}
 
-          {/* //! Romaji Toggleable */}
-          {romajiVisibility &&
-            !isContentSame(currentLyric.romaji, currentLyric.jp) && (
-              <div
-                className={`${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
-                {renderedLyrics.romaji[currentIndex]}
-              </div>
-            )}
-        </div>
-      )}
+        {/* //! Romaji Toggleable */}
+        {romajiVisibility &&
+          !isContentSame(currentLyric.romaji, currentLyric.jp) && (
+            <div
+              className={`${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
+              {renderedLyrics.romaji[currentIndex]}
+            </div>
+          )}
+      </div>
+      ){/* } */}
     </div>
   )
 }

@@ -65,6 +65,8 @@ export const useGetLyricsBySongId = (songId: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_LYRICS_BY_SONG_ID, songId],
     enabled: !!songId,
+    staleTime: 1000 * 60 * 60, // Keep the data fresh indefinitely
+    gcTime: 1000 * 60 * 60, // Keep the data cached for 1 hour
     queryFn: () => getSongLyricsById(songId),
   })
 }

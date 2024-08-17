@@ -1,6 +1,7 @@
 import RequestDialog from '@/components/shared/RequestDialog'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import BuggyCounter from '@/test_stuff/BuggyCounter'
 import { Divider } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useState } from 'react'
@@ -47,6 +48,7 @@ const TestRequestPage = () => {
                 <Button variant={'outline'}>Four</Button>
                 <Button variant={'ghost'}>Ghost</Button>
                 <Button variant={'link'}>Link</Button>
+                <BuggyCounter />
               </div>
             </div>
           </DialogTrigger>

@@ -3,6 +3,7 @@ import { atom } from 'jotai'
 export const fullscreenAtom = atom(false)
 export const playerControlVisibilityAtom = atom(false)
 export const mutedAtom = atom(true)
+// export const playerInitVisibilityAtom = atom(false)
 
 export const lyricsVisibilityAtom = atom(true)
 export const romajiVisibilityAtom = atom(true)

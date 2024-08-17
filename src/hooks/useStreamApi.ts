@@ -4,12 +4,18 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 export const useStreamingApi = (videoId: string) => {
   const [isStreaming, setIsStreaming] = useState(false)
   const [updateMessages, setUpdateMessages] = useState<string[]>([])
+  const [vidInfo, setVidInfo] = useState<any>(null)
+  const [showVidInfo, setShowVidInfo] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const isMounted = useRef(true)
 
   const resetStream = useCallback(() => {
     if (isMounted.current) {
       setIsStreaming(false)
       setUpdateMessages([])
+      setVidInfo(null)
+      setShowVidInfo(false)
+      setError(null)
     }
   }, [])
 
@@ -25,11 +31,12 @@ export const useStreamingApi = (videoId: string) => {
     const fetchData = async () => {
       if (isMounted.current) {
         setIsStreaming(true)
+        setError(null)
       }
       try {
-        const response = await fetch(`http://127.0.0.1:8080/test`, {
+        const response = await fetch(`http://127.0.0.1:8080/validate`, {
           method: 'POST',
-          body: JSON.stringify({ videoId }),
+          body: JSON.stringify({ id: videoId }),
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -62,6 +69,21 @@ export const useStreamingApi = (videoId: string) => {
                 if (isMounted.current) {
                   setUpdateMessages((prev) => [...prev, content['data']])
                 }
+              } else if (content['type'] === 'vid_info') {
+                if (isMounted.current) {
+                  setVidInfo(content['data'])
+                  setTimeout(() => {
+                    if (isMounted.current) {
+                      setShowVidInfo(true)
+                      setIsStreaming(false)
+                    }
+                  }, 1000)
+                }
+              } else if (content['type'] === 'error') {
+                if (isMounted.current) {
+                  setError(content['data'])
+                  setIsStreaming(false)
+                }
               }
             }
           })
@@ -69,6 +91,8 @@ export const useStreamingApi = (videoId: string) => {
       } catch (error) {
         if (isMounted.current) {
           console.error('Error:', error)
+          setError('An unexpected error occurred')
+          setIsStreaming(false)
         }
       } finally {
         if (isMounted.current) {
@@ -80,5 +104,12 @@ export const useStreamingApi = (videoId: string) => {
     fetchData()
   }, [videoId])
 
-  return { isStreaming, updateMessages, resetStream }
+  return {
+    isStreaming,
+    updateMessages,
+    vidInfo,
+    showVidInfo,
+    error,
+    resetStream,
+  }
 }

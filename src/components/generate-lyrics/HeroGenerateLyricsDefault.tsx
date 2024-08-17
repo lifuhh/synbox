@@ -1,8 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
 import { YouTubeUrlOrIdValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
 import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import RequestDialog from '../shared/RequestDialog'
 import { Spotlight } from '../ui/Spotlight'
 import { Dialog, DialogTrigger } from '../ui/dialog'
@@ -21,7 +23,12 @@ const HeroGenerateLyricsDefault = ({
   const [errorMessage, setErrorMessage] = useState('')
   const [validationSuccess, setValidationSuccess] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
+
   const [extractedVideoId, setExtractedVideoId] = useState('')
+  const navigate = useNavigate()
+
+  const { data: existingLyrics, isLoading: isCheckingLyrics } =
+    useGetLyricsBySongId(extractedVideoId)
 
   const previousInputRef = useRef<string | null>(null)
 
@@ -60,11 +67,23 @@ const HeroGenerateLyricsDefault = ({
         setDialogOpen(false)
         setTimeout(() => {
           setInputVideoId(extractedVideoId)
-          setDialogOpen(true)
+          if (existingLyrics) {
+            navigate(`/v/${extractedVideoId}`, {
+              state: { videoId: extractedVideoId },
+            })
+          } else {
+            setDialogOpen(true)
+          }
         }, 0)
       } else {
         setInputVideoId(extractedVideoId)
-        setDialogOpen(true)
+        if (existingLyrics) {
+          navigate(`/v/${extractedVideoId}`, {
+            state: { videoId: extractedVideoId },
+          })
+        } else {
+          setDialogOpen(true)
+        }
       }
       previousInputRef.current = inputValue
     }
@@ -117,11 +136,19 @@ const HeroGenerateLyricsDefault = ({
             <DialogTrigger asChild>
               <Button
                 onClick={inputValue?.length > 0 ? handleSubmit : () => {}}
-                disabled={errorMessage && errorMessage != '' ? true : false}
+                disabled={
+                  errorMessage && errorMessage != ''
+                    ? true
+                    : false || isCheckingLyrics
+                }
                 variant='default'
                 role='combobox'
                 className='w-1/3 border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20 md:w-4/12 lg:w-1/4'>
-                Try Now!
+                {isCheckingLyrics
+                  ? 'Checking...'
+                  : existingLyrics
+                    ? 'Watch Now'
+                    : 'Try Now'}
               </Button>
             </DialogTrigger>
             <RequestDialog
