@@ -218,23 +218,23 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   }
 
   //TODO: remove after testing
-  useEffect(() => {
-    console.log('LyricsDisplay mounted')
-    return () => console.log('LyricsDisplay unmounted')
-  }, [])
+  // useEffect(() => {
+  //   console.log('LyricsDisplay mounted')
+  //   return () => console.log('LyricsDisplay unmounted')
+  // }, [])
 
-  useEffect(() => {
-    console.log('videoId changed:', videoId)
-  }, [videoId])
+  // useEffect(() => {
+  //   console.log('videoId changed:', videoId)
+  // }, [videoId])
 
-  useEffect(() => {
-    console.log('testLyrics received:', testLyrics)
-  }, [testLyrics])
+  // useEffect(() => {
+  //   console.log('testLyrics received:', testLyrics)
+  // }, [testLyrics])
 
-  useEffect(() => {
-    console.log('lyricsArr updated:', lyricsArr)
-    console.log('currentIndex:', currentIndex)
-  }, [lyricsArr, currentIndex])
+  // useEffect(() => {
+  //   console.log('lyricsArr updated:', lyricsArr)
+  //   console.log('currentIndex:', currentIndex)
+  // }, [lyricsArr, currentIndex])
 
   return (
     <div
@@ -245,7 +245,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
       <div
         className={`lyric-container flex h-full w-full flex-col justify-end text-center `}>
         {/* //TODO: Test code, remove after testing */}
-        <div
+        {/* <div
           style={{
             position: 'absolute',
             top: 0,
@@ -259,7 +259,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
           Lyrics Length: {lyricsArr.length}
           <br />
           Is Transitioning: {isTransitioning ? 'Yes' : 'No'}
-        </div>
+        </div> */}
         {/* //! Translation Toggle-able */}
         {/* //? English */}
         {translationVisibility &&
