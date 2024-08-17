@@ -1,0 +1,29 @@
+< One dialog design >
+1. click => check db for url >> if lyrics exist, auto redirect after X seconds. If not, check db for vid IDs with issues. If exist, display "working on it" or smth, suggest try another url or browse existing vids, display close button.
+
+2. if doesnt exist => validate url >> if fail >> return / report issue button
+
+< Different dialog design >
+3. validate url >> if pass >> send transcribe request >> display 
+
+Errors:
+- Failed request > Retry
+- Gibberish transcription > Retry
+- If retry still fail, display prompt for check network / report issue -> submit & close, add vid id to database
+
+>>> Regenerate button / report issue button
+
+4. Transcription successful >> Receive full json of .srt from BE >> Display full lyrics in cross-able lines if choose "Edit", else "Next"
+
+5. show 4 sections of stream (auto navigate) -- romaji > kanji > eng > chi
+Users can click through them after they're done, "retry" button enabled when line diff / allow "submit issue" in each tab as well
+
+6. Submit button or smth >> upload to BE >> show a uploading state >> after done allow user to navigate to video (probably same design as first step if data alr in db)
+
+
+
+
+Others
+> Add indicator for whether lyrics are already available on every card w/ tooltip
+> Fix tailwind config css colors for shadcn common classes
+> need an API for retrieving thumbnail, title, description, and some stuff

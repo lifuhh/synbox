@@ -1,38 +1,51 @@
+import { useAppContext } from '@/context/AppContext'
+import { mutedAtom } from '@/context/atoms'
 import VolumeMuteIcon from '@mui/icons-material/VolumeMute'
 import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
-
-import { useAppContext } from '@/context/AppContext'
-import { useCallback, useState } from 'react'
+import { useAtom } from 'jotai'
+import React, { useCallback, useState } from 'react'
 import { Button } from '../ui/button'
 import { Slider } from '../ui/slider'
 
-const VolumeControl = () => {
-  const { muted, setPlayerMuted, volume, setVolume } = useAppContext()
+const VolumeControl = ({
+  onMouseEnter,
+  onMouseLeave,
+  getButtonStyle,
+  timeDisplay,
+}) => {
+  const { volume, setVolume } = useAppContext()
+  const [muted, setMuted] = useAtom(mutedAtom)
+  const [isHovering, setIsHovering] = useState(false)
 
   const handleToggleMuted = useCallback(() => {
-    setPlayerMuted(!muted)
-  }, [muted, setPlayerMuted])
+    setMuted(!muted)
+  }, [muted, setMuted])
 
   const handleVolumeChange = useCallback(
     (value: number) => {
-      // setMuted(value === 0)
       setVolume(value)
     },
     [setVolume],
   )
-  const [isHovering, setIsHovering] = useState<boolean>(false)
 
   return (
     <div
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-      className='flex-around cursor-pointer'>
+      onMouseEnter={() => {
+        setIsHovering(true)
+        onMouseEnter('volume')
+      }}
+      onMouseLeave={() => {
+        setIsHovering(false)
+        onMouseLeave()
+      }}
+      className='relative flex cursor-pointer items-center'>
       <Button
         className='rounded-full'
         size='icon'
         variant='ghost'
-        onClick={handleToggleMuted}>
+        onClick={handleToggleMuted}
+        style={getButtonStyle('volume')}>
         {muted ? (
           <VolumeOffIcon sx={{ fontSize: 32 }} />
         ) : volume == 0 ? (
@@ -40,22 +53,29 @@ const VolumeControl = () => {
         ) : (
           <VolumeUpIcon sx={{ fontSize: 32 }} />
         )}
-        <span className='sr-only'>Shuffle</span>
+        <span className='sr-only'>Volume</span>
       </Button>
-      {isHovering && (
-        <Slider
-          defaultValue={[0]}
-          min={0}
-          max={1}
-          step={0.01}
-          onValueChange={(value) => handleVolumeChange(value[0])}
-          className={` duration-5000 z-10 w-32 transform transition-opacity ${
-            isHovering ? 'opacity-100' : 'opacity-0'
-          }`}
-          value={[volume]}
-        />
-      )}
+      <div className='flex items-center'>
+        <div
+          className={`overflow-visible transition-all duration-300 ease-in-out ${
+            isHovering ? 'mr-2 w-32 opacity-100' : 'w-0 opacity-0'
+          }`}>
+          <Slider
+            defaultValue={[0]}
+            min={0}
+            max={1}
+            step={0.01}
+            onValueChange={(value) => handleVolumeChange(value[0])}
+            className='volume-slider w-32'
+            value={[volume]}
+          />
+        </div>
+        <div className='transition-all duration-300 ease-in-out'>
+          {timeDisplay}
+        </div>
+      </div>
     </div>
   )
 }
+
 export default VolumeControl

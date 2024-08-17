@@ -2,29 +2,33 @@ import { Table } from '@mantine/core'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 
 import { Button } from '@/components/ui/button'
-import { MouseEventHandler } from 'react'
+import { useOverflow } from '@/hooks/useOverflow'
+import { MouseEventHandler, RefObject, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-//TODO: can probably replace this component with a card & list items instead
-const PopularSongsTable = () => {
+interface TableSongInfo {
+  title: string
+  vidURL: string
+}
+
+const PopularSongsTable: React.FC = () => {
   const navigate = useNavigate()
 
-  const test_elements = [
-    { position: 1, mass: 12.011, symbol: 'C', name: 'Carbon' },
-    { position: 7, mass: 14.007, symbol: 'N', name: 'Nitrogen' },
-    { position: 39, mass: 88.906, symbol: 'Y', name: 'Yttrium' },
-    { position: 56, mass: 137.33, symbol: 'Ba', name: 'Barium' },
-    { position: 58, mass: 140.12, symbol: 'Ce', name: 'Cerium' },
-    { position: 6, mass: 12.011, symbol: 'Caa', name: 'Carbon' },
-    { position: 7, mass: 14.007, symbol: 'Nbb', name: 'Nitrogen' },
-    { position: 39, mass: 88.906, symbol: 'Ycc', name: 'Yttrium' },
-    { position: 56, mass: 137.33, symbol: 'Bedea', name: 'Barium' },
-    { position: 58, mass: 140.12, symbol: 'Cegdd', name: 'Cerium' },
-    { position: 6, mass: 12.011, symbol: 'X', name: 'Carbon' },
-    { position: 7, mass: 14.007, symbol: 'D', name: 'Nitrogen' },
-    { position: 39, mass: 88.906, symbol: 'ADGDAG', name: 'Yttrium' },
-    { position: 56, mass: 137.33, symbol: 'zzxv', name: 'Barium' },
-    { position: 58, mass: 140.12, symbol: 'dgadga', name: 'Cerium' },
+  const test_elements: TableSongInfo[] = [
+    {
+      // TODO: Fix the table being stretched out and not able to use marquee issue some day
+      title:
+        // 'YOASOBI - 優しい彗星 / THE FIRST TAKE 1abcdefg hijklmad nadgadgad adgda afda asfas as asf sa fas fasf asf as fas fas',
+        'YOASOBI - 優しい彗星 / THE FIRST TAKE1',
+      vidURL: 'EaA6NlH80wg',
+    },
+    { title: 'YOASOBI - 優しい彗星 / THE FIRST TAKE2', vidURL: 'EaA6NlH80wg' },
+    { title: 'YOASOBI - 優しい彗星 / THE FIRST TAKE3', vidURL: 'EaA6NlH80wg' },
+    { title: 'YOASOBI - 優しい彗星 / THE FIRST TAKE4', vidURL: 'EaA6NlH80wg' },
+    { title: 'YOASOBI - 優しい彗星 / THE FIRST TAKE5', vidURL: 'EaA6NlH80wg' },
+    { title: 'YOASOBI - 優しい彗星 / THE FIRST TAKE6', vidURL: 'EaA6NlH80wg' },
+    { title: 'YOASOBI - 優しい彗星 / THE FIRST TAKE7', vidURL: 'EaA6NlH80wg' },
+    { title: 'YOASOBI - 優しい彗星 / THE FIRST TAKE8', vidURL: 'EaA6NlH80wg' },
   ]
 
   const handleTestRowClick =
@@ -33,50 +37,69 @@ const PopularSongsTable = () => {
       navigate(`/v/${videoId}`, { state: { videoId: videoId } })
     }
 
-  const test_rows = test_elements.map((element) => {
-    return (
-      <Table.Tr key={element.symbol}>
-        <Table.Td>
-          {/* //TODO: fix containment issue */}
-          <div
-            className='flex flex-between align-middle playlist-item'
-            key={element.mass}>
-            <div className='whitespace-nowrap overflow-hidden max-w-[300px] marquee unselectable'>
-              <span className=''>YOASOBI - 優しい彗星 / THE FIRST TAKE</span>
-            </div>
-            <Button
-              variant='outline'
-              size='icon'
-              className=''
-              onClick={handleTestRowClick('EaA6NlH80wg')}>
-              <PlayArrowIcon className='h-4 w-4' />
-            </Button>
-          </div>
-        </Table.Td>
-        {/* <Table.Td>{element.mass}</Table.Td> */}
-      </Table.Tr>
-    )
-  })
-
   return (
-    <div className=' w-full mx-auto lg:ml-6 lg:w-5/12 xl:w-4/12 mt-10 lg:mt-2 h-96 rounded-md overflow-y-auto custom-scrollbar'>
+    <div className='custom-scrollbar mx-auto mt-10 h-96 w-full overflow-y-auto rounded-md lg:ml-6 lg:mt-2 lg:w-5/12 xl:w-4/12'>
       <Table
         stickyHeader
         stickyHeaderOffset={0}
         verticalSpacing='xs'
         highlightOnHover
-        className=' bg-dark-3 bg-opacity-15 '>
-        <Table.Thead className=' bg-dark-4 pointer-events-none'>
+        className='w-full bg-dark-3 bg-opacity-15'>
+        <Table.Thead className='pointer-events-none bg-primary'>
           <Table.Tr>
-            <Table.Th className='text-center'>
+            <Table.Th className='py-3 text-center'>
               <p>Top 50</p>
             </Table.Th>
           </Table.Tr>
         </Table.Thead>
-        <Table.Tbody className=' '>{test_rows}</Table.Tbody>
-        <Table.Caption>Source: Apple Music Charts</Table.Caption>
+        <Table.Tbody>
+          {test_elements.map((song, index) => (
+            <SongRow
+              key={`${song.title}-${index}`}
+              song={song}
+              onPlayClick={handleTestRowClick}
+            />
+          ))}
+        </Table.Tbody>
+        <Table.Caption>Source: YouTube Music Charts</Table.Caption>
       </Table>
     </div>
   )
 }
+
+interface SongRowProps {
+  song: TableSongInfo
+  onPlayClick: (videoId: string) => MouseEventHandler<HTMLButtonElement>
+}
+
+const SongRow: React.FC<SongRowProps> = ({ song, onPlayClick }) => {
+  const textRef = useRef<HTMLSpanElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useOverflow(textRef, containerRef, 'marquee')
+
+  return (
+    <Table.Tr className='playlist-item'>
+      <Table.Td>
+        <div className='flex max-w-full items-center justify-between'>
+          <div
+            ref={containerRef}
+            className='marquee mr-2 w-full overflow-hidden'>
+            <span ref={textRef} className='inline-block overflow-hidden'>
+              {song.title}
+            </span>
+          </div>
+          <Button
+            variant={'outline'}
+            size='icon'
+            className='flex-shrink-0 bg-secondary'
+            onClick={onPlayClick(song.vidURL)}>
+            <PlayArrowIcon className='h-4 w-4' />
+          </Button>
+        </div>
+      </Table.Td>
+    </Table.Tr>
+  )
+}
+
 export default PopularSongsTable

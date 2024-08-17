@@ -22,11 +22,11 @@ const CommandSearch: React.FC<CommandSearchProps> = ({ isVideoPlayer }) => {
   const [open, setOpen] = useState(false)
 
   const handleCommandItemClick = () => {
-    console.log('waw clicked command')
+    // console.log('waw clicked command')
   }
 
   const handleCommandItemNavigate = (videoId: string) => {
-    console.log('waw clicked command item: ' + videoId)
+    // console.log('waw clicked command item: ' + videoId)
   }
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const CommandSearch: React.FC<CommandSearchProps> = ({ isVideoPlayer }) => {
           aria-expanded={open}
           className={` ${
             isVideoPlayer ? 'w-[40px]' : 'w-[170px] md:w-[250px]'
-          } justify-between px-2 border-primary hover:border-white hover:bg-dark-3/80`}
+          } justify-between border-primary px-2 hover:border-white hover:bg-dark-3/80`}
           onClick={() => setOpen((open) => !open)}>
           <div>
             <SearchIcon className={``} />
@@ -58,7 +58,7 @@ const CommandSearch: React.FC<CommandSearchProps> = ({ isVideoPlayer }) => {
 
           <div
             dir='ltr'
-            className={`align-middle pb-1  ${
+            className={`pb-1 align-middle  ${
               isVideoPlayer ? 'hidden' : 'hidden md:block'
             }`}>
             <Kbd className='px-2'>⌘</Kbd> + <Kbd className='px-2 '>K</Kbd>

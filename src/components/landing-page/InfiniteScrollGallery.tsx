@@ -1,9 +1,10 @@
 import { cn } from '@/utils/cn'
+
 import { AnimatePresence, motion } from 'framer-motion'
-import { debounce } from 'lodash'
-import { MouseEventHandler, memo, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+// import { debounce } from 'lodash'
 import { useOverflow } from '@/hooks/useOverflow'
+import { MouseEventHandler, memo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const InfiniteScrollGallery = ({
   items,
@@ -110,7 +111,9 @@ export const CardTitle = memo(
           'marquee mb-4 font-bold tracking-wide text-zinc-100',
           className,
         )}>
-        <span ref={textRef}>{children}</span>
+        <span ref={textRef} className='whitespace-nowrap'>
+          {children}
+        </span>
       </div>
     )
   },

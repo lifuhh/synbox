@@ -1,22 +1,29 @@
-import LyricsDisplay from '@/components/lyrics-display/LyricsDisplayOverlay'
-import { MemoizedPlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
+import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverlay'
+import { MemoizedPlayerBottomBar as PlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
+import PlayPauseAnimation from '@/components/shared/PlayPauseAnimation'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
+import { fullscreenAtom, mutedAtom } from '@/context/atoms'
+import { useAtom, useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
 import { useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
-  console.log('PlayerPage re-rendered...')
-  const { playerControlsVisible, muted, setPlayerMuted, volume, isFullscreen } =
-    useAppContext()
+  // console.log('PlayerPage re-rendered...')
+  const { volume, playerOverlayVisibleHandler } = useAppContext()
+  const [muted, setMuted] = useAtom(mutedAtom)
+  const isFullscreen = useAtomValue(fullscreenAtom)
+  // const playerControlsVisible = useAtomValue(playerControlVisibilityAtom)
 
   //* Video ID state
   const { videoId } = useParams() // Extract videoId from route parameters
   const [stateVideoId, setStateVideoId] = useState<string | null>(null)
 
   //* Video Player state
+  const [isPlayerReady, setIsPlayerReady] = useState(false)
   const [playing, setPlaying] = useState<boolean>(muted ? false : true)
   const [seeking, setSeeking] = useState<boolean>(false)
   const [played, setPlayed] = useState<number>(0)
@@ -28,9 +35,11 @@ const PlayerPage = () => {
   const testRafId = useRef<number>(0)
   const testCounter = useRef<number>(0)
 
-  //* Lyrics-related state
-  const [romajiEnabled, setRomajiEnabled] = useState<boolean>(true)
+  //* Lyrics-display related state
+  const [romajiVisibility, setRomajiVisibility] = useState<boolean>(true)
   const [lyricsVisibility, setLyricsVisibility] = useState<boolean>(true)
+  const [translationVisibility, setTranslationVisibility] =
+    useState<boolean>(true)
 
   //TODO: wrong - fix this
   useEffect(() => {
@@ -43,37 +52,67 @@ const PlayerPage = () => {
     setLoaded(0)
   }
 
+  const handleInitMutedPlay = () => {
+    console.log('Init Muted Play clicked')
+    setMuted(false)
+    playerOverlayVisibleHandler.close()
+    handlePlay()
+  }
+
+  const handlePause = useCallback(() => {
+    // console.log('onPause')
+    setPlaying(false)
+  }, [])
+
+  const handlePlay = useCallback(() => {
+    setPlaying(true)
+    // playerOverlayVisibleHandler.close()
+    if (muted) setMuted(false)
+    // setTestStartTime(performance.now())
+  }, [muted, setMuted])
+
+  const [showPlayPauseAnimation, setShowPlayPauseAnimation] = useState(false)
   const handlePlayPause = useCallback(() => {
+    setShowPlayPauseAnimation(true)
     setPlaying(!playing)
   }, [playing])
+
+  const handleAnimationComplete = useCallback(() => {
+    setShowPlayPauseAnimation(false)
+  }, [])
+
+  // const handlePlayPause = useCallback(() => {
+  //   setPlaying(!playing)
+  // }, [playing])
 
   const handleToggleLoop = useCallback(() => {
     setLoop(!loop)
   }, [loop]) // Add dependencies if any
 
-  const handleToggleRomajiDisplay = useCallback(() => {
-    setRomajiEnabled((prevRomajiEnabled) => !prevRomajiEnabled)
+  const handleToggleRomajiVisibility = useCallback(() => {
+    setRomajiVisibility((prevRomajiEnabled) => !prevRomajiEnabled)
+  }, [])
+
+  const handleToggleTranslationVisibility = useCallback(() => {
+    setTranslationVisibility(
+      (prevTranslationVisibility) => !prevTranslationVisibility,
+    )
   }, [])
 
   const handleToggleLyricsVisibility = useCallback((visibility: boolean) => {
     setLyricsVisibility(visibility)
   }, [])
 
-  const handlePlay = useCallback(() => {
-    console.log('onPlay')
-    setPlaying(true)
-    // setTestStartTime(performance.now())
-  }, [])
-
-  //? requestAnimationFrame tester - to change to use accordingly for lyrics
+  //? `requestAnimationFrame` tester - to change to use accordingly for lyrics
   useEffect(() => {
     //! RAF gives a timestamp actually
     const testAnimationFrameCallback = (timestamp: number) => {
       // console.log(timestamp)
       testCounter.current++
       if (playerRef.current) {
-        const videoPlayedTime = playerRef.current.getCurrentTime().toFixed(3)
-        if (testCounter.current % 60 === 0) console.log({ videoPlayedTime })
+        //? Test code for getting current time every 60 frames in console
+        // const videoPlayedTime = playerRef.current.getCurrentTime().toFixed(3)
+        // if (testCounter.current % 60 === 0) console.log({ videoPlayedTime })
 
         testRafId.current = requestAnimationFrame(testAnimationFrameCallback)
       }
@@ -90,15 +129,10 @@ const PlayerPage = () => {
     }
   }, [playing])
 
-  const handlePause = useCallback(() => {
-    console.log('onPause')
-    setPlaying(false)
-  }, [])
-
   const handleStart = useCallback(() => {
-    console.log('video started playing')
+    // console.log('video started playing')
     setPlaying(true)
-    console.log(performance.now())
+    // console.log(performance.now())
   }, [])
 
   const handleSeekChange = useCallback(
@@ -132,13 +166,8 @@ const PlayerPage = () => {
     if (!playerRef.current) return null
 
     const secondsLapsed = playerRef.current.getCurrentTime()
-
     //? This fires every second
-    // console.log({ secondsLapsed })
-
     const curPlayed = Math.floor(parseInt(secondsLapsed.toFixed(0)))
-
-    // console.log('This is handle progress + curPlayed: + ' + curPlayed)
 
     setPlayed(curPlayed)
     // setLoaded(loaded)
@@ -146,23 +175,42 @@ const PlayerPage = () => {
 
   //* When ended, go to next track [to be implemented]
   const handleEnded = useCallback(() => {
-    console.log('onEnded')
+    // console.log('onEnded')
     setPlaying(loop)
   }, [loop])
 
   const handleDuration = useCallback((duration: number) => {
-    console.log('onDuration', duration)
+    // console.log('onDuration', duration)
     setDuration(duration)
   }, [])
 
+  const handlePlayerPageClick = () => {
+    console.log('Handled player page click')
+    handlePlayPause()
+    if (muted) setMuted(false)
+  }
+
   return (
     <>
+      <Helmet>
+        <title>Player Page | Synbox</title>
+      </Helmet>
       {/* Lyrics Display Controller */}
-      {lyricsVisibility ? <LyricsDisplay romajiEnabled={romajiEnabled} /> : ''}
+      {lyricsVisibility && isPlayerReady && (
+        <LyricsDisplayOverlay
+          playerRef={playerRef}
+          romajiVisibility={romajiVisibility}
+          translationVisibility={translationVisibility}
+          playing={playing}
+          setPlaying={setPlaying}
+        />
+      )}
+      {/* //TODO: Added unselectable to youtube player, need to add at top level to play video if video is paused and user clicks on screen */}
       <div
-        className={`relative aspect-video h-full w-full border-2  border-primary border-opacity-5 ${
-          playerControlsVisible ? '' : 'cursor-none'
-        } ${isFullscreen ? 'mt-14' : ''} `}>
+        //${playing ? 'unselectable' : ''}
+        className={`
+        
+        relative aspect-video h-full w-full border-2 border-primary border-opacity-5 ${isFullscreen ? 'mt-14' : ''} `}>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}
@@ -170,22 +218,32 @@ const PlayerPage = () => {
             loop={loop}
             playing={playing}
             volume={volume}
-            muted={muted}
             handlePlay={handlePlay}
+            handleInitMutedPlay={handleInitMutedPlay}
+            handlePlayPause={handlePlayPause}
             handleProgress={handleProgress}
             handleDuration={handleDuration}
             handleStart={handleStart}
             handleEnded={handleEnded}
+            setIsPlayerReady={setIsPlayerReady}
           />
         )}
+        {/* {showPlayPauseAnimation && (
+          <PlayPauseAnimation
+            isPlaying={playing}
+            visible={showPlayPauseAnimation}
+            onAnimationComplete={handleAnimationComplete}
+          />
+        )} */}
       </div>
-      <MemoizedPlayerBottomBar
+      <PlayerBottomBar
         playing={playing}
         loop={loop}
         played={played}
         duration={duration}
         playerRef={playerRef}
-        romajiEnabled={romajiEnabled}
+        romajiEnabled={romajiVisibility}
+        handleInitMutedPlay={handleInitMutedPlay}
         handlePlay={handlePlay}
         handlePause={handlePause}
         handlePlayPause={handlePlayPause}
@@ -194,7 +252,8 @@ const PlayerPage = () => {
         handleSeekMouseUp={handleSeekMouseUp}
         handleProgress={handleProgress}
         handleToggleLoop={handleToggleLoop}
-        handleToggleRomajiDisplay={handleToggleRomajiDisplay}
+        handleToggleRomajiVisibility={handleToggleRomajiVisibility}
+        handleToggleTranslationVisibility={handleToggleTranslationVisibility}
         handleToggleLyricsVisibility={handleToggleLyricsVisibility}
       />
     </>

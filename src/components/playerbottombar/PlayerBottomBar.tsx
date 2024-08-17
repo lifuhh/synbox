@@ -7,8 +7,11 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
+  useState,
 } from 'react'
 import ReactPlayer from 'react-player'
+import screenfull from 'screenfull'
 import LyricsDropdownButton from '../lyrics-display/LyricsDropdownButton'
 
 import PauseIcon from '@mui/icons-material/Pause'
@@ -27,7 +30,8 @@ import React from 'react'
 import VolumeControl from './VolumeControl'
 
 import { useAppContext } from '@/context/AppContext'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { fullscreenAtom, mutedAtom } from '@/context/atoms'
+import { useAtom, useAtomValue } from 'jotai'
 
 interface PlayerBottomBarProps {
   playing: boolean
@@ -36,6 +40,7 @@ interface PlayerBottomBarProps {
   duration: number
   romajiEnabled: boolean
   handlePlay: () => void
+  handleInitMutedPlay: () => void
   handlePause: () => void
   handlePlayPause: () => void
   handleSeekMouseDown: () => void
@@ -43,9 +48,10 @@ interface PlayerBottomBarProps {
   handleSeekMouseUp: (e: MouseEvent<HTMLInputElement>) => void
   handleProgress: (state: { played: number; loaded: number }) => void
   handleToggleLoop: () => void
-  handleToggleRomajiDisplay: () => void
+  handleToggleRomajiVisibility: () => void
+  handleToggleTranslationVisibility: () => void
   handleToggleLyricsVisibility: (visibility: boolean) => void
-  playerRef: ForwardedRef<ReactPlayer>
+  playerRef: React.MutableRefObject<ReactPlayer | null>
 }
 
 const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
@@ -56,6 +62,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   romajiEnabled,
   playerRef,
   handlePlay,
+  handleInitMutedPlay,
   handlePause,
   handlePlayPause,
   handleSeekMouseDown,
@@ -63,15 +70,22 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleSeekMouseUp,
   handleProgress,
   handleToggleLoop,
-  handleToggleRomajiDisplay,
+  handleToggleRomajiVisibility,
+  handleToggleTranslationVisibility,
   handleToggleLyricsVisibility,
 }) => {
-  console.log('Player Bottom Bar re-rendered...')
-  const { playerControlsVisible, isFullscreen, setIsFullscreen } =
-    useAppContext()
-  const location = useLocation()
+  const bottomBarRef = useRef<HTMLDivElement>(null)
+  // console.log('Player Bottom Bar re-rendered...')
+  const { playerControlsVisible, setBottomBarHeight } = useAppContext()
+
+  const [isFullscreen, setIsFullscreen] = useAtom(fullscreenAtom)
+  const muted = useAtomValue(mutedAtom)
 
   const getCurrentPlayedPercentage = useCallback(() => {
+    if (isNaN(played) || isNaN(duration) || duration === 0) {
+      return 0
+    }
+
     return parseFloat((played / duration).toFixed(3))
   }, [duration, played])
 
@@ -81,105 +95,25 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     [duration],
   )
 
+  //? Calculate Bottom Bar Height
   useEffect(() => {
-    const currentPath = location.pathname
-
-    const exitFullscreen = () => {
-      if (document.exitFullscreen) {
-        document.exitFullscreen()
-      } else if (document.mozCancelFullScreen) {
-        /* Firefox */
-        document.mozCancelFullScreen()
-      } else if (document.webkitExitFullscreen) {
-        /* Chrome, Safari and Opera */
-        document.webkitExitFullscreen()
-      } else if (document.msExitFullscreen) {
-        /* IE/Edge */
-        document.msExitFullscreen()
-      }
-      setIsFullscreen(false)
+    if (bottomBarRef.current && setBottomBarHeight) {
+      setBottomBarHeight(bottomBarRef.current.offsetHeight)
     }
+  }, [bottomBarRef, setBottomBarHeight])
 
-    // Check if we are not on the specific route
-    if (currentPath !== '/v/') {
-      // Call exitFullscreen when we are navigating away from the specific route
-      exitFullscreen()
-      setIsFullscreen(false)
-    }
-
-    // Optional: If you also want to handle component unmount, you can include the exitFullscreen call in the cleanup function
-    return () => {
-      exitFullscreen()
-      setIsFullscreen(false)
-    }
-  }, [location, setIsFullscreen])
-
-  const openFullscreen = (elem) => {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen() // Standard method
-    } else if (elem.mozRequestFullScreen) {
-      /* Firefox */
-      elem.mozRequestFullScreen() // Firefox
-    } else if (elem.webkitRequestFullscreen) {
-      /* Chrome, Safari & Opera */
-      elem.webkitRequestFullscreen() // Chrome, Safari, and Opera
-    } else if (elem.msRequestFullscreen) {
-      /* IE/Edge */
-      elem.msRequestFullscreen() // IE/Edge
-    }
-    setIsFullscreen(true)
-  }
-
+  //? Screenfull lib to handle toggling of full screen
   const handleFullscreen = useCallback(() => {
-    if (
-      !document.fullscreenElement &&
-      !document.webkitFullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.msFullscreenElement
-    ) {
-      // No element is in fullscreen, enter fullscreen mode
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen() // Standard method
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen() // Firefox
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen() // Chrome, Safari, and Opera
-      } else if (document.documentElement.msRequestFullscreen) {
-        document.documentElement.msRequestFullscreen() // IE/Edge
-      }
+    if (screenfull.isEnabled) {
+      screenfull.toggle()
 
-      setIsFullscreen(true) // Update the state to reflect entering fullscreen
-    } else {
-      // An element is already in fullscreen, exit fullscreen mode
-      if (document.exitFullscreen) {
-        document.exitFullscreen() // Standard method
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen() // Firefox
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen() // Chrome, Safari, and Opera
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen() // IE/Edge
+      if (screenfull.isFullscreen) {
+        setIsFullscreen(false)
+      } else {
+        setIsFullscreen(true)
       }
-
-      setIsFullscreen(false) // Update the state to reflect exiting fullscreen
     }
   }, [setIsFullscreen])
-
-  // Effect to add and remove event listener for "Esc" key press
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        handleFullscreen()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscKey)
-
-    return () => {
-      document.removeEventListener('keydown', handleEscKey)
-    }
-  }, [handleFullscreen])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -189,7 +123,6 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
         handlePlayPause() // Toggle play/pause
       }
     }
-
     // Add event listener for 'keydown' event on the document
     document.addEventListener('keydown', handleKeyDown)
 
@@ -199,17 +132,46 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     }
   }, [handlePlayPause])
 
+  //* Player controls icon animations
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(!isSettingsOpen)
+    // Add your logic here to open/close the settings dropdown
+  }
+
+  const handleButtonHover = (buttonId: string) => {
+    setHoveredButton(buttonId)
+  }
+
+  const handleButtonLeave = () => {
+    setHoveredButton(null)
+  }
+
+  const getButtonStyle = (buttonId: string) => {
+    return {
+      opacity: hoveredButton === buttonId ? 1 : 0.7,
+      transition: 'opacity 0.15s ease-in-out',
+    }
+  }
+
   return (
+    // <div
+    //   className={`fixed inset-x-0 bottom-0 bg-dark-3
+    //   ${
+    //     playing
+    //       ? isFullscreen
+    //         ? 'bg-opacity-0'
+    //         : 'bg-opacity-15'
+    //       : 'bg-opacity-100'
+    //   }
+    //   controls ${playerControlsVisible ? 'visible bg-opacity-15' : 'hidden'}
+
+    //   `}>
     <div
-      className={`bg-gray fixed inset-x-0  bottom-0 bg-dark-3 ${
-        playing
-          ? isFullscreen
-            ? 'bg-opacity-0'
-            : 'bg-opacity-15'
-          : 'bg-opacity-100'
-      } controls ${
-        playerControlsVisible ? 'visible bg-opacity-15' : 'hidden'
-      } `}>
+      ref={bottomBarRef}
+      className={`controls fixed inset-x-0 bottom-0 bg-dark-3 ${playerControlsVisible ? 'visible' : 'hidden'}`}>
       <div className='h-1 cursor-pointer'>
         <Slider
           defaultValue={[0]}
@@ -221,15 +183,24 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       </div>
       <div className='flex items-center justify-between py-2 sm:mx-2'>
         <div className='flex items-center lg:mr-6'>
-          <Button className='rounded-full' size='icon' variant='ghost'>
-            <SkipPreviousIcon />
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onMouseEnter={() => handleButtonHover('previous')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('previous')}>
+            <SkipPreviousIcon sx={{ fontSize: 32 }} />
             <span className='sr-only'>Previous track</span>
           </Button>
           <Button
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handlePlayPause}>
+            onClick={muted ? handleInitMutedPlay : handlePlayPause}
+            onMouseEnter={() => handleButtonHover('playPause')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('playPause')}>
             {playing ? (
               <PauseIcon sx={{ fontSize: 32 }} />
             ) : (
@@ -237,21 +208,33 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             )}
             <span className='sr-only'>Play</span>
           </Button>
-          <Button className='rounded-full' size='icon' variant='ghost'>
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onMouseEnter={() => handleButtonHover('next')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('next')}>
             <SkipNextIcon sx={{ fontSize: 32 }} />
             <span className='sr-only'>Next track</span>
           </Button>
 
-          <VolumeControl />
-          <div className='flex-between ml-2'>
-            <span className='hidden w-12 text-center sm:inline'>
-              {formattedPlayed}
-            </span>
-            <span className='hidden w-4 text-center sm:inline'>{' / '}</span>
-            <span className='hidden text-center sm:inline'>
-              {formattedDuration}
-            </span>
-          </div>
+          <VolumeControl
+            onMouseEnter={(buttonId) => handleButtonHover(buttonId)}
+            onMouseLeave={handleButtonLeave}
+            getButtonStyle={getButtonStyle}
+            timeDisplay={
+              <div className='flex-between unselectable ml-2'>
+                <span className='hidden w-12 text-center sm:inline'>
+                  {formattedPlayed}
+                </span>
+                <span className='hidden w-4 text-center sm:inline'>{'/'}</span>
+                <span className='hidden text-center sm:inline'>
+                  {formattedDuration}
+                </span>
+              </div>
+            }
+          />
         </div>
 
         <div className='ml-6 flex items-center justify-end gap-1 md:gap-2'>
@@ -260,7 +243,10 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleToggleLoop}>
+            onClick={handleToggleLoop}
+            onMouseEnter={() => handleButtonHover('loop')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('loop')}>
             {loop ? (
               <RepeatOnIcon sx={{ fontSize: 32 }} />
             ) : (
@@ -277,7 +263,10 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleToggleRomajiDisplay}>
+            onClick={handleToggleRomajiVisibility}
+            onMouseEnter={() => handleButtonHover('romaji')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('romaji')}>
             {romajiEnabled ? (
               <SubtitlesIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (
@@ -285,7 +274,19 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             )}
             <span className='sr-only'>Toggle Romaji</span>
           </Button>
-          <Button className='rounded-full' size='icon' variant='ghost'>
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onClick={handleSettingsClick}
+            onMouseEnter={() => handleButtonHover('settings')}
+            onMouseLeave={handleButtonLeave}
+            style={{
+              ...getButtonStyle('settings'),
+              transition:
+                'opacity 0.2s ease-in-out, transform 0.18s ease-in-out',
+              transform: isSettingsOpen ? 'rotate(30deg)' : 'rotate(0deg)',
+            }}>
             <SettingsIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             <span className='sr-only'>Settings</span>
           </Button>
@@ -294,7 +295,10 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleFullscreen}>
+            onClick={handleFullscreen}
+            onMouseEnter={() => handleButtonHover('fullscreen')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('fullscreen')}>
             {isFullscreen ? (
               <FullscreenExitIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             ) : (

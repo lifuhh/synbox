@@ -1,3 +1,6 @@
+//! This file is deprecated
+
+
 export const romajiRegex: RegExp =
   /([kgszjtdhfbpmyrwn]?[aiueo])|([sc]h[ieuo])|([kstnhmrw]y[aiueo])|n(?![aeiouy]|$)|shi|chi|tsu|ji|([kgszjtdhfbpmyrwn]'?[aiueo])|([kgszjtdhfbpmyrwn]?y[aiueo])/gi
 

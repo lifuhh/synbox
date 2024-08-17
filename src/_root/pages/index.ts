@@ -1,3 +1,7 @@
 export { default as LandingPage } from './LandingPage'
+export { default as LyricsTestPage } from './LyricsTestPage.tsx'
 export { default as PlayerPage } from './PlayerPage'
-export { default as TestPage } from './TestPage'
+export { default as TestGeneratePage } from './TestGeneratePage.tsx'
+export { default as TestRequestPage } from './TestRequestPage.tsx'
+export { default as TestStreamPage } from './TestStreamPage'
+export { default as TestUploadPage } from './TestUploadPage'

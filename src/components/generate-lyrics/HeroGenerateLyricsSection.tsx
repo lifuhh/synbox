@@ -5,15 +5,11 @@ import { useAppContext } from '@/context/AppContext'
 
 import { useState } from 'react'
 import HeroGenerateLyricsDefault from './HeroGenerateLyricsDefault'
-import HeroGenerateLyricsProcessing from './HeroGenerateLyricsProcessing'
-
-const exist = 'K1Tz2yNmamI'
-const noExist = 'qDL3zhB8-MM'
+import HeroGenerateLyricsProcessing from './HeroGenerateLyricsOneValidate'
 
 const HeroGenerateLyricsSection = () => {
   const { processingStage, setProcessingStage } = useAppContext()
   const [inputVideoId, setInputVideoId] = useState<string>('')
-
   const [subStage, setSubStage] = useState<number>(1)
 
   const renderComponent = () => {
@@ -23,13 +19,22 @@ const HeroGenerateLyricsSection = () => {
           <HeroGenerateLyricsDefault
             setProcessingStage={setProcessingStage}
             setInputVideoId={setInputVideoId}
+            inputVideoId={inputVideoId}
           />
         )
       case 2:
-        return <HeroGenerateLyricsProcessing subStage={subStage} />
-      case 3:
+        return (
+          <HeroGenerateLyricsProcessing
+            subStage={subStage}
+            setSubStage={setSubStage}
+            videoId={inputVideoId}
+            setInputVideoId={setInputVideoId}
+            setProcessingStage={setProcessingStage}
+          />
+        )
+      case 200:
         return <HeroGenerateLyricsExists />
-      case 4:
+      case 404:
         return <HeroGenerateLyricsError />
     }
   }

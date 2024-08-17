@@ -72,17 +72,27 @@ export interface formattedSearchResult {
 export interface YoutubeSearchApiResponse {
   kind: string
   etag: string
-  nextPageToken: string
-  regionCode: string
+  nextPageToken?: string
+  regionCode?: string
   items: YoutubeSearchItem[]
   pageInfo: PageInfo
+}
+
+export interface YoutubeVideoStatistics {
+  viewCount: string
+  likeCount: string
+  commentCount: string
 }
 
 export interface YoutubeSearchItem {
   kind: string
   etag: string
-  id: ResourceId
+  id: string
   snippet: YoutubeSearchItemSnippet
+  contentDetails: {
+    duration: string
+  }
+  statistics: YoutubeVideoStatistics
 }
 
 export interface YoutubeSearchItemSnippet {
@@ -90,12 +100,25 @@ export interface YoutubeSearchItemSnippet {
   channelId: string
   title: string
   description: string
-  thumbnails: Thumbnails
+  thumbnails?: Thumbnails
   channelTitle: string
   liveBroadcastContent: string
   publishTime: string
+  tags?: string[]
+  defaultAudioLanguage?: string
 }
 
+export interface YoutubeSearchResultInfo {
+  id: string
+  title: string
+  channelTitle: string
+  description: string
+  tags: string[]
+  defaultAudioLanguage: string
+  thumbnail: string
+  duration: string
+  statistics: YoutubeVideoStatistics
+}
 
 //* Lyrics Processing Types
 export interface UploadedSrtLine {

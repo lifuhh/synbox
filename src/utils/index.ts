@@ -16,10 +16,56 @@ import {
 
 import { isKanji, toRomaji } from 'wanakana'
 
+// ? Function to shuffle array randomly
+export const shuffleArray = (array: unknown[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
+
+export const validateJSON = (text: string) => {
+  try {
+    JSON.parse(text)
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
+// ? Function to trim long text into "..." if longer than given maxLength
+export function trimLength(text: string, maxLength: number, trail: boolean) {
+  const tooLong = text.length > maxLength
+
+  const editedText = tooLong ? text.substring(0, maxLength) : text
+
+  return trail ? (tooLong ? editedText + '...' : editedText) : editedText
+}
+
+//?Function to display time properly for Video Time Display
+export function formatTimeDisplay(seconds: number) {
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const remainingSeconds = seconds % 60
+  const remainingMinutes = minutes % 60
+  return `${hours ? `${hours}:` : ''}${pad(remainingMinutes)}:${pad(
+    remainingSeconds,
+  )}`
+}
+
+// ? Helper function to pad 0 in front of time when single digit numbers appear
+function pad(string: number) {
+  return ('0' + string).slice(-2)
+}
+
+// ? Function to convert uploaded File to URL - for file uploads
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
 
+// ? Youtube helper functions
+
 export function formatYoutubePlaylistResponse(
-  data: YoutubePlaylistApiResponse
+  data: YoutubePlaylistApiResponse,
 ): formattedYoutubeVideoItemForCarousel[] {
   const items = data.items.map(
     (item: YoutubePlaylistItem): formattedYoutubeVideoItemForCarousel => {
@@ -31,27 +77,25 @@ export function formatYoutubePlaylistResponse(
         description: trimLength(
           item.snippet.description,
           maxDescriptionLength,
-          true
+          true,
         ),
         thumbnailUrl: item.snippet.thumbnails.high.url,
         videoId: item.snippet.resourceId?.videoId,
       }
-    }
+    },
   )
 
   const shuffledResults = shuffleArray(
-    items
+    items,
   ) as formattedYoutubeVideoItemForCarousel[]
 
   return shuffledResults.slice(0, 20)
 }
 
 export function formatYoutubeSearchResponse(
-  data: YoutubeSearchApiResponse
+  data: YoutubeSearchApiResponse,
 ): formattedSearchResult[] {
   const maxSearchResultsTitleLength = 22
-
-  console.log('formatting search response')
 
   const items = data.items.map(
     (item: YoutubeSearchItem): formattedSearchResult => {
@@ -59,46 +103,151 @@ export function formatYoutubeSearchResponse(
         title: trimLength(
           item.snippet.title,
           maxSearchResultsTitleLength,
-          false
+          false,
         ),
         channel: item.snippet.channelTitle,
         thumbnailUrl: item.snippet.thumbnails.default.url,
         videoId: item.id.videoId,
       }
-    }
+    },
   )
-
-  console.log(items)
 
   return items
 }
 
-export function trimLength(text: string, maxLength: number, trail: boolean) {
-  const tooLong = text.length > maxLength
+//? Converts "PT3M40S" to "03:40"
+export function formatDuration(duration: string): string {
+  if (!duration) return '-00:01'
 
-  const editedText = tooLong ? text.substring(0, maxLength) : text
+  if (typeof duration === 'string' && duration.startsWith('PT')) {
+    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/)
 
-  return trail ? (tooLong ? editedText + '...' : editedText) : editedText
+    if (match) {
+      const hours = match[1] ? parseInt(match[1].replace('H', '')) : 0
+      const minutes = match[2] ? parseInt(match[2].replace('M', '')) : 0
+      const seconds = match[3] ? parseInt(match[3].replace('S', '')) : 0
+
+      const paddedMinutes = minutes.toString().padStart(2, '0')
+      const paddedSeconds = seconds.toString().padStart(2, '0')
+
+      if (hours > 0) {
+        const paddedHours = hours.toString().padStart(2, '0')
+        return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`
+      } else {
+        return `${paddedMinutes}:${paddedSeconds}`
+      }
+    } else {
+      return '-00:01'
+    }
+  } else {
+    const totalSeconds =
+      typeof duration === 'number' ? duration : parseInt(duration)
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = totalSeconds % 60
+
+    const paddedMinutes = minutes.toString().padStart(2, '0')
+    const paddedSeconds = seconds.toString().padStart(2, '0')
+
+    if (hours > 0) {
+      const paddedHours = hours.toString().padStart(2, '0')
+      return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`
+    } else {
+      return `${paddedMinutes}:${paddedSeconds}`
+    }
+  }
 }
 
-//* Video Time Display Functions
-export function formatTimeDisplay(seconds: number) {
-  const minutes = Math.floor(seconds / 60)
-  const hours = Math.floor(minutes / 60)
-  const remainingSeconds = seconds % 60
-  const remainingMinutes = minutes % 60
-  return `${hours ? `${hours}:` : ''}${pad(remainingMinutes)}:${pad(
-    remainingSeconds
-  )}`
+export function formatCountToString(count: number | string): string {
+  if (!count) return '-1'
+
+  if (typeof count === 'string') {
+    count = parseInt(count)
+  }
+
+  // Convert "752531" to "752K"
+  if (count >= 1000000) {
+    return (count / 1000000).toFixed(1) + 'M'
+  } else if (count >= 1000) {
+    return (count / 1000).toFixed(1) + 'K'
+  } else {
+    return count.toString()
+  }
 }
 
-function pad(string: number) {
-  return ('0' + string).slice(-2)
+export const extractVideoId = (input: string): string | null => {
+  // Check if the input is already a valid 11-character video ID
+  if (/^[\w-]{11}$/.test(input)) {
+    return input
+  }
+
+  // Regular expression for finding a YouTube video ID in various URL formats
+  const videoIdPattern =
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^#&?]{11})/
+
+  // If the URL doesn't start with 'http://' or 'https://', prepend 'https://'
+  const fullUrl =
+    input.startsWith('http://') || input.startsWith('https://')
+      ? input
+      : `https://${input}`
+
+  try {
+    const match = fullUrl.match(videoIdPattern)
+    if (match && match[1]) {
+      return match[1]
+    }
+
+    // If no match found using regex, try parsing as URL
+    const parsedUrl = new URL(fullUrl)
+    const videoId = parsedUrl.searchParams.get('v')
+    if (videoId && videoId.length === 11) {
+      return videoId
+    }
+  } catch (error) {
+    console.error('Error parsing YouTube URL:', error)
+  }
+
+  return null
 }
 
-//* LYRICS PROCESSING FUNCTIONS
+export const createAppwriteIdFromYoutubeId = (id: string): string => {
+  if (validateYoutubeIdForAppwrite(id)) {
+    return id
+  }
+  return encodeYoutubeIdForAppwrite(id)
+}
 
-//! This is the core processing function
+export const getYouTubeIdFromAppwriteId = (appwriteId: string): string => {
+  if (appwriteId.startsWith('yt_')) {
+    return decodeYoutubeIdForAppwrite(appwriteId)
+  }
+  return appwriteId
+}
+
+const validateYoutubeIdForAppwrite = (id: string): boolean => {
+  const validChars = /^[a-zA-Z0-9_]{1,36}$/
+  return validChars.test(id) && !id.startsWith('_')
+}
+
+const encodeYoutubeIdForAppwrite = (id: string): string => {
+  const prefix = 'yt_'
+  const encodedId = btoa(id)
+  return `${prefix}${encodedId}`
+}
+
+const decodeYoutubeIdForAppwrite = (id: string): string => {
+  const prefix = 'yt_'
+  if (id.startsWith(prefix)) {
+    const encodedPart = id.slice(prefix.length)
+    return atob(encodedPart)
+  }
+  throw new Error('Invalid encoded ID format')
+}
+
+//! Everything below is Deprecated >>>
+
+// ! Deprecated - Old LYRICS PROCESSING FUNCTIONS
+//? This is the core processing function
 //* Given '知りたいその秘密ミステリアス' and 'shiritai sono himitsu misuteriasu', returns the HTML for the lyrics w/ furigana
 export function formatLyricsLineSrt(lyric: string, romaji: string) {
   //? Generates ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"]
@@ -108,7 +257,7 @@ export function formatLyricsLineSrt(lyric: string, romaji: string) {
   //? Generates [ ["知", "shi"], ["秘密", "himitsu"] ]
   const kanjiRomajiMatches = kanjiToRomajiMatcher(
     Array.from(separatedLyrics),
-    romaji
+    romaji,
   )
 
   let finalProcessedLyricsLine = ''
@@ -124,21 +273,21 @@ export function formatLyricsLineSrt(lyric: string, romaji: string) {
 
         if (romaji.includes('EDITME_')) {
           hiraganaOfKanji = getCorrespondingHiraganaFromList(
-            splitRomajiIntoSyllables(romaji.split('EDITME_')[1].toLowerCase())
+            splitRomajiIntoSyllables(romaji.split('EDITME_')[1].toLowerCase()),
           )
           finalProcessedLyricsLine += generateRubySnippet(
             kanji,
             hiraganaOfKanji,
-            true
+            true,
           )
         } else {
           hiraganaOfKanji = getCorrespondingHiraganaFromList(
-            splitRomajiIntoSyllables(romaji.toLowerCase())
+            splitRomajiIntoSyllables(romaji.toLowerCase()),
           )
           finalProcessedLyricsLine += generateRubySnippet(
             kanji,
             hiraganaOfKanji,
-            false
+            false,
           )
         }
       } else {
@@ -151,7 +300,7 @@ export function formatLyricsLineSrt(lyric: string, romaji: string) {
 
 //* Given '出会い、共「に過ごし」てき、日々', returns ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"]
 function splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(
-  lyrics: string
+  lyrics: string,
 ): string[] {
   let charBuffer = ''
   let kanjiBuffer = ''
@@ -195,13 +344,13 @@ function splitLyricsIntoChunksSeparatingKanjiWithoutRomaji(
 //? Given ["出会", "、", "い", "共", "「", "に", "過", "ごし", "」", "てき", "、", "日々"] and romaji "deai itomo ni sugoshi teki hibi", returns [ ["出会", "deai"], ["共", "tomo"] ]
 function kanjiToRomajiMatcher(
   lyrics: string[],
-  romaji: string
+  romaji: string,
 ): [string, string][] {
   let nospaceRomaji = romaji.replace(/\s/g, '')
-  console.log('This is lyrics List')
-  console.log(lyrics)
-  console.log('This is nospace romaji: ')
-  console.log(nospaceRomaji)
+  // console.log('This is lyrics List')
+  // console.log(lyrics)
+  // console.log('This is nospace romaji: ')
+  // console.log(nospaceRomaji)
 
   const lyricsList = lyrics
 
@@ -216,7 +365,7 @@ function kanjiToRomajiMatcher(
 
     //! If chunk IS kanji
     if (isKanji(lyricsChunk)) {
-      console.log('This is kanji chunk: ' + lyricsChunk)
+      // console.log('This is kanji chunk: ' + lyricsChunk)
 
       if (lyricsList.length >= 1) {
         let nextLyricsText = lyricsList[0]
@@ -275,14 +424,14 @@ function kanjiToRomajiMatcher(
 
         //* Process case 1 and 4
         const nextLyricsChunkRomaji = adjustPronunciationInRomaji(
-          toRomaji(nextLyricsText)
+          toRomaji(nextLyricsText),
         )
 
-        console.log('This is next lyrics chunk: ' + nextLyricsChunkRomaji)
+        // console.log('This is next lyrics chunk: ' + nextLyricsChunkRomaji)
 
         const nextLyricsChunkRomajiRegex = new RegExp(
           nextLyricsChunkRomaji,
-          'i'
+          'i',
         )
 
         const match = nospaceRomaji.match(nextLyricsChunkRomajiRegex)
@@ -299,11 +448,11 @@ function kanjiToRomajiMatcher(
 
           const kanjiMatchedRomajiChunk = nospaceRomaji.slice(
             0,
-            nextLyricsChunkRomajiIndex
+            nextLyricsChunkRomajiIndex,
           )
 
-          console.log('IMPORTANT')
-          console.log('This is kanji matched chunk: ' + kanjiMatchedRomajiChunk)
+          // console.log('IMPORTANT')
+          // console.log('This is kanji matched chunk: ' + kanjiMatchedRomajiChunk)
 
           // let nextLyricsChunkRomajiIndex = nospaceRomaji.search(
           //   nextLyricsChunkRomajiRegex
@@ -337,9 +486,9 @@ function kanjiToRomajiMatcher(
 
           // 3. Slice off the matched romaji from nospaceRomaji
           nospaceRomaji = nospaceRomaji.slice(nextLyricsChunkRomajiIndex)
-          console.log(
-            'This is post processing nospace romaji: ' + nospaceRomaji
-          )
+          // console.log(
+          // 'This is post processing nospace romaji: ' + nospaceRomaji,
+          // )
         }
       } else {
         // 2. If no more items in separatedLyrics, then the rest of the romaji is the romaji for the kanji
@@ -358,10 +507,10 @@ function kanjiToRomajiMatcher(
     }
   }
 
-  console.log('This is kanji romaji match')
-  kanjiRomajiMatches.forEach((subArray) => {
-    console.log(subArray)
-  })
+  // console.log('This is kanji romaji match')
+  // kanjiRomajiMatches.forEach((subArray) => {
+  // console.log(subArray)
+  // })
   return kanjiRomajiMatches
 }
 
@@ -379,7 +528,7 @@ function adjustPronunciationInRomaji(romajiSubstring: string): string {
 function generateRubySnippet(
   kanji: string,
   hiragana: string,
-  error: boolean
+  error: boolean,
 ): string {
   if (error) {
     return `<ruby>${kanji}<rp>(</rp><rt>EDITME: ${hiragana}</rt><rp>)</rp></ruby>`
@@ -453,7 +602,7 @@ function isJapSpecialCharacter(char: string): boolean {
   )
 }
 
-//* Lyrics Dropzone Helpers
+//? Deprecated - Lyrics Dropzone Helpers
 //! Stage One - parse Srt File into array of
 //! { index: number, startTime: string, endTime: string, text: string }
 export function parseSrt(srt: string): UploadedSrtLine[] {
@@ -518,39 +667,4 @@ export function stageThreeKanjiPairExtractor(allLyrics: string[]): {
 export function stageThreeKeyExtractor(key: string): string {
   const parts = key.split('___')
   return parts[0]
-}
-
-export const extractVideoId = (youtubeUrl: string): string | null => {
-  // Regular expression for finding a YouTube video ID in various URL formats
-  const videoIdPattern =
-    /(?:v=|\/)([0-9A-Za-z_-]{11})|youtu\.be\/([0-9A-Za-z_-]{11})/
-
-  const match = youtubeUrl.match(videoIdPattern)
-  if (match) {
-    // Check which group has the match
-    const videoId = match[1] ? match[1] : match[2]
-
-    // Further validation if the video ID is part of a query string
-    const parsedUrl = new URL(youtubeUrl)
-    const queryParams = parsedUrl.searchParams
-    // This check ensures that 'v' parameter is present and the videoId is from the 'v' parameter
-    if (queryParams.has('v') && videoId === queryParams.get('v')) {
-      return videoId
-    }
-
-    // If the video ID didn't come from the 'v' parameter but was successfully extracted
-    if (videoId) {
-      return videoId
-    }
-  }
-
-  return null
-}
-
-export const shuffleArray = (array: unknown[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[array[i], array[j]] = [array[j], array[i]]
-  }
-  return array
 }

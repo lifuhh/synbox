@@ -37,6 +37,9 @@ module.exports = {
         'light-2': '#FBE9F6', // Light magenta for subtle backgrounds
         'light-3': '#D05D8F', // A mid-light magenta for less prominent UI elements
         'light-4': '#E1BEE7', // A pale magenta for hover states or disabled elements
+        destructive: '#FBE9F6',
+        'destructive-foreground': '#CA195F',
+        accent: '',
       },
 
       screens: {
@@ -53,6 +56,7 @@ module.exports = {
 
       zIndex: {
         100: '100',
+        990: '990',
         999: '999',
       },
 
@@ -67,7 +71,9 @@ module.exports = {
       fontSize: {
         '2vw': '2vw',
         '2.4vw': '2.4vw',
+        '3.5vw': '3.5vw',
         '4.2vw': '4.2vw',
+        '5vw': '5vw',
       },
       keyframes: {
         'accordion-down': {

@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { UploadedSrtLine } from '@/types'
-import { Button, Stepper } from '@mantine/core'
 import { useState } from 'react'
 
 //* This component should manage the state and decide what to display
