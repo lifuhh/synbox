@@ -240,7 +240,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
     <div
       className={`player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full`}
       style={{ height: getOverlayHeight }}>
-      {renderedLyrics.jp.length === 0 && <div>Loading lyrics...</div>}
+      {/* {renderedLyrics.jp.length === 0 && <div>Loading lyrics...</div>} */}
       {/* {playing && ( */}
       <div
         className={`lyric-container flex h-full w-full flex-col justify-end text-center `}>
@@ -283,7 +283,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
         {renderedLyrics.jp[currentIndex] && (
           <div
             style={lyricsStyles[currentIndex]}
-            className={`!text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
+            className={`!text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''} ${romajiVisibility ? 'mb-0' : 'mb-4'}`}>
             {renderedLyrics.jp[currentIndex]}
           </div>
         )}

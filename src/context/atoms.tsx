@@ -9,6 +9,8 @@ export const lyricsVisibilityAtom = atom(true)
 export const romajiVisibilityAtom = atom(true)
 export const translationVisibilityAtom = atom(true)
 
+export const dialogStepAtom = atom(0)
+
 // Define a writable base atom
 const baseStreamResultAtom = atom<{ id: string; streamData: any } | null>(null)
 
@@ -37,3 +39,35 @@ export const setStreamResultAtom = atom(
     localStorage.setItem('streamResult', JSON.stringify(newValue))
   },
 )
+
+interface AppwriteVideoDataProps {
+  id: string
+  databaseId: string
+  title: string
+  thumbnail: string
+  AIGeneratedLyrics: boolean
+  full_lyrics: string
+  romaji: string
+  eng_translation: string
+  chi_translation: string
+  plain_lyrics: string
+  labelled_full_lyrics: string
+  visit_count: 0
+  user_likes: 0
+}
+
+export const videoDataAtom = atom<AppwriteVideoDataProps>({
+  id: '',
+  databaseId: '',
+  title: '',
+  thumbnail: '',
+  AIGeneratedLyrics: false,
+  full_lyrics: '',
+  romaji: '',
+  eng_translation: '',
+  chi_translation: '',
+  plain_lyrics: '',
+  labelled_full_lyrics: '',
+  visit_count: 0,
+  user_likes: 0,
+})

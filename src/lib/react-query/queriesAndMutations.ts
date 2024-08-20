@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -14,22 +15,16 @@ import {
   uploadHardCodedLyrics,
 } from '../appwrite/api'
 import {
+  getInfiniteGalleryPlaylist,
   getLandingPagePlaylist,
   getYoutubeSearchResults,
   getYoutubeVideoInfo,
 } from '../youtube/api'
 
+import { InfiniteGalleryQueryResult, TransformedYoutubePlaylistPage, YoutubePlaylistApiResponse } from '@/types'
+import { formatYoutubeInfiniteGalleryResponse } from '@/utils'
 import { streamValidateVideoById } from '../synbox-flask/api'
 import { QUERY_KEYS } from './queryKeys'
-
-export const useStreamValidateVideoById = () => {
-  return useMutation({
-    mutationFn: (id: string) => streamValidateVideoById(id),
-    onError: (error) => {
-      console.error('Error streaming data:', error)
-    },
-  })
-}
 
 export const useSignInGoogleAccount = () => {
   return useMutation({
@@ -44,6 +39,22 @@ export const useGetLandingPagePlaylist = () => {
     queryFn: () => getLandingPagePlaylist(),
   })
 }
+
+export const useGetInfiniteGalleryPlaylist = (): InfiniteGalleryQueryResult => {
+  return useInfiniteQuery<YoutubePlaylistApiResponse, Error, InfiniteData<TransformedYoutubePlaylistPage>, [string], string>({
+    queryKey: [QUERY_KEYS.GET_INFINITE_GALLERY_PLAYLIST],
+    queryFn: ({ pageParam = '' }) => getInfiniteGalleryPlaylist({ pageParam }),
+    initialPageParam: '',
+    getNextPageParam: (lastPage) => lastPage.nextPageToken ?? undefined,
+    select: (data) => ({
+      pages: data.pages.map((page) => ({
+        items: formatYoutubeInfiniteGalleryResponse(page),
+        nextPageToken: page.nextPageToken,
+      })),
+      pageParams: data.pageParams,
+    }),
+  });
+};
 
 export const useGetYoutubeVideoInfo = (videoId: string) => {
   return useQuery({

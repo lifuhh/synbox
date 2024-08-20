@@ -1,4 +1,6 @@
 import {
+  FormatYoutubeResponseFunction,
+  InfiniteGalleryVideoItem,
   UploadedSrtLine,
   YoutubePlaylistApiResponse,
   YoutubePlaylistItem,
@@ -91,6 +93,27 @@ export function formatYoutubePlaylistResponse(
 
   return shuffledResults.slice(0, 20)
 }
+
+export const formatYoutubeInfiniteGalleryResponse: FormatYoutubeResponseFunction =
+  (data: YoutubePlaylistApiResponse): InfiniteGalleryVideoItem[] => {
+    const items = data.items.map((item): InfiniteGalleryVideoItem => {
+      const maxDescriptionLength = 80
+
+      return {
+        title: item.snippet.title,
+        channel: item.snippet.videoOwnerChannelTitle || 'Unknown',
+        description: trimLength(
+          item.snippet.description,
+          maxDescriptionLength,
+          true,
+        ),
+        thumbnailUrl: item.snippet.thumbnails.high.url,
+        videoId: item.snippet.resourceId?.videoId || '',
+      }
+    })
+
+    return items
+  }
 
 export function formatYoutubeSearchResponse(
   data: YoutubeSearchApiResponse,

@@ -1,8 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { dialogStepAtom } from '@/context/atoms'
 import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
 import { YouTubeUrlOrIdValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
+import { useSetAtom } from 'jotai'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RequestDialog from '../shared/RequestDialog'
@@ -23,6 +25,7 @@ const HeroGenerateLyricsDefault = ({
   const [errorMessage, setErrorMessage] = useState('')
   const [validationSuccess, setValidationSuccess] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const setDialogStepAtom = useSetAtom(dialogStepAtom)
 
   const [extractedVideoId, setExtractedVideoId] = useState('')
   const navigate = useNavigate()
@@ -72,6 +75,7 @@ const HeroGenerateLyricsDefault = ({
               state: { videoId: extractedVideoId },
             })
           } else {
+            setDialogStepAtom(0)
             setDialogOpen(true)
           }
         }, 0)
@@ -82,6 +86,7 @@ const HeroGenerateLyricsDefault = ({
             state: { videoId: extractedVideoId },
           })
         } else {
+          setDialogStepAtom(0)
           setDialogOpen(true)
         }
       }
