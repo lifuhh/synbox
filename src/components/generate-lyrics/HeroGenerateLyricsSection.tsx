@@ -5,7 +5,6 @@ import { useAppContext } from '@/context/AppContext'
 
 import { useState } from 'react'
 import HeroGenerateLyricsDefault from './HeroGenerateLyricsDefault'
-import HeroGenerateLyricsProcessing from './HeroGenerateLyricsOneValidate'
 
 const HeroGenerateLyricsSection = () => {
   const { processingStage, setProcessingStage } = useAppContext()
@@ -23,15 +22,7 @@ const HeroGenerateLyricsSection = () => {
           />
         )
       case 2:
-        return (
-          <HeroGenerateLyricsProcessing
-            subStage={subStage}
-            setSubStage={setSubStage}
-            videoId={inputVideoId}
-            setInputVideoId={setInputVideoId}
-            setProcessingStage={setProcessingStage}
-          />
-        )
+        return <HeroGenerateLyricsExists />
       case 200:
         return <HeroGenerateLyricsExists />
       case 404:

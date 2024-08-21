@@ -5,13 +5,10 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
     <div className='mt-4 max-h-screen overflow-y-scroll'>
       <h3 className='text-xl font-bold'>Video Information</h3>
       <pre className='mt-2 whitespace-pre-wrap'>
-        {JSON.stringify(vidInfo, null, 2)}
+        {JSON.stringify(vidInfo['full_vid_info']['title'], null, 2)}
+        {JSON.stringify(vidInfo['passed'], null, 2)}
+        {JSON.stringify(vidInfo['subtitle_info']['exist'], null, 2)}
       </pre>
-      <Button
-        onClick={() => {}}
-        className='mt-4 bg-blue-500 text-white hover:bg-blue-600'>
-        Proceed to Next Step
-      </Button>
     </div>
   )
 }

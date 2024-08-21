@@ -1,78 +1,114 @@
-import { cn } from '@/utils/cn'
-
-import { AnimatePresence, motion } from 'framer-motion'
-// import { debounce } from 'lodash'
 import { useOverflow } from '@/hooks/useOverflow'
-import { MouseEventHandler, memo, useRef, useState } from 'react'
+import { InfiniteScrollGalleryProps } from '@/types'
+import { cn } from '@/utils/cn'
+import { Divider } from '@mantine/core'
+import { AnimatePresence, motion } from 'framer-motion'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-export const InfiniteScrollGallery = ({
+export const InfiniteScrollGallery: React.FC<InfiniteScrollGalleryProps> = ({
   items,
   className,
-}: {
-  items: {
-    title: string
-    description: string
-    vidUrl: string
-    videoId: string
-  }[]
-  className?: string
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const navigate = useNavigate()
+  const observerTarget = useRef(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleGalleryItemClick =
-    (videoId: string): MouseEventHandler<HTMLDivElement> =>
-    () => {
-      navigate(`/v/${videoId}`, { state: { videoId: videoId } })
+  const handleGalleryItemClick = (videoId: string) => () => {
+    navigate(`/v/${videoId}`, { state: { videoId: videoId } })
+  }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage()
+        }
+      },
+      { threshold: 0.1 },
+    )
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current)
     }
 
-  return (
-    <div
-      className={cn(
-        'grid grid-cols-1 py-4 sm:grid-cols-2  lg:grid-cols-3',
-        className,
-      )}>
-      {items.map((item, idx) => (
-        //TODO: Style individual infinite scroll gallery cards here
-        <div
-          key={item?.videoId}
-          className='group relative block h-full w-full cursor-pointer p-2'
-          onMouseEnter={() => setHoveredIndex(idx)}
-          onMouseLeave={() => setHoveredIndex(null)}
-          onClick={handleGalleryItemClick(item.videoId)}>
-          <AnimatePresence>
-            {hoveredIndex === idx && (
-              <motion.span
-                className='absolute inset-0 block h-full w-full rounded-3xl bg-primary-500 dark:bg-dark-2/[0.8]'
-                layoutId='hoverBackground'
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 1,
-                  transition: { duration: 0.08 },
-                }}
-                exit={{
-                  opacity: 0,
-                  transition: { duration: 0.08, delay: 0.1 },
-                }}
-              />
-            )}
-          </AnimatePresence>
-          <Card>
-            <CardTitle>{item.title}</CardTitle>
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current)
+      }
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
-            <img
-              src={item.vidUrl}
-              height='1080'
-              width='1920'
-              className=' h-52 w-full rounded-xl object-cover group-hover/card:shadow-xl'
-              alt='thumbnail'
-            />
-            {/* <CardDescription>{item.description}</CardDescription> */}
-            {/* <CardDescription>{item.videoId}</CardDescription> */}
-          </Card>
-        </div>
-      ))}
+  return (
+    <div ref={containerRef} className={cn('overflow-auto', className)}>
+      <div className='grid grid-cols-1 py-2 pt-4 sm:grid-cols-2 lg:grid-cols-3'>
+        {items.map((item, idx) => (
+          <div
+            key={item?.videoId}
+            className='group relative block h-full w-full cursor-pointer p-2'
+            onMouseEnter={() => setHoveredIndex(idx)}
+            onMouseLeave={() => setHoveredIndex(null)}
+            onClick={handleGalleryItemClick(item?.videoId)}>
+            <AnimatePresence>
+              {hoveredIndex === idx && (
+                <motion.span
+                  className='absolute inset-0 block h-full w-full rounded-3xl bg-primary-500 dark:bg-dark-2/[0.8]'
+                  layoutId='hoverBackground'
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: { duration: 0.08 },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    transition: { duration: 0.08, delay: 0.1 },
+                  }}
+                />
+              )}
+            </AnimatePresence>
+            <Card>
+              <CardTitle>{item.title}</CardTitle>
+              <img
+                src={item.thumbnailUrl}
+                height='1080'
+                width='1920'
+                className='h-52 w-full rounded-xl object-cover group-hover/card:shadow-xl'
+                alt='thumbnail'
+              />
+            </Card>
+          </div>
+        ))}
+      </div>
+      <div ref={observerTarget} className='h-2' />
+      {/* //TODO: prettify transitions of loading & end of gallery */}
+      {isFetchingNextPage && (
+        <Divider
+          my='xs'
+          label={
+            <p className='pointer-events-none text-center text-lg text-white'>
+              Loading...
+            </p>
+          }
+          labelPosition='center'
+          className=''
+        />
+      )}
+      {!hasNextPage && (
+        <Divider
+          my='xs'
+          label={
+            <p className='pointer-events-none text-center text-xl font-bold text-gray-400'>
+              End of Gallery
+            </p>
+          }
+          labelPosition='center'
+          className=''
+        />
+      )}
     </div>
   )
 }

@@ -218,34 +218,34 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   }
 
   //TODO: remove after testing
-  useEffect(() => {
-    console.log('LyricsDisplay mounted')
-    return () => console.log('LyricsDisplay unmounted')
-  }, [])
+  // useEffect(() => {
+  //   console.log('LyricsDisplay mounted')
+  //   return () => console.log('LyricsDisplay unmounted')
+  // }, [])
 
-  useEffect(() => {
-    console.log('videoId changed:', videoId)
-  }, [videoId])
+  // useEffect(() => {
+  //   console.log('videoId changed:', videoId)
+  // }, [videoId])
 
-  useEffect(() => {
-    console.log('testLyrics received:', testLyrics)
-  }, [testLyrics])
+  // useEffect(() => {
+  //   console.log('testLyrics received:', testLyrics)
+  // }, [testLyrics])
 
-  useEffect(() => {
-    console.log('lyricsArr updated:', lyricsArr)
-    console.log('currentIndex:', currentIndex)
-  }, [lyricsArr, currentIndex])
+  // useEffect(() => {
+  //   console.log('lyricsArr updated:', lyricsArr)
+  //   console.log('currentIndex:', currentIndex)
+  // }, [lyricsArr, currentIndex])
 
   return (
     <div
       className={`player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full`}
       style={{ height: getOverlayHeight }}>
-      {renderedLyrics.jp.length === 0 && <div>Loading lyrics...</div>}
+      {/* {renderedLyrics.jp.length === 0 && <div>Loading lyrics...</div>} */}
       {/* {playing && ( */}
       <div
         className={`lyric-container flex h-full w-full flex-col justify-end text-center `}>
         {/* //TODO: Test code, remove after testing */}
-        <div
+        {/* <div
           style={{
             position: 'absolute',
             top: 0,
@@ -259,7 +259,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
           Lyrics Length: {lyricsArr.length}
           <br />
           Is Transitioning: {isTransitioning ? 'Yes' : 'No'}
-        </div>
+        </div> */}
         {/* //! Translation Toggle-able */}
         {/* //? English */}
         {translationVisibility &&
@@ -283,7 +283,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
         {renderedLyrics.jp[currentIndex] && (
           <div
             style={lyricsStyles[currentIndex]}
-            className={`!text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''}`}>
+            className={`!text-3.5vw ${isEntering ? 'fade-in' : isExiting ? 'fade-out' : ''} ${romajiVisibility ? 'mb-0' : 'mb-4'}`}>
             {renderedLyrics.jp[currentIndex]}
           </div>
         )}

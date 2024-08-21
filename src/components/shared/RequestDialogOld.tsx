@@ -4,15 +4,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { dialogStepAtom, videoDataAtom } from '@/context/atoms'
+import { videoDataAtom } from '@/context/atoms'
 import { useStreamValidationApi } from '@/hooks/useStreamValidationApi'
 import { Loader, Paper, Text } from '@mantine/core'
 import { DialogDescription } from '@radix-ui/react-dialog'
-import { useAtom, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
-import RequestDialogAnnotateDisplay from './RequestDialogAnnotateDisplay'
-import RequestDialogStepTwoDisplay from './RequestDialogStepTwoDisplay'
 import RequestDialogValidationDisplay from './RequestDialogValidationDisplay'
 
 interface RequestDialogProps {
@@ -24,7 +22,6 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
   videoId,
   handleClose,
 }) => {
-  const [currentStep, setCurrentStep] = useAtom(dialogStepAtom)
   const setVideoData = useSetAtom(videoDataAtom)
   const [showLoader, setShowLoader] = useState(false)
   const {
@@ -66,14 +63,26 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
     }
   }, [vidInfo, showVidInfo])
 
-  const handleProceedClick = () => {
-    setCurrentStep((prevStep) => prevStep + 1)
-  }
+  return (
+    <DialogContent
+      className='invisible-ring border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-4xl'
+      onEscapeKeyDown={isStreaming ? undefined : handleClose}
+      onPointerDownOutside={isStreaming ? undefined : handleClose}
+      onInteractOutside={isStreaming ? undefined : handleClose}>
+      <DialogHeader>
+        <DialogTitle>Request</DialogTitle>
+        <DialogDescription>Dialog Desc</DialogDescription>
+      </DialogHeader>
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 0:
-        return (
+      <div className='flex-between m-4 flex flex-col items-center'>
+        <Text size='xl'>Video ID: {videoId}</Text>
+
+        {error ? (
+          <div className='mt-4 text-red-500'>
+            <h3 className='text-xl font-bold'>Error</h3>
+            <p>{error}</p>
+          </div>
+        ) : (
           <>
             {isStreaming && !showLoader && !showVidInfo && (
               <Loader color='yellow' type='dots' />
@@ -97,61 +106,15 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
               <RequestDialogValidationDisplay vidInfo={vidInfo} />
             )}
           </>
-        )
-      case 1:
-        return <RequestDialogStepTwoDisplay vidInfo={vidInfo} />
-      case 2:
-        return (
-          <RequestDialogAnnotateDisplay
-            id={videoId}
-            lyrics={['']}
-            timestampedLyrics={['']}
-          />
-        )
-      case 3:
-        return (
-          <div className='mt-4'>
-            <h3 className='text-xl font-bold'>Final Step</h3>
-            <p>This is the final step component.</p>
-            {/* Add your new component or content for the final step here */}
-          </div>
-        )
-      default:
-        return null
-    }
-  }
-
-  return (
-    <DialogContent
-      className='invisible-ring border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-4xl'
-      onEscapeKeyDown={isStreaming ? undefined : handleClose}
-      onPointerDownOutside={isStreaming ? undefined : handleClose}
-      onInteractOutside={isStreaming ? undefined : handleClose}>
-      <DialogHeader>
-        <DialogTitle>Request</DialogTitle>
-        <DialogDescription>Dialog Desc</DialogDescription>
-      </DialogHeader>
-
-      <div className='flex-between m-4 flex flex-col items-center'>
-        <Text size='xl'>Video ID: {videoId}</Text>
-
-        {error ? (
-          <div className='mt-4 text-red-500'>
-            <h3 className='text-xl font-bold'>Error</h3>
-            <p>{error}</p>
-          </div>
-        ) : (
-          renderStep()
         )}
       </div>
 
       <DialogFooter>
-        {((showVidInfo && currentStep === 0) ||
-          (currentStep > 0 && currentStep < 3)) && (
+        {showVidInfo && (
           <Button
-            onClick={handleProceedClick}
-            className='invisible-ring bg-blue-500 text-white hover:bg-blue-600'>
-            {currentStep === 3 ? 'Finish' : 'Proceed to Next Step'}
+            onClick={() => {}}
+            className='mt-4 bg-blue-500 text-white hover:bg-blue-600'>
+            Proceed to Next Step
           </Button>
         )}
         <Button

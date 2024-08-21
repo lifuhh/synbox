@@ -18,7 +18,7 @@ interface VideoPlayerProps {
   handleEnded: () => void
   handleInitMutedPlay: () => void
   handlePlayPause: () => void
-  setIsPlayerReady: () => void
+  setIsPlayerReady: React.Dispatch<React.SetStateAction<boolean>>
   playerRef: ForwardedRef<ReactPlayer>
   // Add methods for handling playback control (play, pause, seek)
   // and volume control (setVolume, toggleMute)
@@ -88,7 +88,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [muted, playerOverlayVisible, playerOverlayVisibleHandler, playing])
 
   const handlePause = () => {
-    console.log('VideoPlayer.tsx player has been paused')
+    // console.log('VideoPlayer.tsx player has been paused')
   }
 
   const handleReady = () => {
@@ -106,7 +106,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }
 
   const testToggleOverlay = () => {
-    console.log('Toggled test overlay ')
+    // console.log('Toggled test overlay ')
     playerOverlayVisibleHandler.toggle()
   }
 

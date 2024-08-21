@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import RootLayout from './_root/RootLayout'
 import {
   LandingPage,
-  LyricsTestPage,
+  // LyricsTestPage,
   PlayerPage,
   TestGeneratePage,
   TestRequestPage,
@@ -26,7 +26,7 @@ const App = () => {
           <Route path='/test_upload' element={<TestUploadPage />} />
           <Route path='/test_lyrics' element={<TestLyricsPage />} />
           <Route path='/test_request' element={<TestRequestPage />} />
-          <Route
+          {/* <Route
             path='/lyricstest'
             element={
               <LyricsTestPage
@@ -34,7 +34,7 @@ const App = () => {
                 translationVisibility={true}
               />
             }
-          />
+          /> */}
         </Route>
       </Routes>
       <Toaster />

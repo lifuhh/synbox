@@ -6,7 +6,7 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 import { useAtom } from 'jotai'
 import React, { useCallback, useState } from 'react'
 import { Button } from '../ui/button'
-import { Slider } from '../ui/slider'
+import VolumeControlSlider from './VolumeControlSlider' // Import the new CustomSlider
 
 const VolumeControl = ({
   onMouseEnter,
@@ -60,14 +60,12 @@ const VolumeControl = ({
           className={`overflow-visible transition-all duration-300 ease-in-out ${
             isHovering ? 'mr-2 w-32 opacity-100' : 'w-0 opacity-0'
           }`}>
-          <Slider
-            defaultValue={[0]}
+          <VolumeControlSlider
             min={0}
             max={1}
             step={0.01}
-            onValueChange={(value) => handleVolumeChange(value[0])}
-            className='volume-slider w-32'
-            value={[volume]}
+            value={volume}
+            onChange={handleVolumeChange}
           />
         </div>
         <div className='transition-all duration-300 ease-in-out'>
