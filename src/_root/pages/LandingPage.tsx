@@ -5,7 +5,6 @@ import PopularSongsTable from '@/components/landing-page/PopularSongsTable'
 import PricingTable from '@/components/landing-page/PricingTable'
 import SongHighlightCarousel from '@/components/landing-page/SongHighlightCarousel'
 import SongsInfiniteGallery from '@/components/landing-page/SongsInfiniteGallery'
-import HomeFooter from '@/components/shared/HomeFooter'
 import { Helmet } from 'react-helmet-async'
 
 import { Divider } from '@mantine/core'
