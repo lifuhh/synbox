@@ -14,6 +14,7 @@ export const useStreamTranscriptionApi = () => {
   const [lyricsInfo, setLyricsInfo] = useState<any>(null)
   const [showLyricsInfo, setShowLyricsInfo] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isAiGenerated, setIsAiGenerated] = useState(false)
 
   // Use a ref to store the timeout ID
   const settledTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -23,6 +24,7 @@ export const useStreamTranscriptionApi = () => {
     setLyricsInfo(null)
     setShowLyricsInfo(false)
     setError(null)
+    setIsAiGenerated(false)
   }, [])
 
   // Clear the timeout when the component unmounts
@@ -42,6 +44,7 @@ export const useStreamTranscriptionApi = () => {
         (message) => setUpdateMessages((prev) => [...prev, message]),
         (info) => setLyricsInfo(info),
         (err) => setError(err),
+        (aiGenerated) => setIsAiGenerated(aiGenerated)
       ),
     onMutate: () => {
       setIsStreaming(true)
@@ -73,5 +76,6 @@ export const useStreamTranscriptionApi = () => {
     error,
     resetStream,
     mutate: mutation.mutate,
+    isAiGenerated,
   }
 }

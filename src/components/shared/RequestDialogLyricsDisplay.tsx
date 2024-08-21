@@ -13,10 +13,12 @@ interface RequestDialogLyricsDisplayProps {
     lyrics: string[]
     timestamped_lyrics: Lyric[]
   }
+  isAiGenerated: boolean
 }
 
 const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
   lyrics,
+  isAiGenerated,
 }) => {
   const [lyricsState, setLyricsState] = useState<Lyric[]>([])
   const [editMode, setEditMode] = useState(false)
@@ -63,7 +65,7 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
             [{formatTime(lyric.start_time)} - {formatTime(lyric.end_time)}]{' '}
             {lyric.lyric}
           </span>
-          {editMode && (
+          {isAiGenerated && editMode && (
             <Button
               onClick={() => handleDelete(index)}
               variant='destructive'
@@ -73,22 +75,24 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
           )}
         </div>
       ))}
-      <div className='mt-4 flex gap-2'>
-        {!editMode ? (
-          <Button onClick={handleEdit} variant='default'>
-            Edit Lyrics
-          </Button>
-        ) : (
-          <>
-            <Button onClick={handleSave} variant='default'>
-              Save Lyrics
+      {isAiGenerated && (
+        <div className='mt-4 flex gap-2'>
+          {!editMode ? (
+            <Button onClick={handleEdit} variant='default'>
+              Edit Lyrics
             </Button>
-            <Button onClick={handleCancel} variant='secondary'>
-              Cancel
-            </Button>
-          </>
-        )}
-      </div>
+          ) : (
+            <>
+              <Button onClick={handleSave} variant='default'>
+                Save Lyrics
+              </Button>
+              <Button onClick={handleCancel} variant='secondary'>
+                Cancel
+              </Button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   )
 }

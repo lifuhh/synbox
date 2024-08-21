@@ -22,6 +22,7 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
     error,
     resetStream,
     mutate,
+    isAiGenerated,
   } = useStreamTranscriptionApi()
 
   const handleRetry = useCallback(() => {
@@ -91,15 +92,19 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
 
         {showLyricsInfo && (lyricsInfo || cachedLyrics) && (
           <>
-            <RequestDialogLyricsDisplay lyrics={lyricsInfo || cachedLyrics} />
-            {retryCount < 2 && (
-              <Button
-                onClick={handleRetry}
-                variant='secondary'
-                className='ml-2 mt-2'>
-                Retry ({2 - retryCount} attempts left)
-              </Button>
+            {isAiGenerated && (
+              <div className='mb-4 rounded border border-yellow-400 bg-yellow-100 p-2'>
+                <p className='text-sm text-yellow-700'>
+                  These lyrics are AI-generated and may contain errors. Please
+                  review and edit as necessary.
+                </p>
+              </div>
             )}
+            <RequestDialogLyricsDisplay
+              lyrics={lyricsInfo || cachedLyrics}
+              isAiGenerated={isAiGenerated}
+            />
+            {!isAiGenerated && <Button className='mt-4'>Next</Button>}
           </>
         )}
 

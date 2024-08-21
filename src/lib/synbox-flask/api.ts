@@ -60,6 +60,7 @@ export const streamTranscribeVideoById = async (
   onUpdate: (message: string) => void,
   onLyricsInfo: (info: any) => void,
   onError: (error: string) => void,
+  onAiGenerated: (isAiGenerated: boolean) => void,
 ) => {
   console.log('This is stream transcribe api call')
   console.log(videoId)
@@ -97,25 +98,29 @@ export const streamTranscribeVideoById = async (
           onLyricsInfo(content['data'])
         } else if (content['type'] === 'error') {
           onError(content['data'])
+        } else if (content['type'] === 'ai_generated') {
+          onAiGenerated(content['data'])
         }
       }
     })
   }
 }
 
-
 export const streamAnnotateVideoById = async (
-videoId: string,
-lyrics: string[],
-timestampedLyrics: string[],
-onUpdate: (message: string) => void,
-onLyricsInfo: (info: any) => void,
-onError: (error: string) => void,
+  videoId: string,
+  lyrics: string[],
+  timestampedLyrics: string[],
+  onUpdate: (message: string) => void,
+  onLyricsInfo: (info: any) => void,
+  onError: (error: string) => void,
 ) => {
-
   const response = await fetch(`http://127.0.0.1:8080/transcribev2`, {
     method: 'POST',
-    body: JSON.stringify({ id: videoId, lyrics: lyrics, timestamped_lyrics: timestampedLyrics }),
+    body: JSON.stringify({
+      id: videoId,
+      lyrics: lyrics,
+      timestamped_lyrics: timestampedLyrics,
+    }),
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -123,12 +128,9 @@ onError: (error: string) => void,
   })
 
   if (!response.ok) throw new Error('Network response was not ok')
-    if (!response.body)
-      throw new Error('ReadableStream not yet supported in this browser')
-  
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder()
+  if (!response.body)
+    throw new Error('ReadableStream not yet supported in this browser')
 
-
-
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
 }
