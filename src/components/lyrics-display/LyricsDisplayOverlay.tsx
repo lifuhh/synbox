@@ -1,5 +1,6 @@
 import { useAppContext } from '@/context/AppContext'
 import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
+import { Models } from 'appwrite'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
@@ -12,6 +13,24 @@ interface LyricsDisplayProps {
   playerRef: React.MutableRefObject<BaseReactPlayer<ReactPlayer> | null>
   playing: boolean
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+interface LyricsData {
+  labelled_full_lyrics: string
+  eng_translation: string
+  chi_translation: string
+  romaji: string
+}
+
+function isLyricsData(data: unknown): data is LyricsData {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'labelled_full_lyrics' in data &&
+    'eng_translation' in data &&
+    'chi_translation' in data &&
+    'romaji' in data
+  )
 }
 
 interface LyricsLineType {
@@ -151,11 +170,19 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
   //! For test fetch lyrics
   useEffect(() => {
-    if (testLyrics) {
-      setLyricsArr(JSON.parse(testLyrics.labelled_full_lyrics))
-      setLyricsArrEng(JSON.parse(testLyrics.eng_translation))
-      setLyricsArrChi(JSON.parse(testLyrics.chi_translation))
-      setLyricsArrRomaji(JSON.parse(testLyrics.romaji))
+    if (testLyrics && isLyricsData(testLyrics)) {
+      try {
+        setLyricsArr(JSON.parse(testLyrics.labelled_full_lyrics))
+        setLyricsArrEng(JSON.parse(testLyrics.eng_translation))
+        setLyricsArrChi(JSON.parse(testLyrics.chi_translation))
+        setLyricsArrRomaji(JSON.parse(testLyrics.romaji))
+      } catch (error) {
+        console.error('Error parsing lyrics data:', error)
+        // Handle the error appropriately (e.g., show an error message to the user)
+      }
+    } else if (testLyrics) {
+      console.error('Unexpected lyrics data format:', testLyrics)
+      // Handle the unexpected data format (e.g., show an error message to the user)
     }
   }, [testLyrics])
 
