@@ -1,4 +1,5 @@
 import {
+  FetchInfiniteGalleryPlaylistParams,
   YoutubePlaylistApiResponse,
   YoutubeSearchApiResponse,
   YoutubeSearchItem,
@@ -7,6 +8,7 @@ import {
   formattedYoutubeVideoItemForCarousel,
 } from '@/types'
 import {
+  formatYoutubeInfiniteGalleryResponse,
   formatYoutubePlaylistResponse,
   formatYoutubeSearchResponse,
 } from '@/utils'
@@ -81,6 +83,27 @@ export async function getLandingPagePlaylist(): Promise<
 
   return processedResponse
 }
+
+export const getInfiniteGalleryPlaylist = async ({
+  pageParam = '',
+}: FetchInfiniteGalleryPlaylistParams): Promise<YoutubePlaylistApiResponse> => {
+  const response = await axios.get<YoutubePlaylistApiResponse>(
+    `https://www.googleapis.com/youtube/v3/playlistItems`,
+    {
+      params: {
+        key: YoutubeApiKey,
+        part: 'snippet',
+        playlistId: 'PLzJ1mqwxogpHcS_hfWcEY_o8n_yBeGlAN',
+        maxResults: 15,
+        pageToken: pageParam,
+      },
+    },
+  );
+
+  if (!response) throw new Error('Failed to fetch playlist items');
+
+  return response.data;
+};
 
 export async function getYoutubeVideoInfo(
   videoId: string,

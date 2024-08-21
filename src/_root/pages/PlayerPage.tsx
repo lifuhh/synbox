@@ -53,7 +53,7 @@ const PlayerPage = () => {
   }
 
   const handleInitMutedPlay = () => {
-    console.log('Init Muted Play clicked')
+    // console.log('Init Muted Play clicked')
     setMuted(false)
     playerOverlayVisibleHandler.close()
     handlePlay()

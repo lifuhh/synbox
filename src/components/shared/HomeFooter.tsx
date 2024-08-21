@@ -10,8 +10,8 @@ const HomeFooter = () => {
   }
 
   return (
-    <div className='flex-between bottom-0 left-0 z-10 h-14 w-full flex-col md:mt-10'>
-      <div className='flex-around'>
+    <div className='landing-footer flex-between bottom-0 left-0 z-50 h-14 w-full flex-col md:mt-2'>
+      <div className='flex-around pb-2'>
         <div className='flex'>
           <h1 className=' whitespace-nowrap text-pretty font-semibold'>
             Built With

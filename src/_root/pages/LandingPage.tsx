@@ -15,7 +15,7 @@ const LandingPage = () => {
     //* <!-- This is the main container for the landing page -->
     <section className='custom-scrollbar flex flex-1 flex-col overflow-y-scroll md:px-10'>
       <Helmet>
-        <title>Home | Synbox</title>
+        <title>Synbox</title>
         <meta name='Synbox Homepage' content='Synbox - AI Powered Karaoke' />
       </Helmet>
       {/* //? This is the song URL input area >> convert to component */}
@@ -71,9 +71,7 @@ const LandingPage = () => {
       />
       {/* //? Infinite Gallery */}
       <SongsInfiniteGallery />
-
       {/* //? Footer with tech used & personal links */}
-      <HomeFooter />
     </section>
   )
 }
