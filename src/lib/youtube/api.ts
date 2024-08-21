@@ -98,12 +98,12 @@ export const getInfiniteGalleryPlaylist = async ({
         pageToken: pageParam,
       },
     },
-  );
+  )
 
-  if (!response) throw new Error('Failed to fetch playlist items');
+  if (!response) throw new Error('Failed to fetch playlist items')
 
-  return response.data;
-};
+  return response.data
+}
 
 export async function getYoutubeVideoInfo(
   videoId: string,
@@ -138,7 +138,7 @@ export async function getYoutubeVideoInfo(
     tags: songInfo.snippet.tags || [],
     defaultAudioLanguage: songInfo.snippet.defaultAudioLanguage || '',
     thumbnail: getHighestResThumbnail(songInfo.snippet.thumbnails),
-    duration: songInfo.contentDetails.duration,
+    duration: songInfo.contentDetails?.duration || '-1',
     statistics: songInfo.statistics,
   }
 

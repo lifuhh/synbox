@@ -19,6 +19,9 @@ export const useStreamAnnotateApi = () => {
   const [showAnnotation, setShowAnnotation] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  //TODO: remove after implementation
+  const [lyricsInfo, setLyricsInfo] = useState<any>(null)
+
   const settledTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const resetStream = useCallback(() => {

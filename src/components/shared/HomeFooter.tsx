@@ -1,6 +1,5 @@
 import { Dock, DockIcon } from '@/components/magicui/dock'
 import { Divider } from '@mantine/core'
-import { ReactComponent as GCloudIcon } from '/public/assets/icons/gcloud.svg'
 
 export type IconProps = React.HTMLAttributes<SVGElement>
 

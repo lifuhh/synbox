@@ -6,16 +6,22 @@ const VolumeControlSlider = ({
   step = 1,
   value,
   onChange,
+}: {
+  min?: number
+  max?: number
+  step?: number
+  value: number
+  onChange: (value: number) => void
 }) => {
   const [isDragging, setIsDragging] = useState(false)
-  const sliderRef = useRef(null)
+  const sliderRef = useRef<HTMLDivElement>(null)
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true)
     updateValue(e)
   }
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: MouseEvent) => {
     if (isDragging) {
       updateValue(e)
     }
@@ -25,12 +31,15 @@ const VolumeControlSlider = ({
     setIsDragging(false)
   }
 
-  const updateValue = (e) => {
+  const updateValue = (e: MouseEvent | React.MouseEvent<HTMLDivElement>) => {
     const slider = sliderRef.current
-    const rect = slider.getBoundingClientRect()
-    const percentage = (e.clientX - rect.left) / rect.width
-    const newValue = Math.round((percentage * (max - min) + min) / step) * step
-    onChange(Math.max(min, Math.min(max, newValue)))
+    if (slider) {
+      const rect = slider.getBoundingClientRect()
+      const percentage = (e.clientX - rect.left) / rect.width
+      const newValue =
+        Math.round((percentage * (max - min) + min) / step) * step
+      onChange(Math.max(min, Math.min(max, newValue)))
+    }
   }
 
   useEffect(() => {

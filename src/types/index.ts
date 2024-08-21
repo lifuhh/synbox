@@ -209,12 +209,17 @@ export interface YoutubeVideoStatistics {
 export interface YoutubeSearchItem {
   kind: string
   etag: string
-  id: string
+  id:
+    | string
+    | {
+        videoId: string
+        kind: string
+      }
   snippet: YoutubeSearchItemSnippet
-  contentDetails: {
+  contentDetails?: {
     duration: string
   }
-  statistics: YoutubeVideoStatistics
+  statistics?: YoutubeVideoStatistics
 }
 
 export interface YoutubeSearchItemSnippet {
@@ -231,7 +236,7 @@ export interface YoutubeSearchItemSnippet {
 }
 
 export interface YoutubeSearchResultInfo {
-  id: string
+  id: string | { videoId: string; kind: string }
   title: string
   channelTitle: string
   description: string
@@ -239,7 +244,7 @@ export interface YoutubeSearchResultInfo {
   defaultAudioLanguage: string
   thumbnail: string
   duration: string
-  statistics: YoutubeVideoStatistics
+  statistics?: YoutubeVideoStatistics
 }
 
 //* Lyrics Processing Types
