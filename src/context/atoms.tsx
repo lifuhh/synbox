@@ -1,4 +1,15 @@
-import { atom } from 'jotai'
+import { atom, WritableAtom } from 'jotai'
+
+function atomWithToggle(
+  initialValue?: boolean,
+): WritableAtom<boolean, [boolean?], void> {
+  const anAtom = atom(initialValue, (get, set, nextValue?: boolean) => {
+    const update = nextValue ?? !get(anAtom)
+    set(anAtom, update)
+  })
+
+  return anAtom as WritableAtom<boolean, [boolean?], void>
+}
 
 export const fullscreenAtom = atom(false)
 export const playerControlVisibilityAtom = atom(false)
@@ -8,6 +19,8 @@ export const mutedAtom = atom(true)
 export const lyricsVisibilityAtom = atom(true)
 export const romajiVisibilityAtom = atom(true)
 export const translationVisibilityAtom = atom(true)
+export const translationIsEnglishAtom = atom(true)
+export const lyricsControlVisibilityAtom = atom(true)
 
 export const dialogStepAtom = atom(0)
 

@@ -3,7 +3,14 @@ import { MemoizedPlayerBottomBar as PlayerBottomBar } from '@/components/playerb
 import PlayPauseAnimation from '@/components/shared/PlayPauseAnimation'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
-import { fullscreenAtom, mutedAtom } from '@/context/atoms'
+import {
+  fullscreenAtom,
+  lyricsControlVisibilityAtom,
+  lyricsVisibilityAtom,
+  mutedAtom,
+  romajiVisibilityAtom,
+  translationVisibilityAtom,
+} from '@/context/atoms'
 import { useAtom, useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
@@ -36,10 +43,40 @@ const PlayerPage = () => {
   const testCounter = useRef<number>(0)
 
   //* Lyrics-display related state
-  const [romajiVisibility, setRomajiVisibility] = useState<boolean>(true)
-  const [lyricsVisibility, setLyricsVisibility] = useState<boolean>(true)
-  const [translationVisibility, setTranslationVisibility] =
-    useState<boolean>(true)
+  const [lyricsVisibility, setLyricsVisibility] = useAtom(lyricsVisibilityAtom)
+  const [romajiVisibility, setRomajiVisibility] = useAtom(romajiVisibilityAtom)
+  const [translationVisibility, setTranslationVisibility] = useAtom(
+    translationVisibilityAtom,
+  )
+
+  const handleToggleLyricsOverlayVisibility = useCallback(() => {
+    const someOn = lyricsVisibility || romajiVisibility || translationVisibility
+
+    const newState = !someOn
+
+    setLyricsVisibility(newState)
+    setRomajiVisibility(newState)
+    setTranslationVisibility(newState)
+  }, [
+    lyricsVisibility,
+    romajiVisibility,
+    translationVisibility,
+    setLyricsVisibility,
+    setRomajiVisibility,
+    setTranslationVisibility,
+  ])
+
+  const handleToggleRomajiVisibility = useCallback(() => {
+    setRomajiVisibility((prev) => !prev)
+  }, [setRomajiVisibility])
+
+  const handleToggleTranslationVisibility = useCallback(() => {
+    setTranslationVisibility((prev) => !prev)
+  }, [setTranslationVisibility])
+
+  const handleToggleLyricsVisibility = useCallback(() => {
+    setLyricsVisibility((prev) => !prev)
+  }, [setLyricsVisibility])
 
   //TODO: wrong - fix this
   useEffect(() => {
@@ -88,20 +125,6 @@ const PlayerPage = () => {
   const handleToggleLoop = useCallback(() => {
     setLoop(!loop)
   }, [loop]) // Add dependencies if any
-
-  const handleToggleRomajiVisibility = useCallback(() => {
-    setRomajiVisibility((prevRomajiEnabled) => !prevRomajiEnabled)
-  }, [])
-
-  const handleToggleTranslationVisibility = useCallback(() => {
-    setTranslationVisibility(
-      (prevTranslationVisibility) => !prevTranslationVisibility,
-    )
-  }, [])
-
-  const handleToggleLyricsVisibility = useCallback((visibility: boolean) => {
-    setLyricsVisibility(visibility)
-  }, [])
 
   //? `requestAnimationFrame` tester - to change to use accordingly for lyrics
   useEffect(() => {
@@ -196,9 +219,10 @@ const PlayerPage = () => {
         <title>Player Page | Synbox</title>
       </Helmet>
       {/* Lyrics Display Controller */}
-      {lyricsVisibility && isPlayerReady && (
+      {isPlayerReady && (
         <LyricsDisplayOverlay
           playerRef={playerRef}
+          lyricsVisibility={lyricsVisibility}
           romajiVisibility={romajiVisibility}
           translationVisibility={translationVisibility}
           playing={playing}
@@ -255,6 +279,9 @@ const PlayerPage = () => {
         handleToggleRomajiVisibility={handleToggleRomajiVisibility}
         handleToggleTranslationVisibility={handleToggleTranslationVisibility}
         handleToggleLyricsVisibility={handleToggleLyricsVisibility}
+        handleToggleLyricsOverlayVisibility={
+          handleToggleLyricsOverlayVisibility
+        }
       />
     </>
   )

@@ -94,7 +94,7 @@ export const getInfiniteGalleryPlaylist = async ({
         key: YoutubeApiKey,
         part: 'snippet',
         playlistId: 'PLzJ1mqwxogpHcS_hfWcEY_o8n_yBeGlAN',
-        maxResults: 15,
+        maxResults: 12,
         pageToken: pageParam,
       },
     },

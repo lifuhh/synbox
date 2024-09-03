@@ -45,7 +45,8 @@ const LandingPage = () => {
         {/* //? Songs Top 50 Leaderboard */}
         <PopularSongsTable />
       </section>
-      <Divider
+      {/* //? Pricing */}
+      {/* <Divider
         my='xs'
         label={
           <h1 className='pointer-events-none text-2xl font-bold text-light-2'>
@@ -55,8 +56,7 @@ const LandingPage = () => {
         labelPosition='center'
         className='p-4'
       />
-      {/* //? Pricing */}
-      <PricingTable />
+      <PricingTable /> */}
       {/* //TODO: Payment stuff Component */}
       <Divider
         my='xs'

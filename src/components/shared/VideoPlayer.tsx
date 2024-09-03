@@ -4,6 +4,7 @@ import { LoadingOverlay } from '@mantine/core'
 import { useAtom } from 'jotai'
 import { ForwardedRef, useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
+import ExternalLinkHandler from './ExternalLinkHandler'
 import PlayerMutedOverlay from './PlayerMutedOverlay'
 
 interface VideoPlayerProps {
@@ -66,7 +67,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         // Check if the video is playing
         timer = setTimeout(() => {
           setPlayerControlsVisible(false)
-        }, 4000)
+        }, 2500)
       }
     }
 
@@ -123,37 +124,40 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           ),
         }}
       />
-      <ReactPlayer
-        className='absolute left-0 right-0 top-0'
-        ref={playerRef}
-        config={{
-          youtube: {
-            playerVars: {
-              rel: 0,
-              hl: 'ja',
+      <ExternalLinkHandler>
+        <ReactPlayer
+          className='absolute left-0 right-0 top-0'
+          ref={playerRef}
+          config={{
+            youtube: {
+              playerVars: {
+                rel: 0,
+                hl: 'ja',
+              },
             },
-          },
-        }}
-        width='100%'
-        height='100%'
-        url={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&cc_load_policy=0&rel=0`}
-        // url={`https://www.youtube.com/embed/${videoId}?cc_load_policy=0&rel=0`}
-        // url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3&rel=0`}
-        muted={muted}
-        volume={volume}
-        playing={playing}
-        loop={loop}
-        controls={true}
-        onReady={handleReady}
-        onStart={handleStart}
-        onPlay={handlePlay}
-        onSeek={(e) => console.log('onSeek', e)}
-        onEnded={handleVideoEnded}
-        onError={(e) => console.log('onError', e)}
-        onProgress={handleProgress}
-        onDuration={handleDuration}
-        onPause={handlePause}
-      />
+          }}
+          width='100%'
+          height='100%'
+          url={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&cc_load_policy=0&rel=0`}
+          // url={`https://www.youtube.com/embed/${videoId}?cc_load_policy=0&rel=0`}
+          // url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3&rel=0`}
+          muted={muted}
+          volume={volume}
+          playing={playing}
+          loop={loop}
+          controls={true}
+          onReady={handleReady}
+          onStart={handleStart}
+          onPlay={handlePlay}
+          onSeek={(e) => console.log('onSeek', e)}
+          onEnded={handleVideoEnded}
+          onError={(e) => console.log('onError', e)}
+          onProgress={handleProgress}
+          onDuration={handleDuration}
+          onPause={handlePause}
+        />
+      </ExternalLinkHandler>
+
       {playing || videoEnded ? (
         <div
           className='absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-0 text-white'

@@ -1,8 +1,16 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { formatTimeDisplay } from '@/utils'
+import LanguageIcon from '@mui/icons-material/Language'
+import PauseIcon from '@mui/icons-material/Pause'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import RepeatIcon from '@mui/icons-material/Repeat'
+import RepeatOnIcon from '@mui/icons-material/RepeatOn'
+import SettingsIcon from '@mui/icons-material/Settings'
+import SkipNextIcon from '@mui/icons-material/SkipNext'
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
+import TranslateIcon from '@mui/icons-material/Translate'
 import {
-  ForwardedRef,
   MouseEvent,
   useCallback,
   useEffect,
@@ -13,14 +21,6 @@ import {
 import ReactPlayer from 'react-player'
 import screenfull from 'screenfull'
 import LyricsDropdownButton from '../lyrics-display/LyricsDropdownButton'
-
-import PauseIcon from '@mui/icons-material/Pause'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import RepeatIcon from '@mui/icons-material/Repeat'
-import RepeatOnIcon from '@mui/icons-material/RepeatOn'
-import SettingsIcon from '@mui/icons-material/Settings'
-import SkipNextIcon from '@mui/icons-material/SkipNext'
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 // import ClosedCaptionOffIcon from '@mui/icons-material/ClosedCaptionOff';
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
@@ -30,8 +30,14 @@ import React from 'react'
 import VolumeControl from './VolumeControl'
 
 import { useAppContext } from '@/context/AppContext'
-import { fullscreenAtom, mutedAtom } from '@/context/atoms'
+import {
+  fullscreenAtom,
+  lyricsControlVisibilityAtom,
+  mutedAtom,
+} from '@/context/atoms'
 import { useAtom, useAtomValue } from 'jotai'
+import LyricsVisibilityToggleGroup from '../lyrics-display/LyricsVisibilityToggleGroup'
+import LyricsControlBottomBarButton from './LyricsControlBottomBarButton'
 
 interface PlayerBottomBarProps {
   playing: boolean
@@ -50,6 +56,7 @@ interface PlayerBottomBarProps {
   handleToggleLoop: () => void
   handleToggleRomajiVisibility: () => void
   handleToggleTranslationVisibility: () => void
+  handleToggleLyricsOverlayVisibility: () => void
   handleToggleLyricsVisibility: (visibility: boolean) => void
   playerRef: React.MutableRefObject<ReactPlayer | null>
 }
@@ -72,6 +79,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   handleToggleLoop,
   handleToggleRomajiVisibility,
   handleToggleTranslationVisibility,
+  handleToggleLyricsOverlayVisibility,
   handleToggleLyricsVisibility,
 }) => {
   const bottomBarRef = useRef<HTMLDivElement>(null)
@@ -79,6 +87,9 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   const { playerControlsVisible, setBottomBarHeight } = useAppContext()
 
   const [isFullscreen, setIsFullscreen] = useAtom(fullscreenAtom)
+  const [lyricsControlVisibility, setLyricsControlVisibility] = useAtom(
+    lyricsControlVisibilityAtom,
+  )
   const muted = useAtomValue(mutedAtom)
 
   const getCurrentPlayedPercentage = useCallback(() => {
@@ -137,8 +148,9 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   const handleSettingsClick = () => {
-    setIsSettingsOpen(!isSettingsOpen)
     // Add your logic here to open/close the settings dropdown
+    setIsSettingsOpen(!isSettingsOpen)
+    setLyricsControlVisibility(!lyricsControlVisibility)
   }
 
   const handleButtonHover = (buttonId: string) => {
@@ -150,9 +162,11 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   }
 
   const getButtonStyle = (buttonId: string) => {
+    const isHovered = hoveredButton === buttonId
     return {
-      opacity: hoveredButton === buttonId ? 1 : 0.7,
-      transition: 'opacity 0.15s ease-in-out',
+      opacity: isHovered ? 1 : 0.7,
+      transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+      transition: 'opacity 0.15s ease-in-out, transform 0.15s ease-in-out',
     }
   }
 
@@ -172,6 +186,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     <div
       ref={bottomBarRef}
       className={`controls fixed inset-x-0 bottom-0 bg-dark-3 ${playerControlsVisible ? 'visible' : 'hidden'}`}>
+      {lyricsControlVisibility && <LyricsVisibilityToggleGroup />}
       <div className='h-1 cursor-pointer'>
         <Slider
           defaultValue={[0]}
@@ -181,7 +196,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
           onValueChange={(value) => handleSeekChange(value[0])}
         />
       </div>
-      <div className='flex items-center justify-between py-2 sm:mx-2'>
+      <div className='flex items-center justify-between py-2'>
         <div className='flex items-center lg:mr-6'>
           <Button
             className='rounded-full'
@@ -218,7 +233,22 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             <SkipNextIcon sx={{ fontSize: 32 }} />
             <span className='sr-only'>Next track</span>
           </Button>
-
+          {/* //! Shuffle Play */}
+          <Button
+            className='rounded-full'
+            size='icon'
+            variant='ghost'
+            onClick={handleToggleLoop}
+            onMouseEnter={() => handleButtonHover('loop')}
+            onMouseLeave={handleButtonLeave}
+            style={getButtonStyle('loop')}>
+            {loop ? (
+              <RepeatOnIcon sx={{ fontSize: 32 }} />
+            ) : (
+              <RepeatIcon sx={{ fontSize: 32 }} />
+            )}
+            <span className='sr-only'>Shuffle</span>
+          </Button>
           <VolumeControl
             onMouseEnter={(buttonId) => handleButtonHover(buttonId)}
             onMouseLeave={handleButtonLeave}
@@ -238,32 +268,15 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
         </div>
 
         <div className='ml-6 flex items-center justify-end gap-1 md:gap-2'>
-          {/* //! Shuffle Play */}
-          <Button
-            className='rounded-full'
-            size='icon'
-            variant='ghost'
-            onClick={handleToggleLoop}
-            onMouseEnter={() => handleButtonHover('loop')}
-            onMouseLeave={handleButtonLeave}
-            style={getButtonStyle('loop')}>
-            {loop ? (
-              <RepeatOnIcon sx={{ fontSize: 32 }} />
-            ) : (
-              <RepeatIcon sx={{ fontSize: 32 }} />
-            )}
-            <span className='sr-only'>Shuffle</span>
-          </Button>
-          {/* //! Subtitles Selection & Upload */}
+          {/* //! Subtitles Selection & Upload
           <LyricsDropdownButton
             handleToggleLyricsVisibility={handleToggleLyricsVisibility}
-          />
-          {/* //! Translation Selection */}
+          /> */}
           <Button
             className='rounded-full'
             size='icon'
             variant='ghost'
-            onClick={handleToggleRomajiVisibility}
+            onClick={handleToggleLyricsOverlayVisibility}
             onMouseEnter={() => handleButtonHover('romaji')}
             onMouseLeave={handleButtonLeave}
             style={getButtonStyle('romaji')}>
@@ -272,8 +285,10 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             ) : (
               <SubtitlesOffIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
             )}
-            <span className='sr-only'>Toggle Romaji</span>
+            <span className='sr-only'>Toggle Lyrics</span>
           </Button>
+          {/* TBD */}
+          {/* <LyricsControlBottomBarButton/> */}
           <Button
             className='rounded-full'
             size='icon'
@@ -292,7 +307,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
           </Button>
           {/* //*TODO: Handle Dismissing Top Bar & Bottom Bar to make more space  */}
           <Button
-            className='rounded-full'
+            className='rounded-full pr-2'
             size='icon'
             variant='ghost'
             onClick={handleFullscreen}
@@ -300,9 +315,9 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             onMouseLeave={handleButtonLeave}
             style={getButtonStyle('fullscreen')}>
             {isFullscreen ? (
-              <FullscreenExitIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
+              <FullscreenExitIcon className='h-4 w-4' sx={{ fontSize: 36 }} />
             ) : (
-              <FullscreenIcon className='h-4 w-4' sx={{ fontSize: 32 }} />
+              <FullscreenIcon className='h-4 w-4' sx={{ fontSize: 36 }} />
             )}
             <span className='sr-only'>Fullscreen</span>
           </Button>
