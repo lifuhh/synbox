@@ -1,5 +1,8 @@
 import { useAppContext } from '@/context/AppContext'
-import { translationIsEnglishAtom } from '@/context/atoms'
+import {
+  fontSizeMultiplierAtom,
+  translationIsEnglishAtom,
+} from '@/context/atoms'
 import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
 import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -218,40 +221,87 @@ function LyricsDisplayOverlay({
     [playerControlsVisible, bottomBarHeight],
   )
 
-  const renderLyricContent = (content: React.ReactNode, condition: boolean) =>
-    condition && (
-      <div
-        className={`${transitionRef.current.isEntering ? 'fade-in' : transitionRef.current.isExiting ? 'fade-out' : ''}`}>
-        {content}
-      </div>
-    )
+  //TODO: Font size multiplier testing
+  const fontSizeMultiplier = useAtomValue(fontSizeMultiplierAtom)
+
+  const renderLyricLine = useCallback(
+    (
+      content: React.ReactNode,
+      visibility: boolean,
+      type: 'translation' | 'lyrics' | 'romaji',
+    ) => {
+      if (!visibility || !content) return null
+
+      const baseClass =
+        'transition-all duration-200 ease-in-out text-center w-full'
+      let typeClass = ''
+
+      switch (type) {
+        case 'translation':
+          typeClass = '!text-2.4vw'
+          break
+        case 'lyrics':
+          typeClass = '!text-3.5vw'
+          break
+        case 'romaji':
+          typeClass = '!text-2.4vw'
+          break
+      }
+
+      return (
+        <div
+          className={`${baseClass} ${typeClass} ${
+            transitionRef.current.isEntering
+              ? 'fade-in'
+              : transitionRef.current.isExiting
+                ? 'fade-out'
+                : ''
+          }`}>
+          {content}
+        </div>
+      )
+    },
+    [],
+  )
 
   return (
     <div
-      className='player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full pb-2'
+      className='player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full'
       style={{ height: getOverlayHeight }}>
-      <div className='lyric-container flex h-full w-full flex-col justify-end text-center'>
-        {renderLyricContent(
-          isTranslationEnglish
-            ? renderedLyrics.eng[currentIndex]
-            : renderedLyrics.chi[currentIndex],
-          translationVisibility &&
-            !isContentSame(
-              isTranslationEnglish ? currentLyric.eng : currentLyric.chi,
-              currentLyric.jp,
-            ),
-        )}
-        {renderLyricContent(
-          <div style={lyricsStyles[currentIndex]} className='mb-1 !text-3.5vw'>
-            {renderedLyrics.jp[currentIndex]}
-          </div>,
-          lyricsVisibility,
-        )}
-        {renderLyricContent(
-          renderedLyrics.romaji[currentIndex],
-          romajiVisibility &&
-            !isContentSame(currentLyric.romaji, currentLyric.jp),
-        )}
+      <div className='lyric-container flex h-full w-full flex-col-reverse items-center justify-start pb-2'>
+        <div
+          className='flex flex-col items-end'
+          style={{
+            transform: `scale(${fontSizeMultiplier})`,
+            transformOrigin: 'center bottom',
+          }}>
+          {renderLyricLine(
+            isTranslationEnglish
+              ? renderedLyrics.eng[currentIndex]
+              : renderedLyrics.chi[currentIndex],
+            translationVisibility &&
+              !isContentSame(
+                isTranslationEnglish ? currentLyric.eng : currentLyric.chi,
+                currentLyric.jp,
+              ),
+            'translation',
+          )}
+          {renderLyricLine(
+            <div
+              style={lyricsStyles[currentIndex]}
+              className='w-full text-center'>
+              {renderedLyrics.jp[currentIndex]}
+            </div>,
+            lyricsVisibility,
+            'lyrics',
+          )}
+          {renderLyricLine(
+            renderedLyrics.romaji[currentIndex],
+            romajiVisibility &&
+              !isContentSame(currentLyric.romaji, currentLyric.jp),
+            'romaji',
+          )}
+        </div>
       </div>
     </div>
   )

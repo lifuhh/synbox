@@ -8,7 +8,14 @@ import React, { useCallback, useRef, useState } from 'react'
 import { Button } from '../ui/button'
 import VolumeControlSlider from './VolumeControlSlider'
 
-const VolumeControl = ({
+interface VolumeControlProps {
+  onMouseEnter: (buttonId: string) => void
+  onMouseLeave: () => void
+  getButtonStyle: (buttonId: string) => React.CSSProperties
+  timeDisplay: React.ReactNode
+}
+
+const VolumeControl: React.FC<VolumeControlProps> = ({
   onMouseEnter,
   onMouseLeave,
   getButtonStyle,

@@ -69,7 +69,7 @@ export async function getLandingPagePlaylist(): Promise<
       params: {
         key: YoutubeApiKey,
         part: 'snippet',
-        playlistId: 'PLzJ1mqwxogpFuFCk1YfUE1c0gWtnIutfz',
+        playlistId: 'PLzJ1mqwxogpFxKR72a6M8br_UkLKFQASf',
         maxResults: 50,
       },
     },

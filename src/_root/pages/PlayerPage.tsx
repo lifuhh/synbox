@@ -1,5 +1,5 @@
 import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverlay'
-import { MemoizedPlayerBottomBar as PlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
+import { MemoizedPlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import {
@@ -53,6 +53,7 @@ const PlayerPage = () => {
     lyricsControlVisibilityAtom,
   )
 
+  //? Handler for lyrics overlay changes
   const handleToggleLyricsOverlayVisibility = useCallback(() => {
     const someOn = lyricsVisibility || romajiVisibility || translationVisibility
 
@@ -283,7 +284,7 @@ const PlayerPage = () => {
           />
         )}
       </div>
-      <PlayerBottomBar
+      <MemoizedPlayerBottomBar
         playing={playing}
         loop={loop}
         played={played}

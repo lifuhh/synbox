@@ -28,6 +28,7 @@ import VolumeControl from './VolumeControl'
 
 import { useAppContext } from '@/context/AppContext'
 import {
+  fontSizeMultiplierAtom,
   fullscreenAtom,
   lyricsControlVisibilityAtom,
   mutedAtom,
@@ -144,6 +145,15 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     }
   }
 
+  //TODO: Font size control testing
+  const [fontSizeMultiplier, setFontSizeMultiplier] = useAtom(
+    fontSizeMultiplierAtom,
+  )
+
+  const handleFontSizeChange = (value: number[]) => {
+    setFontSizeMultiplier(value[0])
+  }
+
   return (
     // <div
     //   className={`fixed inset-x-0 bottom-0 bg-dark-3
@@ -246,6 +256,21 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
           <LyricsDropdownButton
             handleToggleLyricsVisibility={handleToggleLyricsVisibility}
           /> */}
+          {/* //TODO: Testing scaling of lyrics size */}
+          <div className='mt-2 flex items-center justify-center'>
+            <span className=' mr-2 text-sm'>A</span>
+            <Slider
+              className='w-20'
+              min={0.5}
+              max={1}
+              step={0.01}
+              value={[fontSizeMultiplier]}
+              onValueChange={handleFontSizeChange}
+            />
+            <span className='mb-1 ml-2 text-xl'>A</span>
+          </div>
+
+          {/* //* Lyrics visibility toggle */}
           <Button
             className='rounded-full'
             size='icon'
