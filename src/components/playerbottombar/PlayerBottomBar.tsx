@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { formatTimeDisplay } from '@/utils'
-import LanguageIcon from '@mui/icons-material/Language'
 import PauseIcon from '@mui/icons-material/Pause'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import RepeatIcon from '@mui/icons-material/Repeat'
@@ -9,7 +8,6 @@ import RepeatOnIcon from '@mui/icons-material/RepeatOn'
 import SettingsIcon from '@mui/icons-material/Settings'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
-import TranslateIcon from '@mui/icons-material/Translate'
 import {
   MouseEvent,
   useCallback,
@@ -20,7 +18,6 @@ import {
 } from 'react'
 import ReactPlayer from 'react-player'
 import screenfull from 'screenfull'
-import LyricsDropdownButton from '../lyrics-display/LyricsDropdownButton'
 // import ClosedCaptionOffIcon from '@mui/icons-material/ClosedCaptionOff';
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
@@ -37,7 +34,6 @@ import {
 } from '@/context/atoms'
 import { useAtom, useAtomValue } from 'jotai'
 import LyricsVisibilityToggleGroup from '../lyrics-display/LyricsVisibilityToggleGroup'
-import LyricsControlBottomBarButton from './LyricsControlBottomBarButton'
 
 interface PlayerBottomBarProps {
   playing: boolean
@@ -45,7 +41,6 @@ interface PlayerBottomBarProps {
   played: number
   duration: number
   romajiEnabled: boolean
-  handlePlay: () => void
   handleInitMutedPlay: () => void
   handlePause: () => void
   handlePlayPause: () => void
@@ -67,20 +62,16 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   played,
   duration,
   romajiEnabled,
-  playerRef,
-  handlePlay,
+  // playerRef,
   handleInitMutedPlay,
-  handlePause,
+  // handlePause,
   handlePlayPause,
-  handleSeekMouseDown,
+  // handleSeekMouseDown,
   handleSeekChange,
-  handleSeekMouseUp,
-  handleProgress,
+  // handleSeekMouseUp,
+  // handleProgress,
   handleToggleLoop,
-  handleToggleRomajiVisibility,
-  handleToggleTranslationVisibility,
   handleToggleLyricsOverlayVisibility,
-  handleToggleLyricsVisibility,
 }) => {
   const bottomBarRef = useRef<HTMLDivElement>(null)
   // console.log('Player Bottom Bar re-rendered...')
@@ -125,23 +116,6 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
       }
     }
   }, [setIsFullscreen])
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === ' ') {
-        event.preventDefault()
-        // Check if the pressed key is the spacebar
-        handlePlayPause() // Toggle play/pause
-      }
-    }
-    // Add event listener for 'keydown' event on the document
-    document.addEventListener('keydown', handleKeyDown)
-
-    // Cleanup function to remove event listener when component unmounts
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [handlePlayPause])
 
   //* Player controls icon animations
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)

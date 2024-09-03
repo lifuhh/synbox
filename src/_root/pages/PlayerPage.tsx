@@ -1,6 +1,5 @@
 import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverlay'
 import { MemoizedPlayerBottomBar as PlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
-import PlayPauseAnimation from '@/components/shared/PlayPauseAnimation'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import {
@@ -32,9 +31,10 @@ const PlayerPage = () => {
   //* Video Player state
   const [isPlayerReady, setIsPlayerReady] = useState(false)
   const [playing, setPlaying] = useState<boolean>(muted ? false : true)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [seeking, setSeeking] = useState<boolean>(false)
   const [played, setPlayed] = useState<number>(0)
-  const [loaded, setLoaded] = useState<number>(0)
+  // const [loaded, setLoaded] = useState<number>(0)
   const [loop, setLoop] = useState<boolean>(false)
   const [duration, setDuration] = useState<number>(0)
   const playerRef = useRef<BaseReactPlayer<ReactPlayer> | null>(null)
@@ -47,6 +47,10 @@ const PlayerPage = () => {
   const [romajiVisibility, setRomajiVisibility] = useAtom(romajiVisibilityAtom)
   const [translationVisibility, setTranslationVisibility] = useAtom(
     translationVisibilityAtom,
+  )
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [lyricsControlVisibility, setLyricsControlVisibility] = useAtom(
+    lyricsControlVisibilityAtom,
   )
 
   const handleToggleLyricsOverlayVisibility = useCallback(() => {
@@ -83,44 +87,45 @@ const PlayerPage = () => {
     if (videoId) setStateVideoId(videoId)
   }, [videoId])
 
-  const load = (vidId: string) => {
-    setStateVideoId(vidId)
-    setPlayed(0)
-    setLoaded(0)
-  }
-
-  const handleInitMutedPlay = () => {
-    // console.log('Init Muted Play clicked')
-    setMuted(false)
-    playerOverlayVisibleHandler.close()
-    handlePlay()
-  }
+  // const load = (vidId: string) => {
+  //   setStateVideoId(vidId)
+  //   setPlayed(0)
+  //   setLoaded(0)
+  // }
 
   const handlePause = useCallback(() => {
     // console.log('onPause')
     setPlaying(false)
-  }, [])
+    setLyricsControlVisibility(true)
+  }, [setLyricsControlVisibility])
 
+  const handlePlayPause = useCallback(() => {
+    const newPlayingState = !playing
+    setPlaying(newPlayingState)
+    setLyricsControlVisibility(!newPlayingState)
+  }, [playing, setLyricsControlVisibility])
+
+  //* Used for youtube player's native interactions, replicate everything in handleplaypause here as well
   const handlePlay = useCallback(() => {
     setPlaying(true)
     // playerOverlayVisibleHandler.close()
     if (muted) setMuted(false)
+    setLyricsControlVisibility(false)
     // setTestStartTime(performance.now())
-  }, [muted, setMuted])
+  }, [muted, setMuted, setLyricsControlVisibility])
 
-  const [showPlayPauseAnimation, setShowPlayPauseAnimation] = useState(false)
-  const handlePlayPause = useCallback(() => {
-    setShowPlayPauseAnimation(true)
-    setPlaying(!playing)
-  }, [playing])
-
-  const handleAnimationComplete = useCallback(() => {
-    setShowPlayPauseAnimation(false)
-  }, [])
-
-  // const handlePlayPause = useCallback(() => {
-  //   setPlaying(!playing)
-  // }, [playing])
+  const handleInitMutedPlay = useCallback(() => {
+    // console.log('Init Muted Play clicked')
+    setMuted(false)
+    playerOverlayVisibleHandler.close()
+    handlePlay()
+    setLyricsControlVisibility(false)
+  }, [
+    setLyricsControlVisibility,
+    handlePlay,
+    playerOverlayVisibleHandler,
+    setMuted,
+  ])
 
   const handleToggleLoop = useCallback(() => {
     setLoop(!loop)
@@ -129,6 +134,7 @@ const PlayerPage = () => {
   //? `requestAnimationFrame` tester - to change to use accordingly for lyrics
   useEffect(() => {
     //! RAF gives a timestamp actually
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const testAnimationFrameCallback = (timestamp: number) => {
       // console.log(timestamp)
       testCounter.current++
@@ -207,11 +213,36 @@ const PlayerPage = () => {
     setDuration(duration)
   }, [])
 
-  const handlePlayerPageClick = () => {
-    console.log('Handled player page click')
-    handlePlayPause()
-    if (muted) setMuted(false)
-  }
+  //? Handle spacebar events
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === ' ' || event.code === 'Space') {
+        event.preventDefault()
+        handlePlayPause()
+      }
+    }
+
+    // Use capture phase to intercept the event before it reaches other elements
+    document.addEventListener('keydown', handleKeyDown, true)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true)
+    }
+  }, [handlePlayPause])
+
+  useEffect(() => {
+    const preventSpacebarScroll = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault()
+      }
+    }
+
+    window.addEventListener('keydown', preventSpacebarScroll)
+
+    return () => {
+      window.removeEventListener('keydown', preventSpacebarScroll)
+    }
+  }, [])
 
   return (
     <>
@@ -226,7 +257,6 @@ const PlayerPage = () => {
           romajiVisibility={romajiVisibility}
           translationVisibility={translationVisibility}
           playing={playing}
-          setPlaying={setPlaying}
         />
       )}
       {/* //TODO: Added unselectable to youtube player, need to add at top level to play video if video is paused and user clicks on screen */}
@@ -242,8 +272,8 @@ const PlayerPage = () => {
             loop={loop}
             playing={playing}
             volume={volume}
-            handlePlay={handlePlay}
             handleInitMutedPlay={handleInitMutedPlay}
+            handlePlay={handlePlay}
             handlePlayPause={handlePlayPause}
             handleProgress={handleProgress}
             handleDuration={handleDuration}
@@ -252,13 +282,6 @@ const PlayerPage = () => {
             setIsPlayerReady={setIsPlayerReady}
           />
         )}
-        {/* {showPlayPauseAnimation && (
-          <PlayPauseAnimation
-            isPlaying={playing}
-            visible={showPlayPauseAnimation}
-            onAnimationComplete={handleAnimationComplete}
-          />
-        )} */}
       </div>
       <PlayerBottomBar
         playing={playing}
@@ -268,7 +291,6 @@ const PlayerPage = () => {
         playerRef={playerRef}
         romajiEnabled={romajiVisibility}
         handleInitMutedPlay={handleInitMutedPlay}
-        handlePlay={handlePlay}
         handlePause={handlePause}
         handlePlayPause={handlePlayPause}
         handleSeekMouseDown={handleSeekMouseDown}

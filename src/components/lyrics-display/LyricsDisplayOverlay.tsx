@@ -1,21 +1,19 @@
 import { useAppContext } from '@/context/AppContext'
 import { translationIsEnglishAtom } from '@/context/atoms'
 import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
-import { Models } from 'appwrite'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
 import { useLocation } from 'react-router-dom'
 import { MemoizedLyricTextLine } from './LyricTextLine'
 
-interface LyricsDisplayProps {
+interface LyricsDisplayOverlayProps {
   lyricsVisibility: boolean
   romajiVisibility: boolean
   translationVisibility: boolean
   playerRef: React.MutableRefObject<BaseReactPlayer<ReactPlayer> | null>
   playing: boolean
-  setPlaying: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface LyricsData {
@@ -51,14 +49,12 @@ interface RenderedLyricsType {
   chi: React.ReactNode[]
   romaji: React.ReactNode[]
 }
-const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
+function LyricsDisplayOverlay({
   romajiVisibility,
   translationVisibility,
   lyricsVisibility,
   playerRef,
-  playing,
-  setPlaying,
-}) => {
+}: LyricsDisplayOverlayProps) {
   const location = useLocation()
   const { playerControlsVisible, bottomBarHeight } = useAppContext()
 
@@ -81,6 +77,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
   const transitionRef = useRef({ isEntering: false, isExiting: false })
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: testLyrics, isLoading: isTestLyricsFetching } =
     useGetLyricsBySongId(videoId || '')
 
@@ -157,7 +154,11 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
         chi: renderedChi,
         romaji: renderedRomaji,
       })
-      setLyricsStyles(lyricsArr.map(() => ({ '--kanji-spacing': '0.14em' })))
+      setLyricsStyles(
+        lyricsArr.map(
+          () => ({ '--kanji-spacing': '0.14em' }) as React.CSSProperties,
+        ),
+      )
     }
   }, [lyricsArr, lyricsArrEng, lyricsArrChi, lyricsArrRomaji])
 
@@ -256,4 +257,5 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   )
 }
 
-export default React.memo(LyricsDisplay)
+const MemoizedLyricsDisplayOverlay = React.memo(LyricsDisplayOverlay)
+export default MemoizedLyricsDisplayOverlay

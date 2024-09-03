@@ -106,11 +106,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setVideoEnded(playing)
   }
 
-  const testToggleOverlay = () => {
-    // console.log('Toggled test overlay ')
-    playerOverlayVisibleHandler.toggle()
-  }
-
   return (
     <>
       <LoadingOverlay
@@ -133,6 +128,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               playerVars: {
                 rel: 0,
                 hl: 'ja',
+                disablekb: 1,
               },
             },
           }}

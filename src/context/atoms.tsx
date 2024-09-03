@@ -1,15 +1,4 @@
-import { atom, WritableAtom } from 'jotai'
-
-function atomWithToggle(
-  initialValue?: boolean,
-): WritableAtom<boolean, [boolean?], void> {
-  const anAtom = atom(initialValue, (get, set, nextValue?: boolean) => {
-    const update = nextValue ?? !get(anAtom)
-    set(anAtom, update)
-  })
-
-  return anAtom as WritableAtom<boolean, [boolean?], void>
-}
+import { atom } from 'jotai'
 
 export const fullscreenAtom = atom(false)
 export const playerControlVisibilityAtom = atom(false)
@@ -25,7 +14,9 @@ export const lyricsControlVisibilityAtom = atom(true)
 export const dialogStepAtom = atom(0)
 
 // Define a writable base atom
-const baseStreamResultAtom = atom<{ id: string; streamData: any } | null>(null)
+const baseStreamResultAtom = atom<{ id: string; streamData: unknown } | null>(
+  null,
+)
 
 // Define a read-only derived atom
 export const streamResultAtom = atom((get) => {
@@ -47,7 +38,7 @@ export const streamResultAtom = atom((get) => {
 // Define a writable atom to update streamResult and localStorage
 export const setStreamResultAtom = atom(
   null,
-  (get, set, newValue: { id: string; streamData: any }) => {
+  (get, set, newValue: { id: string; streamData: unknown }) => {
     set(baseStreamResultAtom, newValue)
     localStorage.setItem('streamResult', JSON.stringify(newValue))
   },
