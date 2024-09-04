@@ -82,7 +82,7 @@ const VolumeControl: React.FC<VolumeControlProps> = ({
           />
         </div>
       </div>
-      <div className='transition-all duration-300 ease-in-out'>
+      <div className='-ml-2 transition-all duration-300 ease-in-out'>
         {timeDisplay}
       </div>
     </div>

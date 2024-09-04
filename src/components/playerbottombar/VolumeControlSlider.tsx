@@ -54,18 +54,19 @@ const VolumeControlSlider = ({
   const percentage = ((value - min) / (max - min)) * 100
 
   return (
-    <div
-      ref={sliderRef}
-      className='relative h-2 w-full cursor-pointer rounded-full bg-light-2'
-      onMouseDown={handleMouseDown}>
+    <div className='relative cursor-pointer py-4' onMouseDown={handleMouseDown}>
       <div
-        className='absolute h-full rounded-full bg-primary'
-        style={{ width: `${percentage}%` }}
-      />
-      <div
-        className='absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-light-2 bg-primary'
-        style={{ left: `${percentage}%` }}
-      />
+        ref={sliderRef}
+        className='absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-light-2'>
+        <div
+          className='absolute h-full rounded-full bg-primary'
+          style={{ width: `${percentage}%` }}
+        />
+        <div
+          className='absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-light-2 bg-primary'
+          style={{ left: `${percentage}%` }}
+        />
+      </div>
     </div>
   )
 }

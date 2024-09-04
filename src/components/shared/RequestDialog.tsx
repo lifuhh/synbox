@@ -104,8 +104,8 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
         return (
           <RequestDialogAnnotateDisplay
             id={videoId}
-            lyrics={['']}
-            timestampedLyrics={['']}
+            lyrics={vidInfo?.lyrics || []}
+            timestampedLyrics={vidInfo?.timestamped_lyrics || []}
           />
         )
       case 3:

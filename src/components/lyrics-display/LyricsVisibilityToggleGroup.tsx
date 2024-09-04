@@ -1,13 +1,16 @@
+import { Slider } from '@/components/ui/slider'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
+  fontSizeMultiplierAtom,
   lyricsVisibilityAtom,
   romajiVisibilityAtom,
   translationIsEnglishAtom,
   translationVisibilityAtom,
+  userInteractedWithSettingsAtom,
 } from '@/context/atoms'
 import LyricsIcon from '@mui/icons-material/Lyrics'
 import TranslateIcon from '@mui/icons-material/Translate'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect, useState } from 'react'
 
 const LyricsVisibilityToggleGroup: React.FC = () => {
@@ -17,6 +20,18 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     'translation',
     'translationLanguage',
   ])
+
+  // const userInteractedWithSettings = useAtomValue(
+  //   userInteractedWithSettingsAtom,
+  // )
+
+  const [fontSizeMultiplier, setFontSizeMultiplier] = useAtom(
+    fontSizeMultiplierAtom,
+  )
+  const handleFontSizeChange = (value: number[]) => {
+    setFontSizeMultiplier(value[0])
+  }
+
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
 
   const [isLyricsVisible, setLyricsVisible] = useAtom(lyricsVisibilityAtom)
@@ -95,7 +110,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
   }
 
   return (
-    <div className='absolute bottom-full left-1/2 mb-4 flex -translate-x-1/2 transform space-x-2'>
+    <div className='absolute bottom-full left-1/2 mb-4 flex -translate-x-1/2 transform flex-col-reverse space-x-2'>
       <ToggleGroup
         type='multiple'
         value={lyricsToggleValues}
@@ -148,6 +163,22 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
           <span className='sr-only'>Toggle Romaji</span>
         </ToggleGroupItem>
       </ToggleGroup>
+      <div className='flex items-center justify-center pb-2'>
+        <span className='mr-2 text-sm font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
+          A
+        </span>
+        <Slider
+          className='w-32'
+          min={0.5}
+          max={1}
+          step={0.01}
+          value={[fontSizeMultiplier]}
+          onValueChange={handleFontSizeChange}
+        />
+        <span className='ml-2 text-xl font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
+          A
+        </span>
+      </div>
     </div>
   )
 }

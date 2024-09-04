@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
+import { userInteractedWithSettingsAtom } from '@/context/atoms'
 import { formatTimeDisplay } from '@/utils'
 import PauseIcon from '@mui/icons-material/Pause'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
@@ -28,7 +29,6 @@ import VolumeControl from './VolumeControl'
 
 import { useAppContext } from '@/context/AppContext'
 import {
-  fontSizeMultiplierAtom,
   fullscreenAtom,
   lyricsControlVisibilityAtom,
   mutedAtom,
@@ -122,8 +122,14 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
+  const [userInteractedWithSettings, setUserInteractedWithSettings] = useAtom(
+    userInteractedWithSettingsAtom,
+  )
+
   const handleSettingsClick = () => {
-    // Add your logic here to open/close the settings dropdown
+    if (!userInteractedWithSettings) {
+      setUserInteractedWithSettings(true)
+    }
     setIsSettingsOpen(!isSettingsOpen)
     setLyricsControlVisibility(!lyricsControlVisibility)
   }
@@ -138,6 +144,13 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
 
   const getButtonStyle = (buttonId: string) => {
     const isHovered = hoveredButton === buttonId
+    if (buttonId === 'loop') {
+      return {
+        opacity: loop ? 1 : isHovered ? 1 : 0.7,
+        transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+        transition: 'opacity 0.15s ease-in-out, transform 0.15s ease-in-out',
+      }
+    }
     return {
       opacity: isHovered ? 1 : 0.7,
       transform: isHovered ? 'scale(1.1)' : 'scale(1)',
@@ -145,42 +158,24 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
     }
   }
 
-  //TODO: Font size control testing
-  const [fontSizeMultiplier, setFontSizeMultiplier] = useAtom(
-    fontSizeMultiplierAtom,
-  )
-
-  const handleFontSizeChange = (value: number[]) => {
-    setFontSizeMultiplier(value[0])
-  }
-
   return (
-    // <div
-    //   className={`fixed inset-x-0 bottom-0 bg-dark-3
-    //   ${
-    //     playing
-    //       ? isFullscreen
-    //         ? 'bg-opacity-0'
-    //         : 'bg-opacity-15'
-    //       : 'bg-opacity-100'
-    //   }
-    //   controls ${playerControlsVisible ? 'visible bg-opacity-15' : 'hidden'}
-
-    //   `}>
     <div
       ref={bottomBarRef}
       className={`controls fixed inset-x-0 bottom-0 bg-dark-3 ${playerControlsVisible ? 'visible' : 'hidden'}`}>
       {lyricsControlVisibility && <LyricsVisibilityToggleGroup />}
-      <div className='h-1 cursor-pointer'>
-        <Slider
-          defaultValue={[0]}
-          max={0.999999}
-          step={0.000001}
-          value={[getCurrentPlayedPercentage()]}
-          onValueChange={(value) => handleSeekChange(value[0])}
-        />
+      <div className='relative h-1 cursor-pointer'>
+        <div className='absolute inset-x-0 z-10'>
+          <Slider
+            defaultValue={[0]}
+            max={0.999999}
+            step={0.000001}
+            value={[getCurrentPlayedPercentage()]}
+            onValueChange={(value) => handleSeekChange(value[0])}
+            className='z-20'
+          />
+        </div>
       </div>
-      <div className='flex items-center justify-between py-2'>
+      <div className='flex items-center justify-between pb-1 pt-2'>
         <div className='flex items-center lg:mr-6'>
           <Button
             className='rounded-full'
@@ -227,7 +222,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             onMouseLeave={handleButtonLeave}
             style={getButtonStyle('loop')}>
             {loop ? (
-              <RepeatOnIcon sx={{ fontSize: 32 }} />
+              <RepeatOnIcon sx={{ fontSize: 32, color: 'bg-primary' }} />
             ) : (
               <RepeatIcon sx={{ fontSize: 32 }} />
             )}
@@ -239,7 +234,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
             getButtonStyle={getButtonStyle}
             timeDisplay={
               <div className='flex-between unselectable ml-2'>
-                <span className='hidden w-12 text-center sm:inline'>
+                <span className='hidden w-12 text-right sm:inline'>
                   {formattedPlayed}
                 </span>
                 <span className='hidden w-4 text-center sm:inline'>{'/'}</span>
@@ -253,23 +248,6 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
 
         <div className='ml-6 flex items-center justify-end gap-1 md:gap-2'>
           {/* //! Subtitles Selection & Upload
-          <LyricsDropdownButton
-            handleToggleLyricsVisibility={handleToggleLyricsVisibility}
-          /> */}
-          {/* //TODO: Testing scaling of lyrics size */}
-          <div className='mt-2 flex items-center justify-center'>
-            <span className=' mr-2 text-sm'>A</span>
-            <Slider
-              className='w-20'
-              min={0.5}
-              max={1}
-              step={0.01}
-              value={[fontSizeMultiplier]}
-              onValueChange={handleFontSizeChange}
-            />
-            <span className='mb-1 ml-2 text-xl'>A</span>
-          </div>
-
           {/* //* Lyrics visibility toggle */}
           <Button
             className='rounded-full'

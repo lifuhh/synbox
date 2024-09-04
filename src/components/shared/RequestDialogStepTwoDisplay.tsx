@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { useStreamTranscriptionApi } from '@/hooks/useStreamTranscriptionApi'
-import { Loader } from '@mantine/core'
+import { Loader, Text } from '@mantine/core'
 import { useCallback, useEffect, useState } from 'react'
 import RequestDialogLyricsDisplay from './RequestDialogLyricsDisplay'
 
@@ -74,7 +74,16 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
 
   return (
     <div className='mt-4 w-full'>
+      {/* //TODO: Add check isAiGenerated  */}
+      {true && (
+        <div className='w-full items-center'>
+          <Text className='text-md w-full'>
+            These Lyrics are AI-Generated. Please check for errors.
+          </Text>
+        </div>
+      )}
       <h3 className='text-xl font-bold'>Step 2</h3>
+      {/* {isAiGenerated && <h1 className=' text-md'>Next</h1>} */}
       <>
         {isStreaming && !showLoader && !showLyricsInfo && (
           <Loader color='yellow' type='dots' />
@@ -104,7 +113,6 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
               lyrics={lyricsInfo || cachedLyrics}
               isAiGenerated={isAiGenerated}
             />
-            {!isAiGenerated && <Button className='mt-4'>Next</Button>}
           </>
         )}
 

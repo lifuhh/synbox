@@ -9,6 +9,7 @@ import {
   mutedAtom,
   romajiVisibilityAtom,
   translationVisibilityAtom,
+  userInteractedWithSettingsAtom,
 } from '@/context/atoms'
 import { useAtom, useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -20,6 +21,9 @@ import { useParams } from 'react-router-dom'
 const PlayerPage = () => {
   // console.log('PlayerPage re-rendered...')
   const { volume, playerOverlayVisibleHandler } = useAppContext()
+  const userInteractedWithSettings = useAtomValue(
+    userInteractedWithSettingsAtom,
+  )
   const [muted, setMuted] = useAtom(mutedAtom)
   const isFullscreen = useAtomValue(fullscreenAtom)
   // const playerControlsVisible = useAtomValue(playerControlVisibilityAtom)
@@ -95,36 +99,44 @@ const PlayerPage = () => {
   // }
 
   const handlePause = useCallback(() => {
-    // console.log('onPause')
     setPlaying(false)
-    setLyricsControlVisibility(true)
-  }, [setLyricsControlVisibility])
+    if (!userInteractedWithSettings) {
+      setLyricsControlVisibility(true)
+    }
+  }, [setLyricsControlVisibility, userInteractedWithSettings])
 
   const handlePlayPause = useCallback(() => {
     const newPlayingState = !playing
     setPlaying(newPlayingState)
-    setLyricsControlVisibility(!newPlayingState)
-  }, [playing, setLyricsControlVisibility])
+    if (!userInteractedWithSettings) {
+      setLyricsControlVisibility(!newPlayingState)
+    }
+  }, [playing, setLyricsControlVisibility, userInteractedWithSettings])
 
   //* Used for youtube player's native interactions, replicate everything in handleplaypause here as well
   const handlePlay = useCallback(() => {
     setPlaying(true)
     // playerOverlayVisibleHandler.close()
     if (muted) setMuted(false)
-    setLyricsControlVisibility(false)
+    if (!userInteractedWithSettings) {
+      setLyricsControlVisibility(false)
+    }
     // setTestStartTime(performance.now())
-  }, [muted, setMuted, setLyricsControlVisibility])
+  }, [muted, setMuted, setLyricsControlVisibility, userInteractedWithSettings])
 
   const handleInitMutedPlay = useCallback(() => {
     // console.log('Init Muted Play clicked')
     setMuted(false)
     playerOverlayVisibleHandler.close()
     handlePlay()
-    setLyricsControlVisibility(false)
+    if (!userInteractedWithSettings) {
+      setLyricsControlVisibility(false)
+    }
   }, [
     setLyricsControlVisibility,
     handlePlay,
     playerOverlayVisibleHandler,
+    userInteractedWithSettings,
     setMuted,
   ])
 

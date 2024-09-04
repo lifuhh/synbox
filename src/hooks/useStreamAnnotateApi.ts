@@ -11,16 +11,14 @@ interface AnnotationMutationVariables {
 export const useStreamAnnotateApi = () => {
   const [isStreaming, setIsStreaming] = useState(false)
   const [updateMessages, setUpdateMessages] = useState<string[]>([])
-  const [engTranslation, setEngTranslation] = useState<any>(null)
-  const [chiTranslation, setChiTranslation] = useState<any>(null)
-  const [romajiAnnotation, setRomajiAnnotation] = useState<any>(null)
-  const [kanjiAnnotation, setKanjiAnnotation] = useState<any>(null)
-
+  const [engTranslation, setEngTranslation] = useState<string[] | null>(null)
+  const [chiTranslation, setChiTranslation] = useState<string[] | null>(null)
+  const [romajiLyrics, setRomajiLyrics] = useState<string[] | null>(null)
+  const [kanjiAnnotations, setKanjiAnnotations] = useState<string[] | null>(
+    null,
+  )
   const [showAnnotation, setShowAnnotation] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  //TODO: remove after implementation
-  const [lyricsInfo, setLyricsInfo] = useState<any>(null)
 
   const settledTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -28,13 +26,12 @@ export const useStreamAnnotateApi = () => {
     setUpdateMessages([])
     setEngTranslation(null)
     setChiTranslation(null)
-    setRomajiAnnotation(null)
-    setKanjiAnnotation(null)
+    setRomajiLyrics(null)
+    setKanjiAnnotations(null)
     setShowAnnotation(false)
     setError(null)
   }, [])
 
-  // Clear the timeout when the component unmounts
   useEffect(() => {
     return () => {
       if (settledTimeoutRef.current) {
@@ -54,7 +51,22 @@ export const useStreamAnnotateApi = () => {
         lyrics,
         timestampedLyrics,
         (message) => setUpdateMessages((prev) => [...prev, message]),
-        (info) => setLyricsInfo(info),
+        (info) => {
+          switch (info.type) {
+            case 'eng_translation':
+              setEngTranslation(info.data)
+              break
+            case 'chi_translation':
+              setChiTranslation(info.data)
+              break
+            case 'romaji_lyrics':
+              setRomajiLyrics(info.data)
+              break
+            case 'kanji_annotations':
+              setKanjiAnnotations(info.data)
+              break
+          }
+        },
         (err) => setError(err),
       ),
     onMutate: () => {
@@ -63,13 +75,12 @@ export const useStreamAnnotateApi = () => {
       resetStream()
     },
     onSettled: () => {
-      // Clear any existing timeout
       if (settledTimeoutRef.current) {
         clearTimeout(settledTimeoutRef.current)
       }
-      // Set a new timeout
       settledTimeoutRef.current = setTimeout(() => {
         setIsStreaming(false)
+        setShowAnnotation(true)
       }, 1000)
     },
     onError: (error: Error) => {
@@ -77,4 +88,18 @@ export const useStreamAnnotateApi = () => {
       setIsStreaming(false)
     },
   })
+
+  return {
+    isStreaming,
+    updateMessages,
+    engTranslation,
+    chiTranslation,
+    romajiLyrics,
+    kanjiAnnotations,
+    showAnnotation,
+    setShowAnnotation,
+    error,
+    resetStream,
+    mutate: mutation.mutate,
+  }
 }

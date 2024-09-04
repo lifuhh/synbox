@@ -111,10 +111,10 @@ export const streamAnnotateVideoById = async (
   lyrics: string[],
   timestampedLyrics: string[],
   onUpdate: (message: string) => void,
-  onLyricsInfo: (info: any) => void,
+  onAnnotationInfo: (info: any) => void,
   onError: (error: string) => void,
 ) => {
-  const response = await fetch(`http://127.0.0.1:8080/transcribev2`, {
+  const response = await fetch(`http://127.0.0.1:8080/translate-annotate`, {
     method: 'POST',
     body: JSON.stringify({
       id: videoId,
@@ -133,4 +133,64 @@ export const streamAnnotateVideoById = async (
 
   const reader = response.body.getReader()
   const decoder = new TextDecoder()
+
+  let buffer = ''
+
+  while (true) {
+    const { done, value } = await reader.read()
+
+    if (done) break
+
+    buffer += decoder.decode(value, { stream: true })
+
+    const lines = buffer.split('\n')
+    buffer = lines.pop() || '' // Keep the last incomplete line in the buffer
+
+    for (const line of lines) {
+      if (line.trim() === '') continue // Skip empty lines
+
+      if (validateJSON(line)) {
+        const content = JSON.parse(line)
+        if (content['type'] === 'update' || content['type'] === 'data') {
+          onUpdate(content['data'])
+        } else if (
+          [
+            'eng_translation',
+            'chi_translation',
+            'romaji_lyrics',
+            'kanji_annotations',
+          ].includes(content['type'])
+        ) {
+          onAnnotationInfo(content)
+        } else if (content['type'] === 'error') {
+          onError(content['data'])
+        }
+      } else {
+        console.error('Invalid JSON:', line)
+      }
+    }
+  }
+
+  // Process any remaining data in the buffer
+  if (buffer.trim() !== '') {
+    try {
+      const content = JSON.parse(buffer)
+      if (content['type'] === 'update' || content['type'] === 'data') {
+        onUpdate(content['data'])
+      } else if (
+        [
+          'eng_translation',
+          'chi_translation',
+          'romaji_lyrics',
+          'kanji_annotations',
+        ].includes(content['type'])
+      ) {
+        onAnnotationInfo(content)
+      } else if (content['type'] === 'error') {
+        onError(content['data'])
+      }
+    } catch (e) {
+      console.error('Error parsing final buffer:', e)
+    }
+  }
 }

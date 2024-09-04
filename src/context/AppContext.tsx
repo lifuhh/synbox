@@ -13,13 +13,8 @@ export const INITIAL_USER = {
 }
 
 interface AppContextType {
-  //* Auth
-  user: typeof INITIAL_USER
-  isLoading: boolean
-  isAuthenticated: boolean
-  setUser: (user: typeof INITIAL_USER) => void
-  setIsAuthenticated: (isAuthenticated: boolean) => void
-  checkAuthUser: () => Promise<boolean>
+  //TODO Auth
+
   //* Player stuff
   videoId: string
   volume: number
@@ -42,13 +37,8 @@ interface AppContextType {
 }
 
 const INITIAL_STATE = {
-  //* Auth stuff
-  user: INITIAL_USER,
-  isLoading: false,
-  isAuthenticated: false,
-  setUser: (user: typeof INITIAL_USER) => {},
-  setIsAuthenticated: () => {},
-  checkAuthUser: async () => false as boolean,
+  //TODO Auth stuff
+
   //* Player stuff
   videoId: '',
   volume: 0,
@@ -73,38 +63,8 @@ const AppContext = createContext<AppContextType>(INITIAL_STATE)
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate()
 
-  //* Auth Stuff
-  const [user, setUser] = useState<typeof INITIAL_USER>(INITIAL_USER)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  //TODO Auth Stuff
 
-  const checkAuthUser = async () => {
-    setIsLoading(true)
-
-    try {
-      const currentUser = await getCurrentUser()
-
-      if (currentUser) {
-        setUser({
-          id: currentUser.$id,
-          name: currentUser.name,
-          // username: currentUser.username,
-          // subscription: currentUser.subscription,
-        })
-        console.log('This is user')
-        console.log(user)
-        setIsAuthenticated(true)
-        return true
-      }
-
-      return false
-    } catch (error) {
-      console.log(error)
-      return false
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   //* Bottom Bar Height Stuff
   const [bottomBarHeight, setBottomBarHeight] = useState(0)
@@ -132,12 +92,6 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   // }, []);
 
   const value = {
-    user,
-    setUser,
-    isLoading,
-    isAuthenticated,
-    setIsAuthenticated,
-    checkAuthUser,
     videoId,
     setVideoId,
     processingStage,

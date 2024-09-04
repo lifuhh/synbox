@@ -97,7 +97,8 @@ videoId
               translateZ='100'
               rotateX={10}
               rotateZ={-3}
-              className='my-2 w-full'>
+              className='my-2 w-full cursor-pointer'
+              onClick={handleNavigate}>
               <img
                 src={item.thumbnailUrl}
                 height='1080'
