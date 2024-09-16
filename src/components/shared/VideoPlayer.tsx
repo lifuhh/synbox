@@ -19,13 +19,13 @@ interface VideoPlayerProps {
   handleEnded: () => void
   handleInitMutedPlay: () => void
   handlePlayPause: () => void
-  setIsPlayerReady: React.Dispatch
-  playerRef: ForwardedRef
+  setIsPlayerReady: React.Dispatch<React.SetStateAction<boolean>>
+  playerRef: ForwardedRef<ReactPlayer>
   // Add methods for handling playback control (play, pause, seek)
   // and volume control (setVolume, toggleMute)
 }
 
-const VideoPlayer: React.FC = ({
+const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoId,
   loop,
   playing,
@@ -56,7 +56,7 @@ const VideoPlayer: React.FC = ({
 
   //? Handle delay in dismissing bottom bar controls visibility when playing video
   useEffect(() => {
-    let timer: ReturnType // Declare timer to use it inside clearTimeout
+    let timer: ReturnType<typeof setTimeout> // Declare timer to use it inside clearTimeout
 
     const showControlsTemporarily = () => {
       clearTimeout(timer) // Clear any existing timer on mouse move

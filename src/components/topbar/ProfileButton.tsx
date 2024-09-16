@@ -99,13 +99,13 @@ const ProfileButtonDropdown = () => {
           <DropdownMenuItem
             className='cursor-pointer'
             onClick={() => handleRedirect('https://github.com/lifuhuang97/')}>
-            <GitHubIcon className='mr-2 h-4 w-4 fill-white' />
+            <GitHubIcon className='ml-[2px] mr-2 h-4 w-4 fill-white' />
             <span>GitHub</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className='cursor-pointer'
             onClick={handleAboutOnClick}>
-            <HelpOutlineIcon className='mr-2 h-2 w-2' fontSize='small' />
+            <HelpOutlineIcon className='mr-2 h-4 w-4' fontSize='small' />
             <span>About Synbox</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
