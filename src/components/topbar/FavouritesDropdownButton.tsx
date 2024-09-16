@@ -13,12 +13,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
+import { Button } from '@/components/ui/button'
+import BookmarksIcon from '@mui/icons-material/Bookmarks'
+import FavouritesDropdownItem from './FavouritesDropdownItem'
+
 import { Divider } from '@mantine/core'
 import QueueMusicOutlinedIcon from '@mui/icons-material/QueueMusicOutlined'
-
-import { Button } from '@/components/ui/button'
-import FavouritesDropdownItem from './FavouritesDropdownItem'
-import { forwardRef } from 'react'
 
 const FavouritesDropdownButton = ({
   buttonVisibility,
@@ -35,25 +35,25 @@ const FavouritesDropdownButton = ({
                 variant='outline'
                 size='icon'
                 className={` border-primary hover:border-white ${buttonVisibility}`}>
-                <QueueMusicOutlinedIcon className='fill-white' />
-                <span className='sr-only'>Toggle Playlist</span>
+                <BookmarksIcon className='fill-white' />
+                <span className='sr-only'>Toggle Bookmarks</span>
               </Button>
             </TooltipTrigger>
           </DropdownMenuTrigger>
           <TooltipContent>
-            <p>View Playlist</p>
+            <p>My Bookmarks</p>
           </TooltipContent>
         </Tooltip>
         <DropdownMenuContent
           align='end'
           sideOffset={10}
           className='h-[600px] w-[400px] overflow-auto border-[1px] border-primary bg-dark-1 bg-opacity-95'>
-          <DropdownMenuLabel>Playing Next</DropdownMenuLabel>
+          <DropdownMenuLabel>Bookmarked Songs</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <FavouritesDropdownItem />
           <FavouritesDropdownItem />
           <FavouritesDropdownItem />
-          <Divider my='xs' />
+          {/* <Divider my='xs' /> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </TooltipProvider>

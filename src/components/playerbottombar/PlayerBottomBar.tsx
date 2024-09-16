@@ -57,7 +57,7 @@ interface PlayerBottomBarProps {
   playerRef: React.MutableRefObject<ReactPlayer | null>
 }
 
-const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
+const PlayerBottomBar = ({
   playing,
   loop,
   played,
@@ -73,7 +73,7 @@ const PlayerBottomBar: React.FC<PlayerBottomBarProps> = ({
   // handleProgress,
   handleToggleLoop,
   handleToggleLyricsOverlayVisibility,
-}) => {
+}: PlayerBottomBarProps) => {
   const bottomBarRef = useRef<HTMLDivElement>(null)
   // console.log('Player Bottom Bar re-rendered...')
   const { playerControlsVisible, setBottomBarHeight } = useAppContext()

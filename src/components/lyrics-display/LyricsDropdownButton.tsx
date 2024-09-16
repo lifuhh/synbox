@@ -25,9 +25,9 @@ interface LyricsDropdownButtonProps {
   handleToggleLyricsVisibility: (visibility: boolean) => void
 }
 
-const LyricsDropdownButton: React.FC<LyricsDropdownButtonProps> = ({
+const LyricsDropdownButton = ({
   handleToggleLyricsVisibility,
-}) => {
+}: LyricsDropdownButtonProps) => {
   const [showStatusBar, setShowStatusBar] = useState<Checked>(true)
   // const [showActivityBar, setShowActivityBar] = useState<Checked>(false)
   // const [showPanel, setShowPanel] = useState<Checked>(false)
@@ -35,9 +35,7 @@ const LyricsDropdownButton: React.FC<LyricsDropdownButtonProps> = ({
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
-  const handleUploadClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) => {
+  const handleUploadClick = (event: React.MouseEvent) => {
     event.stopPropagation()
     // Additional logic for handling the upload click can go here
   }

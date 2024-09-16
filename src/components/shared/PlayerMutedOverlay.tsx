@@ -9,7 +9,7 @@ const PlayerMutedOverlay = ({
     <div
       onClick={handleInitMutedPlay}
       // className='z-990 mx-auto flex h-full w-screen cursor-pointer flex-col flex-wrap content-evenly items-center justify-center'
-      className='absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/50 px-4 text-center backdrop-blur-lg'>
+      className='absolute inset-0 flex h-full w-full flex-col items-center justify-center gap-4 bg-blue-500 px-4 text-center backdrop-blur-lg'>
       <div className='mb-20 min-w-full'>
         <Loader color='white' size='xl' type='bars' />
       </div>

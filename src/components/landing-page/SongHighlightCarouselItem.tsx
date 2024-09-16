@@ -18,13 +18,13 @@ type SongHighlightCarouselItemProps = {
   item: formattedYoutubeVideoItemForCarousel
 }
 
-const SongHighlightCarouselItem: React.FC<SongHighlightCarouselItemProps> = ({
+const SongHighlightCarouselItem = ({
   opacity,
   index,
   currentIndex,
   itemCount,
   item,
-}) => {
+}: SongHighlightCarouselItemProps) => {
   /*   channel
 "Ayase / YOASOBI"
 description

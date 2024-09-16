@@ -9,24 +9,31 @@ interface Lyric {
 }
 
 interface RequestDialogLyricsDisplayProps {
-  lyrics: {
-    lyrics: string[]
-    timestamped_lyrics: Lyric[]
-  }
+  lyrics: string[]
+  timestampedLyrics: Lyric[]
   isAiGenerated: boolean
+  onLyricsChange: (
+    updatedLyrics: string[],
+    updatedTimestampedLyrics: Lyric[],
+  ) => void
 }
 
-const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
+const RequestDialogLyricsDisplay = ({
   lyrics,
+  timestampedLyrics,
   isAiGenerated,
-}) => {
+  onLyricsChange,
+}: RequestDialogLyricsDisplayProps) => {
   const [lyricsState, setLyricsState] = useState<Lyric[]>([])
   const [editMode, setEditMode] = useState(false)
   const [tempLyrics, setTempLyrics] = useState<Lyric[]>([])
 
+  console.log('Lyrics arrived stage 2: ')
+  console.log(lyrics)
+
   useEffect(() => {
-    setLyricsState(lyrics.timestamped_lyrics)
-  }, [lyrics])
+    setLyricsState(timestampedLyrics)
+  }, [timestampedLyrics])
 
   const handleDelete = (index: number) => {
     setTempLyrics(tempLyrics.filter((_, i) => i !== index))
@@ -35,8 +42,8 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
   const handleSave = () => {
     setLyricsState(tempLyrics)
     setEditMode(false)
-    console.log('Updated lyrics:', tempLyrics)
-    // You can add logic here to send the updated lyrics back to the parent component or API
+    const updatedLyrics = tempLyrics.map((lyric) => lyric.lyric)
+    onLyricsChange(updatedLyrics, tempLyrics)
   }
 
   const handleCancel = () => {
@@ -55,26 +62,45 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
   }
 
+  const handleLyricEdit = (index: number, newLyric: string) => {
+    const updatedLyrics = tempLyrics.map((lyric, i) =>
+      i === index ? { ...lyric, lyric: newLyric } : lyric,
+    )
+    setTempLyrics(updatedLyrics)
+  }
+
   return (
-    <div className='flex max-h-[40vh] w-full flex-col items-center overflow-y-auto text-center'>
-      {(editMode ? tempLyrics : lyricsState).map((lyric, index) => (
-        <div
-          key={index}
-          className='mb-2 flex w-full items-center justify-between text-center'>
-          <span className='mr-2 text-sm'>
-            [{formatTime(lyric.start_time)} - {formatTime(lyric.end_time)}]{' '}
-            {lyric.lyric}
-          </span>
-          {isAiGenerated && editMode && (
-            <Button
-              onClick={() => handleDelete(index)}
-              variant='destructive'
-              size='sm'>
-              Delete
-            </Button>
-          )}
-        </div>
-      ))}
+    <div className='mt-4 w-full'>
+      <h4 className='mb-2 font-bold'>Lyrics:</h4>
+      <div className='max-h-[40vh] w-full overflow-y-auto'>
+        {(editMode ? tempLyrics : lyricsState).map((lyric, index) => (
+          <div
+            key={index}
+            className='mb-2 flex w-full items-center justify-between'>
+            <span className='mr-2 text-sm'>
+              [{formatTime(lyric.start_time)} - {formatTime(lyric.end_time)}]{' '}
+            </span>
+            {editMode ? (
+              <input
+                type='text'
+                value={lyric.lyric}
+                onChange={(e) => handleLyricEdit(index, e.target.value)}
+                className='flex-grow'
+              />
+            ) : (
+              <span>{lyric.lyric}</span>
+            )}
+            {isAiGenerated && editMode && (
+              <Button
+                onClick={() => handleDelete(index)}
+                variant='destructive'
+                size='sm'>
+                Delete
+              </Button>
+            )}
+          </div>
+        ))}
+      </div>
       {isAiGenerated && (
         <div className='mt-4 flex gap-2'>
           {!editMode ? (
@@ -92,6 +118,11 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
             </>
           )}
         </div>
+      )}
+      {isAiGenerated && (
+        <p className='mt-2 text-sm text-yellow-600'>
+          These lyrics are AI-generated. Please review and edit if necessary.
+        </p>
       )}
     </div>
   )

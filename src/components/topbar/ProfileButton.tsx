@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,21 +10,28 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
+import { ToastAction } from '@/components/ui/toast'
+import { useToast } from '@/components/ui/use-toast'
+
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import CreditCardIcon from '@mui/icons-material/CreditCard'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import PersonIcon from '@mui/icons-material/Person'
-import {
-  CreditCard,
-  LifeBuoy,
-  ListMusic,
-  LogIn,
-  LogOut,
-  Settings,
-  User,
-} from 'lucide-react'
+import SettingsIcon from '@mui/icons-material/Settings'
+
+import { handleRedirect } from '@/utils'
+import { useNavigate } from 'react-router-dom'
 import { GitHubIcon } from '../svgicons'
 import { Button } from '../ui/button'
-import LoginDropdownButton from './LoginDropdownButton'
 
 const ProfileButtonDropdown = () => {
+  const navigate = useNavigate()
+  const { toast } = useToast()
+
+  const handleAboutOnClick = () => {
+    navigate('/about')
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,45 +47,73 @@ const ProfileButtonDropdown = () => {
         align='end'
         sideOffset={10}
         className='w-56 overflow-auto border-[1px] border-primary bg-dark-1 bg-opacity-95'>
-        <DropdownMenuLabel className='unselectable'>
+        {/* <DropdownMenuLabel className='unselectable'>
           My Account
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className=' unselectable bg-dark-2' />
+        <DropdownMenuSeparator className=' unselectable bg-dark-2' /> */}
         <DropdownMenuGroup>
-          <DropdownMenuItem className='cursor-pointer'>
-            <User className='mr-2 h-4 w-4' />
+          <DropdownMenuItem
+            className='cursor-pointer'
+            // onClick={() => {
+            //   toast({
+            //     title: 'Scheduled: Catch up ',
+            //     description: 'Friday, February 10, 2023 at 5:57 PM',
+            //     action: (
+            //       <ToastAction altText='Goto schedule to undo'>
+            //         Undo
+            //       </ToastAction>
+            //     ),
+            //   })
+            // }}
+            onClick={() => {
+              toast({
+                title: 'Coming Soon',
+                // description: 'This feature is coming soon',
+                // action: (
+                //   <ToastAction altText='Dismiss Toast'>Dismiss</ToastAction>
+                // ),
+              })
+            }}>
+            <AccountCircleIcon fontSize='small' className='mr-2 h-4 w-4' />
             <span>Profile</span>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem className='cursor-pointer'>
-            <ListMusic className='mr-2 h-4 w-4' />
+          {/* <DropdownMenuItem className='cursor-pointer'>
+            <BookmarksIcon fontSize='small' className='mr-2 h-4 w-4' />
             <span>Playlist</span>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem className='cursor-pointer'>
-            <CreditCard className='mr-2 h-4 w-4' />
+            <CreditCardIcon className='mr-2 h-4 w-4' fontSize='small' />
             <span>Billing</span>
             <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem className='cursor-pointer'>
-            <Settings className='mr-2 h-4 w-4' />
+            <SettingsIcon className='mr-2 h-4 w-4' fontSize='small' />
             <span>Settings</span>
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator className='unselectable cursor-default bg-dark-2' />
         <DropdownMenuGroup>
-          <DropdownMenuItem className='cursor-pointer'>
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onClick={() => handleRedirect('https://github.com/lifuhuang97/')}>
             <GitHubIcon className='mr-2 h-4 w-4 fill-white' />
             <span>GitHub</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className='cursor-pointer'>
-            <LifeBuoy className='mr-2 h-4 w-4' />
-            <span>Support</span>
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onClick={handleAboutOnClick}>
+            <HelpOutlineIcon className='mr-2 h-2 w-2' fontSize='small' />
+            <span>About Synbox</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator className='unselectable cursor-default bg-dark-2' />
-        <LoginDropdownButton />
+        {/* TODO: Future Accounts */}
+        {/* <DropdownMenuSeparator className='unselectable cursor-default bg-dark-2' />
+
+        // TODO: for login
+        <LoginDropdownButton /> */}
       </DropdownMenuContent>
     </DropdownMenu>
   )

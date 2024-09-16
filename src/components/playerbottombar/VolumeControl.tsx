@@ -1,8 +1,10 @@
 import { useAppContext } from '@/context/AppContext'
 import { mutedAtom } from '@/context/atoms'
+import VolumeDownIcon from '@mui/icons-material/VolumeDown'
 import VolumeMuteIcon from '@mui/icons-material/VolumeMute'
 import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
+
 import { useAtom } from 'jotai'
 import React, { useCallback, useRef, useState } from 'react'
 import { Button } from '../ui/button'
@@ -15,12 +17,12 @@ interface VolumeControlProps {
   timeDisplay: React.ReactNode
 }
 
-const VolumeControl: React.FC<VolumeControlProps> = ({
+const VolumeControl = ({
   onMouseEnter,
   onMouseLeave,
   getButtonStyle,
   timeDisplay,
-}) => {
+}: VolumeControlProps) => {
   const { volume, setVolume } = useAppContext()
   const [muted, setMuted] = useAtom(mutedAtom)
   const [isHovering, setIsHovering] = useState(false)
@@ -47,6 +49,18 @@ const VolumeControl: React.FC<VolumeControlProps> = ({
     onMouseLeave()
   }, [onMouseLeave])
 
+  const getVolumeIcon = () => {
+    if (muted) {
+      return <VolumeOffIcon sx={{ fontSize: 32 }} />
+    } else if (volume === 0) {
+      return <VolumeMuteIcon sx={{ fontSize: 32 }} />
+    } else if (volume < 0.4) {
+      return <VolumeDownIcon sx={{ fontSize: 32 }} />
+    } else {
+      return <VolumeUpIcon sx={{ fontSize: 32 }} />
+    }
+  }
+
   return (
     <div className='flex items-center'>
       <div
@@ -60,13 +74,7 @@ const VolumeControl: React.FC<VolumeControlProps> = ({
           variant='ghost'
           onClick={handleToggleMuted}
           style={getButtonStyle('volume')}>
-          {muted ? (
-            <VolumeOffIcon sx={{ fontSize: 32 }} />
-          ) : volume == 0 ? (
-            <VolumeMuteIcon sx={{ fontSize: 32 }} />
-          ) : (
-            <VolumeUpIcon sx={{ fontSize: 32 }} />
-          )}
+          {getVolumeIcon()}
           <span className='sr-only'>Volume</span>
         </Button>
         <div

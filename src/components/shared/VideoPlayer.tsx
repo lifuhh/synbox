@@ -19,13 +19,13 @@ interface VideoPlayerProps {
   handleEnded: () => void
   handleInitMutedPlay: () => void
   handlePlayPause: () => void
-  setIsPlayerReady: React.Dispatch<React.SetStateAction<boolean>>
-  playerRef: ForwardedRef<ReactPlayer>
+  setIsPlayerReady: React.Dispatch
+  playerRef: ForwardedRef
   // Add methods for handling playback control (play, pause, seek)
   // and volume control (setVolume, toggleMute)
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({
+const VideoPlayer: React.FC = ({
   videoId,
   loop,
   playing,
@@ -39,7 +39,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   setIsPlayerReady,
   volume,
   playerRef,
-}) => {
+}: VideoPlayerProps) => {
   // const handlePlayerReady = () => {}
   const {
     setPlayerControlsVisible,
@@ -56,7 +56,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   //? Handle delay in dismissing bottom bar controls visibility when playing video
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> // Declare timer to use it inside clearTimeout
+    let timer: ReturnType // Declare timer to use it inside clearTimeout
 
     const showControlsTemporarily = () => {
       clearTimeout(timer) // Clear any existing timer on mouse move
@@ -111,7 +111,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       <LoadingOverlay
         visible={playerOverlayVisible}
         zIndex={40}
-        // elementProps={{ onClick: handleInitMutedPlay }}
         overlayProps={{ radius: 'sm', blur: 15 }}
         loaderProps={{
           children: (

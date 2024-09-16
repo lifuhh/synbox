@@ -6,13 +6,13 @@ interface SearchResultTextDisplayerProps {
   fontFamily?: string // e.g., 'Arial', 'sans-serif'
 }
 
-const SearchResultTextDisplayer: React.FC<SearchResultTextDisplayerProps> = ({
+const SearchResultTextDisplayer = ({
   title,
   misc,
   fontSize = '1rem', // Provide default values
   color = 'black',
   fontFamily = 'Arial',
-}) => {
+}: SearchResultTextDisplayerProps) => {
   const textStyle = {
     fontSize,
     color,

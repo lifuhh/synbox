@@ -1,4 +1,3 @@
-import { Button } from '../ui/button'
 
 const RequestDialogValidationDisplay = ({ vidInfo }) => {
   return (

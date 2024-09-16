@@ -5,6 +5,22 @@ import path from 'path'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  build: {
+    chunkSizeWarningLimit: 1000,
+    sourcemap: true,
+
+    rollupOptions: {
+      onLog(level, log, handler) {
+        if (
+          log.cause &&
+          log.cause.message === `Can't resolve original location of error.`
+        ) {
+          return
+        }
+        handler(level, log)
+      },
+    },
+  },
   plugins: [
     react({ babel: { plugins: [jotaiDebugLabel, jotaiReactRefresh] } }),
   ],

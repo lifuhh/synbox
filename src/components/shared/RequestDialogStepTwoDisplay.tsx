@@ -1,17 +1,35 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from '@/components/ui/button'
 import { useStreamTranscriptionApi } from '@/hooks/useStreamTranscriptionApi'
 import { Loader, Text } from '@mantine/core'
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import RequestDialogLyricsDisplay from './RequestDialogLyricsDisplay'
 
-const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
+interface LyricsInfo {
+  lyrics: string[]
+  timestamped_lyrics: any[]
+}
+interface RequestDialogStepTwoDisplayProps {
+  vidInfo: any
+  onLyricsUpdate: (lyrics: string[], timestampedLyrics: any[]) => void
+}
+
+const RequestDialogStepTwoDisplay = ({
+  vidInfo,
+  onLyricsUpdate,
+}: RequestDialogStepTwoDisplayProps) => {
   const [showLoader, setShowLoader] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
-  const [cachedLyrics, setCachedLyrics] = useState(null)
+  const [cachedLyrics, setCachedLyrics] = useState<LyricsInfo | null>(null)
+  const [currentLyrics, setCurrentLyrics] = useState<string[]>([])
+  const [currentTimestampedLyrics, setCurrentTimestampedLyrics] = useState<
+    any[]
+  >([])
 
   const { full_vid_info: fullVidInfo, subtitle_info: subtitleInfo } = vidInfo
   const { id: vidId } = fullVidInfo
-  const { exist: subtitleExists, path: subtitlePath } = subtitleInfo['exist']
+  const { exist: subtitleExists, path: subtitlePath } = subtitleInfo
 
   const {
     isStreaming,
@@ -25,37 +43,40 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
     isAiGenerated,
   } = useStreamTranscriptionApi()
 
-  const handleRetry = useCallback(() => {
-    if (retryCount < 2) {
-      setRetryCount((prevCount) => prevCount + 1)
-      resetStream()
-      mutate({ vidId, subtitleInfo })
-    }
-  }, [retryCount, resetStream, mutate, vidId, subtitleInfo])
-
   useEffect(() => {
     if (vidId && subtitleInfo && !cachedLyrics) {
-      // Check if lyrics are cached in localStorage
       const cachedData = localStorage.getItem(`lyrics_${vidId}`)
       if (cachedData) {
-        setCachedLyrics(JSON.parse(cachedData))
+        const parsedData = JSON.parse(cachedData)
+        setCachedLyrics(parsedData)
+        setCurrentLyrics(parsedData.lyrics)
+        setCurrentTimestampedLyrics(parsedData.timestamped_lyrics)
         setShowLyricsInfo(true)
+        onLyricsUpdate(parsedData.lyrics, parsedData.timestamped_lyrics)
       } else {
         mutate({ vidId, subtitleInfo })
       }
     }
-  }, [vidId, subtitleInfo, cachedLyrics, mutate, setShowLyricsInfo])
+  }, [
+    vidId,
+    subtitleInfo,
+    cachedLyrics,
+    mutate,
+    setShowLyricsInfo,
+    onLyricsUpdate,
+  ])
 
   useEffect(() => {
     if (lyricsInfo) {
-      console.log(lyricsInfo)
-      // Cache the lyrics in localStorage
       localStorage.setItem(`lyrics_${vidId}`, JSON.stringify(lyricsInfo))
       setCachedLyrics(lyricsInfo)
+      setCurrentLyrics(lyricsInfo.lyrics)
+      setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
+      onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
       const timer = setTimeout(() => setShowLyricsInfo(true), 1000)
       return () => clearTimeout(timer)
     }
-  }, [lyricsInfo, setShowLyricsInfo, vidId])
+  }, [lyricsInfo, setShowLyricsInfo, vidId, onLyricsUpdate])
 
   useEffect(() => {
     return () => {
@@ -72,10 +93,51 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
     }
   }, [lyricsInfo, cachedLyrics, showLyricsInfo])
 
+  const handleRetry = useCallback(() => {
+    if (retryCount < 2) {
+      setRetryCount((prevCount) => prevCount + 1)
+      resetStream()
+      mutate({ vidId, subtitleInfo })
+    }
+  }, [retryCount, resetStream, mutate, vidId, subtitleInfo])
+
+  const handleLyricsChange = useCallback(
+    (updatedLyrics: string[]) => {
+      setCurrentLyrics(updatedLyrics)
+
+      // Update timestamped lyrics
+      const updatedTimestampedLyrics = currentTimestampedLyrics.map(
+        (item, index) => ({
+          ...item,
+          lyric: updatedLyrics[index] || '',
+        }),
+      )
+      setCurrentTimestampedLyrics(updatedTimestampedLyrics)
+
+      // Update parent component
+      onLyricsUpdate(updatedLyrics, updatedTimestampedLyrics)
+
+      // Update local storage
+      if (cachedLyrics) {
+        const updatedLyricsInfo = {
+          ...cachedLyrics,
+          lyrics: updatedLyrics,
+          timestamped_lyrics: updatedTimestampedLyrics,
+        }
+        localStorage.setItem(
+          `lyrics_${vidId}`,
+          JSON.stringify(updatedLyricsInfo),
+        )
+      }
+    },
+    [currentTimestampedLyrics, onLyricsUpdate, cachedLyrics, vidId],
+  )
+
+  console.log('isAiGenerated:', isAiGenerated)
+
   return (
-    <div className='mt-4 w-full'>
-      {/* //TODO: Add check isAiGenerated  */}
-      {true && (
+    <div className='mt-4 h-full w-full'>
+      {isAiGenerated && (
         <div className='w-full items-center'>
           <Text className='text-md w-full'>
             These Lyrics are AI-Generated. Please check for errors.
@@ -83,7 +145,6 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
         </div>
       )}
       <h3 className='text-xl font-bold'>Step 2</h3>
-      {/* {isAiGenerated && <h1 className=' text-md'>Next</h1>} */}
       <>
         {isStreaming && !showLoader && !showLyricsInfo && (
           <Loader color='yellow' type='dots' />
@@ -99,7 +160,7 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
           </div>
         )}
 
-        {showLyricsInfo && (lyricsInfo || cachedLyrics) && (
+        {showLyricsInfo && currentLyrics.length > 0 && (
           <>
             {isAiGenerated && (
               <div className='mb-4 rounded border border-yellow-400 bg-yellow-100 p-2'>
@@ -110,8 +171,10 @@ const RequestDialogStepTwoDisplay = ({ vidInfo }) => {
               </div>
             )}
             <RequestDialogLyricsDisplay
-              lyrics={lyricsInfo || cachedLyrics}
+              lyrics={currentLyrics}
+              timestampedLyrics={currentTimestampedLyrics}
               isAiGenerated={isAiGenerated}
+              onLyricsChange={handleLyricsChange}
             />
           </>
         )}

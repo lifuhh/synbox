@@ -18,7 +18,7 @@ interface CommandSearchProps {
   isVideoPlayer: boolean
 }
 
-const CommandSearch: React.FC<CommandSearchProps> = ({ isVideoPlayer }) => {
+const CommandSearch = ({ isVideoPlayer }: CommandSearchProps) => {
   const [open, setOpen] = useState(false)
 
   const handleCommandItemClick = () => {

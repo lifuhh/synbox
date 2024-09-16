@@ -8,6 +8,7 @@ import {
   formattedYoutubeVideoItemForCarousel,
 } from '@/types'
 import {
+  formatYoutubeChartsResponse,
   formatYoutubeInfiniteGalleryResponse,
   formatYoutubePlaylistResponse,
   formatYoutubeSearchResponse,
@@ -84,6 +85,32 @@ export async function getLandingPagePlaylist(): Promise<
   return processedResponse
 }
 
+export async function getChartsPlaylist(): Promise<
+  { title: string; id: string }[]
+> {
+  // console.log('fetching landing page playlist')
+
+  const response = await axios.get<YoutubePlaylistApiResponse>(
+    `https://www.googleapis.com/youtube/v3/playlistItems`,
+    {
+      params: {
+        key: YoutubeApiKey,
+        part: 'snippet',
+        playlistId: 'PL4fGSI1pDJn4-UIb6RKHdxam-oAUULIGB',
+        maxResults: 50,
+      },
+    },
+  )
+
+  if (!response) throw new Error('Failed to fetch playlist items')
+
+  const processedResponse = formatYoutubeChartsResponse(response.data)
+  // console.log('Successfully fetched response')
+  // console.log(processedResponse)
+
+  return processedResponse
+}
+
 export const getInfiniteGalleryPlaylist = async ({
   pageParam = '',
 }: FetchInfiniteGalleryPlaylistParams): Promise<YoutubePlaylistApiResponse> => {
@@ -94,7 +121,7 @@ export const getInfiniteGalleryPlaylist = async ({
         key: YoutubeApiKey,
         part: 'snippet',
         playlistId: 'PLzJ1mqwxogpHcS_hfWcEY_o8n_yBeGlAN',
-        maxResults: 12,
+        maxResults: 15,
         pageToken: pageParam,
       },
     },

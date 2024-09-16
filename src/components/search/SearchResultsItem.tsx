@@ -9,16 +9,16 @@ interface SearchResultsItemProps {
   thumbnailUrl: string
 }
 
-const SearchResultsItem: React.FC<SearchResultsItemProps> = ({
+const SearchResultsItem = ({
   title,
   creator,
   thumbnailUrl,
   videoId,
-}) => {
+}: SearchResultsItemProps) => {
   return (
     <Link to={`/v/${videoId}`}>
       <div
-        className={`cursor-pointer z-50 flex items-center gap-2 p-2 rounded-md bg-gray-100 dark:bg-gray-800`}>
+        className={`z-50 flex cursor-pointer items-center gap-2 rounded-md bg-gray-100 p-2 dark:bg-gray-800`}>
         <img
           alt='Avatar'
           className='rounded-full'

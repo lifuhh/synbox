@@ -4,15 +4,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { dialogStepAtom, videoDataAtom } from '@/context/atoms'
+import { dialogStepAtom } from '@/context/atoms'
 import { useStreamValidationApi } from '@/hooks/useStreamValidationApi'
 import { Loader, Paper, Text } from '@mantine/core'
 import { DialogDescription } from '@radix-ui/react-dialog'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import RequestDialogAnnotateDisplay from './RequestDialogAnnotateDisplay'
 import RequestDialogStepTwoDisplay from './RequestDialogStepTwoDisplay'
+import RequestDialogUploadDisplay from './RequestDialogUploadDisplay'
 import RequestDialogValidationDisplay from './RequestDialogValidationDisplay'
 
 interface RequestDialogProps {
@@ -20,13 +21,15 @@ interface RequestDialogProps {
   handleClose: () => void
 }
 
-const RequestDialog: React.FC<RequestDialogProps> = ({
-  videoId,
-  handleClose,
-}) => {
+const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [currentStep, setCurrentStep] = useAtom(dialogStepAtom)
-  const setVideoData = useSetAtom(videoDataAtom)
   const [showLoader, setShowLoader] = useState(false)
+  const [lyrics, setLyrics] = useState<string[]>([])
+  const [timestampedLyrics, setTimestampedLyrics] = useState<unknown[]>([])
+  const [engTranslation, setEngTranslation] = useState<string[]>([])
+  const [chiTranslation, setChiTranslation] = useState<string[]>([])
+  const [romajiLyrics, setRomajiLyrics] = useState<string[]>([])
+  const [kanjiAnnotations, setKanjiAnnotations] = useState<string[]>([])
   const {
     isStreaming,
     updateMessages,
@@ -42,7 +45,7 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
     if (videoId) {
       mutate(videoId)
     }
-  }, [videoId])
+  }, [videoId, mutate])
 
   useEffect(() => {
     if (vidInfo) {
@@ -56,7 +59,7 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
       console.log('RequestDialog: unmounting, resetting stream')
       resetStream()
     }
-  }, [])
+  }, [resetStream])
 
   useEffect(() => {
     if (vidInfo && !showVidInfo) {
@@ -70,6 +73,26 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
     setCurrentStep((prevStep) => prevStep + 1)
   }
 
+  const handleLyricsUpdate = (
+    newLyrics: string[],
+    newTimestampedLyrics: unknown[],
+  ) => {
+    setLyrics(newLyrics)
+    setTimestampedLyrics(newTimestampedLyrics)
+  }
+
+  const handleAnnotationsUpdate = (
+    newEngTranslation: string[],
+    newChiTranslation: string[],
+    newRomajiLyrics: string[],
+    newKanjiAnnotations: string[],
+  ) => {
+    setEngTranslation(newEngTranslation)
+    setChiTranslation(newChiTranslation)
+    setRomajiLyrics(newRomajiLyrics)
+    setKanjiAnnotations(newKanjiAnnotations)
+  }
+
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -78,7 +101,6 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
             {isStreaming && !showLoader && !showVidInfo && (
               <Loader color='yellow' type='dots' />
             )}
-
             {!showLoader &&
               !showVidInfo &&
               updateMessages.map((message, index) => (
@@ -86,35 +108,43 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
                   <Text size='sm'>{message}</Text>
                 </Paper>
               ))}
-
             {showLoader && (
               <div className='my-4'>
                 <Loader color='yellow' type='dots' />
               </div>
             )}
-
             {showVidInfo && (
               <RequestDialogValidationDisplay vidInfo={vidInfo} />
             )}
           </>
         )
       case 1:
-        return <RequestDialogStepTwoDisplay vidInfo={vidInfo} />
+        return (
+          <RequestDialogStepTwoDisplay
+            vidInfo={vidInfo}
+            onLyricsUpdate={handleLyricsUpdate}
+          />
+        )
       case 2:
         return (
           <RequestDialogAnnotateDisplay
             id={videoId}
-            lyrics={vidInfo?.lyrics || []}
-            timestampedLyrics={vidInfo?.timestamped_lyrics || []}
+            lyrics={lyrics}
+            timestampedLyrics={timestampedLyrics}
+            onAnnotationsUpdate={handleAnnotationsUpdate}
           />
         )
       case 3:
         return (
-          <div className='mt-4'>
-            <h3 className='text-xl font-bold'>Final Step</h3>
-            <p>This is the final step component.</p>
-            {/* Add your new component or content for the final step here */}
-          </div>
+          <RequestDialogUploadDisplay
+            id={videoId}
+            lyrics={lyrics}
+            timestampedLyrics={timestampedLyrics}
+            engTranslation={engTranslation}
+            chiTranslation={chiTranslation}
+            romajiLyrics={romajiLyrics}
+            kanjiAnnotations={kanjiAnnotations}
+          />
         )
       default:
         return null
@@ -136,10 +166,13 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
         <Text size='xl'>Video ID: {videoId}</Text>
 
         {error ? (
-          <div className='mt-4 text-red-500'>
-            <h3 className='text-xl font-bold'>Error</h3>
-            <p>{error}</p>
-          </div>
+          <>
+            <div className='mt-4 text-red-500'>
+              <h3 className='text-xl font-bold'>Error</h3>
+              <p>{error}</p>
+            </div>
+            {renderStep()}
+          </>
         ) : (
           renderStep()
         )}
@@ -151,7 +184,7 @@ const RequestDialog: React.FC<RequestDialogProps> = ({
           <Button
             onClick={handleProceedClick}
             className='invisible-ring bg-blue-500 text-white hover:bg-blue-600'>
-            {currentStep === 3 ? 'Finish' : 'Proceed to Next Step'}
+            {currentStep === 2 ? 'Proceed to Upload' : 'Proceed to Next Step'}
           </Button>
         )}
         <Button

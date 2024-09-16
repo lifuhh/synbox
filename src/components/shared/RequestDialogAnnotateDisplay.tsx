@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useStreamAnnotateApi } from '@/hooks/useStreamAnnotateApi'
 import { Loader } from '@mantine/core'
 import React, { useEffect } from 'react'
@@ -6,12 +6,21 @@ import React, { useEffect } from 'react'
 interface RequestDialogAnnotateDisplayProps {
   id: string
   lyrics: string[]
-  timestampedLyrics: string[]
+  timestampedLyrics: unknown[]
+  onAnnotationsUpdate: (
+    engTranslation: string[],
+    chiTranslation: string[],
+    romajiLyrics: string[],
+    kanjiAnnotations: string[],
+  ) => void
 }
 
-const RequestDialogAnnotateDisplay: React.FC<
-  RequestDialogAnnotateDisplayProps
-> = ({ id, lyrics, timestampedLyrics }) => {
+const RequestDialogAnnotateDisplay = ({
+  id,
+  lyrics,
+  timestampedLyrics,
+  onAnnotationsUpdate,
+}: RequestDialogAnnotateDisplayProps) => {
   const {
     isStreaming,
     updateMessages,
@@ -28,40 +37,78 @@ const RequestDialogAnnotateDisplay: React.FC<
     mutate({ vidId: id, lyrics, timestampedLyrics })
   }, [id, lyrics, timestampedLyrics, mutate])
 
-  const renderScrollableContent = (title: string, content: string[] | null) => {
+  useEffect(() => {
+    if (
+      showAnnotation &&
+      engTranslation &&
+      chiTranslation &&
+      romajiLyrics &&
+      kanjiAnnotations
+    ) {
+      onAnnotationsUpdate(
+        engTranslation,
+        chiTranslation,
+        romajiLyrics,
+        kanjiAnnotations,
+      )
+    }
+  }, [
+    showAnnotation,
+    engTranslation,
+    chiTranslation,
+    romajiLyrics,
+    kanjiAnnotations,
+    onAnnotationsUpdate,
+  ])
+
+  const renderScrollableContent = (content: string[] | null) => {
     if (!content) return null
 
     return (
-      <div className='mt-4'>
-        <h4 className='font-bold'>{title}</h4>
-        <div className='max-h-40 overflow-y-auto rounded border border-gray-300 p-2'>
-          {content.map((line, index) => (
-            <p key={index} className='whitespace-pre-wrap'>
-              {line}
-            </p>
-          ))}
-        </div>
+      <div className='h-64 overflow-y-auto rounded border border-gray-300 p-2'>
+        {content.map((line, index) => (
+          <p key={index} className='whitespace-pre-wrap'>
+            {line}
+          </p>
+        ))}
       </div>
     )
   }
 
-  const renderAnnotations = () => {
+  const renderTabs = () => {
     if (!showAnnotation) return null
 
     return (
-      <div className='mt-4 space-y-4'>
-        {renderScrollableContent('Original Lyrics', lyrics)}
-        {renderScrollableContent('English Translation', engTranslation)}
-        {renderScrollableContent('Chinese Translation', chiTranslation)}
-        {renderScrollableContent('Romaji Lyrics', romajiLyrics)}
-        {renderScrollableContent('Kanji Annotations', kanjiAnnotations)}
-      </div>
+      <Tabs defaultValue='original' className='w-full'>
+        <TabsList className='grid w-full grid-cols-5'>
+          <TabsTrigger value='original'>Original</TabsTrigger>
+          <TabsTrigger value='english'>English</TabsTrigger>
+          <TabsTrigger value='chinese'>Chinese</TabsTrigger>
+          <TabsTrigger value='romaji'>Romaji</TabsTrigger>
+          <TabsTrigger value='kanji'>Kanji</TabsTrigger>
+        </TabsList>
+        <TabsContent value='original'>
+          {renderScrollableContent(lyrics)}
+        </TabsContent>
+        <TabsContent value='english'>
+          {renderScrollableContent(engTranslation)}
+        </TabsContent>
+        <TabsContent value='chinese'>
+          {renderScrollableContent(chiTranslation)}
+        </TabsContent>
+        <TabsContent value='romaji'>
+          {renderScrollableContent(romajiLyrics)}
+        </TabsContent>
+        <TabsContent value='kanji'>
+          {renderScrollableContent(kanjiAnnotations)}
+        </TabsContent>
+      </Tabs>
     )
   }
 
   return (
     <div className='mt-4 w-full'>
-      <h3 className='text-xl font-bold'>Step 3: Translate and Annotate</h3>
+      <h3 className='mb-4 text-xl font-bold'>Step 3: Translate and Annotate</h3>
       {isStreaming && (
         <div className='my-4'>
           <Loader color='yellow' type='dots' />
@@ -77,7 +124,7 @@ const RequestDialogAnnotateDisplay: React.FC<
           <p>Error: {error}</p>
         </div>
       )}
-      {renderAnnotations()}
+      {renderTabs()}
     </div>
   )
 }

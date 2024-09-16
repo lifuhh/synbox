@@ -1,7 +1,7 @@
 import HeroGenerateLyricsSection from '@/components/generate-lyrics/HeroGenerateLyricsSection'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import HoverTranslateText from '@/components/landing-page/HoverTranslateText'
-import PopularSongsTable from '@/components/landing-page/PopularSongsTable'
+import LandingPageCharts from '@/components/landing-page/PopularSongsTable'
 import PricingTable from '@/components/landing-page/PricingTable'
 import SongHighlightCarousel from '@/components/landing-page/SongHighlightCarousel'
 import SongsInfiniteGallery from '@/components/landing-page/SongsInfiniteGallery'
@@ -31,19 +31,19 @@ const LandingPage = () => {
       <Divider
         my='xs'
         label={
-          <h1 className='font_noto_sans_jp_black_900 pointer-events-none text-2xl font-bold text-light-2'>
+          <h1 className='font_noto_sans_jp_black_900 text-2xl font-bold text-light-2'>
             おすすめ
           </h1>
         }
         labelPosition='center'
         className=' p-4'
       />
-      <section className='flex w-full flex-col gap-4 lg:flex-row '>
+      <section className='mx-auto flex w-full flex-col justify-center gap-4 lg:flex-row '>
         {/* //? Song Carousel */}
         <SongHighlightCarousel />
 
         {/* //? Songs Top 50 Leaderboard */}
-        <PopularSongsTable />
+        <LandingPageCharts />
       </section>
       {/* //? Pricing */}
       {/* <Divider
@@ -61,7 +61,7 @@ const LandingPage = () => {
       <Divider
         my='xs'
         label={
-          <h1 className='pointer-events-none text-2xl font-bold text-light-2'>
+          <h1 className='unselectable text-2xl font-bold text-light-2'>
             Gallery
           </h1>
         }

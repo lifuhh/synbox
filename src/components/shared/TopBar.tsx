@@ -54,7 +54,7 @@ const TopBar = () => {
             <span className='sr-only'>GitHub Button</span>
           </Button> */}
           <FavouritesDropdownButton buttonVisibility={buttonVisibility} />
-          <ProfileButton />
+          {!isVideoPlayer && <ProfileButton />}
         </div>
       </nav>
     </section>

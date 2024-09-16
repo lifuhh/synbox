@@ -1,9 +1,8 @@
 import { SubtitleInfo } from '@/types'
 import { validateJSON } from '@/utils'
-import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
 
-const FlaskBEAddress = import.meta.env.VITE_SYNBOX_BE_URL
+const BE_ADDRESS = import.meta.env.VITE_SYNBOX_BE_URL
+const BE_TEST_ADDRESS = import.meta.env.VITE_SYNBOX_TEST_BE_URL
 
 interface StreamData {
   type: 'update' | 'data' | 'vid_info'
@@ -16,7 +15,7 @@ export const streamValidateVideoById = async (
   onVidInfo: (info: any) => void,
   onError: (error: string) => void,
 ) => {
-  const response = await fetch(`http://127.0.0.1:8080/validate`, {
+  const response = await fetch(`${BE_TEST_ADDRESS}/validate`, {
     method: 'POST',
     body: JSON.stringify({ id: videoId }),
     headers: {
@@ -66,7 +65,7 @@ export const streamTranscribeVideoById = async (
   console.log(videoId)
   console.log(JSON.stringify(subtitleInfo))
 
-  const response = await fetch(`http://127.0.0.1:8080/transcribev2`, {
+  const response = await fetch(`${BE_TEST_ADDRESS}/transcribev2`, {
     method: 'POST',
     body: JSON.stringify({ id: videoId, subtitle_info: subtitleInfo }),
     headers: {
@@ -109,12 +108,12 @@ export const streamTranscribeVideoById = async (
 export const streamAnnotateVideoById = async (
   videoId: string,
   lyrics: string[],
-  timestampedLyrics: string[],
+  timestampedLyrics: unknown[],
   onUpdate: (message: string) => void,
   onAnnotationInfo: (info: any) => void,
   onError: (error: string) => void,
 ) => {
-  const response = await fetch(`http://127.0.0.1:8080/translate-annotate`, {
+  const response = await fetch(`${BE_TEST_ADDRESS}/translate-annotate`, {
     method: 'POST',
     body: JSON.stringify({
       id: videoId,

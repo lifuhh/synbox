@@ -27,6 +27,10 @@ export const shuffleArray = (array: unknown[]) => {
   return array
 }
 
+export const handleRedirect = (url: string) => {
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
 export const validateJSON = (text: string) => {
   try {
     JSON.parse(text)
@@ -65,6 +69,21 @@ function pad(string: number) {
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
 
 // ? Youtube helper functions
+
+export function formatYoutubeChartsResponse(
+  data: YoutubePlaylistApiResponse,
+): { title: string; id: string }[] {
+  const items = data.items.map(
+    (item: YoutubePlaylistItem): { title: string; id: string } => {
+      return {
+        title: item.snippet.title,
+        id: item.snippet.resourceId?.videoId,
+      }
+    },
+  )
+
+  return items
+}
 
 export function formatYoutubePlaylistResponse(
   data: YoutubePlaylistApiResponse,
@@ -266,6 +285,9 @@ const decodeYoutubeIdForAppwrite = (id: string): string => {
   }
   throw new Error('Invalid encoded ID format')
 }
+
+export const delayApiResponse = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms))
 
 //! Everything below is Deprecated >>>
 

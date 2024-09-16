@@ -1,12 +1,10 @@
 import { Dock, DockIcon } from '@/components/magicui/dock'
+import { handleRedirect } from '@/utils'
 import { Divider } from '@mantine/core'
 
 export type IconProps = React.HTMLAttributes<SVGElement>
 
 const HomeFooter = () => {
-  const handleRedirect = (url: string) => {
-    window.open(url, '_blank', 'noopener,noreferrer')
-  }
 
   return (
     <div className='landing-footer flex-between bottom-0 left-0 z-50 h-14 w-full flex-col md:mt-2'>
@@ -57,14 +55,14 @@ const HomeFooter = () => {
         </div>
         <Dock className='mt-0 border-none'>
           <DockIcon
-            onClick={() => handleRedirect('https://github.com/lifuhuang97/')}>
-            <Icons.gitHub className='h-6 w-6' />
-          </DockIcon>
-          <DockIcon
             onClick={() =>
               handleRedirect('https://www.linkedin.com/in/lifuhuang97/')
             }>
             <Icons.linkedin className='h-6 w-6' />
+          </DockIcon>
+          <DockIcon
+            onClick={() => handleRedirect('https://github.com/lifuhuang97/')}>
+            <Icons.gitHub className='h-6 w-6' />
           </DockIcon>
         </Dock>
       </div>

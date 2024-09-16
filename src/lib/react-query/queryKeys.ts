@@ -5,6 +5,7 @@ export enum QUERY_KEYS {
   //! YOUTUBE KEYS
 
   GET_LANDING_PAGE_PLAYLIST = 'getLandingPagePlaylist',
+  GET_CHARTS_PLAYLIST = 'getChartsPlaylist',
   GET_INFINITE_GALLERY_PLAYLIST = 'getInfiniteGalleryPlaylist',
   GET_YOUTUBE_SEARCH_RESULTS = 'getYoutubeSearchResults',
   GET_YOUTUBE_VIDEO_INFO = 'getYoutubeVideoInfo',

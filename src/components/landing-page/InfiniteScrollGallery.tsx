@@ -1,18 +1,19 @@
 import { useOverflow } from '@/hooks/useOverflow'
 import { InfiniteScrollGalleryProps } from '@/types'
+import { delayApiResponse } from '@/utils'
 import { cn } from '@/utils/cn'
-import { Divider } from '@mantine/core'
+import { Divider, Loader } from '@mantine/core'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { memo, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-export const InfiniteScrollGallery: React.FC<InfiniteScrollGalleryProps> = ({
+export const InfiniteScrollGallery = ({
   items,
   className,
   fetchNextPage,
   hasNextPage,
   isFetchingNextPage,
-}) => {
+}: InfiniteScrollGalleryProps) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const navigate = useNavigate()
   const observerTarget = useRef(null)
@@ -83,32 +84,25 @@ export const InfiniteScrollGallery: React.FC<InfiniteScrollGalleryProps> = ({
           </div>
         ))}
       </div>
-      <div ref={observerTarget} className='h-2' />
-      {/* //TODO: prettify transitions of loading & end of gallery */}
+      <div ref={observerTarget} className='h-0' />
+      {/* //* The loader when infinite gallery loads */}
       {isFetchingNextPage && (
-        <Divider
-          my='xs'
-          label={
-            <p className='pointer-events-none text-center text-lg text-white'>
-              Loading...
-            </p>
-          }
-          labelPosition='center'
-          className=''
-        />
+        <div className='my-0 flex w-full min-w-full items-center justify-center'>
+          <Loader color='pink' size='xl' type='dots' />
+        </div>
       )}
-      {!hasNextPage && (
+      {/* {!hasNextPage && (
         <Divider
           my='xs'
           label={
-            <p className='pointer-events-none text-center text-xl font-bold text-gray-400'>
+            <p className='unselectable text-center text-2xl font-bold text-light-2'>
               End of Gallery
             </p>
           }
           labelPosition='center'
           className=''
         />
-      )}
+      )} */}
     </div>
   )
 }

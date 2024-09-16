@@ -15,15 +15,20 @@ import {
   uploadHardCodedLyrics,
 } from '../appwrite/api'
 import {
+  getChartsPlaylist,
   getInfiniteGalleryPlaylist,
   getLandingPagePlaylist,
   getYoutubeSearchResults,
   getYoutubeVideoInfo,
 } from '../youtube/api'
 
-import { InfiniteGalleryQueryResult, TransformedYoutubePlaylistPage, YoutubePlaylistApiResponse } from '@/types'
-import { formatYoutubeInfiniteGalleryResponse } from '@/utils'
-import { streamValidateVideoById } from '../synbox-flask/api'
+import {
+  InfiniteGalleryQueryResult,
+  TransformedYoutubePlaylistPage,
+  YoutubePlaylistApiResponse,
+} from '@/types'
+import { delayApiResponse, formatYoutubeInfiniteGalleryResponse } from '@/utils'
+import { useRef } from 'react'
 import { QUERY_KEYS } from './queryKeys'
 
 export const useSignInGoogleAccount = () => {
@@ -40,10 +45,38 @@ export const useGetLandingPagePlaylist = () => {
   })
 }
 
+export const useGetChartsPlaylist = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_CHARTS_PLAYLIST],
+    queryFn: () => getChartsPlaylist(),
+    staleTime: 1000 * 60 * 60 * 24, // Keep the data fresh for 1 day
+    gcTime: 1000 * 60 * 60, // Keep the data cached for 1 hour
+  })
+}
+
 export const useGetInfiniteGalleryPlaylist = (): InfiniteGalleryQueryResult => {
-  return useInfiniteQuery<YoutubePlaylistApiResponse, Error, InfiniteData<TransformedYoutubePlaylistPage>, [string], string>({
+  const isFirstLoad = useRef(true)
+
+  return useInfiniteQuery<
+    YoutubePlaylistApiResponse,
+    Error,
+    InfiniteData<TransformedYoutubePlaylistPage>,
+    [string],
+    string
+  >({
     queryKey: [QUERY_KEYS.GET_INFINITE_GALLERY_PLAYLIST],
-    queryFn: ({ pageParam = '' }) => getInfiniteGalleryPlaylist({ pageParam }),
+    queryFn: async ({ pageParam = '' }) => {
+      const result = await getInfiniteGalleryPlaylist({ pageParam })
+
+      if (!isFirstLoad.current) {
+        // Apply 2-second delay for subsequent loads
+        await delayApiResponse(320)
+      } else {
+        isFirstLoad.current = false
+      }
+
+      return result
+    },
     initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextPageToken ?? undefined,
     select: (data) => ({
@@ -53,8 +86,8 @@ export const useGetInfiniteGalleryPlaylist = (): InfiniteGalleryQueryResult => {
       })),
       pageParams: data.pageParams,
     }),
-  });
-};
+  })
+}
 
 export const useGetYoutubeVideoInfo = (videoId: string) => {
   return useQuery({

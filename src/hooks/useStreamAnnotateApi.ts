@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 interface AnnotationMutationVariables {
   vidId: string
   lyrics: string[]
-  timestampedLyrics: string[]
+  timestampedLyrics: unknown[]
 }
 
 export const useStreamAnnotateApi = () => {

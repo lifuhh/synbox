@@ -11,14 +11,14 @@ interface LyricsTextLineProps {
   useBlur?: boolean
 }
 
-const LyricTextLine: React.FC<LyricsTextLineProps> = ({
+const LyricTextLine = ({
   htmlContent,
   className,
   divStyle,
   kanjiSpacing = '0.2em',
   lang,
   useBlur = false,
-}) => {
+}: LyricsTextLineProps) => {
   const sanitizedHtmlContent = useMemo(() => {
     return { __html: DOMPurify.sanitize(htmlContent) }
   }, [htmlContent])

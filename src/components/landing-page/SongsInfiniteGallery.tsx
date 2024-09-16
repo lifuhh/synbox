@@ -1,5 +1,6 @@
 import { useGetInfiniteGalleryPlaylist } from '@/lib/react-query/queriesAndMutations'
 import { InfiniteGalleryVideoItem } from '@/types'
+import { Loader } from '@mantine/core'
 import React, { useEffect } from 'react'
 import HomeFooter from '../shared/HomeFooter'
 import { Spotlight } from '../ui/Spotlight'
@@ -45,7 +46,11 @@ const SongsInfiniteGallery: React.FC = () => {
             isFetchingNextPage={isFetchingNextPage}
           />
         )}
-        {isInfiniteGallerySongDataFetching && <p>Loading...</p>}
+        {isInfiniteGallerySongDataFetching && (
+          <div className='my-0 flex w-full min-w-full items-center justify-center'>
+            <Loader color='pink' size='lg' type='dots' />
+          </div>
+        )}
         <HomeFooter />
       </div>
     </section>
