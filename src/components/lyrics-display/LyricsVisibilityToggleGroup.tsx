@@ -2,15 +2,18 @@ import { Slider } from '@/components/ui/slider'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
   fontSizeMultiplierAtom,
+  lyricsControlVisibilityAtom,
+  lyricsDisplayBottomAtom,
   lyricsVisibilityAtom,
   romajiVisibilityAtom,
   translationIsEnglishAtom,
   translationVisibilityAtom,
-  userInteractedWithSettingsAtom,
 } from '@/context/atoms'
 import LyricsIcon from '@mui/icons-material/Lyrics'
 import TranslateIcon from '@mui/icons-material/Translate'
-import { useAtom, useAtomValue } from 'jotai'
+import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom'
+import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop'
+import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 
 const LyricsVisibilityToggleGroup: React.FC = () => {
@@ -19,6 +22,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     'romaji',
     'translation',
     'translationLanguage',
+    'lyricsPosition',
   ])
 
   // const userInteractedWithSettings = useAtomValue(
@@ -36,12 +40,19 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
 
   const [isLyricsVisible, setLyricsVisible] = useAtom(lyricsVisibilityAtom)
   const [isRomajiVisible, setRomajiVisible] = useAtom(romajiVisibilityAtom)
+  const [isLyricsDisplayBottom, setIsLyricsDisplayBottom] = useAtom(
+    lyricsDisplayBottomAtom,
+  )
   const [isTranslationVisible, setTranslationVisible] = useAtom(
     translationVisibilityAtom,
   )
   const [isTranslationEnglish, setTranslationIsEnglish] = useAtom(
     translationIsEnglishAtom,
   )
+
+  const handleLyricsPositionToggle = () => {
+    setIsLyricsDisplayBottom(!isLyricsDisplayBottom)
+  }
 
   useEffect(() => {
     setLyricsToggleValues(
@@ -90,45 +101,47 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     setHoveredButton(null)
   }
 
+  const excludedButtons = ['translationLanguage', 'lyricsPosition']
+
   const getButtonStyle = (buttonId: string) => {
     const isHovered = hoveredButton === buttonId
     const isActive = lyricsToggleValues.includes(buttonId)
-    const isTranslationLanguageButton = buttonId === 'translationLanguage'
+    const isExcludedButton = excludedButtons.includes(buttonId)
 
     return {
-      opacity: isTranslationLanguageButton
-        ? 1
-        : isActive
-          ? 1
-          : isHovered
-            ? 0.8
-            : 0.6,
+      opacity: isExcludedButton ? 1 : isActive ? 1 : isHovered ? 0.8 : 0.6,
       transform: isHovered ? 'scale(1.05)' : 'scale(1)',
       transition:
         'opacity 0.15s ease-in-out, transform 0.15s ease-in-out, background-color 0.15s ease-in-out',
     }
   }
 
+  const [lyricsControlVisible] = useAtom(lyricsControlVisibilityAtom)
+
+  if (!lyricsControlVisible) {
+    return null
+  }
+
   return (
-    <div className='absolute bottom-full left-1/2 mb-4 flex -translate-x-1/2 transform flex-col-reverse space-x-2'>
+    <div className='fixed left-4 top-1/2 flex -translate-y-1/2 transform items-center space-x-4'>
       <ToggleGroup
         type='multiple'
         value={lyricsToggleValues}
         onValueChange={handleLyricsToggle}
-        className='flex space-x-2'>
+        className='flex flex-col space-y-2'>
         <ToggleGroupItem
           value='translationLanguage'
           onClick={handleTranslationLanguageToggle}
-          variant={'default'}
+          variant='default'
           aria-label='Toggle translation language'
-          className=' h-10 w-10 text-pretty rounded-lg bg-primary text-white'
+          className='h-10 w-10 rounded-lg bg-primary text-white'
           onMouseEnter={() => handleButtonHover('translationLanguage')}
           onMouseLeave={handleButtonLeave}
           style={getButtonStyle('translationLanguage')}>
           {isTranslationEnglish ? (
-            <h1 className='text-xl '>Aa</h1>
+            <h1 className='text-xl'>Aa</h1>
           ) : (
-            <h1 className='text-xl font-extrabold '>中</h1>
+            <h1 className='text-xl font-extrabold'>中</h1>
           )}
           <span className='sr-only'>Toggle Translation Language</span>
         </ToggleGroupItem>
@@ -162,20 +175,38 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
           <h1 className='text-xl'>R</h1>
           <span className='sr-only'>Toggle Romaji</span>
         </ToggleGroupItem>
+        <ToggleGroupItem
+          value='lyricsPosition'
+          onClick={handleLyricsPositionToggle}
+          variant='default'
+          aria-label='Toggle lyrics position'
+          className='h-10 w-10 rounded-lg bg-primary text-white'
+          onMouseEnter={() => handleButtonHover('lyricsPosition')}
+          onMouseLeave={handleButtonLeave}
+          style={getButtonStyle('lyricsPosition')}>
+          {isLyricsDisplayBottom ? (
+            <VerticalAlignTopIcon />
+          ) : (
+            <VerticalAlignBottomIcon />
+          )}
+          <span className='sr-only'>Toggle Lyrics Position</span>
+        </ToggleGroupItem>
       </ToggleGroup>
-      <div className='flex items-center justify-center pb-2'>
-        <span className='mr-2 text-sm font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
+      <div className='flex h-56 flex-col items-center justify-center space-y-2'>
+        <span className='text-2xl font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
           A
         </span>
+
         <Slider
-          className='w-32'
+          className=' rounded-lg'
           min={0.5}
           max={1}
           step={0.01}
           value={[fontSizeMultiplier]}
           onValueChange={handleFontSizeChange}
+          orientation='vertical'
         />
-        <span className='ml-2 text-xl font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
+        <span className='text-sm font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
           A
         </span>
       </div>

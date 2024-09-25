@@ -69,6 +69,38 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     }
   }, [vidInfo, showVidInfo])
 
+  const getDialogHeaderContent = () => {
+    switch (currentStep) {
+      case 0:
+        return {
+          title: 'Step 1 - Validation',
+          description: '',
+        }
+      case 1:
+        return {
+          title: 'Step 2 - Transcription',
+          description: '',
+        }
+      case 2:
+        return {
+          title: 'Step 3 - Translation & Annotation',
+          description: '',
+        }
+      case 3:
+        return {
+          title: 'Step 4 - Confirmation',
+          description: '',
+        }
+      default:
+        return {
+          title: 'Complete',
+          description: '',
+        }
+    }
+  }
+
+  const { title, description } = getDialogHeaderContent()
+
   const handleProceedClick = () => {
     setCurrentStep((prevStep) => prevStep + 1)
   }
@@ -96,18 +128,20 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const renderStep = () => {
     switch (currentStep) {
       case 0:
+        //! This is Step 1 - Validation Display
+
         return (
           <>
             {isStreaming && !showLoader && !showVidInfo && (
               <Loader color='yellow' type='dots' />
             )}
-            {!showLoader &&
-              !showVidInfo &&
-              updateMessages.map((message, index) => (
-                <Paper key={index} className='m-2 p-4'>
-                  <Text size='sm'>{message}</Text>
-                </Paper>
-              ))}
+            {!showLoader && !showVidInfo && updateMessages.length > 0 && (
+              <Paper className='m-2 p-4'>
+                <Text size='sm'>
+                  {updateMessages[updateMessages.length - 1]}
+                </Text>
+              </Paper>
+            )}
             {showLoader && (
               <div className='my-4'>
                 <Loader color='yellow' type='dots' />
@@ -158,8 +192,8 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
       onPointerDownOutside={isStreaming ? undefined : handleClose}
       onInteractOutside={isStreaming ? undefined : handleClose}>
       <DialogHeader>
-        <DialogTitle>Request</DialogTitle>
-        <DialogDescription>Dialog Desc</DialogDescription>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
 
       <div className='flex-between m-4 flex flex-col items-center'>

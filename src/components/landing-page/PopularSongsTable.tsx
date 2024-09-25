@@ -40,7 +40,7 @@ const LandingPageCharts: React.FC = () => {
           <thead className='sticky top-0 z-10 bg-primary text-white'>
             <tr>
               <th className='py-3 text-center' colSpan={2}>
-                Top Songs This Week
+                YouTube Charts
               </th>
             </tr>
           </thead>

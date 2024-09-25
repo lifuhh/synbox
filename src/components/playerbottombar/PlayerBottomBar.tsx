@@ -264,8 +264,6 @@ const PlayerBottomBar = ({
             )}
             <span className='sr-only'>Toggle Lyrics</span>
           </Button>
-          {/* TBD */}
-          {/* <LyricsControlBottomBarButton/> */}
           <Button
             className='rounded-full'
             size='icon'

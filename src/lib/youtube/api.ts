@@ -9,7 +9,6 @@ import {
 } from '@/types'
 import {
   formatYoutubeChartsResponse,
-  formatYoutubeInfiniteGalleryResponse,
   formatYoutubePlaylistResponse,
   formatYoutubeSearchResponse,
 } from '@/utils'

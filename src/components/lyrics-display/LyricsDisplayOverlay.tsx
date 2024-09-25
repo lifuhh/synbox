@@ -1,6 +1,7 @@
 import { useAppContext } from '@/context/AppContext'
 import {
   fontSizeMultiplierAtom,
+  lyricsDisplayBottomAtom,
   translationIsEnglishAtom,
 } from '@/context/atoms'
 import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
@@ -77,6 +78,7 @@ function LyricsDisplayOverlay({
   })
   const [lyricsStyles, setLyricsStyles] = useState<React.CSSProperties[]>([])
   const isTranslationEnglish = useAtomValue(translationIsEnglishAtom)
+  const isLyricsDisplayBottom = useAtomValue(lyricsDisplayBottomAtom)
 
   const transitionRef = useRef({ isEntering: false, isExiting: false })
 
@@ -221,6 +223,16 @@ function LyricsDisplayOverlay({
     [playerControlsVisible, bottomBarHeight],
   )
 
+  const getOverlayPosition = useMemo(() => {
+    if (isLyricsDisplayBottom) {
+      return playerControlsVisible
+        ? { bottom: `${bottomBarHeight}px`, top: 'auto' }
+        : { bottom: '0', top: 'auto' }
+    } else {
+      return { top: '0', bottom: 'auto' }
+    }
+  }, [isLyricsDisplayBottom, playerControlsVisible, bottomBarHeight])
+
   //TODO: Font size multiplier testing
   const fontSizeMultiplier = useAtomValue(fontSizeMultiplierAtom)
 
@@ -264,43 +276,84 @@ function LyricsDisplayOverlay({
     [],
   )
 
+  const lyricLines = useMemo(() => {
+    const lines = [
+      {
+        key: 'translation',
+        content: renderLyricLine(
+          isTranslationEnglish
+            ? renderedLyrics.eng[currentIndex]
+            : renderedLyrics.chi[currentIndex],
+          translationVisibility &&
+            !isContentSame(
+              isTranslationEnglish ? currentLyric.eng : currentLyric.chi,
+              currentLyric.jp,
+            ),
+          'translation',
+        ),
+      },
+      {
+        key: 'lyrics',
+        content: renderLyricLine(
+          <div
+            style={lyricsStyles[currentIndex]}
+            className='w-full text-center'>
+            {renderedLyrics.jp[currentIndex]}
+          </div>,
+          lyricsVisibility,
+          'lyrics',
+        ),
+      },
+      {
+        key: 'romaji',
+        content: renderLyricLine(
+          renderedLyrics.romaji[currentIndex],
+          romajiVisibility &&
+            !isContentSame(currentLyric.romaji, currentLyric.jp),
+          'romaji',
+        ),
+      },
+    ]
+
+    return isLyricsDisplayBottom ? lines : lines.reverse()
+  }, [
+    isLyricsDisplayBottom,
+    isTranslationEnglish,
+    renderedLyrics,
+    currentIndex,
+    translationVisibility,
+    lyricsVisibility,
+    romajiVisibility,
+    currentLyric,
+    lyricsStyles,
+    renderLyricLine,
+    isContentSame,
+  ])
+
   return (
     <div
-      className='player-lyrics-overlay unselectable pointer-events-none absolute left-0 top-0 z-50 w-full'
-      style={{ height: getOverlayHeight }}>
-      <div className='lyric-container flex h-full w-full flex-col-reverse items-center justify-start pb-2'>
+      className='player-lyrics-overlay unselectable pointer-events-none absolute left-0 z-50 w-full'
+      style={{
+        ...getOverlayPosition,
+        height: isLyricsDisplayBottom ? getOverlayHeight : 'auto',
+        display: 'flex',
+        flexDirection: isLyricsDisplayBottom ? 'column-reverse' : 'column',
+      }}>
+      <div
+        className={`lyric-container flex w-full items-center justify-start ${
+          isLyricsDisplayBottom ? 'pb-2' : 'pt-2'
+        }`}>
         <div
-          className='flex flex-col items-end'
+          className='flex w-full flex-col items-center'
           style={{
             transform: `scale(${fontSizeMultiplier})`,
-            transformOrigin: 'center bottom',
+            transformOrigin: isLyricsDisplayBottom
+              ? 'center bottom'
+              : 'center top',
           }}>
-          {renderLyricLine(
-            isTranslationEnglish
-              ? renderedLyrics.eng[currentIndex]
-              : renderedLyrics.chi[currentIndex],
-            translationVisibility &&
-              !isContentSame(
-                isTranslationEnglish ? currentLyric.eng : currentLyric.chi,
-                currentLyric.jp,
-              ),
-            'translation',
-          )}
-          {renderLyricLine(
-            <div
-              style={lyricsStyles[currentIndex]}
-              className='w-full text-center'>
-              {renderedLyrics.jp[currentIndex]}
-            </div>,
-            lyricsVisibility,
-            'lyrics',
-          )}
-          {renderLyricLine(
-            renderedLyrics.romaji[currentIndex],
-            romajiVisibility &&
-              !isContentSame(currentLyric.romaji, currentLyric.jp),
-            'romaji',
-          )}
+          {lyricLines.map(({ key, content }) => (
+            <React.Fragment key={key}>{content}</React.Fragment>
+          ))}
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ export const lyricsVisibilityAtom = atom(true)
 export const romajiVisibilityAtom = atom(true)
 export const translationVisibilityAtom = atom(true)
 export const translationIsEnglishAtom = atom(true)
+export const lyricsDisplayBottomAtom = atom(false)
 export const fontSizeMultiplierAtom = atom(1)
 
 export const userInteractedWithSettingsAtom = atom(false)

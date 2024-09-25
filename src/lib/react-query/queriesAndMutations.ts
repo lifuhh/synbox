@@ -69,8 +69,9 @@ export const useGetInfiniteGalleryPlaylist = (): InfiniteGalleryQueryResult => {
       const result = await getInfiniteGalleryPlaylist({ pageParam })
 
       if (!isFirstLoad.current) {
-        // Apply 2-second delay for subsequent loads
-        await delayApiResponse(320)
+        // Apply a random delay between 200ms and 400ms for subsequent loads
+        const randomDelay = Math.floor(Math.random() * (400 - 200 + 1) + 200)
+        await delayApiResponse(randomDelay)
       } else {
         isFirstLoad.current = false
       }
@@ -109,7 +110,7 @@ export const useGetLyricsBySongId = (songId: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_LYRICS_BY_SONG_ID, songId],
     enabled: !!songId,
-    staleTime: 1000 * 60 * 60, // Keep the data fresh indefinitely
+    staleTime: 1000 * 60 * 60, // Keep the data fresh for 1 hour
     gcTime: 1000 * 60 * 60, // Keep the data cached for 1 hour
     queryFn: () => getSongLyricsById(songId),
   })
