@@ -110,9 +110,8 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
 
     return {
       opacity: isExcludedButton ? 1 : isActive ? 1 : isHovered ? 0.8 : 0.6,
-      transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-      transition:
-        'opacity 0.15s ease-in-out, transform 0.15s ease-in-out, background-color 0.15s ease-in-out',
+      transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+      transition: 'opacity 0.15s ease-in-out, transform 0.15s ease-in-out',
     }
   }
 
@@ -198,7 +197,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
         </span>
 
         <Slider
-          className=' rounded-lg'
+          className='V rounded-lg'
           min={0.5}
           max={1}
           step={0.01}

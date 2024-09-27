@@ -46,6 +46,8 @@ const LandingPage = () => {
         <LandingPageCharts />
       </section>
       {/* //? Pricing */}
+      {/* //TODO: Payment stuff Component */}
+
       {/* <Divider
         my='xs'
         label={
@@ -57,7 +59,6 @@ const LandingPage = () => {
         className='p-4'
       />
       <PricingTable /> */}
-      {/* //TODO: Payment stuff Component */}
       <Divider
         my='xs'
         label={

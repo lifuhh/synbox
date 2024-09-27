@@ -64,7 +64,7 @@ const HeroGenerateLyricsDefault = ({
     }
   }
 
-  const handleSubmit = () => {
+  const handleOpenLandingPageDialog = () => {
     if (validationSuccess && extractedVideoId) {
       if (previousInputRef.current !== inputValue) {
         setDialogOpen(false)
@@ -137,10 +137,14 @@ const HeroGenerateLyricsDefault = ({
               <div className='text-green-500'>URL is valid!</div>
             )}
           </div>
-          <Dialog open={dialogOpen}>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button
-                onClick={inputValue?.length > 0 ? handleSubmit : () => {}}
+                onClick={
+                  inputValue?.length > 0
+                    ? handleOpenLandingPageDialog
+                    : () => {}
+                }
                 disabled={
                   errorMessage && errorMessage != ''
                     ? true

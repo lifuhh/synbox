@@ -17,7 +17,7 @@ const TopBar = () => {
   const location = useLocation() // Use the useLocation hook to access the current route
   const isVideoPlayer = location.pathname.includes('/v/')
   // Determine the background opacity based on the pathname
-  const buttonVisibility = isVideoPlayer ? 'hidden' : 'visible'
+
   // const pathname = window.location.pathname
   // console.log('Pathname in topbar is')
   // console.log(pathname)
@@ -53,7 +53,7 @@ const TopBar = () => {
             <GitHubIcon className='scale-75 fill-white' />
             <span className='sr-only'>GitHub Button</span>
           </Button> */}
-          <FavouritesDropdownButton buttonVisibility={buttonVisibility} />
+          <FavouritesDropdownButton buttonVisibility={playerControlsVisible} />
           {!isVideoPlayer && <ProfileButton />}
         </div>
       </nav>

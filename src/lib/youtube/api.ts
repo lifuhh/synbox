@@ -120,7 +120,7 @@ export const getInfiniteGalleryPlaylist = async ({
         key: YoutubeApiKey,
         part: 'snippet',
         playlistId: 'PLzJ1mqwxogpHcS_hfWcEY_o8n_yBeGlAN',
-        maxResults: 15,
+        maxResults: 18,
         pageToken: pageParam,
       },
     },

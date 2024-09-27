@@ -10,6 +10,7 @@ interface LyricsInfo {
   lyrics: string[]
   timestamped_lyrics: any[]
 }
+
 interface RequestDialogStepTwoDisplayProps {
   vidInfo: any
   onLyricsUpdate: (lyrics: string[], timestampedLyrics: any[]) => void
@@ -21,7 +22,6 @@ const RequestDialogStepTwoDisplay = ({
 }: RequestDialogStepTwoDisplayProps) => {
   const [showLoader, setShowLoader] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
-  const [cachedLyrics, setCachedLyrics] = useState<LyricsInfo | null>(null)
   const [currentLyrics, setCurrentLyrics] = useState<string[]>([])
   const [currentTimestampedLyrics, setCurrentTimestampedLyrics] = useState<
     any[]
@@ -29,7 +29,6 @@ const RequestDialogStepTwoDisplay = ({
 
   const { full_vid_info: fullVidInfo, subtitle_info: subtitleInfo } = vidInfo
   const { id: vidId } = fullVidInfo
-  const { exist: subtitleExists, path: subtitlePath } = subtitleInfo
 
   const {
     isStreaming,
@@ -44,39 +43,20 @@ const RequestDialogStepTwoDisplay = ({
   } = useStreamTranscriptionApi()
 
   useEffect(() => {
-    if (vidId && subtitleInfo && !cachedLyrics) {
-      const cachedData = localStorage.getItem(`lyrics_${vidId}`)
-      if (cachedData) {
-        const parsedData = JSON.parse(cachedData)
-        setCachedLyrics(parsedData)
-        setCurrentLyrics(parsedData.lyrics)
-        setCurrentTimestampedLyrics(parsedData.timestamped_lyrics)
-        setShowLyricsInfo(true)
-        onLyricsUpdate(parsedData.lyrics, parsedData.timestamped_lyrics)
-      } else {
-        mutate({ vidId, subtitleInfo })
-      }
+    if (vidId && subtitleInfo) {
+      mutate({ vidId, subtitleInfo })
     }
-  }, [
-    vidId,
-    subtitleInfo,
-    cachedLyrics,
-    mutate,
-    setShowLyricsInfo,
-    onLyricsUpdate,
-  ])
+  }, [vidId, subtitleInfo, mutate])
 
   useEffect(() => {
     if (lyricsInfo) {
-      localStorage.setItem(`lyrics_${vidId}`, JSON.stringify(lyricsInfo))
-      setCachedLyrics(lyricsInfo)
       setCurrentLyrics(lyricsInfo.lyrics)
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
       const timer = setTimeout(() => setShowLyricsInfo(true), 1000)
       return () => clearTimeout(timer)
     }
-  }, [lyricsInfo, setShowLyricsInfo, vidId, onLyricsUpdate])
+  }, [lyricsInfo, setShowLyricsInfo, onLyricsUpdate])
 
   useEffect(() => {
     return () => {
@@ -86,12 +66,12 @@ const RequestDialogStepTwoDisplay = ({
   }, [resetStream])
 
   useEffect(() => {
-    if ((lyricsInfo || cachedLyrics) && !showLyricsInfo) {
+    if (lyricsInfo && !showLyricsInfo) {
       setShowLoader(true)
     } else if (showLyricsInfo) {
       setShowLoader(false)
     }
-  }, [lyricsInfo, cachedLyrics, showLyricsInfo])
+  }, [lyricsInfo, showLyricsInfo])
 
   const handleRetry = useCallback(() => {
     if (retryCount < 2) {
@@ -105,7 +85,6 @@ const RequestDialogStepTwoDisplay = ({
     (updatedLyrics: string[]) => {
       setCurrentLyrics(updatedLyrics)
 
-      // Update timestamped lyrics
       const updatedTimestampedLyrics = currentTimestampedLyrics.map(
         (item, index) => ({
           ...item,
@@ -114,26 +93,10 @@ const RequestDialogStepTwoDisplay = ({
       )
       setCurrentTimestampedLyrics(updatedTimestampedLyrics)
 
-      // Update parent component
       onLyricsUpdate(updatedLyrics, updatedTimestampedLyrics)
-
-      // Update local storage
-      if (cachedLyrics) {
-        const updatedLyricsInfo = {
-          ...cachedLyrics,
-          lyrics: updatedLyrics,
-          timestamped_lyrics: updatedTimestampedLyrics,
-        }
-        localStorage.setItem(
-          `lyrics_${vidId}`,
-          JSON.stringify(updatedLyricsInfo),
-        )
-      }
     },
-    [currentTimestampedLyrics, onLyricsUpdate, cachedLyrics, vidId],
+    [currentTimestampedLyrics, onLyricsUpdate],
   )
-
-  console.log('isAiGenerated:', isAiGenerated)
 
   return (
     <div className='mt-4 h-full w-full'>

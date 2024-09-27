@@ -17,6 +17,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import CreditCardIcon from '@mui/icons-material/CreditCard'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import PersonIcon from '@mui/icons-material/Person'
+import ReportIcon from '@mui/icons-material/Report'
 import SettingsIcon from '@mui/icons-material/Settings'
 
 import { handleRedirect } from '@/utils'
@@ -67,7 +68,7 @@ const ProfileButtonDropdown = () => {
             // }}
             onClick={() => {
               toast({
-                title: 'Coming Soon',
+                title: 'Coming Soon...',
                 // description: 'This feature is coming soon',
                 // action: (
                 //   <ToastAction altText='Dismiss Toast'>Dismiss</ToastAction>
@@ -76,7 +77,7 @@ const ProfileButtonDropdown = () => {
             }}>
             <AccountCircleIcon fontSize='small' className='mr-2 h-4 w-4' />
             <span>Profile</span>
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
           </DropdownMenuItem>
           {/* <DropdownMenuItem className='cursor-pointer'>
             <BookmarksIcon fontSize='small' className='mr-2 h-4 w-4' />
@@ -99,8 +100,14 @@ const ProfileButtonDropdown = () => {
           <DropdownMenuItem
             className='cursor-pointer'
             onClick={() => handleRedirect('https://github.com/lifuhuang97/')}>
-            <GitHubIcon className='ml-[2px] mr-2 h-4 w-4 fill-white' />
+            <GitHubIcon className='ml-[3px] mr-2 h-4 w-4 fill-white' />
             <span>GitHub</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onClick={handleAboutOnClick}>
+            <ReportIcon className='mr-2 h-4 w-4' fontSize='small' />
+            <span>Report Issue</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className='cursor-pointer'

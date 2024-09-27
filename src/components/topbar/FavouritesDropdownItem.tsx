@@ -1,28 +1,73 @@
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
+import { useOverflow } from '@/hooks/useOverflow'
+import { X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 
-const FavouritesDropdownItem = () => {
-  const author = 'Ayase / YOASOBI'
-  const thumbnailUrl = 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg'
-  const title = 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)'
-  const videoId = 'VyvhvlYvRnc'
+const FavouritesDropdownItem = ({ videoId, title, author, thumbnailUrl }) => {
+  const navigate = useNavigate()
+  const textRef = useRef(null)
+  const containerRef = useRef(null)
+  const [isOverflowing, setIsOverflowing] = useState(false)
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (textRef.current && containerRef.current) {
+        setIsOverflowing(
+          textRef.current.scrollWidth > containerRef.current.clientWidth,
+        )
+      }
+    }
+
+    checkOverflow()
+    window.addEventListener('resize', checkOverflow)
+
+    return () => {
+      window.removeEventListener('resize', checkOverflow)
+    }
+  }, [title])
+
+  useOverflow(textRef, containerRef, 'marquee')
+
+  const handleClick = () => {
+    navigate(`/v/${videoId}`)
+  }
 
   return (
-    <DropdownMenuItem>
-      <div className='playlist-item flex h-full w-full items-center justify-center'>
+    <DropdownMenuItem className='p-2'>
+      <div className='playlist-item flex h-full w-full items-center space-x-2'>
         <img
           src={thumbnailUrl}
-          className='rounded-xs h-14 w-auto object-cover'
+          alt={title}
+          className='rounded-xs h-12 w-auto cursor-pointer object-cover'
+          onClick={handleClick}
         />
-        <div className='marquee unselectable px-2'>
-          <span>{title}</span>
+        <div className='min-w-0 flex-grow'>
+          <div
+            ref={containerRef}
+            className={`font-bold tracking-wide text-zinc-100 ${
+              isOverflowing ? 'marquee' : 'overflow-hidden'
+            }`}
+            onClick={handleClick}>
+            <span
+              ref={textRef}
+              className={`inline-block cursor-pointer whitespace-nowrap ${
+                isOverflowing ? 'marquee-content' : ''
+              }`}>
+              {title}
+            </span>
+          </div>
+          <div className='truncate text-sm text-gray-400'>{author}</div>
         </div>
-        <Button variant='ghost' className='ml-2 px-2 hover:bg-primary'>
-          <RemoveCircleOutlineIcon />
+        <Button
+          variant='ghost'
+          className='ml-2 cursor-pointer px-2 hover:bg-primary'>
+          <X className='h-4 w-4' />
         </Button>
       </div>
     </DropdownMenuItem>
   )
 }
+
 export default FavouritesDropdownItem

@@ -23,7 +23,7 @@ const LandingPageCharts: React.FC = () => {
   }
 
   // Calculate the height for 6 items plus the header
-  const tableBodyHeight = 6 * 52 + 72 // Assuming each row is 52px and the header is 40px
+  const tableBodyHeight = 6 * 52 + 72 // Assuming each row is 52px and the header is 40pxfa
 
   return (
     <div
@@ -71,7 +71,7 @@ const LandingPageCharts: React.FC = () => {
                 ))}
           </tbody>
           <caption className='mt-2 caption-bottom text-sm text-gray-500'>
-            Source: Top 100 Songs Japan YouTube
+            Source: Top 100 Japan YouTube
           </caption>
         </table>
       </div>

@@ -1,4 +1,5 @@
 import {
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -101,6 +102,10 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
   const { title, description } = getDialogHeaderContent()
 
+  const handlePreviousClick = () => {
+    setCurrentStep((prevStep) => Math.max(prevStep - 1, 0))
+  }
+
   const handleProceedClick = () => {
     setCurrentStep((prevStep) => prevStep + 1)
   }
@@ -129,7 +134,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     switch (currentStep) {
       case 0:
         //! This is Step 1 - Validation Display
-
         return (
           <>
             {isStreaming && !showLoader && !showVidInfo && (
@@ -153,6 +157,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           </>
         )
       case 1:
+        //! This is Step 2 - Transcription Display
         return (
           <RequestDialogStepTwoDisplay
             vidInfo={vidInfo}
@@ -160,6 +165,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           />
         )
       case 2:
+        //! This is Step 3 - Translation & Annotation Display
         return (
           <RequestDialogAnnotateDisplay
             id={videoId}
@@ -169,6 +175,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           />
         )
       case 3:
+        //! This is Step 4 - Completion Display
         return (
           <RequestDialogUploadDisplay
             id={videoId}
@@ -212,23 +219,35 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         )}
       </div>
 
-      <DialogFooter>
-        {((showVidInfo && currentStep === 0) ||
-          (currentStep > 0 && currentStep < 3)) && (
+      <DialogFooter className='sm:flex-between flex w-full justify-start'>
+        <DialogClose asChild>
           <Button
-            onClick={handleProceedClick}
-            className='invisible-ring bg-blue-500 text-white hover:bg-blue-600'>
-            {currentStep === 2 ? 'Proceed to Upload' : 'Proceed to Next Step'}
+            type='button'
+            variant='secondary'
+            onClick={handleClose}
+            disabled={isStreaming}
+            className='invisible-ring text-md text-light-1 hover:border-primary hover:bg-light-1 hover:text-primary hover:outline-1'>
+            Close
           </Button>
-        )}
-        <Button
-          type='button'
-          variant='default'
-          onClick={handleClose}
-          disabled={isStreaming}
-          className='invisible-ring text-md text-light-1 hover:border-primary hover:bg-light-1 hover:text-primary hover:outline-1'>
-          Close
-        </Button>
+        </DialogClose>
+
+        <div>
+          {currentStep > 0 && (
+            <Button
+              onClick={handlePreviousClick}
+              className='invisible-ring mr-2 bg-gray-500 text-white hover:bg-gray-600'>
+              Go to Previous Step
+            </Button>
+          )}
+          {((showVidInfo && currentStep === 0) ||
+            (currentStep > 0 && currentStep < 3)) && (
+            <Button
+              onClick={handleProceedClick}
+              className='invisible-ring bg-blue-500 text-white hover:bg-blue-600'>
+              {currentStep === 2 ? 'Proceed to Upload' : 'Proceed to Next Step'}
+            </Button>
+          )}
+        </div>
       </DialogFooter>
     </DialogContent>
   )

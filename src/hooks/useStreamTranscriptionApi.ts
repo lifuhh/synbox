@@ -16,7 +16,6 @@ export const useStreamTranscriptionApi = () => {
   const [error, setError] = useState<string | null>(null)
   const [isAiGenerated, setIsAiGenerated] = useState(false)
 
-  // Use a ref to store the timeout ID
   const settledTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const resetStream = useCallback(() => {
@@ -27,7 +26,6 @@ export const useStreamTranscriptionApi = () => {
     setIsAiGenerated(false)
   }, [])
 
-  // Clear the timeout when the component unmounts
   useEffect(() => {
     return () => {
       if (settledTimeoutRef.current) {
@@ -44,7 +42,7 @@ export const useStreamTranscriptionApi = () => {
         (message) => setUpdateMessages((prev) => [...prev, message]),
         (info) => setLyricsInfo(info),
         (err) => setError(err),
-        (aiGenerated) => setIsAiGenerated(aiGenerated)
+        (aiGenerated) => setIsAiGenerated(aiGenerated),
       ),
     onMutate: () => {
       setIsStreaming(true)
@@ -52,11 +50,9 @@ export const useStreamTranscriptionApi = () => {
       resetStream()
     },
     onSettled: () => {
-      // Clear any existing timeout
       if (settledTimeoutRef.current) {
         clearTimeout(settledTimeoutRef.current)
       }
-      // Set a new timeout
       settledTimeoutRef.current = setTimeout(() => {
         setIsStreaming(false)
       }, 1000)
