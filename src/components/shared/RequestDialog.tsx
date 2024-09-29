@@ -134,11 +134,17 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     switch (currentStep) {
       case 0:
         //! This is Step 1 - Validation Display
+
+        if (error) return
+
+        // only display stuff if no error
         return (
           <>
             {isStreaming && !showLoader && !showVidInfo && (
               <Loader color='yellow' type='dots' />
             )}
+
+            {/* //? This section is for the request update messages */}
             {!showLoader && !showVidInfo && updateMessages.length > 0 && (
               <Paper className='m-2 p-4'>
                 <Text size='sm'>
@@ -146,9 +152,12 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
                 </Text>
               </Paper>
             )}
+
+            {/* //? This section is for the "finalizing" process */}
             {showLoader && (
               <div className='my-4'>
                 <Loader color='yellow' type='dots' />
+                <Text>Finalizing...</Text>
               </div>
             )}
             {showVidInfo && (
@@ -202,10 +211,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
-
       <div className='flex-between m-4 flex flex-col items-center'>
-        <Text size='xl'>Video ID: {videoId}</Text>
-
         {error ? (
           <>
             <div className='mt-4 text-red-500'>
@@ -218,7 +224,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           renderStep()
         )}
       </div>
-
       <DialogFooter className='sm:flex-between flex w-full justify-start'>
         <DialogClose asChild>
           <Button

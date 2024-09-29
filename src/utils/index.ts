@@ -217,39 +217,43 @@ export function formatCountToString(count: number | string): string {
   }
 }
 
+//? Used to validate user youtube URL input at the landing page
 export const extractVideoId = (input: string): string | null => {
+  // Trim the input to remove any leading/trailing whitespace
+  input = input.trim();
+
   // Check if the input is already a valid 11-character video ID
   if (/^[\w-]{11}$/.test(input)) {
-    return input
+    return input;
   }
 
   // Regular expression for finding a YouTube video ID in various URL formats
   const videoIdPattern =
-    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^#&?]{11})/
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^#&?]{11})(?:[#?&]|$)/;
 
   // If the URL doesn't start with 'http://' or 'https://', prepend 'https://'
   const fullUrl =
     input.startsWith('http://') || input.startsWith('https://')
       ? input
-      : `https://${input}`
+      : `https://${input}`;
 
   try {
-    const match = fullUrl.match(videoIdPattern)
+    const match = fullUrl.match(videoIdPattern);
     if (match && match[1]) {
-      return match[1]
+      return match[1];
     }
 
     // If no match found using regex, try parsing as URL
-    const parsedUrl = new URL(fullUrl)
-    const videoId = parsedUrl.searchParams.get('v')
-    if (videoId && videoId.length === 11) {
-      return videoId
+    const parsedUrl = new URL(fullUrl);
+    const videoId = parsedUrl.searchParams.get('v');
+    if (videoId && /^[\w-]{11}$/.test(videoId)) {
+      return videoId;
     }
   } catch (error) {
-    console.error('Error parsing YouTube URL:', error)
+    console.error('Error parsing YouTube URL:', error);
   }
 
-  return null
+  return null;
 }
 
 export const createAppwriteIdFromYoutubeId = (id: string): string => {

@@ -58,7 +58,7 @@ const HeroGenerateLyricsDefault = ({
         setErrorMessage('')
         setExtractedVideoId(extractedVidId)
       } else {
-        setErrorMessage('Unable to extract a valid video ID')
+        setErrorMessage('Invalid URL')
         setExtractedVideoId('')
       }
     }
@@ -115,26 +115,27 @@ const HeroGenerateLyricsDefault = ({
             // border-2 border-primary-500/40 hover:border-primary-500/90
             // focus:ring-0 focus:ring-violet-300
             // focus:outline-none focus:ring-0 focus:ring-teal-300
-            className={`py-6 focus:ring-transparent ${
+            className={`border-2 py-6 focus:ring-transparent ${
               inputValue.length > 0
                 ? validationSuccess
-                  ? 'hover:border-green-500'
-                  : 'hover:border-red-700'
-                : 'hover:border-secondary'
-            }  border-2 border-white ${
-              inputValue.length > 0
-                ? validationSuccess
-                  ? 'focus:border-green-500'
-                  : 'focus:border-red-700'
-                : 'focus:border-secondary'
-            } `}
+                  ? 'hover:border-green-500 focus:border-green-500'
+                  : 'hover:border-red-700 focus:border-red-700'
+                : 'hover:border-white focus:border-white'
+            }   ${validationSuccess ? 'border-green-500' : 'border-secondary'}`}
           />
-          <div className='absolute -bottom-20 left-0 h-20 w-full pt-2'>
-            {errorMessage && inputValue?.length > 0 && (
-              <div className='text-red-500'>{errorMessage}</div>
-            )}
-            {validationSuccess && !errorMessage && (
-              <div className='text-green-500'>URL is valid!</div>
+          <div className='absolute -bottom-20 left-0 h-20 w-full pt-2 text-left'>
+            {inputValue.length > 0 && (
+              <div className={errorMessage ? 'text-red-500' : 'text-green-500'}>
+                {errorMessage
+                  ? errorMessage
+                  : isCheckingLyrics
+                    ? 'Valid URL - Searching Database...'
+                    : existingLyrics
+                      ? 'Lyrics Found!'
+                      : validationSuccess
+                        ? 'URL is Valid!'
+                        : ''}
+              </div>
             )}
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
