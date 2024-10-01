@@ -4,6 +4,8 @@ import { GitHubIcon } from '../svgicons'
 import AppLogo from '../topbar/AppLogo'
 import CommandSearch from '../topbar/CommandSearch'
 
+import { globalControlsVisibilityAtom } from '@/context/atoms'
+
 import { useAppContext } from '@/context/AppContext'
 import { fullscreenAtom } from '@/context/atoms'
 import { useAtomValue } from 'jotai'
@@ -12,6 +14,7 @@ import ProfileButton from '../topbar/ProfileButton'
 
 const TopBar = () => {
   const { playerControlsVisible } = useAppContext()
+  const globalControlsVisible = useAtomValue(globalControlsVisibilityAtom)
   const isFullscreen = useAtomValue(fullscreenAtom)
 
   const location = useLocation() // Use the useLocation hook to access the current route
@@ -26,8 +29,8 @@ const TopBar = () => {
   return (
     // <section className='topbar sticky top-0 bg'>
     <section
-      className={`topbar controls sticky top-0 z-100 ${
-        isFullscreen ? 'hidden' : 'block'
+      className={`topbar controls sticky top-0 z-100${
+        isFullscreen || !globalControlsVisible ? 'hidden' : 'block'
       }`}>
       <nav
         className={`flex-between h-14 w-full bg-dark-1 ${

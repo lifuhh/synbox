@@ -69,8 +69,8 @@ export const useGetInfiniteGalleryPlaylist = (): InfiniteGalleryQueryResult => {
       const result = await getInfiniteGalleryPlaylist({ pageParam })
 
       if (!isFirstLoad.current) {
-        // Apply a random delay between 200ms and 400ms for subsequent loads
-        const randomDelay = Math.floor(Math.random() * (400 - 200 + 1) + 200)
+        // Apply a random delay between 150ms and 300ms for subsequent loads
+        const randomDelay = Math.floor(Math.random() * (300 - 150 + 1) + 150)
         await delayApiResponse(randomDelay)
       } else {
         isFirstLoad.current = false

@@ -203,7 +203,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
   return (
     <DialogContent
-      className='invisible-ring border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-4xl'
+      className='invisible-ring max-h-[80vh] overflow-y-hidden border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-4xl'
       onEscapeKeyDown={isStreaming ? undefined : handleClose}
       onPointerDownOutside={isStreaming ? undefined : handleClose}
       onInteractOutside={isStreaming ? undefined : handleClose}>

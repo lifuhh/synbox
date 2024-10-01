@@ -67,7 +67,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         // Check if the video is playing
         timer = setTimeout(() => {
           setPlayerControlsVisible(false)
-        }, 2500)
+        }, 3000)
       }
     }
 

@@ -1,6 +1,7 @@
 import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverlay'
 import LyricsVisibilityToggleGroup from '@/components/lyrics-display/LyricsVisibilityToggleGroup'
 import { MemoizedPlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
+import FloatingGlobalVisibilityToggle from '@/components/shared/FloatingGlobalVisibilityToggle'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import {
@@ -298,6 +299,7 @@ const PlayerPage = () => {
         )}
       </div>
       <LyricsVisibilityToggleGroup />
+      <FloatingGlobalVisibilityToggle />
       <MemoizedPlayerBottomBar
         playing={playing}
         loop={loop}

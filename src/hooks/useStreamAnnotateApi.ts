@@ -19,6 +19,7 @@ export const useStreamAnnotateApi = () => {
   )
   const [showAnnotation, setShowAnnotation] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [currentTask, setCurrentTask] = useState<string | null>(null)
 
   const settledTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -30,6 +31,7 @@ export const useStreamAnnotateApi = () => {
     setKanjiAnnotations(null)
     setShowAnnotation(false)
     setError(null)
+    setCurrentTask(null)
   }, [])
 
   useEffect(() => {
@@ -52,6 +54,7 @@ export const useStreamAnnotateApi = () => {
         timestampedLyrics,
         (message) => setUpdateMessages((prev) => [...prev, message]),
         (info) => {
+          setCurrentTask(info.type)
           switch (info.type) {
             case 'eng_translation':
               setEngTranslation(info.data)
@@ -81,11 +84,13 @@ export const useStreamAnnotateApi = () => {
       settledTimeoutRef.current = setTimeout(() => {
         setIsStreaming(false)
         setShowAnnotation(true)
+        setCurrentTask(null)
       }, 1000)
     },
     onError: (error: Error) => {
       setError(error.message)
       setIsStreaming(false)
+      setCurrentTask(null)
     },
   })
 
@@ -101,5 +106,6 @@ export const useStreamAnnotateApi = () => {
     error,
     resetStream,
     mutate: mutation.mutate,
+    currentTask,
   }
 }

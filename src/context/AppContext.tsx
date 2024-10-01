@@ -2,8 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { getCurrentUser } from '@/lib/appwrite/api'
 import { useDisclosure } from '@mantine/hooks'
+import { useAtomValue } from 'jotai'
 import { createContext, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { globalControlsVisibilityAtom } from './atoms'
 
 export const INITIAL_USER = {
   id: '',
@@ -65,14 +67,18 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   //TODO Auth Stuff
 
-
   //* Bottom Bar Height Stuff
   const [bottomBarHeight, setBottomBarHeight] = useState(0)
 
   //* Player Stuff
   const [videoId, setVideoId] = useState<string>('')
+  const globalControlsVisible = useAtomValue(globalControlsVisibilityAtom)
   const [playerControlsVisible, setPlayerControlsVisible] =
     useState<boolean>(true)
+
+  const effectivePlayerControlsVisible =
+    globalControlsVisible && playerControlsVisible
+
   // set initial volume here
   const [volume, setVolume] = useState<number>(0.3)
   const [processingStage, setProcessingStage] = useState<number>(1)
@@ -98,7 +104,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setProcessingStage,
     volume,
     setVolume,
-    playerControlsVisible,
+    playerControlsVisible: effectivePlayerControlsVisible,
     setPlayerControlsVisible,
     bottomBarHeight,
     setBottomBarHeight,

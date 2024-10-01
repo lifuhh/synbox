@@ -6,7 +6,7 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
   const {
     full_vid_info: { title, id, thumbnail, likes, uploader, channel_name },
     passed,
-    subtitle_info: { exist: subtitlesExist },
+    subtitle_info: { exist: subtitlesExist, cleaned: subtitlesCleaned },
   } = vidInfo
 
   //? Reference for adding a button to youtube given video ID
@@ -32,6 +32,23 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
             value={
               subtitlesExist ? (
                 <Check className='text-green-500' />
+              ) : (
+                <X className='text-red-500' />
+              )
+            }
+          />
+          <InfoItem
+            label='Cleansed'
+            value={
+              subtitlesExist ? (
+                subtitlesCleaned ? (
+                  <span className='flex items-center'>
+                    <Check className='mr-1 text-green-500' />
+                    Cleaned
+                  </span>
+                ) : (
+                  <Check className='text-green-500' />
+                )
               ) : (
                 <X className='text-red-500' />
               )

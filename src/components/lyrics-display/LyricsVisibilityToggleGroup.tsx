@@ -122,7 +122,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
   }
 
   return (
-    <div className='fixed left-4 top-1/2 flex -translate-y-1/2 transform items-center space-x-4'>
+    <div className='fixed left-4 top-1/2 flex -translate-y-1/2 transform items-center space-x-4 transition-opacity duration-200'>
       <ToggleGroup
         type='multiple'
         value={lyricsToggleValues}

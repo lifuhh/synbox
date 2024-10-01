@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useStreamAnnotateApi } from '@/hooks/useStreamAnnotateApi'
 import { Loader } from '@mantine/core'
+import { CheckCircle, Circle, Loader2 } from 'lucide-react'
 import React, { useEffect } from 'react'
 
 interface RequestDialogAnnotateDisplayProps {
@@ -14,6 +15,13 @@ interface RequestDialogAnnotateDisplayProps {
     kanjiAnnotations: string[],
   ) => void
 }
+
+const tasks = [
+  { id: 'eng_translation', name: 'English Translation' },
+  { id: 'chi_translation', name: 'Chinese Translation' },
+  { id: 'romaji_lyrics', name: 'Romaji Lyrics' },
+  { id: 'kanji_annotations', name: 'Kanji Annotations' },
+]
 
 const RequestDialogAnnotateDisplay = ({
   id,
@@ -31,6 +39,7 @@ const RequestDialogAnnotateDisplay = ({
     showAnnotation,
     error,
     mutate,
+    currentTask,
   } = useStreamAnnotateApi()
 
   useEffect(() => {
@@ -75,56 +84,97 @@ const RequestDialogAnnotateDisplay = ({
     )
   }
 
-  const renderTabs = () => {
-    if (!showAnnotation) return null
+  const renderTabs = () => (
+    <Tabs defaultValue='original' className='w-full'>
+      <TabsList className='grid w-full grid-cols-5'>
+        <TabsTrigger value='original'>Original</TabsTrigger>
+        <TabsTrigger value='english'>English</TabsTrigger>
+        <TabsTrigger value='chinese'>Chinese</TabsTrigger>
+        <TabsTrigger value='romaji'>Romaji</TabsTrigger>
+        <TabsTrigger value='kanji'>Kanji</TabsTrigger>
+      </TabsList>
+      <TabsContent value='original'>
+        {renderScrollableContent(lyrics)}
+      </TabsContent>
+      <TabsContent value='english'>
+        {renderScrollableContent(engTranslation)}
+      </TabsContent>
+      <TabsContent value='chinese'>
+        {renderScrollableContent(chiTranslation)}
+      </TabsContent>
+      <TabsContent value='romaji'>
+        {renderScrollableContent(romajiLyrics)}
+      </TabsContent>
+      <TabsContent value='kanji'>
+        {renderScrollableContent(kanjiAnnotations)}
+      </TabsContent>
+    </Tabs>
+  )
 
-    return (
-      <Tabs defaultValue='original' className='w-full'>
-        <TabsList className='grid w-full grid-cols-5'>
-          <TabsTrigger value='original'>Original</TabsTrigger>
-          <TabsTrigger value='english'>English</TabsTrigger>
-          <TabsTrigger value='chinese'>Chinese</TabsTrigger>
-          <TabsTrigger value='romaji'>Romaji</TabsTrigger>
-          <TabsTrigger value='kanji'>Kanji</TabsTrigger>
-        </TabsList>
-        <TabsContent value='original'>
-          {renderScrollableContent(lyrics)}
-        </TabsContent>
-        <TabsContent value='english'>
-          {renderScrollableContent(engTranslation)}
-        </TabsContent>
-        <TabsContent value='chinese'>
-          {renderScrollableContent(chiTranslation)}
-        </TabsContent>
-        <TabsContent value='romaji'>
-          {renderScrollableContent(romajiLyrics)}
-        </TabsContent>
-        <TabsContent value='kanji'>
-          {renderScrollableContent(kanjiAnnotations)}
-        </TabsContent>
-      </Tabs>
-    )
-  }
+  const renderTaskList = () => (
+    <div className='mb-4'>
+      {tasks.map((task) => (
+        <div key={task.id} className='mb-2 flex items-center'>
+          {currentTask === task.id ? (
+            <Loader2 className='mr-2 h-5 w-5 animate-spin text-blue-500' />
+          ) : task.id in
+            {
+              engTranslation,
+              chiTranslation,
+              romajiLyrics,
+              kanjiAnnotations,
+            } ? (
+            <CheckCircle className='mr-2 h-5 w-5 text-green-500' />
+          ) : (
+            <Circle className='mr-2 h-5 w-5 text-gray-300' />
+          )}
+          <span
+            className={
+              currentTask !== task.id &&
+              !(
+                task.id in
+                {
+                  engTranslation,
+                  chiTranslation,
+                  romajiLyrics,
+                  kanjiAnnotations,
+                }
+              )
+                ? 'text-gray-400'
+                : ''
+            }>
+            {task.name}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
 
   return (
     <div className='mt-4 w-full'>
       <h3 className='mb-4 text-xl font-bold'>Step 3: Translate and Annotate</h3>
-      {isStreaming && (
-        <div className='my-4'>
-          <Loader color='yellow' type='dots' />
-          <div className='mt-2 max-h-40 overflow-y-auto'>
-            {updateMessages.map((message, index) => (
-              <p key={index}>{message}</p>
-            ))}
-          </div>
-        </div>
+      {isStreaming || !showAnnotation ? (
+        <>
+          {renderTaskList()}
+          {isStreaming && (
+            <div className='my-4'>
+              <Loader color='yellow' type='dots' />
+              <div className='mt-2 max-h-40 overflow-y-auto'>
+                {updateMessages.map((message, index) => (
+                  <p key={index}>{message}</p>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        renderTabs()
       )}
       {error && (
         <div className='mt-4 text-red-500'>
           <p>Error: {error}</p>
         </div>
       )}
-      {renderTabs()}
     </div>
   )
 }
