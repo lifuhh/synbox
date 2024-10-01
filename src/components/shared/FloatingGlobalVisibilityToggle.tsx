@@ -25,7 +25,7 @@ const FloatingGlobalVisibilityToggle = () => {
 
   return (
     <Button
-      className={`absolute right-4 transition-all duration-200
+      className={`absolute right-4 transition-all duration-200 
         ${isButtonVisible ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
       style={{
         bottom: `${bottomBarHeight + 16}px`,

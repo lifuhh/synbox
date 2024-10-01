@@ -2,9 +2,10 @@ import TopBar from '@/components/shared/TopBar'
 import { useAppContext } from '@/context/AppContext'
 import { globalControlsVisibilityAtom } from '@/context/atoms'
 import { useAtomValue } from 'jotai'
-import { Outlet, useLocation, useMatch } from 'react-router-dom'
+import React from 'react'
+import { Outlet, useMatch } from 'react-router-dom'
 
-const RootLayout = () => {
+const RootLayout: React.FC = () => {
   const { playerControlsVisible } = useAppContext()
   const globalControlsVisible = useAtomValue(globalControlsVisibilityAtom)
 
@@ -12,26 +13,18 @@ const RootLayout = () => {
   const isVideoPage = useMatch('/v/:videoId')
 
   const shouldHideCursor = globalControlsVisible && !playerControlsVisible
-  // const handlePageClick = (event: React.MouseEvent<HTMLDivElement>) => {
-  //   if (event.target === event.currentTarget) {
-  //     if (isHomePage) {
-  //       console.log('Clicked on Home Page')
-  //     } else if (isVideoPage) {
-  //       console.log('Clicked on Video Page')
-  //     } else {
-  //       console.log('Clicked on Other Page')
-  //     }
-  //   }
-  // }
 
   return (
-    <div className={`w-full ${shouldHideCursor ? 'cursor-none' : ''} `}>
-      <TopBar />
-      <section className='-my-14 flex h-full flex-1'>
-        {/* Outlet lets us show what's gonna be on the Landing Page later */}
+    <div
+      className={`relative h-screen w-full ${shouldHideCursor ? 'cursor-none' : ''}`}>
+      <div className='absolute left-0 right-0 top-0 z-50'>
+        <TopBar />
+      </div>
+      <main className='h-full w-full overflow-hidden'>
         <Outlet />
-      </section>
+      </main>
     </div>
   )
 }
+
 export default RootLayout

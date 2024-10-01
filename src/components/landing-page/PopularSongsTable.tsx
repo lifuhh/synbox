@@ -6,13 +6,6 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-
 const LandingPageCharts: React.FC = () => {
   const navigate = useNavigate()
   const { data: chartsData, isLoading: isChartsDataFetching } =
@@ -22,58 +15,68 @@ const LandingPageCharts: React.FC = () => {
     navigate(`/v/${videoId}`, { state: { videoId: videoId } })
   }
 
-  // Calculate the height for 6 items plus the header
-  const tableBodyHeight = 6 * 52 + 72 // Assuming each row is 52px and the header is 40pxfa
+  // Calculate the height for 6 items
+  const tableBodyHeight = 6 * 52 // Assuming each row is 52px
 
   return (
-    <div
-      className='custom-scrollbar w-full overflow-y-auto rounded-md lg:ml-6 lg:mt-2 lg:w-5/12 xl:w-4/12'
-      style={{ height: `${tableBodyHeight}px` }}>
-      <div className='relative'>
+    <div className='w-full rounded-md lg:ml-6 lg:mt-2 lg:w-5/12 xl:w-4/12'>
+      <div className='relative overflow-hidden rounded-md bg-dark-3 bg-opacity-15'>
         <table
-          className='w-full border-collapse bg-dark-3 bg-opacity-15'
+          className='w-full border-collapse'
           style={{ tableLayout: 'fixed' }}>
           <colgroup>
             <col style={{ width: 'calc(100% - 60px)' }} />
             <col style={{ width: '60px' }} />
           </colgroup>
-          <thead className='sticky top-0 z-10 bg-primary text-white'>
-            <tr>
+          <thead>
+            <tr className='bg-primary text-white'>
               <th className='py-3 text-center' colSpan={2}>
                 YouTube Charts
               </th>
             </tr>
           </thead>
-          <tbody>
-            {isChartsDataFetching
-              ? Array(6)
-                  .fill(null)
-                  .map((_, index) => (
-                    <tr key={index} className='h-13'>
-                      <td colSpan={2} className='py-2'>
-                        {index === 2 && (
-                          <div className='flex justify-center'>
-                            <Loader color='pink' size='lg' type='dots' />
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-              : chartsData?.map((song, index) => (
-                  <SongRow
-                    key={`${song.title}-${index}`}
-                    song={{
-                      title: song.title,
-                      vidURL: song.id,
-                    }}
-                    onPlayClick={handleRowClick}
-                  />
-                ))}
-          </tbody>
-          <caption className='mt-2 caption-bottom text-sm text-gray-500'>
-            Source: Top 100 Japan YouTube
-          </caption>
         </table>
+        <div
+          className='custom-scrollbar overflow-y-auto'
+          style={{ height: `${tableBodyHeight}px` }}>
+          <table
+            className='w-full border-collapse'
+            style={{ tableLayout: 'fixed' }}>
+            <colgroup>
+              <col style={{ width: 'calc(100% - 60px)' }} />
+              <col style={{ width: '60px' }} />
+            </colgroup>
+            <tbody>
+              {isChartsDataFetching
+                ? Array(6)
+                    .fill(null)
+                    .map((_, index) => (
+                      <tr key={index} className='h-13'>
+                        <td colSpan={2} className='py-2'>
+                          {index === 2 && (
+                            <div className='flex justify-center'>
+                              <Loader color='pink' size='lg' type='dots' />
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                : chartsData?.map((song, index) => (
+                    <SongRow
+                      key={`${song.title}-${index}`}
+                      song={{
+                        title: song.title,
+                        vidURL: song.id,
+                      }}
+                      onPlayClick={handleRowClick}
+                    />
+                  ))}
+            </tbody>
+            <caption className='mb-2 mt-1 caption-bottom text-sm text-gray-500'>
+              Source: Top 100 Japan YouTube
+            </caption>
+          </table>
+        </div>
       </div>
     </div>
   )

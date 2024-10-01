@@ -152,7 +152,6 @@ const RequestDialogAnnotateDisplay = ({
 
   return (
     <div className='mt-4 w-full'>
-      <h3 className='mb-4 text-xl font-bold'>Step 3: Translate and Annotate</h3>
       {isStreaming || !showAnnotation ? (
         <>
           {renderTaskList()}

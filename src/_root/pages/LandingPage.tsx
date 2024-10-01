@@ -12,7 +12,7 @@ import { Divider } from '@mantine/core'
 const LandingPage = () => {
   return (
     //* <!-- This is the main container for the landing page -->
-    <section className='custom-scrollbar flex flex-1 flex-col overflow-y-scroll md:px-10'>
+    <section className='anchor-for-top-scroll flex flex-1 flex-col overflow-y-scroll md:px-10'>
       <Helmet>
         <title>Synbox</title>
         <meta name='Synbox Homepage' content='Synbox - AI Powered Karaoke' />
