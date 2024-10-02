@@ -9,7 +9,6 @@ import HeroGenerateLyricsDefault from './HeroGenerateLyricsDefault'
 const HeroGenerateLyricsSection = () => {
   const { processingStage, setProcessingStage } = useAppContext()
   const [inputVideoId, setInputVideoId] = useState<string>('')
-  const [subStage, setSubStage] = useState<number>(1)
 
   const renderComponent = () => {
     switch (processingStage) {
