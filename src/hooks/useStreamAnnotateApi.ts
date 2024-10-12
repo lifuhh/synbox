@@ -10,6 +10,7 @@ interface AnnotationMutationVariables {
 
 export const useStreamAnnotateApi = () => {
   const [isStreaming, setIsStreaming] = useState(false)
+  const [isDataComplete, setIsDataComplete] = useState(false)
   const [updateMessages, setUpdateMessages] = useState<string[]>([])
   const [engTranslation, setEngTranslation] = useState<string[] | null>(null)
   const [chiTranslation, setChiTranslation] = useState<string[] | null>(null)
@@ -54,7 +55,6 @@ export const useStreamAnnotateApi = () => {
         timestampedLyrics,
         (message) => setUpdateMessages((prev) => [...prev, message]),
         (info) => {
-          setCurrentTask(info.type)
           switch (info.type) {
             case 'eng_translation':
               setEngTranslation(info.data)
@@ -71,6 +71,7 @@ export const useStreamAnnotateApi = () => {
           }
         },
         (err) => setError(err),
+        (task) => setCurrentTask(task), // Handle task updates
       ),
     onMutate: () => {
       setIsStreaming(true)
@@ -83,7 +84,7 @@ export const useStreamAnnotateApi = () => {
       }
       settledTimeoutRef.current = setTimeout(() => {
         setIsStreaming(false)
-        setShowAnnotation(true)
+        setIsDataComplete(true)
         setCurrentTask(null)
       }, 1000)
     },
@@ -105,6 +106,8 @@ export const useStreamAnnotateApi = () => {
     setShowAnnotation,
     error,
     resetStream,
+    isDataComplete,
+    setIsDataComplete,
     mutate: mutation.mutate,
     currentTask,
   }

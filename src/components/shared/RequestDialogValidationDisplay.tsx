@@ -10,50 +10,53 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
   } = vidInfo
 
   //? Reference for adding a button to youtube given video ID
-  // const youtubeUrl = `https://www.youtube.com/watch?v=${id}`
+  const youtubeUrl = `https://www.youtube.com/watch?v=${id}`
 
   return (
-    <div className='mt-4 max-h-[calc(100vh-200px)] overflow-y-auto'>
+    <div className='overflow-visible px-6'>
       <div className='flex flex-col items-center'>
+        <h1 className='unselectable pb-4 text-lg font-bold'>Song Info</h1>
         <img
           src={thumbnail}
           alt={title}
-          className='mb-4 w-full max-w-md rounded-lg shadow-md'
+          className='mb-4 w-full max-w-md rounded-lg object-cover shadow-md'
         />
         <h4 className='mb-2 text-center text-xl font-semibold'>{title}</h4>
 
-        <div className='grid w-full max-w-2xl grid-rows-3 gap-x-8 gap-y-4 pb-4'>
+        <div className='flex w-full max-w-2xl flex-col gap-y-2'>
           {/* <InfoItem label='Video ID' value={id} /> */}
           <InfoItem label='Channel' value={channel_name} />
           {/* <InfoItem label='Uploader' value={uploader} /> */}
           <InfoItem label='Likes' value={likes.toLocaleString()} />
-          <InfoItem
-            label='Subtitles'
-            value={
-              subtitlesExist ? (
-                <Check className='text-green-500' />
-              ) : (
-                <X className='text-red-500' />
-              )
-            }
-          />
-          <InfoItem
-            label='Cleansed'
-            value={
-              subtitlesExist ? (
-                subtitlesCleaned ? (
-                  <span className='flex items-center'>
-                    <Check className='mr-1 text-green-500' />
-                    Cleaned
-                  </span>
-                ) : (
+          <div>
+            <InfoItem
+              label='Lyrics'
+              value={
+                subtitlesExist ? (
                   <Check className='text-green-500' />
+                ) : (
+                  <X className='text-red-500' />
                 )
-              ) : (
-                <X className='text-red-500' />
-              )
-            }
-          />
+              }
+            />
+            {/* <InfoItem
+              label='Cleansed'
+              value={
+                subtitlesExist ? (
+                  subtitlesCleaned ? (
+                    <span className='flex items-center'>
+                      <Check className='mr-1 text-green-500' />
+                      Cleaned
+                    </span>
+                  ) : (
+                    <Check className='text-green-500' />
+                  )
+                ) : (
+                  <X className='text-red-500' />
+                )
+              }
+            /> */}
+          </div>
           {/* <InfoItem
             label='Validation'
             value={passed ? 'Passed' : 'Failed'}

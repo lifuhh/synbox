@@ -5,10 +5,14 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Divider } from '@mantine/core'
-import React from 'react'
 import { Helmet } from 'react-helmet-async'
 
 const AboutPage = () => {
+  //? To force errorboundary page to test
+  // useEffect(() => {
+  //   throw new Error('This is a test error')
+  // }, [])
+
   return (
     <section className='custom-scrollbar mt-14 flex flex-1 flex-col overflow-y-scroll px-4 md:px-10'>
       <Helmet>

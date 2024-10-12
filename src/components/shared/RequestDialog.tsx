@@ -7,20 +7,22 @@ import {
 } from '@/components/ui/dialog'
 import { dialogStepAtom } from '@/context/atoms'
 import { useStreamValidationApi } from '@/hooks/useStreamValidationApi'
-import { Loader, Paper, Text } from '@mantine/core'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { useAtom } from 'jotai'
-import React, { useEffect, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import RequestDialogAnnotateDisplay from './RequestDialogAnnotateDisplay'
 import RequestDialogStepTwoDisplay from './RequestDialogStepTwoDisplay'
 import RequestDialogUploadDisplay from './RequestDialogUploadDisplay'
 import RequestDialogValidationDisplay from './RequestDialogValidationDisplay'
+import UpdateMessagesDisplay from './UpdateMessagesDisplay'
 
 interface RequestDialogProps {
   videoId: string
   handleClose: () => void
 }
+
+type PointerDownOutsideEvent = CustomEvent<{ originalEvent: PointerEvent }>
 
 const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [currentStep, setCurrentStep] = useAtom(dialogStepAtom)
@@ -46,30 +48,27 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     if (videoId) {
       mutate(videoId)
     }
-  }, [videoId, mutate])
+    // Clean up function to reset the stream when the component unmounts
+    return () => {
+      resetStream()
+    }
+  }, [videoId, mutate, resetStream])
 
   useEffect(() => {
-    if (vidInfo) {
+    if (isStreaming) {
+      setShowLoader(true)
+    } else {
+      const timer = setTimeout(() => setShowLoader(false), 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [isStreaming])
+
+  useEffect(() => {
+    if (vidInfo && !error) {
       const timer = setTimeout(() => setShowVidInfo(true), 1000)
       return () => clearTimeout(timer)
     }
-  }, [vidInfo, setShowVidInfo])
-
-  useEffect(() => {
-    return () => {
-      console.log('RequestDialog: unmounting, resetting stream')
-      resetStream()
-    }
-  }, [resetStream])
-
-  useEffect(() => {
-    if (vidInfo && !showVidInfo) {
-      setShowLoader(true)
-    } else if (showVidInfo) {
-      setShowLoader(false)
-    }
-  }, [vidInfo, showVidInfo])
-
+  }, [vidInfo, error, setShowVidInfo])
   const getDialogHeaderContent = () => {
     switch (currentStep) {
       case 0:
@@ -110,6 +109,18 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     setCurrentStep((prevStep) => prevStep + 1)
   }
 
+  const handleEscapeKeyDown = (event: KeyboardEvent) => {
+    event.preventDefault()
+  }
+
+  const handlePointerDownOutside = (event: PointerDownOutsideEvent) => {
+    event.preventDefault()
+  }
+
+  const handleInteractOutside = (event: SyntheticEvent) => {
+    event.preventDefault()
+  }
+
   const handleLyricsUpdate = (
     newLyrics: string[],
     newTimestampedLyrics: unknown[],
@@ -133,40 +144,19 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        //! This is Step 1 - Validation Display
-
-        if (error) return
-
-        // only display stuff if no error
         return (
           <>
-            {isStreaming && !showLoader && !showVidInfo && (
-              <Loader color='yellow' type='dots' />
-            )}
-
-            {/* //? This section is for the request update messages */}
-            {!showLoader && !showVidInfo && updateMessages.length > 0 && (
-              <Paper className='m-2 p-4'>
-                <Text size='sm'>
-                  {updateMessages[updateMessages.length - 1]}
-                </Text>
-              </Paper>
-            )}
-
-            {/* //? This section is for the "finalizing" process */}
-            {showLoader && (
-              <div className='my-4'>
-                <Loader color='yellow' type='dots' />
-                <Text>Finalizing...</Text>
-              </div>
-            )}
-            {showVidInfo && (
+            <UpdateMessagesDisplay
+              isStreaming={isStreaming}
+              showLoader={showLoader}
+              updateMessages={updateMessages}
+            />
+            {showVidInfo && !showLoader && !error && (
               <RequestDialogValidationDisplay vidInfo={vidInfo} />
             )}
           </>
         )
       case 1:
-        //! This is Step 2 - Transcription Display
         return (
           <RequestDialogStepTwoDisplay
             vidInfo={vidInfo}
@@ -174,7 +164,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           />
         )
       case 2:
-        //! This is Step 3 - Translation & Annotation Display
         return (
           <RequestDialogAnnotateDisplay
             id={videoId}
@@ -184,7 +173,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           />
         )
       case 3:
-        //! This is Step 4 - Completion Display
         return (
           <RequestDialogUploadDisplay
             id={videoId}
@@ -203,28 +191,26 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
   return (
     <DialogContent
-      className='invisible-ring max-h-[80vh] overflow-y-hidden border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-4xl'
-      onEscapeKeyDown={isStreaming ? undefined : handleClose}
-      onPointerDownOutside={isStreaming ? undefined : handleClose}
-      onInteractOutside={isStreaming ? undefined : handleClose}>
+      className='invisible-ring flex h-auto max-h-[90vh] flex-col border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-2xl'
+      onEscapeKeyDown={handleEscapeKeyDown}
+      onPointerDownOutside={handlePointerDownOutside}
+      onInteractOutside={handleInteractOutside}>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
-      <div className='flex-between m-4 flex flex-col items-center'>
-        {error ? (
-          <>
-            <div className='mt-4 text-red-500'>
-              <h3 className='text-xl font-bold'>Error</h3>
-              <p>{error}</p>
-            </div>
-            {renderStep()}
-          </>
-        ) : (
-          renderStep()
+
+      <div className='mx-4 my-2 flex-grow overflow-y-auto'>
+        {renderStep()}
+        {error && (
+          <div className='mt-4 text-red-500'>
+            <h3 className='text-xl font-bold'>Error</h3>
+            <p>{error}</p>
+          </div>
         )}
       </div>
-      <DialogFooter className='sm:flex-between flex w-full justify-start'>
+
+      <DialogFooter className='sm:flex-between flex w-full justify-start bg-primary-600 p-4'>
         <DialogClose asChild>
           <Button
             type='button'
@@ -241,7 +227,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             <Button
               onClick={handlePreviousClick}
               className='invisible-ring mr-2 bg-gray-500 text-white hover:bg-gray-600'>
-              Go to Previous Step
+              Previous Step
             </Button>
           )}
           {((showVidInfo && currentStep === 0) ||
@@ -249,7 +235,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             <Button
               onClick={handleProceedClick}
               className='invisible-ring bg-blue-500 text-white hover:bg-blue-600'>
-              {currentStep === 2 ? 'Proceed to Upload' : 'Proceed to Next Step'}
+              {currentStep === 2 ? 'Upload Lyrics' : 'Next Step'}
             </Button>
           )}
         </div>

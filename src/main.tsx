@@ -8,17 +8,17 @@ import { QueryProvider } from './lib/react-query/QueryProvider'
 import ErrorBoundary from './test_stuff/ErrorBoundary'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ErrorBoundary>
-    <BrowserRouter>
-      <HelmetProvider>
-        <MantineProvider defaultColorScheme='auto'>
-          <AppProvider>
-            <QueryProvider>
+  <BrowserRouter>
+    <HelmetProvider>
+      <MantineProvider defaultColorScheme='auto'>
+        <AppProvider>
+          <QueryProvider>
+            <ErrorBoundary>
               <App />
-            </QueryProvider>
-          </AppProvider>
-        </MantineProvider>
-      </HelmetProvider>
-    </BrowserRouter>
-  </ErrorBoundary>,
+            </ErrorBoundary>
+          </QueryProvider>
+        </AppProvider>
+      </MantineProvider>
+    </HelmetProvider>
+  </BrowserRouter>,
 )

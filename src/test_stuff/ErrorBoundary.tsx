@@ -1,4 +1,5 @@
-// ErrorBoundary.tsx
+import TopBar from '@/components/shared/TopBar'
+import { Button } from '@/components/ui/button'
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 
 interface Props {
@@ -28,16 +29,35 @@ class ErrorBoundary extends Component<Props, State> {
     // You can also log the error to an error reporting service here
   }
 
+  private handleReturnHome = () => {
+    // Navigate to the home page
+    window.location.href = '/'
+  }
+
   public render() {
     if (this.state.hasError) {
       return (
-        <div className='error-boundary'>
-          <h1>Oops, something went wrong</h1>
-          <p>
-            We're sorry — something's gone wrong. Our team has been notified.
-          </p>
-          {this.state.error && <p>{this.state.error.toString()}</p>}
-          <button onClick={() => window.location.reload()}>Refresh Page</button>
+        <div className='relative h-screen w-full'>
+          <TopBar />
+          <div className='relative -my-14 flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8'>
+            <div className='mx-auto max-w-md text-center'>
+              <div className='mx-auto h-12 w-12 text-primary' />
+              <h1 className='text-foreground mt-4 text-3xl font-bold tracking-tight sm:text-4xl'>
+                Something Went Wrong
+              </h1>
+              <p className='text-muted-foreground mt-4'>
+                We're sorry — an unexpected error has occurred:
+              </p>
+              {this.state.error && (
+                <p className='text-muted-foreground mt-2'>
+                  {this.state.error.toString()}
+                </p>
+              )}
+              <div className='mt-6'>
+                <Button onClick={this.handleReturnHome}>Return To Home</Button>
+              </div>
+            </div>
+          </div>
         </div>
       )
     }

@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Edit2, Save, Trash2, X } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import { Edit2, RotateCcw, Save, Trash2, X } from 'lucide-react'
+import React, { useState } from 'react'
 
 interface Lyric {
   start_time: number
@@ -22,24 +22,17 @@ interface RequestDialogLyricsDisplayProps {
 }
 
 const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
-  lyrics,
   timestampedLyrics,
   isAiGenerated,
   onLyricsChange,
 }) => {
-  const [lyricsState, setLyricsState] = useState<Lyric[]>([])
   const [editMode, setEditMode] = useState(false)
-  const [tempLyrics, setTempLyrics] = useState<Lyric[]>([])
-
-  useEffect(() => {
-    setLyricsState(timestampedLyrics)
-    setTempLyrics(timestampedLyrics)
-  }, [timestampedLyrics])
+  const [localLyrics, setLocalLyrics] = useState<Lyric[]>(timestampedLyrics)
 
   const handleDelete = (index: number) => {
     if (isAiGenerated) {
-      const updatedLyrics = tempLyrics.filter((_, i) => i !== index)
-      setTempLyrics(updatedLyrics)
+      const updatedLyrics = localLyrics.filter((_, i) => i !== index)
+      setLocalLyrics(updatedLyrics)
       onLyricsChange(
         updatedLyrics.map((lyric) => lyric.lyric),
         updatedLyrics,
@@ -48,24 +41,29 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
   }
 
   const handleSave = () => {
-    setLyricsState(tempLyrics)
     setEditMode(false)
     onLyricsChange(
-      tempLyrics.map((lyric) => lyric.lyric),
-      tempLyrics,
+      localLyrics.map((lyric) => lyric.lyric),
+      localLyrics,
     )
   }
 
   const handleCancel = () => {
-    setTempLyrics(lyricsState)
+    setLocalLyrics(timestampedLyrics)
     setEditMode(false)
   }
 
   const handleEdit = () => {
     if (isAiGenerated) {
-      setTempLyrics([...lyricsState])
       setEditMode(true)
     }
+  }
+
+  const handleLyricEdit = (index: number, newLyric: string) => {
+    const updatedLyrics = localLyrics.map((lyric, i) =>
+      i === index ? { ...lyric, lyric: newLyric } : lyric,
+    )
+    setLocalLyrics(updatedLyrics)
   }
 
   const formatTime = (seconds: number) => {
@@ -76,20 +74,12 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
       .padStart(2, '0')}`
   }
 
-  const handleLyricEdit = (index: number, newLyric: string) => {
-    if (isAiGenerated) {
-      const updatedLyrics = tempLyrics.map((lyric, i) =>
-        i === index ? { ...lyric, lyric: newLyric } : lyric,
-      )
-      setTempLyrics(updatedLyrics)
-    }
-  }
-
   return (
     <div className='mt-4 w-full'>
       <h4 className='mb-2 text-lg font-bold'>Lyrics</h4>
-      <ScrollArea className='h-[40vh] w-full rounded-md border p-4'>
-        {(editMode ? tempLyrics : lyricsState).map((lyric, index) => (
+      <ScrollArea
+        className={`w-full rounded-md border p-4 ${isAiGenerated ? 'h-[40vh]' : 'h-[50vh]'}`}>
+        {localLyrics.map((lyric, index) => (
           <div
             key={index}
             className='mb-2 flex w-full items-center justify-between rounded-lg bg-secondary p-2 hover:bg-secondary/80'>
@@ -100,7 +90,7 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
               <Input
                 value={lyric.lyric}
                 onChange={(e) => handleLyricEdit(index, e.target.value)}
-                className='flex-grow bg-background'
+                className='unselectable flex-grow bg-background'
               />
             ) : (
               <span className='flex-grow'>{lyric.lyric}</span>
@@ -118,7 +108,7 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
         ))}
       </ScrollArea>
       {isAiGenerated && (
-        <div className='mt-4 flex gap-2'>
+        <div className='flex-between mt-4 flex gap-2'>
           {!editMode ? (
             <Button onClick={handleEdit} variant='default'>
               <Edit2 className='mr-2 h-4 w-4' />
@@ -128,11 +118,11 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
             <>
               <Button onClick={handleSave} variant='default'>
                 <Save className='mr-2 h-4 w-4' />
-                Save Lyrics
+                Save Changes
               </Button>
               <Button onClick={handleCancel} variant='secondary'>
-                <X className='mr-2 h-4 w-4' />
-                Cancel
+                <RotateCcw className='mr-2 h-4 w-4' />
+                Reset Changes
               </Button>
             </>
           )}
@@ -140,7 +130,8 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
       )}
       {isAiGenerated && (
         <p className='mt-2 text-sm text-yellow-600'>
-          These lyrics are AI-generated. Please review and edit if necessary.
+          These lyrics are AI-generated. Please edit to remove hallucinated
+          lines if necessary.
         </p>
       )}
     </div>

@@ -14,6 +14,7 @@ export const streamValidateVideoById = async (
   onUpdate: (message: string) => void,
   onVidInfo: (info: any) => void,
   onError: (error: string) => void,
+  onSuccess: () => void,
 ) => {
   const response = await fetch(`${BE_TEST_ADDRESS}/validate`, {
     method: 'POST',
@@ -47,6 +48,8 @@ export const streamValidateVideoById = async (
           onVidInfo(content['data'])
         } else if (content['type'] === 'error') {
           onError(content['data'])
+        } else if (content['type'] === 'success') {
+          onSuccess()
         }
       }
     })
@@ -112,6 +115,7 @@ export const streamAnnotateVideoById = async (
   onUpdate: (message: string) => void,
   onAnnotationInfo: (info: any) => void,
   onError: (error: string) => void,
+  onTaskUpdate: (task: string) => void, // New callback for task updates
 ) => {
   const response = await fetch(`${BE_TEST_ADDRESS}/translate-annotate`, {
     method: 'POST',
@@ -150,19 +154,25 @@ export const streamAnnotateVideoById = async (
 
       if (validateJSON(line)) {
         const content = JSON.parse(line)
-        if (content['type'] === 'update' || content['type'] === 'data') {
-          onUpdate(content['data'])
-        } else if (
-          [
-            'eng_translation',
-            'chi_translation',
-            'romaji_lyrics',
-            'kanji_annotations',
-          ].includes(content['type'])
-        ) {
-          onAnnotationInfo(content)
-        } else if (content['type'] === 'error') {
-          onError(content['data'])
+        switch (content['type']) {
+          case 'update':
+          case 'data':
+            onUpdate(content['data'])
+            break
+          case 'eng_translation':
+          case 'chi_translation':
+          case 'romaji_lyrics':
+          case 'kanji_annotations':
+            onAnnotationInfo(content)
+            break
+          case 'error':
+            onError(content['data'])
+            break
+          case 'task_update':
+            onTaskUpdate(content['data']) // Handle task updates
+            break
+          default:
+            console.warn('Unknown message type:', content['type'])
         }
       } else {
         console.error('Invalid JSON:', line)
@@ -174,19 +184,25 @@ export const streamAnnotateVideoById = async (
   if (buffer.trim() !== '') {
     try {
       const content = JSON.parse(buffer)
-      if (content['type'] === 'update' || content['type'] === 'data') {
-        onUpdate(content['data'])
-      } else if (
-        [
-          'eng_translation',
-          'chi_translation',
-          'romaji_lyrics',
-          'kanji_annotations',
-        ].includes(content['type'])
-      ) {
-        onAnnotationInfo(content)
-      } else if (content['type'] === 'error') {
-        onError(content['data'])
+      switch (content['type']) {
+        case 'update':
+        case 'data':
+          onUpdate(content['data'])
+          break
+        case 'eng_translation':
+        case 'chi_translation':
+        case 'romaji_lyrics':
+        case 'kanji_annotations':
+          onAnnotationInfo(content)
+          break
+        case 'error':
+          onError(content['data'])
+          break
+        case 'task_update':
+          onTaskUpdate(content['data']) // Handle task updates
+          break
+        default:
+          console.warn('Unknown message type:', content['type'])
       }
     } catch (e) {
       console.error('Error parsing final buffer:', e)

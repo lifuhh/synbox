@@ -29,6 +29,10 @@ const ProfileButtonDropdown = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
 
+  const handleReportIssue = () => {
+    //
+  }
+
   const handleAboutOnClick = () => {
     navigate('/about')
   }
@@ -105,7 +109,7 @@ const ProfileButtonDropdown = () => {
           </DropdownMenuItem>
           <DropdownMenuItem
             className='cursor-pointer'
-            onClick={handleAboutOnClick}>
+            onClick={handleReportIssue}>
             <ReportIcon className='mr-2 h-4 w-4' fontSize='small' />
             <span>Report Issue</span>
           </DropdownMenuItem>
