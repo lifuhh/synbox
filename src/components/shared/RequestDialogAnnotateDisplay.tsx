@@ -10,6 +10,7 @@ const RequestDialogAnnotateDisplay = ({
   lyrics,
   timestampedLyrics,
   onAnnotationsUpdate,
+  onError,
 }) => {
   const {
     isStreaming,
@@ -32,7 +33,6 @@ const RequestDialogAnnotateDisplay = ({
   }, [id, lyrics, timestampedLyrics, mutate])
 
   useEffect(() => {
-    // Hide ProgressUpdate when UpdateMessagesDisplay shows "Finalizing..."
     if (!isStreaming && isBuffering) {
       setShowProgressUpdate(false)
     } else {
@@ -61,6 +61,12 @@ const RequestDialogAnnotateDisplay = ({
     kanjiAnnotations,
     onAnnotationsUpdate,
   ])
+
+  useEffect(() => {
+    if (error) {
+      onError(error)
+    }
+  }, [error, onError])
 
   const renderScrollableContent = (content) => {
     if (!content) return null
@@ -129,7 +135,7 @@ const RequestDialogAnnotateDisplay = ({
 
   return (
     <div className='w-full'>
-      {isStreaming || isBuffering ? (
+      {!error && (isStreaming || isBuffering) ? (
         <div className='mt-4 w-full'>
           {showProgressUpdate && <ProgressUpdate steps={steps} />}
           <UpdateMessagesDisplay
@@ -138,14 +144,9 @@ const RequestDialogAnnotateDisplay = ({
             updateMessages={updateMessages}
           />
         </div>
-      ) : (
+      ) : !error ? (
         renderTabs()
-      )}
-      {error && (
-        <div className='mt-4 text-red-500'>
-          <p>Error: {error}</p>
-        </div>
-      )}
+      ) : null}
     </div>
   )
 }

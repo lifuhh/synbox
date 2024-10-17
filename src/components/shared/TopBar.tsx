@@ -30,13 +30,12 @@ const TopBar = () => {
     // <section className='topbar sticky top-0 bg'>
     <section
       className={`topbar controls sticky top-0 z-100${
-        isFullscreen || !globalControlsVisible ? 'hidden' : 'block'
+        isFullscreen ? 'hidden' : !globalControlsVisible ? 'hidden' : 'block'
       }`}>
       <nav
         className={`flex-between h-14 w-full bg-dark-1 ${
           isVideoPlayer ? 'bg-opacity-0' : 'bg-opacity-80'
         } sm:px-4
-         ${playerControlsVisible ? '' : 'hidden'}
         `}>
         {playerControlsVisible && <AppLogo />}
         {/* <div className='flex-end pb-2 justify-end lg:gap-2 w-48'>

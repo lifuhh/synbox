@@ -7,16 +7,23 @@ import {
 } from '@/components/ui/dialog'
 import { dialogStepAtom } from '@/context/atoms'
 import { useStreamValidationApi } from '@/hooks/useStreamValidationApi'
-import { useUploadHardCodedLyrics } from '@/lib/react-query/queriesAndMutations'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 import RequestDialogAnnotateDisplay from './RequestDialogAnnotateDisplay'
+import RequestDialogFinalDisplay from './RequestDialogFinalDisplay'
 import RequestDialogStepTwoDisplay from './RequestDialogStepTwoDisplay'
 import RequestDialogValidationDisplay from './RequestDialogValidationDisplay'
 import UpdateMessagesDisplay from './UpdateMessagesDisplay'
+
+import {
+  useGetLyricsBySongId,
+  useUploadHardCodedLyrics,
+} from '@/lib/react-query/queriesAndMutations'
+import { QUERY_KEYS } from '@/lib/react-query/queryKeys'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface RequestDialogProps {
   videoId: string
@@ -30,6 +37,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [currentStep, setCurrentStep] = useAtom(dialogStepAtom)
   const [showLoader, setShowLoader] = useState(false)
   const [lyrics, setLyrics] = useState<string[]>([])
+  const [annotateError, setAnnotateError] = useState<string | null>(null)
   const [timestampedLyrics, setTimestampedLyrics] = useState<unknown[]>([])
   const [engTranslation, setEngTranslation] = useState<string[]>([])
   const [chiTranslation, setChiTranslation] = useState<string[]>([])
@@ -38,7 +46,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
-  const { mutate: uploadHardCodedLyrics } = useUploadHardCodedLyrics()
   const {
     isStreaming,
     updateMessages,
@@ -49,6 +56,16 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     resetStream,
     mutate,
   } = useStreamValidationApi()
+
+  const queryClient = useQueryClient()
+  const { mutate: uploadHardCodedLyrics } = useUploadHardCodedLyrics()
+  const { refetch: refetchLyrics } = useGetLyricsBySongId(videoId)
+
+  const handleAnnotateError = (error: string) => {
+    setAnnotateError(error)
+  }
+
+  const isButtonDisabled = isStreaming || isUploading || showLoader
 
   useEffect(() => {
     if (videoId) {
@@ -99,8 +116,8 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         }
       default:
         return {
-          title: 'Complete',
-          description: '',
+          title: 'Transcription Completed',
+          description: 'Enjoy the video!',
         }
     }
   }
@@ -143,7 +160,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     setKanjiAnnotations(newKanjiAnnotations)
   }
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     setIsUploading(true)
     setUploadError(null)
 
@@ -200,22 +217,42 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         labelled_full_lyrics: JSON.stringify(labelledLyrics),
       }
 
-      uploadHardCodedLyrics(
-        { songId: videoId, lyricsData },
-        {
-          onSuccess: () => {
-            setIsUploading(false)
-            setUploadSuccess(true)
+      try {
+        await uploadHardCodedLyrics(
+          { songId: videoId, lyricsData },
+          {
+            onSuccess: () => {
+              setIsUploading(false)
+              setUploadSuccess(true)
+            },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onError: (error: any) => {
+              setIsUploading(false)
+              setUploadError('Upload failed: ' + error.message)
+              console.error('Upload failed:', error)
+            },
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onError: (error: any) => {
-            setIsUploading(false)
-            setUploadError('Upload failed: ' + error.message)
-            console.error('Upload failed:', error)
-          },
-        },
-      )
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        )
+        setIsUploading(false)
+
+        // Invalidate the query
+        await queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.GET_LYRICS_BY_SONG_ID, videoId],
+        })
+        await new Promise((resolve) => setTimeout(resolve, 5000))
+
+        // Refetch the lyrics
+        await refetchLyrics()
+
+        setUploadSuccess(true)
+        setCurrentStep((prevStep) => prevStep + 1)
+      } catch (error: any) {
+        setIsUploading(false)
+        setUploadError('Upload failed: ' + error.message)
+        console.error('Upload failed:', error)
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setIsUploading(false)
       setUploadError(
@@ -262,6 +299,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             lyrics={lyrics}
             timestampedLyrics={timestampedLyrics}
             onAnnotationsUpdate={handleAnnotationsUpdate}
+            onError={handleAnnotateError}
           />
         )
       case 3:
@@ -277,7 +315,11 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
               <div className='mb-4'>
                 <p className='text-green-500'>Upload successful!</p>
                 <Button
-                  onClick={() => navigate(`/v/${videoId}`)}
+                  onClick={() =>
+                    navigate(`/v/${videoId}`, {
+                      state: { videoId: videoId },
+                    })
+                  }
                   className='mt-2 bg-green-500 text-white hover:bg-green-600'>
                   Play
                 </Button>
@@ -289,7 +331,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         return null
     }
   }
-
   return (
     <DialogContent
       className='invisible-ring flex h-auto max-h-[90vh] flex-col border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-2xl'
@@ -303,10 +344,10 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
       <div className='mx-4 mt-2 flex-grow overflow-y-auto'>
         {renderStep()}
-        {error && (
-          <div className='mt-4 text-red-500'>
+        {(error || annotateError) && (
+          <div className='mt-4 text-red-400'>
             <h3 className='text-xl font-bold'>Error</h3>
-            <p>{error}</p>
+            <p>{error || annotateError}</p>
           </div>
         )}
       </div>
@@ -317,31 +358,33 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             type='button'
             variant='secondary'
             onClick={handleClose}
-            disabled={isStreaming || isUploading}
+            disabled={isButtonDisabled}
             className='invisible-ring text-md w-full text-light-1 hover:border-primary hover:bg-light-1 hover:text-primary hover:outline-1 md:w-auto'>
             Close
           </Button>
         </DialogClose>
 
-        <div className='flex w-full justify-between gap-2 md:w-auto md:justify-end'>
-          {currentStep > 0 && (
-            <Button
-              onClick={handlePreviousClick}
-              disabled={isStreaming || isUploading}
-              className='invisible-ring flex-1 bg-gray-500 text-white hover:bg-gray-600 md:flex-initial'>
-              Previous Step
-            </Button>
-          )}
-          {((showVidInfo && currentStep === 0) ||
-            (currentStep > 0 && currentStep <= 3)) && (
-            <Button
-              onClick={handleProceedClick}
-              disabled={isUploading}
-              className='invisible-ring flex-1 bg-blue-500 text-white hover:bg-blue-600 md:flex-initial'>
-              {currentStep === 3 ? 'Upload Lyrics' : 'Next Step'}
-            </Button>
-          )}
-        </div>
+        {!error && !annotateError && (
+          <div className='flex w-full justify-between gap-2 md:w-auto md:justify-end'>
+            {currentStep > 0 && currentStep !== 4 && (
+              <Button
+                onClick={handlePreviousClick}
+                disabled={isButtonDisabled}
+                className='invisible-ring flex-1 bg-gray-500 text-white hover:bg-gray-600 md:flex-initial'>
+                Previous Step
+              </Button>
+            )}
+            {((showVidInfo && currentStep === 0) ||
+              (currentStep > 0 && currentStep <= 3)) && (
+              <Button
+                onClick={handleProceedClick}
+                disabled={isButtonDisabled}
+                className='invisible-ring flex-1 bg-blue-500 text-white hover:bg-blue-600 md:flex-initial'>
+                {currentStep === 3 ? 'Upload Lyrics' : 'Next Step'}
+              </Button>
+            )}
+          </div>
+        )}
       </DialogFooter>
     </DialogContent>
   )

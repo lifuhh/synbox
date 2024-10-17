@@ -1,6 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
-import { userInteractedWithSettingsAtom } from '@/context/atoms'
+import {
+  globalControlsVisibilityAtom,
+  userInteractedWithSettingsAtom,
+} from '@/context/atoms'
 import { formatTimeDisplay } from '@/utils'
 import PauseIcon from '@mui/icons-material/Pause'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
@@ -83,6 +86,7 @@ const PlayerBottomBar = ({
   const bottomBarRef = useRef<HTMLDivElement>(null)
   // console.log('Player Bottom Bar re-rendered...')
   const { playerControlsVisible, setBottomBarHeight } = useAppContext()
+  const globalControlsVisible = useAtomValue(globalControlsVisibilityAtom)
 
   const [isFullscreen, setIsFullscreen] = useAtom(fullscreenAtom)
   const [lyricsControlVisibility, setLyricsControlVisibility] = useAtom(
@@ -115,11 +119,22 @@ const PlayerBottomBar = ({
   const handleFullscreen = useCallback(() => {
     if (screenfull.isEnabled) {
       screenfull.toggle()
+      // The screenfull 'change' event will trigger once the state changes
+    }
+  }, [])
 
-      if (screenfull.isFullscreen) {
-        setIsFullscreen(false)
-      } else {
-        setIsFullscreen(true)
+  useEffect(() => {
+    if (screenfull.isEnabled) {
+      // Add a listener for when fullscreen mode is toggled
+      const onChange = () => {
+        setIsFullscreen(screenfull.isFullscreen) // Update atom state based on fullscreen mode
+      }
+
+      screenfull.on('change', onChange)
+
+      // Cleanup listener on unmount
+      return () => {
+        screenfull.off('change', onChange)
       }
     }
   }, [setIsFullscreen])

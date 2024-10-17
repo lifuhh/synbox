@@ -32,10 +32,14 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
     <div className='overflow-visible px-6'>
       <div className='flex flex-col items-center'>
         <h1 className='unselectable pb-4 text-lg font-bold'>Song Info</h1>
-        <img
+        {/* <img
           src={thumbnail}
           alt={title}
-          className='mb-4 w-full max-w-lg rounded-lg object-cover shadow-md'
+          className='mb-4 aspect-video w-full max-w-lg rounded-lg object-cover shadow-md'
+        /> */}
+        <div
+          className='mb-4 aspect-video w-full max-w-lg rounded-lg bg-cover bg-center shadow-md'
+          style={{ backgroundImage: `url(${thumbnail})` }}
         />
         <h4 className='mb-2 text-center text-xl font-semibold'>{title}</h4>
 
