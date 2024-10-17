@@ -10,12 +10,11 @@ import { useStreamValidationApi } from '@/hooks/useStreamValidationApi'
 import { useUploadHardCodedLyrics } from '@/lib/react-query/queriesAndMutations'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { useAtom } from 'jotai'
-import React, { SyntheticEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 import RequestDialogAnnotateDisplay from './RequestDialogAnnotateDisplay'
 import RequestDialogStepTwoDisplay from './RequestDialogStepTwoDisplay'
-import RequestDialogUploadDisplay from './RequestDialogUploadDisplay'
 import RequestDialogValidationDisplay from './RequestDialogValidationDisplay'
 import UpdateMessagesDisplay from './UpdateMessagesDisplay'
 
@@ -176,6 +175,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
       }
 
       const adjustedTimestampedLyrics = timestampedLyrics.map(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item: any, index) => ({
           id: (index + 1).toString(),
           startTime: formatTime(item.start_time),
@@ -207,6 +207,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             setIsUploading(false)
             setUploadSuccess(true)
           },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onError: (error: any) => {
             setIsUploading(false)
             setUploadError('Upload failed: ' + error.message)
@@ -214,6 +215,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           },
         },
       )
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setIsUploading(false)
       setUploadError(
@@ -299,7 +301,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
 
-      <div className='mx-4 my-2 flex-grow overflow-y-auto'>
+      <div className='mx-4 mt-2 flex-grow overflow-y-auto'>
         {renderStep()}
         {error && (
           <div className='mt-4 text-red-500'>
@@ -309,24 +311,24 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         )}
       </div>
 
-      <DialogFooter className='sm:flex-between flex w-full flex-col justify-start gap-4 bg-primary-600 p-4 md:flex-row md:gap-0'>
+      <DialogFooter className='flex w-full flex-col-reverse gap-4 bg-primary-600 p-4 md:flex-row md:justify-between'>
         <DialogClose asChild>
           <Button
             type='button'
             variant='secondary'
             onClick={handleClose}
             disabled={isStreaming || isUploading}
-            className='invisible-ring text-md text-light-1 hover:border-primary hover:bg-light-1 hover:text-primary hover:outline-1'>
+            className='invisible-ring text-md w-full text-light-1 hover:border-primary hover:bg-light-1 hover:text-primary hover:outline-1 md:w-auto'>
             Close
           </Button>
         </DialogClose>
 
-        <div>
+        <div className='flex w-full justify-between gap-2 md:w-auto md:justify-end'>
           {currentStep > 0 && (
             <Button
               onClick={handlePreviousClick}
               disabled={isStreaming || isUploading}
-              className='invisible-ring mr-2 bg-gray-500 text-white hover:bg-gray-600'>
+              className='invisible-ring flex-1 bg-gray-500 text-white hover:bg-gray-600 md:flex-initial'>
               Previous Step
             </Button>
           )}
@@ -335,7 +337,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             <Button
               onClick={handleProceedClick}
               disabled={isUploading}
-              className='invisible-ring bg-blue-500 text-white hover:bg-blue-600'>
+              className='invisible-ring flex-1 bg-blue-500 text-white hover:bg-blue-600 md:flex-initial'>
               {currentStep === 3 ? 'Upload Lyrics' : 'Next Step'}
             </Button>
           )}

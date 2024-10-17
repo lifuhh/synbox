@@ -1,4 +1,4 @@
-import { Loader, Paper, ScrollArea, Text } from '@mantine/core'
+import { Loader, Text } from '@mantine/core'
 import React from 'react'
 
 interface UpdateMessagesDisplayProps {
@@ -7,42 +7,41 @@ interface UpdateMessagesDisplayProps {
   updateMessages: string[]
   loaderColor?: string
   loaderType?: 'bars' | 'oval' | 'dots'
+  loaderSize?: number | 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  verticalMargin?: number | string
 }
 
 const UpdateMessagesDisplay: React.FC<UpdateMessagesDisplayProps> = ({
   isStreaming,
   showLoader,
   updateMessages,
-  loaderColor = 'yellow',
+  loaderColor = 'white',
   loaderType = 'dots',
+  loaderSize = 'lg',
+  textSize = 'lg',
+  verticalMargin = 4,
 }) => {
-  // const lastFewMessages = updateMessages.slice(-5) // Show last 5 messages
   const lastMessage = updateMessages.slice(-1)[0] as string
+
+  const marginClass =
+    typeof verticalMargin === 'number'
+      ? `my-${verticalMargin}`
+      : `my-[${verticalMargin}]`
 
   return (
     <>
-      {/* {isStreaming && updateMessages.length > 0 && (
-        <Paper className='m-2 p-4'>
-          <ScrollArea style={{ height: 150 }}>
-            {lastFewMessages.map((message, index) => (
-              <Text key={index} size='sm' className='mb-2'>
-                {message}
-              </Text>
-            ))}
-          </ScrollArea>
-        </Paper>
-      )} */}
       {showLoader && (
-        <div className='flex-center my-4 flex flex-col'>
-          <Loader color={loaderColor} type={loaderType} size='lg' />
+        <div className={`flex-center flex flex-col ${marginClass}`}>
+          <Loader color={loaderColor} type={loaderType} size={loaderSize} />
           {isStreaming ? (
             updateMessages.length > 0 ? (
-              <Text size='lg'>{lastMessage}</Text>
+              <Text size={textSize}>{lastMessage}</Text>
             ) : (
-              <Text size='lg'>Pending Updates...</Text>
+              <Text size={textSize}>Pending Updates...</Text>
             )
           ) : (
-            <Text size='lg'>Finalizing...</Text>
+            <Text size={textSize}>Finalizing...</Text>
           )}
         </div>
       )}

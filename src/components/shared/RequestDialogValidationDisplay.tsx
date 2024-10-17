@@ -35,11 +35,11 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
         <img
           src={thumbnail}
           alt={title}
-          className='mb-4 w-full max-w-md rounded-lg object-cover shadow-md'
+          className='mb-4 w-full max-w-lg rounded-lg object-cover shadow-md'
         />
         <h4 className='mb-2 text-center text-xl font-semibold'>{title}</h4>
 
-        <div className='flex w-full max-w-2xl flex-col gap-y-2 md:px-11 md:pt-4'>
+        <div className='flex w-full max-w-2xl flex-col gap-y-2 px-3 pt-8 md:pt-4'>
           {/* <InfoItem label='Video ID' value={id} /> */}
           <InfoItem label='Channel' value={channel_name} />
           {/* <InfoItem label='Uploader' value={uploader} /> */}
@@ -98,7 +98,7 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
 const InfoItem = ({ label, value, valueClassName = '' }) => (
   <div className='flex flex-col'>
     <span className='text-sm text-gray-500'>{label}</span>
-    <span className={`font-medium ${valueClassName}`}>
+    <span className={`font-medium ${valueClassName} pt-[1px]`}>
       {typeof value === 'object' ? value : value || 'N/A'}
     </span>
   </div>

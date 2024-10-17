@@ -25,10 +25,20 @@ const RequestDialogAnnotateDisplay = ({
   } = useStreamAnnotateApi()
 
   const [isBuffering, setIsBuffering] = useState(true)
+  const [showProgressUpdate, setShowProgressUpdate] = useState(true)
 
   useEffect(() => {
     mutate({ vidId: id, lyrics, timestampedLyrics })
   }, [id, lyrics, timestampedLyrics, mutate])
+
+  useEffect(() => {
+    // Hide ProgressUpdate when UpdateMessagesDisplay shows "Finalizing..."
+    if (!isStreaming && isBuffering) {
+      setShowProgressUpdate(false)
+    } else {
+      setShowProgressUpdate(true)
+    }
+  }, [isStreaming, isBuffering])
 
   useEffect(() => {
     if (isDataComplete) {
@@ -97,32 +107,35 @@ const RequestDialogAnnotateDisplay = ({
     { id: 'translation', title: 'Translation', status: 'pending' },
     { id: 'romaji', title: 'Romaji Annotation', status: 'pending' },
     { id: 'kanji', title: 'Kanji Annotation', status: 'pending' },
+    { id: 'completion', title: 'Finalizing', status: 'pending' },
   ]
 
-  const steps: Step[] = initialSteps.map((step): Step => {
-    if (currentTask === step.id) {
-      return { ...step, status: 'active' }
-    }
-    if (
-      (step.id === 'translation' && (engTranslation || chiTranslation)) ||
-      (step.id === 'romaji' && romajiLyrics) ||
-      (step.id === 'kanji' && kanjiAnnotations)
-    ) {
-      return { ...step, status: 'completed' }
-    }
-    return step
-  })
+  const steps: Step[] = initialSteps
+    .map((step): Step => {
+      if (currentTask === step.id) {
+        return { ...step, status: 'active' }
+      }
+      if (
+        (step.id === 'translation' && (engTranslation || chiTranslation)) ||
+        (step.id === 'romaji' && romajiLyrics) ||
+        (step.id === 'kanji' && kanjiAnnotations) ||
+        currentTask === 'completion'
+      ) {
+        return { ...step, status: 'completed' }
+      }
+      return step
+    })
+    .filter((step) => step.id !== 'completion')
 
   return (
     <div className='w-full'>
       {isStreaming || isBuffering ? (
         <div className='mt-4 w-full'>
-          <ProgressUpdate steps={steps} />
+          {showProgressUpdate && <ProgressUpdate steps={steps} />}
           <UpdateMessagesDisplay
             isStreaming={isStreaming}
             showLoader={isBuffering}
             updateMessages={updateMessages}
-            loaderColor='blue'
           />
         </div>
       ) : (

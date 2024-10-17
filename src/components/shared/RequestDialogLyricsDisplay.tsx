@@ -75,7 +75,7 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
   }
 
   return (
-    <div className='mt-4 w-full'>
+    <div className='w-full'>
       <h4 className='mb-2 text-lg font-bold'>Lyrics</h4>
       <ScrollArea
         className={`w-full rounded-md border p-4 ${isAiGenerated ? 'h-[40vh]' : 'h-[50vh]'}`}>
@@ -128,10 +128,14 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
           )}
         </div>
       )}
-      {isAiGenerated && (
+      {isAiGenerated ? (
         <p className='mt-2 text-sm text-yellow-600'>
-          These lyrics are AI-generated. Please edit to remove hallucinated
-          lines if necessary.
+          Lyrics are AI-generated, please edit to remove hallucinated lines if
+          necessary.
+        </p>
+      ) : (
+        <p className='mt-2 text-sm text-green-500'>
+          Lyrics are originally uploaded by the channel.
         </p>
       )}
     </div>
