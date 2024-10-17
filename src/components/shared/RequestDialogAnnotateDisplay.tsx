@@ -11,6 +11,7 @@ const RequestDialogAnnotateDisplay = ({
   timestampedLyrics,
   onAnnotationsUpdate,
   onError,
+  onStreamingStatusChange,
 }) => {
   const {
     isStreaming,
@@ -39,6 +40,10 @@ const RequestDialogAnnotateDisplay = ({
       setShowProgressUpdate(true)
     }
   }, [isStreaming, isBuffering])
+
+  useEffect(() => {
+    onStreamingStatusChange(isStreaming || isBuffering) // Call this when streaming status changes
+  }, [isStreaming, isBuffering, onStreamingStatusChange])
 
   useEffect(() => {
     if (isDataComplete) {

@@ -39,7 +39,7 @@ const UpdateMessagesDisplay: React.FC<UpdateMessagesDisplayProps> = ({
               <Text size={textSize}>{lastMessage}</Text>
             ) : (
               //? This seems to only be activated by transcription
-              <Text size={textSize}>Pending updates...</Text>
+              <Text size={textSize}>Waiting for updates...</Text>
             )
           ) : (
             <Text size={textSize}>Finalizing...</Text>

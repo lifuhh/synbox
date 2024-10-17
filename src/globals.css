@@ -145,6 +145,16 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--secondary);
   }
+
+  /* Specific scrollbar styling for the ScrollArea with the white thumb */
+  .lyrics-scroll-area::-webkit-scrollbar-thumb {
+    background: white; /* Make the scrollbar thumb white */
+    border-radius: 40px; /* You can adjust this if necessary */
+  }
+
+  .lyrics-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #f0f0f0; /* Light gray on hover, or change as needed */
+  }
   /* ? Customize appearance of scrollbar END */
 
   /* TODO Used in TopBar & PlayerBottomBar - For animation when disappearing? Figure this out START */

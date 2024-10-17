@@ -129,9 +129,9 @@ const HeroGenerateLyricsDefault = ({
                 {errorMessage
                   ? errorMessage
                   : isCheckingLyrics
-                    ? 'Valid URL - Searching Database...'
+                    ? 'Valid URL - Searching for lyrics...'
                     : existingLyrics
-                      ? 'Lyrics & translations found in database'
+                      ? 'Lyrics & translations found!'
                       : validationSuccess
                         ? 'Valid YouTube URL'
                         : ''}

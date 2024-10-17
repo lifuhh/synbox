@@ -46,7 +46,7 @@ const RequestDialogFinalDisplay = ({
   return (
     <div className='overflow-visible px-6'>
       <div className='flex flex-col items-center'>
-        <h1 className='unselectable pb-4 text-lg font-bold'>Enjoy the MV!</h1>
+        {/* <h1 className='unselectable pb-4 text-lg font-bold'>Enjoy the Song!</h1> */}
         <img
           src={thumbnail}
           alt={title}
