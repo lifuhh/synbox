@@ -48,6 +48,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   } = useAppContext()
   const [videoEnded, setVideoEnded] = useState(false)
   const [muted, setMuted] = useAtom(mutedAtom)
+  const [isInitialized, setIsInitialized] = useState(false)
 
   //TODO: This is a typeguard - understand this better
   if (!playerRef || typeof playerRef === 'function') {
@@ -83,10 +84,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [setPlayerControlsVisible, playing])
 
   useEffect(() => {
-    if (muted && !playing && !playerOverlayVisible) {
+    if (muted && !playing && !playerOverlayVisible && !isInitialized) {
       playerOverlayVisibleHandler.open()
     }
-  }, [muted, playerOverlayVisible, playerOverlayVisibleHandler, playing])
+  }, [
+    muted,
+    playing,
+    playerOverlayVisible,
+    playerOverlayVisibleHandler,
+    isInitialized,
+  ])
 
   const handlePause = () => {
     // console.log('VideoPlayer.tsx player has been paused')
@@ -97,10 +104,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     if (playerRef.current.getInternalPlayer()) {
       setMuted(playerRef.current.getInternalPlayer().isMuted())
-      setIsPlayerReady(true) // Add this line
+      setIsPlayerReady(true)
+      setIsInitialized(true)
     }
   }
-
   const handleVideoEnded = () => {
     handleEnded()
     setVideoEnded(playing)
