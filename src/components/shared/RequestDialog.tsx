@@ -7,9 +7,11 @@ import {
 } from '@/components/ui/dialog'
 import { dialogStepAtom } from '@/context/atoms'
 import { useStreamValidationApi } from '@/hooks/useStreamValidationApi'
+import { useUploadHardCodedLyrics } from '@/lib/react-query/queriesAndMutations'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { useAtom } from 'jotai'
 import React, { SyntheticEvent, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 import RequestDialogAnnotateDisplay from './RequestDialogAnnotateDisplay'
 import RequestDialogStepTwoDisplay from './RequestDialogStepTwoDisplay'
@@ -25,6 +27,7 @@ interface RequestDialogProps {
 type PointerDownOutsideEvent = CustomEvent<{ originalEvent: PointerEvent }>
 
 const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
+  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useAtom(dialogStepAtom)
   const [showLoader, setShowLoader] = useState(false)
   const [lyrics, setLyrics] = useState<string[]>([])
@@ -33,6 +36,10 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [chiTranslation, setChiTranslation] = useState<string[]>([])
   const [romajiLyrics, setRomajiLyrics] = useState<string[]>([])
   const [kanjiAnnotations, setKanjiAnnotations] = useState<string[]>([])
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadSuccess, setUploadSuccess] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const { mutate: uploadHardCodedLyrics } = useUploadHardCodedLyrics()
   const {
     isStreaming,
     updateMessages,
@@ -105,10 +112,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     setCurrentStep((prevStep) => Math.max(prevStep - 1, 0))
   }
 
-  const handleProceedClick = () => {
-    setCurrentStep((prevStep) => prevStep + 1)
-  }
-
   const handleEscapeKeyDown = (event: KeyboardEvent) => {
     event.preventDefault()
   }
@@ -117,7 +120,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     event.preventDefault()
   }
 
-  const handleInteractOutside = (event: SyntheticEvent) => {
+  const handleInteractOutside = (event: PointerDownOutsideEvent) => {
     event.preventDefault()
   }
 
@@ -141,6 +144,93 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     setKanjiAnnotations(newKanjiAnnotations)
   }
 
+  const handleUpload = () => {
+    setIsUploading(true)
+    setUploadError(null)
+
+    if (!Array.isArray(timestampedLyrics) || timestampedLyrics.length === 0) {
+      setUploadError('Timestamped lyrics are missing or invalid')
+      setIsUploading(false)
+      return
+    }
+
+    try {
+      const formatTime = (seconds: number): string => {
+        const pad = (num: number) => num.toString().padStart(2, '0')
+        const roundedSeconds = Math.round(seconds * 1000) / 1000
+        const hours = Math.floor(roundedSeconds / 3600)
+        const minutes = Math.floor((roundedSeconds % 3600) / 60)
+        const secs = Math.floor(roundedSeconds % 60)
+        const milliseconds = Math.floor((roundedSeconds % 1) * 1000)
+        return `${pad(hours)}:${pad(minutes)}:${pad(secs)},${milliseconds.toString().padStart(3, '0')}`
+      }
+
+      const convertToRuby = (annotatedLine: string) => {
+        const rubyLines = annotatedLine.replace(
+          /([一-龯々]+)\[([^\]]+)\]/g,
+          (match, kanji, reading) => {
+            return `<ruby>${kanji}<rp>(</rp><rt>${reading}</rt><rp>)</rp></ruby>`
+          },
+        )
+        return rubyLines.replace(/\[[^\]]+\]/g, '')
+      }
+
+      const adjustedTimestampedLyrics = timestampedLyrics.map(
+        (item: any, index) => ({
+          id: (index + 1).toString(),
+          startTime: formatTime(item.start_time),
+          startSeconds: item.start_time,
+          endTime: formatTime(item.end_time),
+          endSeconds: item.end_time,
+          text: item.lyric,
+        }),
+      )
+
+      const labelledLyrics = adjustedTimestampedLyrics.map((item, index) => ({
+        ...item,
+        text: convertToRuby(kanjiAnnotations[index] || item.text),
+      }))
+
+      const lyricsData = {
+        full_lyrics: JSON.stringify(adjustedTimestampedLyrics),
+        plain_lyrics: JSON.stringify(lyrics),
+        romaji: JSON.stringify(romajiLyrics),
+        eng_translation: JSON.stringify(engTranslation),
+        chi_translation: JSON.stringify(chiTranslation),
+        labelled_full_lyrics: JSON.stringify(labelledLyrics),
+      }
+
+      uploadHardCodedLyrics(
+        { songId: videoId, lyricsData },
+        {
+          onSuccess: () => {
+            setIsUploading(false)
+            setUploadSuccess(true)
+          },
+          onError: (error: any) => {
+            setIsUploading(false)
+            setUploadError('Upload failed: ' + error.message)
+            console.error('Upload failed:', error)
+          },
+        },
+      )
+    } catch (err: any) {
+      setIsUploading(false)
+      setUploadError(
+        'An error occurred while processing the data: ' + err.message,
+      )
+      console.error('Error processing data:', err)
+    }
+  }
+
+  const handleProceedClick = () => {
+    if (currentStep === 3) {
+      handleUpload()
+    } else {
+      setCurrentStep((prevStep) => prevStep + 1)
+    }
+  }
+
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -151,7 +241,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
               showLoader={showLoader}
               updateMessages={updateMessages}
             />
-            {showVidInfo && !showLoader && !error && (
+            {showVidInfo && !showLoader && !error && vidInfo && (
               <RequestDialogValidationDisplay vidInfo={vidInfo} />
             )}
           </>
@@ -174,15 +264,24 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         )
       case 3:
         return (
-          <RequestDialogUploadDisplay
-            id={videoId}
-            lyrics={lyrics}
-            timestampedLyrics={timestampedLyrics}
-            engTranslation={engTranslation}
-            chiTranslation={chiTranslation}
-            romajiLyrics={romajiLyrics}
-            kanjiAnnotations={kanjiAnnotations}
-          />
+          <div className='mt-4 w-full'>
+            <h3 className='mb-4 text-xl font-bold'>Step 4: Upload Lyrics</h3>
+            <p className='mb-4'>
+              All data has been processed. Click the button below to upload the
+              lyrics and translations.
+            </p>
+            {uploadError && <p className='mb-4 text-red-500'>{uploadError}</p>}
+            {uploadSuccess && (
+              <div className='mb-4'>
+                <p className='text-green-500'>Upload successful!</p>
+                <Button
+                  onClick={() => navigate(`/v/${videoId}`)}
+                  className='mt-2 bg-green-500 text-white hover:bg-green-600'>
+                  Play
+                </Button>
+              </div>
+            )}
+          </div>
         )
       default:
         return null
@@ -210,13 +309,13 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         )}
       </div>
 
-      <DialogFooter className='sm:flex-between flex w-full justify-start bg-primary-600 p-4'>
+      <DialogFooter className='sm:flex-between flex w-full flex-col justify-start gap-4 bg-primary-600 p-4 md:flex-row md:gap-0'>
         <DialogClose asChild>
           <Button
             type='button'
             variant='secondary'
             onClick={handleClose}
-            disabled={isStreaming}
+            disabled={isStreaming || isUploading}
             className='invisible-ring text-md text-light-1 hover:border-primary hover:bg-light-1 hover:text-primary hover:outline-1'>
             Close
           </Button>
@@ -226,16 +325,18 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           {currentStep > 0 && (
             <Button
               onClick={handlePreviousClick}
+              disabled={isStreaming || isUploading}
               className='invisible-ring mr-2 bg-gray-500 text-white hover:bg-gray-600'>
               Previous Step
             </Button>
           )}
           {((showVidInfo && currentStep === 0) ||
-            (currentStep > 0 && currentStep < 3)) && (
+            (currentStep > 0 && currentStep <= 3)) && (
             <Button
               onClick={handleProceedClick}
+              disabled={isUploading}
               className='invisible-ring bg-blue-500 text-white hover:bg-blue-600'>
-              {currentStep === 2 ? 'Upload Lyrics' : 'Next Step'}
+              {currentStep === 3 ? 'Upload Lyrics' : 'Next Step'}
             </Button>
           )}
         </div>

@@ -39,18 +39,35 @@ const AboutPage = () => {
         <div className='my-8'>
           <Accordion type='multiple' className='w-full'>
             <AccordionItem value='item-1'>
-              <AccordionTrigger>Accordion 1</AccordionTrigger>
-              <AccordionContent>Accordion 1</AccordionContent>
+              <AccordionTrigger>How does Synbox work?</AccordionTrigger>
+              <AccordionContent>
+                Synbox allows users to generate english and chinese translations
+                as well as romaji annotations given a specific Japanese song
+                YouTube URL.
+              </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value='item-2'>
-              <AccordionTrigger>Accordion 2</AccordionTrigger>
-              <AccordionContent>Accordion 2</AccordionContent>
+              <AccordionTrigger>
+                What videos are supported by Synbox?
+              </AccordionTrigger>
+              <AccordionContent>
+                Currently, only Japanese music videos with a duration between 1
+                minute and 8 minutes are supported by Synbox.
+              </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value='item-3'>
-              <AccordionTrigger>Accordion 3</AccordionTrigger>
-              <AccordionContent>Accordion 3</AccordionContent>
+              <AccordionTrigger>
+                Why is the transcription quality so bad for a song?
+              </AccordionTrigger>
+              <AccordionContent>
+                From testing, I figured that the duration of the song intro, the
+                audio quality of the original video, and the tempo of the song
+                all contribute significantly to the quality of the transcription
+                made by the LLM. Only music videos that do not need transcribing
+                have guaranteed success.
+              </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value='item-4'>

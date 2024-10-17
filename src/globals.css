@@ -248,22 +248,22 @@
   /* //? Focus ring related
 
 /* a subtle focus style for keyboard-input elements */
-.text-input:focus {
-  outline: 1px solid #aaa;
-}
+  .text-input:focus {
+    outline: 1px solid #aaa;
+  }
 
-/* no focus style for non-keyboard-inputs elements */
-button:focus,
-select:focus {
-  outline: none;
-}
+  /* no focus style for non-keyboard-inputs elements */
+  button:focus,
+  select:focus {
+    outline: none;
+  }
 
-/* and for keyboard users, override everything with
+  /* and for keyboard users, override everything with
    a Big Blue Border when focused on any element */
-body.user-is-tabbing *:focus {
-  outline: 2px solid #7AACFE !important; /* for non-webkit browsers */
-  outline: 5px auto -webkit-focus-ring-color !important;
-}
+  body.user-is-tabbing *:focus {
+    outline: 2px solid #7aacfe !important; /* for non-webkit browsers */
+    outline: 5px auto -webkit-focus-ring-color !important;
+  }
 
   /* ? Marquee - Moving Text on hover START */
   .marquee {
@@ -290,12 +290,18 @@ body.user-is-tabbing *:focus {
     }
   }
 
- 
   /* ? Marquee - Moving Text on hover END */
 
   /* ? Used to prevent an element from being selectable - e.g. overlays */
   .unselectable {
     pointer-events: none;
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari/Chrome/Opera */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+  }
+
+  .unhighlightable {
     user-select: none; /* Standard syntax */
     -webkit-user-select: none; /* Safari/Chrome/Opera */
     -moz-user-select: none; /* Firefox */
@@ -416,5 +422,3 @@ body.user-is-tabbing *:focus {
       transform 0.18s ease-out;
   }
 }
-
-

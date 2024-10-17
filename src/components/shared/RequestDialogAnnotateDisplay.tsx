@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useStreamAnnotateApi } from '@/hooks/useStreamAnnotateApi'
+import { Text } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { ProgressUpdate, Step } from './ProgressUpdate'
 import UpdateMessagesDisplay from './UpdateMessagesDisplay'
@@ -54,7 +55,7 @@ const RequestDialogAnnotateDisplay = ({
   const renderScrollableContent = (content) => {
     if (!content) return null
     return (
-      <div className='h-64 overflow-y-auto rounded border border-gray-300 p-2'>
+      <div className='h-80 overflow-y-auto rounded border border-gray-300 p-2'>
         {content.map((line, index) => (
           <p key={index} className='whitespace-pre-wrap'>
             {line}
@@ -65,26 +66,31 @@ const RequestDialogAnnotateDisplay = ({
   }
 
   const renderTabs = () => (
-    <Tabs defaultValue='lyrics' className='h-[50vh] w-full'>
-      <TabsList className='grid w-full grid-cols-4'>
-        <TabsTrigger value='lyrics'>Lyrics</TabsTrigger>
-        <TabsTrigger value='english'>English</TabsTrigger>
-        <TabsTrigger value='chinese'>Chinese</TabsTrigger>
-        <TabsTrigger value='romaji'>Romaji</TabsTrigger>
-      </TabsList>
-      <TabsContent value='lyrics'>
-        {renderScrollableContent(lyrics)}
-      </TabsContent>
-      <TabsContent value='english'>
-        {renderScrollableContent(engTranslation)}
-      </TabsContent>
-      <TabsContent value='chinese'>
-        {renderScrollableContent(chiTranslation)}
-      </TabsContent>
-      <TabsContent value='romaji'>
-        {renderScrollableContent(romajiLyrics)}
-      </TabsContent>
-    </Tabs>
+    <>
+      <Text className='mb-4' ta='center' size='lg' fw={700}>
+        Preview
+      </Text>
+      <Tabs defaultValue='lyrics' className='w-full'>
+        <TabsList className='grid w-full grid-cols-4'>
+          <TabsTrigger value='lyrics'>Lyrics</TabsTrigger>
+          <TabsTrigger value='english'>English</TabsTrigger>
+          <TabsTrigger value='chinese'>Chinese</TabsTrigger>
+          <TabsTrigger value='romaji'>Romaji</TabsTrigger>
+        </TabsList>
+        <TabsContent value='lyrics'>
+          {renderScrollableContent(lyrics)}
+        </TabsContent>
+        <TabsContent value='english'>
+          {renderScrollableContent(engTranslation)}
+        </TabsContent>
+        <TabsContent value='chinese'>
+          {renderScrollableContent(chiTranslation)}
+        </TabsContent>
+        <TabsContent value='romaji'>
+          {renderScrollableContent(romajiLyrics)}
+        </TabsContent>
+      </Tabs>
+    </>
   )
 
   const initialSteps: Step[] = [
@@ -108,9 +114,9 @@ const RequestDialogAnnotateDisplay = ({
   })
 
   return (
-    <div className='mt-4 h-[50vh] w-full'>
+    <div className='w-full'>
       {isStreaming || isBuffering ? (
-        <>
+        <div className='mt-4 w-full'>
           <ProgressUpdate steps={steps} />
           <UpdateMessagesDisplay
             isStreaming={isStreaming}
@@ -118,7 +124,7 @@ const RequestDialogAnnotateDisplay = ({
             updateMessages={updateMessages}
             loaderColor='blue'
           />
-        </>
+        </div>
       ) : (
         renderTabs()
       )}

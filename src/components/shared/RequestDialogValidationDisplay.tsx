@@ -1,8 +1,24 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from '@/components/ui/button'
 import { Check, ExternalLink, X } from 'lucide-react'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const RequestDialogValidationDisplay = ({ vidInfo }) => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!vidInfo || !vidInfo.full_vid_info) {
+      // Redirect to homepage if vidInfo or full_vid_info is missing
+      navigate('/')
+    }
+  }, [vidInfo, navigate])
+
+  // If vidInfo or full_vid_info is missing, don't render anything
+  if (!vidInfo || !vidInfo.full_vid_info) {
+    return null
+  }
+
   const {
     full_vid_info: { title, id, thumbnail, likes, uploader, channel_name },
     passed,
@@ -23,7 +39,7 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
         />
         <h4 className='mb-2 text-center text-xl font-semibold'>{title}</h4>
 
-        <div className='flex w-full max-w-2xl flex-col gap-y-2'>
+        <div className='flex w-full max-w-2xl flex-col gap-y-2 md:px-11 md:pt-4'>
           {/* <InfoItem label='Video ID' value={id} /> */}
           <InfoItem label='Channel' value={channel_name} />
           {/* <InfoItem label='Uploader' value={uploader} /> */}

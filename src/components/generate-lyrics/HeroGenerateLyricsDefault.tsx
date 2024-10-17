@@ -131,7 +131,7 @@ const HeroGenerateLyricsDefault = ({
                   : isCheckingLyrics
                     ? 'Valid URL - Searching Database...'
                     : existingLyrics
-                      ? 'Lyrics & translations found!'
+                      ? 'Lyrics & translations found in database'
                       : validationSuccess
                         ? 'Valid YouTube URL'
                         : ''}
@@ -147,15 +147,16 @@ const HeroGenerateLyricsDefault = ({
                     : () => {}
                 }
                 disabled={
-                  errorMessage && errorMessage != ''
+                  inputValue?.length == 0 ||
+                  (errorMessage && errorMessage != ''
                     ? true
-                    : false || isCheckingLyrics
+                    : false || isCheckingLyrics)
                 }
                 variant='default'
                 role='combobox'
                 className='w-1/3 border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20 md:w-4/12 lg:w-1/4'>
                 {isCheckingLyrics
-                  ? 'Checking...'
+                  ? 'Searching...'
                   : existingLyrics
                     ? 'Watch Now'
                     : 'Try Now'}

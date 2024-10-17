@@ -13,7 +13,7 @@ interface ProgressUpdateProps {
 
 export function ProgressUpdate({ steps }: ProgressUpdateProps) {
   return (
-    <div className='space-y-4'>
+    <div className='flex-col space-y-8'>
       {steps.map((step, index) => (
         <div key={step.id} className='flex items-center space-x-4'>
           <div className='flex-shrink-0'>
@@ -38,9 +38,9 @@ export function ProgressUpdate({ steps }: ProgressUpdateProps) {
               {step.title}
             </p>
           </div>
-          {index < steps.length - 1 && (
+          {/* {index < steps.length - 1 && (
             <div className='mx-3 h-10 w-px flex-shrink-0 bg-gray-200' />
-          )}
+          )} */}
         </div>
       ))}
     </div>

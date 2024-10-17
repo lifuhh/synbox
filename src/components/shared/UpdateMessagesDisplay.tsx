@@ -39,10 +39,10 @@ const UpdateMessagesDisplay: React.FC<UpdateMessagesDisplayProps> = ({
             updateMessages.length > 0 ? (
               <Text size='lg'>{lastMessage}</Text>
             ) : (
-              'Pending Updates...'
+              <Text size='lg'>Pending Updates...</Text>
             )
           ) : (
-            'Finalizing...'
+            <Text size='lg'>Finalizing...</Text>
           )}
         </div>
       )}

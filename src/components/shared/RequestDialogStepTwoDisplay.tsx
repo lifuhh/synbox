@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useStreamTranscriptionApi } from '@/hooks/useStreamTranscriptionApi'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import RequestDialogLyricsDisplay from './RequestDialogLyricsDisplay'
 import UpdateMessagesDisplay from './UpdateMessagesDisplay'
 
@@ -24,6 +25,20 @@ const RequestDialogStepTwoDisplay: React.FC<
   const [currentTimestampedLyrics, setCurrentTimestampedLyrics] = useState<
     Lyric[]
   >([])
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!vidInfo || !vidInfo.full_vid_info) {
+      // Redirect to homepage if vidInfo or full_vid_info is missing
+      navigate('/')
+    }
+  }, [vidInfo, navigate])
+
+  // If vidInfo or full_vid_info is missing, don't render anything
+  if (!vidInfo || !vidInfo.full_vid_info) {
+    return null
+  }
 
   const { full_vid_info: fullVidInfo, subtitle_info: subtitleInfo } = vidInfo
   const { id: vidId } = fullVidInfo
