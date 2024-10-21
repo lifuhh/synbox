@@ -1,14 +1,26 @@
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { useOverflow } from '@/hooks/useOverflow'
 import { X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 
-const FavouritesDropdownItem = ({ videoId, title, author, thumbnailUrl }) => {
+interface FavouritesDropdownItemProps {
+  videoId: string
+  title: string
+  author: string
+  thumbnailUrl: string
+}
+
+const FavouritesDropdownItem: React.FC<FavouritesDropdownItemProps> = ({
+  videoId,
+  title,
+  author,
+  thumbnailUrl,
+}) => {
   const navigate = useNavigate()
-  const textRef = useRef(null)
-  const containerRef = useRef(null)
+  const textRef = useRef<HTMLSpanElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [isOverflowing, setIsOverflowing] = useState(false)
 
   useEffect(() => {

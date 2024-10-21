@@ -30,7 +30,7 @@ interface RequestDialogProps {
   handleClose: () => void
 }
 
-type PointerDownOutsideEvent = CustomEvent<{ originalEvent: PointerEvent }>
+type OutsideEvent = CustomEvent<{ originalEvent: PointerEvent | FocusEvent }>
 
 const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const navigate = useNavigate()
@@ -127,14 +127,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   }
 
   const handleEscapeKeyDown = (event: KeyboardEvent) => {
-    event.preventDefault()
-  }
-
-  const handlePointerDownOutside = (event: PointerDownOutsideEvent) => {
-    event.preventDefault()
-  }
-
-  const handleInteractOutside = (event: PointerDownOutsideEvent) => {
     event.preventDefault()
   }
 
@@ -251,6 +243,10 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     }
   }
 
+  const handleOutsideEvent = (event: OutsideEvent) => {
+    event.preventDefault()
+  }
+
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -315,8 +311,8 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     <DialogContent
       className='invisible-ring flex h-auto max-h-[90vh] flex-col border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-2xl'
       onEscapeKeyDown={handleEscapeKeyDown}
-      onPointerDownOutside={handlePointerDownOutside}
-      onInteractOutside={handleInteractOutside}>
+      onPointerDownOutside={handleOutsideEvent}
+      onInteractOutside={handleOutsideEvent}>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
