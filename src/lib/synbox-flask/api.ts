@@ -16,7 +16,7 @@ export const streamValidateVideoById = async (
   onError: (error: string) => void,
   onSuccess: () => void,
 ) => {
-  const response = await fetch(`${BE_TEST_ADDRESS}/validate`, {
+  const response = await fetch(`${BE_ADDRESS}/validate`, {
     method: 'POST',
     body: JSON.stringify({ id: videoId }),
     headers: {
@@ -68,7 +68,7 @@ export const streamTranscribeVideoById = async (
   console.log(videoId)
   console.log(JSON.stringify(subtitleInfo))
 
-  const response = await fetch(`${BE_TEST_ADDRESS}/transcribev2`, {
+  const response = await fetch(`${BE_ADDRESS}/transcribev2`, {
     method: 'POST',
     body: JSON.stringify({ id: videoId, subtitle_info: subtitleInfo }),
     headers: {
@@ -117,7 +117,7 @@ export const streamAnnotateVideoById = async (
   onError: (error: string) => void,
   onTaskUpdate: (task: string) => void, // New callback for task updates
 ) => {
-  const response = await fetch(`${BE_TEST_ADDRESS}/translate-annotate`, {
+  const response = await fetch(`${BE_ADDRESS}/translate-annotate`, {
     method: 'POST',
     body: JSON.stringify({
       id: videoId,
