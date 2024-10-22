@@ -319,7 +319,7 @@ const PlayerBottomBar = ({
             </Tooltip>
             {/* //*TODO: Handle Dismissing Top Bar & Bottom Bar to make more space  */}
             <Button
-              className='rounded-full pr-2'
+              className='invisible-ring rounded-full pr-2'
               size='icon'
               variant='ghost'
               onClick={handleFullscreen}

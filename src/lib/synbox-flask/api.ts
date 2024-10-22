@@ -20,7 +20,7 @@ export const streamValidateVideoById = async (
     method: 'POST',
     body: JSON.stringify({ id: videoId }),
     headers: {
-      Accept: 'application/json',
+      Accept: 'application/x-ndjson, application/json, text/plain',
       'Content-Type': 'application/json',
     },
   })
@@ -72,7 +72,7 @@ export const streamTranscribeVideoById = async (
     method: 'POST',
     body: JSON.stringify({ id: videoId, subtitle_info: subtitleInfo }),
     headers: {
-      Accept: 'application/json',
+      Accept: 'application/x-ndjson, application/json, text/plain',
       'Content-Type': 'application/json',
     },
   })
@@ -125,7 +125,7 @@ export const streamAnnotateVideoById = async (
       timestamped_lyrics: timestampedLyrics,
     }),
     headers: {
-      Accept: 'application/json',
+      Accept: 'application/x-ndjson, application/json, text/plain',
       'Content-Type': 'application/json',
     },
   })

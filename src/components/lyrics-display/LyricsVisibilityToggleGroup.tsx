@@ -155,7 +155,9 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
                   <h1 className='text-xl font-extrabold'>中</h1>
                 )}
                 <span className='unselectable sr-only'>
-                  Toggle Translation Language
+                  {isTranslationEnglish
+                    ? 'View Chinese Translations'
+                    : 'View English Translations'}
                 </span>
               </ToggleGroupItem>
             </TooltipTrigger>
@@ -167,7 +169,9 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
               className='unhighlightable border-none bg-primary'
               onMouseEnter={() => handleButtonHover('translationLanguage')}
               onMouseLeave={() => handleButtonLeave('translationLanguage')}>
-              Toggle Translation Language
+              {isTranslationEnglish
+                ? 'View Chinese Translations'
+                : 'View English Translations'}
             </TooltipContent>
           </Tooltip>
 
@@ -182,7 +186,12 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
                 data-tooltip-id='translation'
                 style={getButtonStyle('translation')}>
                 <TranslateIcon sx={{ fontSize: 24 }} />
-                <span className='sr-only'>Toggle Translation Visibility</span>
+                <span className='sr-only'>
+                  {' '}
+                  {isTranslationVisible
+                    ? 'Hide Translations'
+                    : 'Show Translations'}
+                </span>
               </ToggleGroupItem>
             </TooltipTrigger>
             <TooltipContent
@@ -194,7 +203,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
               onMouseEnter={() => handleButtonHover('translation')}
               onMouseLeave={() => handleButtonLeave('translation')}
               className='unhighlightable border-none bg-primary'>
-              Toggle Translation Visibility
+              {isTranslationVisible ? 'Hide Translations' : 'Show Translations'}
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -208,7 +217,9 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
                 data-tooltip-id='lyrics'
                 style={getButtonStyle('lyrics')}>
                 <LyricsIcon sx={{ fontSize: 24 }} />
-                <span className='sr-only'>Toggle Lyrics Visibility</span>
+                <span className='sr-only'>
+                  {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
+                </span>
               </ToggleGroupItem>
             </TooltipTrigger>
             <TooltipContent
@@ -219,7 +230,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
               onMouseLeave={() => handleButtonLeave('lyrics')}
               alignOffset={-2}
               className='unhighlightable border-none bg-primary'>
-              Toggle Lyrics Visibility
+              {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -233,7 +244,9 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
                 data-tooltip-id='romaji'
                 style={getButtonStyle('romaji')}>
                 <h1 className='text-xl'>R</h1>
-                <span className='sr-only'>Toggle Romaji</span>
+                <span className='sr-only'>
+                  {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
+                </span>
               </ToggleGroupItem>
             </TooltipTrigger>
             <TooltipContent
@@ -244,7 +257,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
               sideOffset={6}
               alignOffset={-2}
               className='unhighlightable border-none bg-primary'>
-              Toggle Romaji Visibility
+              {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -264,7 +277,12 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
                 ) : (
                   <VerticalAlignBottomIcon />
                 )}
-                <span className='sr-only'>Toggle Lyrics Position</span>
+                <span className='sr-only'>
+                  {' '}
+                  {isLyricsDisplayBottom
+                    ? 'Align Lyrics Top'
+                    : 'Align Lyrics Bottom'}
+                </span>
               </ToggleGroupItem>
             </TooltipTrigger>
             <TooltipContent
@@ -287,7 +305,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
           </span>
 
           <Slider
-            className='V rounded-lg'
+            className='V cursor-pointer rounded-lg'
             min={0.5}
             max={1}
             step={0.01}

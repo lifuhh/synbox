@@ -32,7 +32,7 @@ const PlayerMutedOverlay = ({
             <Text className='text-xl font-medium'>Ready!</Text>
           </div>
           <div className='min-w-80 pt-10'>
-            <Text className='text-lg'> Click to unmute and play</Text>
+            <Text className='text-lg'> Click screen to unmute and play</Text>
           </div>
         </div>
       )}
