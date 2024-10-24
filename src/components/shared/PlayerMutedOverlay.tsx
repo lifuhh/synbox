@@ -1,4 +1,5 @@
 import { Text } from '@mantine/core'
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled'
 import React, { useEffect, useState } from 'react'
 
 const PlayerMutedOverlay = ({
@@ -11,28 +12,42 @@ const PlayerMutedOverlay = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitializing(false)
-    }, 1500)
+    }, 750)
 
     return () => clearTimeout(timer)
   }, [])
 
   return (
     <div
-      onClick={isInitializing ? () => {} : handleInitMutedPlay}
-      className={`absolute inset-0 flex h-full w-full ${isInitializing ? '' : 'cursor-pointer'} flex-col items-center justify-center gap-4 bg-black bg-opacity-50 px-4 text-center text-white backdrop-blur-lg`}>
+      onClick={isInitializing ? undefined : handleInitMutedPlay}
+      className={`absolute inset-0 flex h-full w-full ${
+        isInitializing ? '' : 'cursor-pointer'
+      } flex-col items-center justify-center gap-4 bg-black bg-opacity-50 px-4 text-center text-white backdrop-blur-lg`}>
       {isInitializing ? (
         <div className='unselectable flex items-center gap-2'>
           <LoaderIcon className='h-10 w-10 animate-spin' />
           <Text className='text-xl font-medium'>Initializing...</Text>
         </div>
       ) : (
-        <div className='flex-center unhighlightable flex-col'>
-          <div className='flex items-center gap-2'>
-            <CheckIcon className='h-10 w-10 animate-pulse' />
-            <Text className='text-xl font-medium'>Ready!</Text>
-          </div>
-          <div className='min-w-80 pt-10'>
-            <Text className='text-lg'> Click screen to unmute and play</Text>
+        <div className='flex-center unhighlightable flex h-full w-full flex-col items-center justify-center'>
+          <div className='flex flex-col items-center justify-center'>
+            <PlayCircleFilledIcon
+              className='transition-transform duration-200'
+              sx={{
+                fontSize: '4em', // Increased size
+                width: 'auto',
+                height: 'auto',
+                color: 'white',
+                opacity: 0.85,
+                '&:hover': {
+                  opacity: 1,
+                },
+              }}
+            />
+            <div className='mx-auto mt-4 flex w-48 items-center justify-center gap-2 align-middle'>
+              <CheckIcon className='h-10 w-10 animate-pulse' />
+              <Text className='text-2xl font-medium'>Ready!</Text>
+            </div>
           </div>
         </div>
       )}

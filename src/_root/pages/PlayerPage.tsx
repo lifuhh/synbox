@@ -94,6 +94,10 @@ const PlayerPage = () => {
     if (videoId) setStateVideoId(videoId)
   }, [videoId])
 
+  useEffect(() => {
+    if (!lyricsControlVisibility) setLyricsControlVisibility(true)
+  }, [lyricsControlVisibility, setLyricsControlVisibility])
+
   // const load = (vidId: string) => {
   //   setStateVideoId(vidId)
   //   setPlayed(0)
@@ -299,8 +303,8 @@ const PlayerPage = () => {
         )}
       </div>
       <LyricsVisibilityToggleGroup />
-      <FloatingGlobalVisibilityToggle />
-      <MemoizedPlayerBottomBar
+      {/* <FloatingGlobalVisibilityToggle /> */}
+      {/* <MemoizedPlayerBottomBar
         playing={playing}
         loop={loop}
         played={played}
@@ -321,7 +325,7 @@ const PlayerPage = () => {
         handleToggleLyricsOverlayVisibility={
           handleToggleLyricsOverlayVisibility
         }
-      />
+      /> */}
     </>
   )
 }

@@ -105,23 +105,19 @@ const HeroGenerateLyricsDefault = ({
       <div className='flex-between xl:flex-around z-10 mx-auto w-full max-w-7xl flex-col gap-4 p-4 lg:gap-0 xl:h-96'>
         <h1 className='no-select bg-opacity-50 bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text pb-2 text-center text-4xl font-bold text-transparent md:text-6xl lg:text-7xl'>
           AI-Powered Japanese Karaoke
-          {/* Placeholder */}
         </h1>
         <div className='flex-between relative flex w-full flex-col gap-4 overflow-visible sm:mx-auto sm:w-4/5 md:flex-row'>
           <Input
             value={inputValue}
             onChange={handleInputChange}
             placeholder='Paste YouTube URL here'
-            // border-2 border-primary-500/40 hover:border-primary-500/90
-            // focus:ring-0 focus:ring-violet-300
-            // focus:outline-none focus:ring-0 focus:ring-teal-300
-            className={`border-2 py-6 focus:ring-transparent ${
+            className={`invisible-ring border-2  py-6 ${
               inputValue.length > 0
                 ? validationSuccess
-                  ? 'hover:border-green-500 focus:border-green-500'
-                  : 'hover:border-red-700 focus:border-red-700'
-                : 'hover:border-white focus:border-white'
-            }   ${validationSuccess ? 'border-green-500' : 'border-secondary'}`}
+                  ? 'border-green-500 hover:border-green-500 focus:border-green-500'
+                  : 'border-primary hover:border-red-700 focus:border-red-700'
+                : 'border-white hover:border-white focus:border-white'
+            } `}
           />
           <div className='absolute -bottom-20 left-0 h-20 w-full pt-2 text-left'>
             {inputValue.length > 0 && (
@@ -154,7 +150,7 @@ const HeroGenerateLyricsDefault = ({
                 }
                 variant='default'
                 role='combobox'
-                className='w-1/3 border-2 border-primary-500/40 py-6 hover:border-primary-500/90 hover:bg-gray-200/20 md:w-4/12 lg:w-1/4'>
+                className='w-1/3 border-2 border-primary/40 py-6 hover:border-primary-500/90 hover:bg-secondary/20 md:w-4/12 lg:w-1/4'>
                 {isCheckingLyrics
                   ? 'Searching...'
                   : existingLyrics

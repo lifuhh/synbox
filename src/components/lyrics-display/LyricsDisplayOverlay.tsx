@@ -218,20 +218,19 @@ function LyricsDisplayOverlay({
   )
 
   const getOverlayHeight = useMemo(
-    () =>
-      playerControlsVisible ? `calc(100% - ${bottomBarHeight}px)` : '100%',
-    [playerControlsVisible, bottomBarHeight],
+    () => (playerControlsVisible ? `calc(100% - 45px)` : '100%'),
+    [playerControlsVisible],
   )
 
   const getOverlayPosition = useMemo(() => {
     if (isLyricsDisplayBottom) {
       return playerControlsVisible
-        ? { bottom: `${bottomBarHeight}px`, top: 'auto' }
-        : { bottom: '0', top: 'auto' }
+        ? { bottom: `45px`, top: 'auto' }
+        : { bottom: '45px', top: 'auto' }
     } else {
       return { top: '0', bottom: 'auto' }
     }
-  }, [isLyricsDisplayBottom, playerControlsVisible, bottomBarHeight])
+  }, [isLyricsDisplayBottom, playerControlsVisible])
 
   //TODO: Font size multiplier testing
   const fontSizeMultiplier = useAtomValue(fontSizeMultiplierAtom)

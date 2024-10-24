@@ -133,8 +133,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             youtube: {
               playerVars: {
                 rel: 0,
-                hl: 'ja',
+                hl: 'en',
                 disablekb: 1,
+                fs: 0,
               },
             },
           }}
@@ -160,13 +161,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         />
       </ExternalLinkHandler>
 
-      {playing || videoEnded ? (
+      {/* {playing || videoEnded ? (
         <div
           className='absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-0 text-white'
           onClick={handlePlayPause}></div>
       ) : (
         ''
-      )}
+      )} */}
     </>
   )
 }

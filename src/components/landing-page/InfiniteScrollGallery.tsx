@@ -45,19 +45,19 @@ export const InfiniteScrollGallery = ({
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   return (
-    <div ref={containerRef} className={cn('overflow-auto', className)}>
-      <div className='grid grid-cols-1 py-2 pt-4 sm:grid-cols-2 lg:grid-cols-3'>
+    <div ref={containerRef} className={cn('overflow-auto px-4', className)}>
+      <div className='flex flex-wrap py-2 pt-4'>
         {items.map((item, idx) => (
           <div
             key={item?.videoId}
-            className='group relative block h-full w-full cursor-pointer p-2'
+            className='w-full p-3 sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4'
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
             onClick={handleGalleryItemClick(item?.videoId)}>
             <AnimatePresence>
               {hoveredIndex === idx && (
                 <motion.span
-                  className='absolute inset-0 block h-full w-full rounded-3xl bg-primary-500 dark:bg-dark-2/[0.8]'
+                  className='absolute inset-0 block h-full w-full rounded-xl bg-primary-500 dark:bg-dark-2/[0.8]'
                   layoutId='hoverBackground'
                   initial={{ opacity: 0 }}
                   animate={{
@@ -71,38 +71,24 @@ export const InfiniteScrollGallery = ({
                 />
               )}
             </AnimatePresence>
-            <Card>
-              <CardTitle>{item.title}</CardTitle>
-              <img
-                src={item.thumbnailUrl}
-                height='1080'
-                width='1920'
-                className='h-52 w-full rounded-xl object-cover group-hover/card:shadow-xl'
-                alt='thumbnail'
-              />
+            <Card className='cursor-pointer'>
+              <CardTitle className=' mb-4  text-lg'>{item.title}</CardTitle>
+              <div className='relative overflow-hidden rounded-xl pb-[56.25%]'>
+                <div
+                  className='absolute inset-0 bg-cover bg-center'
+                  style={{ backgroundImage: `url(${item.thumbnailUrl})` }}
+                />
+              </div>
             </Card>
           </div>
         ))}
       </div>
       <div ref={observerTarget} className='h-0' />
-      {/* //* The loader when infinite gallery loads */}
       {isFetchingNextPage && (
         <div className='my-0 flex w-full min-w-full items-center justify-center'>
           <Loader color='pink' size='xl' type='dots' />
         </div>
       )}
-      {/* {!hasNextPage && (
-        <Divider
-          my='xs'
-          label={
-            <p className='unselectable text-center text-2xl font-bold text-light-2'>
-              End of Gallery
-            </p>
-          }
-          labelPosition='center'
-          className=''
-        />
-      )} */}
     </div>
   )
 }
@@ -117,12 +103,10 @@ export const Card = ({
   return (
     <div
       className={cn(
-        'playlist-item relative z-20 h-72 w-full overflow-hidden rounded-2xl border border-transparent bg-dark-4 p-2 group-hover:border-slate-700 dark:border-white/[0.2]',
+        'playlist-item relative z-20 w-full overflow-hidden rounded-xl border border-transparent bg-dark-4 p-4 transition-all hover:border-slate-700 dark:border-white/[0.2]',
         className,
       )}>
-      <div className='relative z-50'>
-        <div className='p-2'>{children}</div>
-      </div>
+      {children}
     </div>
   )
 }
@@ -138,7 +122,7 @@ export const CardTitle = memo(
       <div
         ref={containerRef}
         className={cn(
-          'marquee mb-4 font-bold tracking-wide text-zinc-100',
+          'marquee unhighlightable font-bold tracking-wide text-zinc-100',
           className,
         )}>
         <span ref={textRef} className='whitespace-nowrap'>

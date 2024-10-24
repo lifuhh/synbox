@@ -30,7 +30,7 @@ const LandingPageCharts: React.FC = () => {
           </colgroup>
           <thead>
             <tr className='bg-primary text-white'>
-              <th className='py-3 text-center' colSpan={2}>
+              <th className='unselectable py-3 text-center' colSpan={2}>
                 YouTube Charts
               </th>
             </tr>

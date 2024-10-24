@@ -15,15 +15,21 @@ import {
   translationIsEnglishAtom,
   translationVisibilityAtom,
 } from '@/context/atoms'
+import { Divider } from '@mantine/core'
+import HomeIcon from '@mui/icons-material/Home'
 import LyricsIcon from '@mui/icons-material/Lyrics'
 import TranslateIcon from '@mui/icons-material/Translate'
 import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom'
 import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop'
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const LyricsVisibilityToggleGroup: React.FC = () => {
+  const navigate = useNavigate()
+
   const [lyricsToggleValues, setLyricsToggleValues] = useState<string[]>([
+    'returnHomeButton',
     'lyrics',
     'romaji',
     'translation',
@@ -95,6 +101,10 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     setTranslationVisible(newTranslationVisible)
   }
 
+  const handleHomeButtonClick = () => {
+    navigate('/')
+  }
+
   const handleTranslationLanguageToggle = () => {
     setTranslationIsEnglish(!isTranslationEnglish)
   }
@@ -109,7 +119,11 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     }
   }
 
-  const excludedButtons = ['translationLanguage', 'lyricsPosition']
+  const excludedButtons = [
+    'translationLanguage',
+    'lyricsPosition',
+    'returnHomeButton',
+  ]
 
   const getButtonStyle = (buttonId: string) => {
     const isHovered = hoveredButton === buttonId
@@ -125,6 +139,8 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
 
   const [lyricsControlVisible] = useAtom(lyricsControlVisibilityAtom)
 
+  console.log('lyricsCOntroLVisible is ', lyricsControlVisible)
+
   if (!lyricsControlVisible) {
     return null
   }
@@ -137,6 +153,21 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
           value={lyricsToggleValues}
           onValueChange={handleLyricsToggle}
           className='flex flex-col space-y-2'>
+          {/* //? Home Page Button */}
+          <ToggleGroupItem
+            value='returnHomeButton'
+            onClick={handleHomeButtonClick}
+            variant='default'
+            aria-label='Toggle translation language'
+            className='invisible-ring h-10 w-10 rounded-lg bg-primary text-white'
+            onMouseEnter={() => handleButtonHover('returnHomeButton')}
+            onMouseLeave={() => handleButtonLeave('returnHomeButton')}
+            data-tooltip-id='returnHomeButton'
+            style={getButtonStyle('returnHomeButton')}>
+            <HomeIcon sx={{ fontSize: 24 }} />
+            <span className='sr-only'>Return Home</span>
+          </ToggleGroupItem>
+          <Divider my='sm' size='sm' className='w-full border-primary' />
           <Tooltip>
             <TooltipTrigger asChild>
               <ToggleGroupItem
@@ -150,7 +181,7 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
                 data-tooltip-id='translationLanguage'
                 style={getButtonStyle('translationLanguage')}>
                 {isTranslationEnglish ? (
-                  <h1 className='text-xl'>Aa</h1>
+                  <h1 className='text-xl'>EN</h1>
                 ) : (
                   <h1 className='text-xl font-extrabold'>中</h1>
                 )}

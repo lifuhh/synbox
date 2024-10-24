@@ -100,7 +100,7 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
           <DropdownMenuTrigger asChild>
             <TooltipTrigger asChild>
               <Button
-                variant='outline'
+                variant='secondary'
                 size='icon'
                 className={`border-primary hover:border-white ${buttonVisibility}`}>
                 <BookmarksIcon className='h-6 w-6' />

@@ -21,7 +21,7 @@ const FloatingGlobalVisibilityToggle = () => {
   )
   const lyricsControlVisible = useAtomValue(lyricsControlVisibilityAtom)
 
-  // Determine if the button should be visible
+  // Determine if the eye button should be visible
   const isButtonVisible =
     !globalControlsVisible || (lyricsControlVisible && playerControlsVisible)
 

@@ -112,6 +112,7 @@ const PlayerBottomBar = ({
   useEffect(() => {
     if (bottomBarRef.current && setBottomBarHeight) {
       setBottomBarHeight(bottomBarRef.current.offsetHeight)
+      console.log('bottom bar height is: ', bottomBarRef.current.offsetHeight)
     }
   }, [bottomBarRef, setBottomBarHeight])
 

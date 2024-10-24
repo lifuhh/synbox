@@ -2,7 +2,6 @@ import HeroGenerateLyricsSection from '@/components/generate-lyrics/HeroGenerate
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import HoverTranslateText from '@/components/landing-page/HoverTranslateText'
 import LandingPageCharts from '@/components/landing-page/PopularSongsTable'
-import PricingTable from '@/components/landing-page/PricingTable'
 import SongHighlightCarousel from '@/components/landing-page/SongHighlightCarousel'
 import SongsInfiniteGallery from '@/components/landing-page/SongsInfiniteGallery'
 import { Helmet } from 'react-helmet-async'
@@ -31,8 +30,9 @@ const LandingPage = () => {
       <Divider
         my='xs'
         label={
-          <h1 className='font_noto_sans_jp_black_900 text-2xl font-bold text-light-2'>
-            おすすめ
+          <h1 className='font_noto_sans_jp_black_900 unselectable text-2xl font-bold text-light-2'>
+            {/* おすすめ */}
+            Recommendations
           </h1>
         }
         labelPosition='center'
