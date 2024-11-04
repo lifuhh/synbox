@@ -63,13 +63,13 @@ export const InfiniteScrollGallery = ({
                 <motion.span
                   className='absolute inset-0 block h-full w-full rounded-xl bg-primary/40'
                   layoutId='hoverBackground'
-                  initial={{ opacity: 0.4 }}
+                  initial={{ opacity: 0 }}
                   animate={{
-                    opacity: 0.5,
+                    opacity: 1,
                     transition: { duration: 0.08 },
                   }}
                   exit={{
-                    opacity: 0.2,
+                    opacity: 0,
                     transition: { duration: 0.08, delay: 20 },
                   }}
                 />

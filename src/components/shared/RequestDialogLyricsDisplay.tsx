@@ -154,7 +154,7 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
         )}
         {isAiGenerated ? (
           <p className='mt-2 text-sm text-yellow-600'>
-            Lyrics are AI-generated, please edit to remove hallucinated lines if
+            Lyrics are AI-transcribed, please edit to remove hallucinated lines if
             necessary.
           </p>
         ) : (

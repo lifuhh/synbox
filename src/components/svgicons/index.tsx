@@ -2,13 +2,13 @@ export const SynboxLogo: React.FC = () => {
   return (
     <img
       src='/assets/icons/Synbox_logo_dark_1.svg'
-      className='pointer-events-none mt-2 h-16 w-auto'
+      className='h-18 pointer-events-none w-auto py-4'
     />
   )
 }
 
 export const GithubLogo: React.FC = () => {
-  return <img src='/assets/icons/github.svg' className='h-16 w-auto' />
+  return <img src='/assets/icons/github.svg' className='h-18 w-auto' />
 }
 
 export const GitHubIcon = ({ className, ...props }) => (

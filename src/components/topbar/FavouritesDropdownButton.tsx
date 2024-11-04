@@ -104,12 +104,12 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
                 size='icon'
                 className={`invisible-ring border-primary hover:border-white ${buttonVisibility}`}>
                 <BookmarksIcon className='h-6 w-6' />
-                <span className='sr-only'>Toggle Bookmarks</span>
+                <span className='sr-only'>View Bookmarks</span>
               </Button>
             </TooltipTrigger>
           </DropdownMenuTrigger>
-          <TooltipContent>
-            <p>My Bookmarks</p>
+          <TooltipContent className='unhighlightable border-none bg-accent'>
+            {'View Bookmarks'}
           </TooltipContent>
         </Tooltip>
         <DropdownMenuContent

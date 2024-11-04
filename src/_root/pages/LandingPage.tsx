@@ -27,7 +27,7 @@ const LandingPage = () => {
       /> */}
       {/* //TODO: Figure out how to do the mouseover to reveal different text */}
       <Divider
-        my='xs'
+        my='sm'
         label={
           <h1 className='font_noto_sans_jp_black_900 unselectable text-2xl font-bold text-white'>
             {/* おすすめ */}
@@ -35,7 +35,7 @@ const LandingPage = () => {
           </h1>
         }
         labelPosition='center'
-        className='px-8 pb-4 pt-2'
+        className='px-8 pb-6 pt-2'
       />
       <section className='mx-auto flex w-full flex-col justify-center gap-4 lg:flex-row '>
         {/* //? Song Carousel */}

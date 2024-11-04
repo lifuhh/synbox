@@ -86,6 +86,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   useEffect(() => {
     if (muted && !playing && !playerOverlayVisible && !isInitialized) {
       playerOverlayVisibleHandler.open()
+    } else if (!muted) {
+      playerOverlayVisibleHandler.close()
     }
   }, [
     muted,
@@ -103,11 +105,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (!playerRef.current) return
 
     if (playerRef.current.getInternalPlayer()) {
-      setMuted(playerRef.current.getInternalPlayer().isMuted())
+      const isMuted = playerRef.current.getInternalPlayer().isMuted()
+      setMuted(isMuted)
       setIsPlayerReady(true)
       setIsInitialized(true)
+
+      // Auto-start if not muted
+      if (!isMuted) {
+        handlePlay()
+      }
     }
   }
+
   const handleVideoEnded = () => {
     handleEnded()
     setVideoEnded(playing)
@@ -120,9 +129,19 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         zIndex={40}
         overlayProps={{ radius: 'sm', blur: 15 }}
         loaderProps={{
+          // Remove the default spinner
           children: (
             <PlayerMutedOverlay handleInitMutedPlay={handleInitMutedPlay} />
           ),
+          style: { width: '100%', height: '100%' },
+        }}
+        styles={{
+          root: { position: 'relative', height: '100%', width: '100%' },
+          loader: {
+            width: '100%',
+            height: '100%',
+            '& > *': { width: '100%', height: '100%' },
+          },
         }}
       />
       <ExternalLinkHandler>

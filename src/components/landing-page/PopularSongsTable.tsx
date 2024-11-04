@@ -12,7 +12,7 @@ const LandingPageCharts: React.FC = () => {
     useGetChartsPlaylist()
 
   const handleRowClick = (videoId: string) => () => {
-    navigate(`/v/${videoId}`, { state: { videoId: videoId } })
+    navigate(`/v/${videoId}`)
   }
 
   // Calculate the height for 6 items

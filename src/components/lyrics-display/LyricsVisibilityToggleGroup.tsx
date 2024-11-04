@@ -7,6 +7,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded'
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
+
 import {
   fontSizeMultiplierAtomWithPersistence,
   lyricsControlVisibilityAtom,
@@ -75,6 +79,13 @@ const LyricsVisibilityToggleGroup = () => {
     setLyricsControlVisible(true) // Ensure controls remain visible when drawer is open
   }
 
+  //TODO: Add functionality
+  const handleShare = () => {
+    //
+  }
+
+  const handleBookmark = () => {}
+
   useEffect(() => {
     setLyricsToggleValues(
       ['lyrics', 'romaji', 'translation'].filter((value) => {
@@ -119,6 +130,8 @@ const LyricsVisibilityToggleGroup = () => {
     'translationLanguage',
     'lyricsPosition',
     'returnHomeButton',
+    'shareButton',
+    'bookmarkButton',
   ]
 
   const getButtonStyle = (buttonId) => {
@@ -147,15 +160,27 @@ const LyricsVisibilityToggleGroup = () => {
                 value={lyricsToggleValues}
                 onValueChange={handleLyricsToggle}
                 className='flex flex-col space-y-2'>
-                <ToggleGroupItem
-                  value='returnHomeButton'
-                  onClick={handleHomeButtonClick}
-                  variant='default'
-                  aria-label='Return home'
-                  className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                  style={getButtonStyle('returnHomeButton')}>
-                  <HomeIcon sx={{ fontSize: 24 }} />
-                </ToggleGroupItem>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem
+                      value='returnHomeButton'
+                      onClick={handleHomeButtonClick}
+                      variant='default'
+                      aria-label='Return home'
+                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                      style={getButtonStyle('returnHomeButton')}>
+                      <HomeIcon sx={{ fontSize: 24 }} />
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side='right'
+                    align='start'
+                    sideOffset={6}
+                    alignOffset={-4}
+                    className='unhighlightable border-none bg-primary'>
+                    {'Return to Home Page'}
+                  </TooltipContent>
+                </Tooltip>
 
                 <Divider size='sm' className='w-full border-primary' />
 
@@ -179,7 +204,7 @@ const LyricsVisibilityToggleGroup = () => {
                     side='right'
                     align='start'
                     sideOffset={6}
-                    alignOffset={-2}
+                    alignOffset={-4}
                     className='unhighlightable border-none bg-primary'>
                     {isTranslationEnglish
                       ? 'View Chinese Translations'
@@ -201,7 +226,7 @@ const LyricsVisibilityToggleGroup = () => {
                     side='right'
                     align='start'
                     sideOffset={6}
-                    alignOffset={-2}
+                    alignOffset={-4}
                     className='unhighlightable border-none bg-primary'>
                     {isTranslationVisible
                       ? 'Hide Translations'
@@ -223,7 +248,7 @@ const LyricsVisibilityToggleGroup = () => {
                     side='right'
                     align='start'
                     sideOffset={6}
-                    alignOffset={-2}
+                    alignOffset={-4}
                     className='unhighlightable border-none bg-primary'>
                     {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
                   </TooltipContent>
@@ -243,7 +268,7 @@ const LyricsVisibilityToggleGroup = () => {
                     side='right'
                     align='start'
                     sideOffset={6}
-                    alignOffset={-2}
+                    alignOffset={-4}
                     className='unhighlightable border-none bg-primary'>
                     {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
                   </TooltipContent>
@@ -269,7 +294,7 @@ const LyricsVisibilityToggleGroup = () => {
                     side='right'
                     align='start'
                     sideOffset={6}
-                    alignOffset={-2}
+                    alignOffset={-4}
                     className='unhighlightable border-none bg-primary'>
                     {isLyricsDisplayBottom
                       ? 'Align Lyrics Top'
@@ -278,22 +303,60 @@ const LyricsVisibilityToggleGroup = () => {
                 </Tooltip>
 
                 <Divider size='sm' className='w-full border-primary' />
-
-                <ToggleGroupItem
-                  value='returnHomeButton'
-                  onClick={handleHomeButtonClick}
-                  variant='default'
-                  aria-label='Return home'
-                  className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                  style={getButtonStyle('returnHomeButton')}>
-                  <ReplyIcon
-                    sx={{
-                      fontSize: 24,
-                      transform: 'scaleX(-1) rotate(0deg)',
-                      transformOrigin: 'center',
-                    }}
-                  />
-                </ToggleGroupItem>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem
+                      value='bookmarkButton'
+                      onClick={handleShare}
+                      variant='default'
+                      aria-label='Return home'
+                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                      style={getButtonStyle('bookmarkButton')}>
+                      <BookmarkBorderIcon
+                        sx={{
+                          fontSize: 24,
+                          transform: 'scaleX(-1) rotate(0deg)',
+                          transformOrigin: 'center',
+                        }}
+                      />
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side='right'
+                    align='start'
+                    sideOffset={6}
+                    alignOffset={-4}
+                    className='unhighlightable border-none bg-primary'>
+                    {'Add to Favourites'}
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem
+                      value='shareButton'
+                      onClick={handleBookmark}
+                      variant='default'
+                      aria-label='Return home'
+                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                      style={getButtonStyle('shareButton')}>
+                      <ReplyIcon
+                        sx={{
+                          fontSize: 24,
+                          transform: 'scaleX(-1) rotate(0deg)',
+                          transformOrigin: 'center',
+                        }}
+                      />
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side='right'
+                    align='start'
+                    sideOffset={6}
+                    alignOffset={-4}
+                    className='unhighlightable border-none bg-primary'>
+                    {'Copy URL'}
+                  </TooltipContent>
+                </Tooltip>
               </ToggleGroup>
             </div>
           </TooltipProvider>
@@ -304,9 +367,9 @@ const LyricsVisibilityToggleGroup = () => {
           </span>
           <Slider
             className='V cursor-pointer rounded-lg'
-            min={0.7}
+            min={0.4}
             max={1.6}
-            step={0.03}
+            step={0.01}
             value={[fontSizeMultiplier]}
             onValueChange={handleFontSizeChange}
             orientation='vertical'
@@ -321,7 +384,7 @@ const LyricsVisibilityToggleGroup = () => {
           onClick={handleToggleDrawer}
           className='ml-1 h-10 w-10 transition-transform duration-300 hover:scale-110 hover:bg-transparent hover:outline-primary'>
           <KeyboardDoubleArrowUpIcon
-            className={`stroke-primary-foreground transform stroke-1 transition-transform duration-300 hover:stroke-primary ${
+            className={`transform stroke-primary stroke-1 transition-transform duration-300 ${
               isOpen ? '-rotate-90' : 'rotate-90'
             }`}
           />

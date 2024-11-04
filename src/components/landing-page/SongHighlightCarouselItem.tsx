@@ -85,7 +85,7 @@ videoId
     <div style={{ opacity }} className=' scale-75'>
       <div style={cardStyle}>
         <CardContainer>
-          <CardBody className='group/card bg-popover border-accent/[0.9] relative h-auto w-[30rem] rounded-xl border p-6 transition-shadow duration-300 ease-in-out dark:hover:shadow-2xl dark:hover:shadow-primary/[0.15]'>
+          <CardBody className='group/card bg-popover relative h-auto w-[30rem] rounded-xl border border-accent p-6 transition-shadow duration-300 ease-in-out dark:hover:shadow-2xl dark:hover:shadow-primary/[0.15]'>
             <CardItem
               translateZ='50'
               as='button'

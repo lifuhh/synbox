@@ -20,32 +20,36 @@ const PlayerMutedOverlay = ({
   return (
     <div
       onClick={isInitializing ? undefined : handleInitMutedPlay}
-      className={`absolute inset-0 flex h-full w-full ${
+      className={`flex h-full w-full ${
         isInitializing ? '' : 'cursor-pointer'
-      } flex-col items-center justify-center gap-4 bg-blue-500 bg-opacity-100 px-4 text-center text-white backdrop-blur-sm`}>
+      } flex-col items-center justify-center bg-black/30 backdrop-blur-sm`}>
       {isInitializing ? (
-        <div className='unselectable flex items-center gap-2'>
-          <LoaderIcon className='h-10 w-10 animate-spin' />
-          <Text className='text-xl font-medium'>Initializing...</Text>
+        <div className='flex items-center gap-2 rounded-lg  p-4'>
+          <LoaderIcon className='h-10 w-10 animate-spin text-white' />
+          <Text className='text-xl font-medium text-white [text-shadow:0_1px_1px_rgba(0,0,0,0.8)]'>
+            Initializing...
+          </Text>
         </div>
       ) : (
-        <div className='flex-center unhighlightable flex h-full w-full flex-col items-center justify-center'>
-          <div className='flex flex-col items-center justify-center'>
+        <div className='flex flex-col items-center justify-center'>
+          <div className='rounded-xl p-8'>
             <PlayCircleFilledIcon
-              className='transition-transform duration-200'
+              className='transition-transform duration-200 hover:scale-105'
               sx={{
-                width: '104px', // or whatever size you want
-                height: '104px', // or whatever size you want
+                width: '104px',
+                height: '104px',
                 color: 'white',
-                opacity: 0.85,
+                opacity: 0.95,
                 '&:hover': {
                   opacity: 1,
                 },
               }}
             />
-            <div className='mx-auto mt-4 flex w-48 items-center justify-center gap-2 align-middle'>
-              <CheckIcon className='h-8 w-8 animate-pulse' />
-              <Text className='text-xl font-medium'>Ready!</Text>
+            <div className='mx-auto mt-4 flex items-center justify-center gap-2'>
+              <CheckIcon className='h-8 w-8 animate-pulse text-white' />
+              <Text className='text-xl font-medium text-white [text-shadow:0_1px_1px_rgba(0,0,0,0.8)]'>
+                Ready!
+              </Text>
             </div>
           </div>
         </div>

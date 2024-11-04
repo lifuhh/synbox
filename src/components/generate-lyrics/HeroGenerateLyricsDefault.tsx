@@ -153,7 +153,7 @@ const HeroGenerateLyricsDefault = ({
                 }
                 variant='default'
                 role='combobox'
-                className='w-1/3 border-2 border-primary/40 py-6 hover:border-primary-500/90 hover:bg-secondary/20 md:w-4/12 lg:w-1/4'>
+                className='w-1/3 border-2 border-primary/40 py-6 md:w-4/12 lg:w-1/4'>
                 {isCheckingLyrics
                   ? 'Searching...'
                   : existingLyrics
@@ -170,9 +170,9 @@ const HeroGenerateLyricsDefault = ({
 
         {/* Display error message or success message */}
 
-        <p className='lg:w-7/10 no-select mx-auto mt-4 text-center text-base font-normal text-neutral-300'>
+        <p className='lg:w-7/10 no-select mx-auto mt-4 text-center text-base font-normal text-neutral-300 lg:mt-0'>
           Transform YouTube videos into your personalized Japanese karaoke
-          stage, with AI-generated, accurately synced lyrics and translations.
+          stage, with AI-transcribed, accurately synced lyrics and translations.
         </p>
       </div>
     </div>

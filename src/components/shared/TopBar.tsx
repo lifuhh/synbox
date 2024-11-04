@@ -10,6 +10,7 @@ import { useAppContext } from '@/context/AppContext'
 import { fullscreenAtom } from '@/context/atoms'
 import { useAtomValue } from 'jotai'
 import FavouritesDropdownButton from '../topbar/FavouritesDropdownButton'
+import HistoryDropdownButton from '../topbar/HistoryDropdownButton'
 import ProfileButton from '../topbar/ProfileButton'
 
 const TopBar = () => {
@@ -60,6 +61,7 @@ const TopBar = () => {
             <span className='sr-only'>GitHub Button</span>
           </Button> */}
           <FavouritesDropdownButton buttonVisibility={playerControlsVisible} />
+          <HistoryDropdownButton buttonVisibility={playerControlsVisible} />
           {!isVideoPlayer && <ProfileButton />}
         </div>
       </nav>

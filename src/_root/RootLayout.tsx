@@ -44,9 +44,9 @@ const RootLayout: React.FC = () => {
 
       {/* Main content */}
       <div
-        className={`relative h-screen w-full ${shouldHideCursor ? 'cursor-none' : ''}`}>
+        className={`bg-muted/20 relative h-screen w-full ${shouldHideCursor ? 'cursor-none' : ''}`}>
         {!isFullscreen && <TopBar />}
-        <section className='-my-14 flex h-full flex-1 bg-background/20'>
+        <section className=' bg-muted/20 -my-14 flex h-full flex-1'>
           <Outlet />
         </section>
       </div>

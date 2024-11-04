@@ -32,7 +32,7 @@ const Slider = React.forwardRef<
         )}
       />
     </SliderPrimitive.Track>
-    <SliderPrimitive.Thumb className='focus-visible:ring-ring block h-5 w-5 rounded-full border-2 border-off-white bg-primary ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50' />
+    <SliderPrimitive.Thumb className='ring-offset-accent-foreground border-border block h-5 w-5 rounded-full border-2 bg-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50' />
   </SliderPrimitive.Root>
 ))
 Slider.displayName = SliderPrimitive.Root.displayName
