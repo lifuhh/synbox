@@ -100,7 +100,10 @@ const HeroGenerateLyricsDefault = ({
 
   return (
     <div className='items-top bg-grid-white/[0.90] relative flex w-full overflow-hidden rounded-md bg-dark-1/[0.15] pt-10 antialiased md:h-[25rem]  md:justify-center'>
-      <Spotlight className='-top-8 left-10 md:-top-20 md:left-60' fill='pink' />
+      <Spotlight
+        className='-top-8 left-10 md:-top-20 md:left-60'
+        fill='#ff8ab9'
+      />
 
       <div className='flex-between xl:flex-around z-10 mx-auto w-full max-w-7xl flex-col gap-4 p-4 lg:gap-0 xl:h-96'>
         <h1 className='no-select bg-opacity-50 bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text pb-2 text-center text-4xl font-bold text-transparent md:text-6xl lg:text-7xl'>
@@ -111,7 +114,7 @@ const HeroGenerateLyricsDefault = ({
             value={inputValue}
             onChange={handleInputChange}
             placeholder='Paste YouTube URL here'
-            className={`invisible-ring border-2  py-6 ${
+            className={`invisible-ring border-2 py-6 ${
               inputValue.length > 0
                 ? validationSuccess
                   ? 'border-green-500 hover:border-green-500 focus:border-green-500'

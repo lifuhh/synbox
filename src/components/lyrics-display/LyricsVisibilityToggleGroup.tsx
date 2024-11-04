@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
@@ -7,7 +8,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import {
-  fontSizeMultiplierAtom,
+  fontSizeMultiplierAtomWithPersistence,
   lyricsControlVisibilityAtom,
   lyricsDisplayBottomAtom,
   lyricsVisibilityAtom,
@@ -17,7 +18,9 @@ import {
 } from '@/context/atoms'
 import { Divider } from '@mantine/core'
 import HomeIcon from '@mui/icons-material/Home'
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp'
 import LyricsIcon from '@mui/icons-material/Lyrics'
+import ReplyIcon from '@mui/icons-material/Reply'
 import TranslateIcon from '@mui/icons-material/Translate'
 import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom'
 import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop'
@@ -25,10 +28,20 @@ import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const LyricsVisibilityToggleGroup: React.FC = () => {
+const LyricsVisibilityToggleGroup = () => {
   const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(true)
+  const [hoveredButton, setHoveredButton] = useState(null)
 
-  const [lyricsToggleValues, setLyricsToggleValues] = useState<string[]>([
+  const [fontSizeMultiplier, setFontSizeMultiplier] = useAtom(
+    fontSizeMultiplierAtomWithPersistence,
+  )
+
+  const [lyricsControlVisible, setLyricsControlVisible] = useAtom(
+    lyricsControlVisibilityAtom,
+  )
+
+  const [lyricsToggleValues, setLyricsToggleValues] = useState([
     'returnHomeButton',
     'lyrics',
     'romaji',
@@ -36,19 +49,6 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     'translationLanguage',
     'lyricsPosition',
   ])
-
-  // const userInteractedWithSettings = useAtomValue(
-  //   userInteractedWithSettingsAtom,
-  // )
-
-  const [fontSizeMultiplier, setFontSizeMultiplier] = useAtom(
-    fontSizeMultiplierAtom,
-  )
-  const handleFontSizeChange = (value: number[]) => {
-    setFontSizeMultiplier(value[0])
-  }
-
-  const [hoveredButton, setHoveredButton] = useState<string | null>(null)
 
   const [isLyricsVisible, setLyricsVisible] = useAtom(lyricsVisibilityAtom)
   const [isRomajiVisible, setRomajiVisible] = useAtom(romajiVisibilityAtom)
@@ -62,8 +62,17 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     translationIsEnglishAtom,
   )
 
+  const handleFontSizeChange = (value) => {
+    setFontSizeMultiplier(value[0])
+  }
+
   const handleLyricsPositionToggle = () => {
     setIsLyricsDisplayBottom(!isLyricsDisplayBottom)
+  }
+
+  const handleToggleDrawer = () => {
+    setIsOpen(!isOpen)
+    setLyricsControlVisible(true) // Ensure controls remain visible when drawer is open
   }
 
   useEffect(() => {
@@ -83,18 +92,15 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     )
   }, [isLyricsVisible, isRomajiVisible, isTranslationVisible])
 
-  const handleLyricsToggle = (values: string[]) => {
+  const handleLyricsToggle = (values) => {
     const newLyricsVisible = values.includes('lyrics')
     const newRomajiVisible = values.includes('romaji')
     const newTranslationVisible = values.includes('translation')
 
-    // If lyrics visibility is changing
     if (newLyricsVisible !== isLyricsVisible) {
       setLyricsVisible(newLyricsVisible)
-      // If lyrics are being turned on or off, sync romaji
       setRomajiVisible(newLyricsVisible)
     } else {
-      // If lyrics visibility isn't changing, update romaji independently
       setRomajiVisible(newRomajiVisible)
     }
 
@@ -109,23 +115,13 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     setTranslationIsEnglish(!isTranslationEnglish)
   }
 
-  const handleButtonHover = (buttonId: string) => {
-    setHoveredButton(buttonId)
-  }
-
-  const handleButtonLeave = (buttonId: string) => {
-    if (!document.querySelector(`:hover > [data-tooltip-id="${buttonId}"]`)) {
-      setHoveredButton(null)
-    }
-  }
-
   const excludedButtons = [
     'translationLanguage',
     'lyricsPosition',
     'returnHomeButton',
   ]
 
-  const getButtonStyle = (buttonId: string) => {
+  const getButtonStyle = (buttonId) => {
     const isHovered = hoveredButton === buttonId
     const isActive = lyricsToggleValues.includes(buttonId)
     const isExcludedButton = excludedButtons.includes(buttonId)
@@ -137,209 +133,180 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
     }
   }
 
-  const [lyricsControlVisible] = useAtom(lyricsControlVisibilityAtom)
-
-  console.log('lyricsCOntroLVisible is ', lyricsControlVisible)
-
-  if (!lyricsControlVisible) {
-    return null
-  }
-
   return (
-    <TooltipProvider delayDuration={190}>
-      <div className='fixed left-4 top-1/2 flex -translate-y-1/2 transform items-center space-x-4 transition-opacity duration-200'>
-        <ToggleGroup
-          type='multiple'
-          value={lyricsToggleValues}
-          onValueChange={handleLyricsToggle}
-          className='flex flex-col space-y-2'>
-          {/* //? Home Page Button */}
-          <ToggleGroupItem
-            value='returnHomeButton'
-            onClick={handleHomeButtonClick}
-            variant='default'
-            aria-label='Toggle translation language'
-            className='invisible-ring h-10 w-10 rounded-lg bg-primary text-white'
-            onMouseEnter={() => handleButtonHover('returnHomeButton')}
-            onMouseLeave={() => handleButtonLeave('returnHomeButton')}
-            data-tooltip-id='returnHomeButton'
-            style={getButtonStyle('returnHomeButton')}>
-            <HomeIcon sx={{ fontSize: 24 }} />
-            <span className='sr-only'>Return Home</span>
-          </ToggleGroupItem>
-          <Divider my='sm' size='sm' className='w-full border-primary' />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ToggleGroupItem
-                value='translationLanguage'
-                onClick={handleTranslationLanguageToggle}
-                variant='default'
-                aria-label='Toggle translation language'
-                className='invisible-ring h-10 w-10 rounded-lg bg-primary text-white'
-                onMouseEnter={() => handleButtonHover('translationLanguage')}
-                onMouseLeave={() => handleButtonLeave('translationLanguage')}
-                data-tooltip-id='translationLanguage'
-                style={getButtonStyle('translationLanguage')}>
-                {isTranslationEnglish ? (
-                  <h1 className='text-xl'>EN</h1>
-                ) : (
-                  <h1 className='text-xl font-extrabold'>中</h1>
-                )}
-                <span className='unselectable sr-only'>
-                  {isTranslationEnglish
-                    ? 'View Chinese Translations'
-                    : 'View English Translations'}
-                </span>
-              </ToggleGroupItem>
-            </TooltipTrigger>
-            <TooltipContent
-              side='right'
-              align='start'
-              sideOffset={6}
-              alignOffset={-2}
-              className='unhighlightable border-none bg-primary'
-              onMouseEnter={() => handleButtonHover('translationLanguage')}
-              onMouseLeave={() => handleButtonLeave('translationLanguage')}>
-              {isTranslationEnglish
-                ? 'View Chinese Translations'
-                : 'View English Translations'}
-            </TooltipContent>
-          </Tooltip>
+    <div className='fixed left-0 top-1/2 z-50 -translate-y-1/2 transform'>
+      <div
+        className={`flex transform items-center transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-x-0' : '-translate-x-[calc(100%-2.5rem)]'
+        }`}>
+        <div className='flex items-center space-x-4  p-4'>
+          <TooltipProvider delayDuration={190}>
+            <div className='flex cursor-pointer flex-col space-y-4'>
+              <ToggleGroup
+                type='multiple'
+                value={lyricsToggleValues}
+                onValueChange={handleLyricsToggle}
+                className='flex flex-col space-y-2'>
+                <ToggleGroupItem
+                  value='returnHomeButton'
+                  onClick={handleHomeButtonClick}
+                  variant='default'
+                  aria-label='Return home'
+                  className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                  style={getButtonStyle('returnHomeButton')}>
+                  <HomeIcon sx={{ fontSize: 24 }} />
+                </ToggleGroupItem>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ToggleGroupItem
-                value='translation'
-                aria-label='Toggle translation'
-                className='invisible-ring h-10 w-10 rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10 data-[state=off]:bg-opacity-10'
-                onMouseEnter={() => handleButtonHover('translation')}
-                onMouseLeave={() => handleButtonLeave('translation')}
-                data-tooltip-id='translation'
-                style={getButtonStyle('translation')}>
-                <TranslateIcon sx={{ fontSize: 24 }} />
-                <span className='sr-only'>
-                  {' '}
-                  {isTranslationVisible
-                    ? 'Hide Translations'
-                    : 'Show Translations'}
-                </span>
-              </ToggleGroupItem>
-            </TooltipTrigger>
-            <TooltipContent
-              hideWhenDetached={true}
-              side='right'
-              align='start'
-              sideOffset={6}
-              alignOffset={-2}
-              onMouseEnter={() => handleButtonHover('translation')}
-              onMouseLeave={() => handleButtonLeave('translation')}
-              className='unhighlightable border-none bg-primary'>
-              {isTranslationVisible ? 'Hide Translations' : 'Show Translations'}
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ToggleGroupItem
-                value='lyrics'
-                aria-label='Toggle lyrics'
-                className='invisible-ring h-10 w-10 rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10 data-[state=off]:bg-opacity-10'
-                onMouseEnter={() => handleButtonHover('lyrics')}
-                onMouseLeave={() => handleButtonLeave('lyrics')}
-                data-tooltip-id='lyrics'
-                style={getButtonStyle('lyrics')}>
-                <LyricsIcon sx={{ fontSize: 24 }} />
-                <span className='sr-only'>
-                  {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
-                </span>
-              </ToggleGroupItem>
-            </TooltipTrigger>
-            <TooltipContent
-              side='right'
-              align='start'
-              sideOffset={6}
-              onMouseEnter={() => handleButtonHover('lyrics')}
-              onMouseLeave={() => handleButtonLeave('lyrics')}
-              alignOffset={-2}
-              className='unhighlightable border-none bg-primary'>
-              {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ToggleGroupItem
-                value='romaji'
-                aria-label='Toggle romaji'
-                className='invisible-ring h-10 w-10 rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10 data-[state=off]:bg-opacity-10'
-                onMouseEnter={() => handleButtonHover('romaji')}
-                onMouseLeave={() => handleButtonLeave('romaji')}
-                data-tooltip-id='romaji'
-                style={getButtonStyle('romaji')}>
-                <h1 className='text-xl'>R</h1>
-                <span className='sr-only'>
-                  {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
-                </span>
-              </ToggleGroupItem>
-            </TooltipTrigger>
-            <TooltipContent
-              side='right'
-              align='start'
-              onMouseEnter={() => handleButtonHover('romaji')}
-              onMouseLeave={() => handleButtonLeave('romaji')}
-              sideOffset={6}
-              alignOffset={-2}
-              className='unhighlightable border-none bg-primary'>
-              {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ToggleGroupItem
-                value='lyricsPosition'
-                onClick={handleLyricsPositionToggle}
-                variant='default'
-                aria-label='Toggle lyrics position'
-                className='invisible-ring h-10 w-10 rounded-lg bg-primary text-white'
-                onMouseEnter={() => handleButtonHover('lyricsPosition')}
-                onMouseLeave={() => handleButtonLeave('lyricsPosition')}
-                data-tooltip-id='lyricsPosition'
-                style={getButtonStyle('lyricsPosition')}>
-                {isLyricsDisplayBottom ? (
-                  <VerticalAlignTopIcon />
-                ) : (
-                  <VerticalAlignBottomIcon />
-                )}
-                <span className='sr-only'>
-                  {' '}
-                  {isLyricsDisplayBottom
-                    ? 'Align Lyrics Top'
-                    : 'Align Lyrics Bottom'}
-                </span>
-              </ToggleGroupItem>
-            </TooltipTrigger>
-            <TooltipContent
-              side='right'
-              align='start'
-              sideOffset={6}
-              alignOffset={-2}
-              onMouseEnter={() => handleButtonHover('lyricsPosition')}
-              onMouseLeave={() => handleButtonLeave('lyricsPosition')}
-              className='unhighlightable border-none bg-primary'>
-              {isLyricsDisplayBottom
-                ? 'Align Lyrics Top'
-                : 'Align Lyrics Bottom'}
-            </TooltipContent>
-          </Tooltip>
-        </ToggleGroup>
+                <Divider size='sm' className='w-full border-primary' />
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem
+                      value='translationLanguage'
+                      onClick={handleTranslationLanguageToggle}
+                      variant='default'
+                      aria-label='Toggle translation language'
+                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                      style={getButtonStyle('translationLanguage')}>
+                      {isTranslationEnglish ? (
+                        <h1 className='text-xl'>EN</h1>
+                      ) : (
+                        <h1 className='text-xl font-extrabold'>中</h1>
+                      )}
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side='right'
+                    align='start'
+                    sideOffset={6}
+                    alignOffset={-2}
+                    className='unhighlightable border-none bg-primary'>
+                    {isTranslationEnglish
+                      ? 'View Chinese Translations'
+                      : 'View English Translations'}
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem
+                      value='translation'
+                      aria-label='Toggle translation'
+                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
+                      style={getButtonStyle('translation')}>
+                      <TranslateIcon sx={{ fontSize: 24 }} />
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side='right'
+                    align='start'
+                    sideOffset={6}
+                    alignOffset={-2}
+                    className='unhighlightable border-none bg-primary'>
+                    {isTranslationVisible
+                      ? 'Hide Translations'
+                      : 'Show Translations'}
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem
+                      value='lyrics'
+                      aria-label='Toggle lyrics'
+                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
+                      style={getButtonStyle('lyrics')}>
+                      <LyricsIcon sx={{ fontSize: 24 }} />
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side='right'
+                    align='start'
+                    sideOffset={6}
+                    alignOffset={-2}
+                    className='unhighlightable border-none bg-primary'>
+                    {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem
+                      value='romaji'
+                      aria-label='Toggle romaji'
+                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
+                      style={getButtonStyle('romaji')}>
+                      <h1 className='text-xl'>R</h1>
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side='right'
+                    align='start'
+                    sideOffset={6}
+                    alignOffset={-2}
+                    className='unhighlightable border-none bg-primary'>
+                    {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem
+                      value='lyricsPosition'
+                      onClick={handleLyricsPositionToggle}
+                      variant='default'
+                      aria-label='Toggle lyrics position'
+                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                      style={getButtonStyle('lyricsPosition')}>
+                      {isLyricsDisplayBottom ? (
+                        <VerticalAlignTopIcon />
+                      ) : (
+                        <VerticalAlignBottomIcon />
+                      )}
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side='right'
+                    align='start'
+                    sideOffset={6}
+                    alignOffset={-2}
+                    className='unhighlightable border-none bg-primary'>
+                    {isLyricsDisplayBottom
+                      ? 'Align Lyrics Top'
+                      : 'Align Lyrics Bottom'}
+                  </TooltipContent>
+                </Tooltip>
+
+                <Divider size='sm' className='w-full border-primary' />
+
+                <ToggleGroupItem
+                  value='returnHomeButton'
+                  onClick={handleHomeButtonClick}
+                  variant='default'
+                  aria-label='Return home'
+                  className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                  style={getButtonStyle('returnHomeButton')}>
+                  <ReplyIcon
+                    sx={{
+                      fontSize: 24,
+                      transform: 'scaleX(-1) rotate(0deg)',
+                      transformOrigin: 'center',
+                    }}
+                  />
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+          </TooltipProvider>
+        </div>
         <div className='flex h-56 flex-col items-center justify-center space-y-2'>
           <span className='unselectable text-2xl font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
             A
           </span>
-
           <Slider
             className='V cursor-pointer rounded-lg'
-            min={0.5}
-            max={1}
-            step={0.01}
+            min={0.7}
+            max={1.6}
+            step={0.03}
             value={[fontSizeMultiplier]}
             onValueChange={handleFontSizeChange}
             orientation='vertical'
@@ -348,8 +315,19 @@ const LyricsVisibilityToggleGroup: React.FC = () => {
             A
           </span>
         </div>
+        {/* Toggle button */}
+        <Button
+          variant='ghost'
+          onClick={handleToggleDrawer}
+          className='ml-1 h-10 w-10 transition-transform duration-300 hover:scale-110 hover:bg-transparent hover:outline-primary'>
+          <KeyboardDoubleArrowUpIcon
+            className={`stroke-primary-foreground transform stroke-1 transition-transform duration-300 hover:stroke-primary ${
+              isOpen ? '-rotate-90' : 'rotate-90'
+            }`}
+          />
+        </Button>
       </div>
-    </TooltipProvider>
+    </div>
   )
 }
 

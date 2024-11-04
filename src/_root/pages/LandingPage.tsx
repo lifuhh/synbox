@@ -4,9 +4,8 @@ import HoverTranslateText from '@/components/landing-page/HoverTranslateText'
 import LandingPageCharts from '@/components/landing-page/PopularSongsTable'
 import SongHighlightCarousel from '@/components/landing-page/SongHighlightCarousel'
 import SongsInfiniteGallery from '@/components/landing-page/SongsInfiniteGallery'
-import { Helmet } from 'react-helmet-async'
-
 import { Divider } from '@mantine/core'
+import { Helmet } from 'react-helmet-async'
 
 const LandingPage = () => {
   return (
@@ -30,13 +29,13 @@ const LandingPage = () => {
       <Divider
         my='xs'
         label={
-          <h1 className='font_noto_sans_jp_black_900 unselectable text-2xl font-bold text-light-2'>
+          <h1 className='font_noto_sans_jp_black_900 unselectable text-2xl font-bold text-white'>
             {/* おすすめ */}
             Recommendations
           </h1>
         }
         labelPosition='center'
-        className=' p-4'
+        className='px-8 pb-4 pt-2'
       />
       <section className='mx-auto flex w-full flex-col justify-center gap-4 lg:flex-row '>
         {/* //? Song Carousel */}
@@ -62,12 +61,12 @@ const LandingPage = () => {
       <Divider
         my='xs'
         label={
-          <h1 className='unselectable text-2xl font-bold text-light-2'>
+          <h1 className='unselectable text-2xl font-bold text-white'>
             Gallery
           </h1>
         }
         labelPosition='center'
-        className='p-4'
+        className='px-8 py-2'
       />
       {/* //? Infinite Gallery */}
       <SongsInfiniteGallery />

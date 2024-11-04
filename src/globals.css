@@ -15,30 +15,28 @@
 
 @layer base {
   :root {
-    --background: 20 14.3% 4.1%;
-    --foreground: 0 0% 95%;
-    --card: 24 9.8% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 346.8 77.2% 49.8%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 346.8 77.2% 49.8%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --background: 336 50% 5%;
+    --foreground: 336 5% 90%;
+    --card: 336 50% 0%;
+    --card-foreground: 336 5% 90%;
+    --popover: 336 50% 5%;
+    --popover-foreground: 336 5% 90%;
+    --primary: 336 78% 44.5%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 336 30% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 298 30% 15%;
+    --muted-foreground: 336 5% 60%;
+    --accent: 298 30% 15%;
+    --accent-foreground: 336 5% 90%;
+    --destructive: 0 100% 30%;
+    --destructive-foreground: 336 5% 90%;
+    --border: 336 30% 18%;
+    --input: 336 30% 18%;
+    --ring: 336 78% 44.5%;
+    --primary-bright: 336, 76%, 61%;
+    --radius: 0.25rem;
+    --shadow-color: hsl(var(--primary));
   }
 
   * {
@@ -51,7 +49,7 @@
 
   body {
     @apply min-h-screen font-inter text-white;
-    background-image: url('/assets/images/triangulate.png');
+    /* background-image: url('/assets/images/triangulate.png'); */
     background-size: cover; /* Cover the entire viewport */
     background-position: center; /* Center the image in the viewport */
     background-repeat: no-repeat; /* Do not repeat the image */
@@ -71,6 +69,14 @@
     font-feature-settings:
       'pnum' 1,
       'lnum' 1; /* Add font features if necessary */
+  }
+
+  @font-face {
+    font-family: 'Noto Sans JP';
+    src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@900&display=swap')
+      format('woff2');
+    font-weight: 900;
+    font-display: swap;
   }
 }
 
@@ -148,20 +154,20 @@
   }
 
   .font_noto_sans_reg {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'Noto Sans', sans-serif !important;
   }
 
   .font_noto_sans_jp_reg {
-    font-family: 'Noto Sans JP', sans-serif;
+    font-family: 'Noto Sans JP', sans-serif !important;
   }
 
   .font_noto_sans_jp_black_900 {
-    font-family: 'Noto Sans JP', sans-serif;
-    font-weight: 900;
+    font-family: 'Noto Sans JP', sans-serif !important;
+    font-weight: 900 !important;
   }
 
   .font_doki_doki {
-    font-family: 'Doki Doki', sans-serif;
+    font-family: 'Doki Doki', sans-serif !important;
     color: white;
   }
 }
@@ -290,14 +296,28 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
   }
 
+  .text-comparison-glow {
+    box-shadow:
+      0 0 10px theme('colors.indigo.500'),
+      0 0 20px theme('colors.indigo.500');
+  }
+
   /* ? Used for lyrics display outline - amethyst glow */
   .font-outline-1 {
-    text-shadow: 0 0 10px var(--primary-600);
-    /* text-shadow: 0 0 10px yellow; Adjust offset as needed */
+    text-shadow: 0 0 10px var(--shadow-color);
   }
   .font-outline-4 {
-    text-shadow: 0 0 10px var(--primary-600);
-    /* text-shadow: 0 0 4px yellow; Adjust offset as needed */
+    text-shadow: 0 0 4px var(--shadow-color);
+  }
+
+  .lyric-text-line.font-outline-1 {
+    text-shadow: 0 0 10px hsl(336 78% 44.5%) !important;
+  }
+
+  /* Make the font more specific */
+  .lyric-text-line.font_noto_sans_jp_black_900 {
+    font-family: 'Noto Sans JP', sans-serif !important;
+    font-weight: 900 !important;
   }
 
   /* ? Used for spacing of kanji characters */

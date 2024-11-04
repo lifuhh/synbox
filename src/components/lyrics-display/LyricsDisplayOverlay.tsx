@@ -60,7 +60,6 @@ function LyricsDisplayOverlay({
   playerRef,
 }: LyricsDisplayOverlayProps) {
   const location = useLocation()
-  const { playerControlsVisible, bottomBarHeight } = useAppContext()
 
   const [videoId, setVideoId] = useState<string | null>(null)
   const [currentIndex, setCurrentIndex] = useState(-1)
@@ -217,20 +216,18 @@ function LyricsDisplayOverlay({
     [],
   )
 
-  const getOverlayHeight = useMemo(
-    () => (playerControlsVisible ? `calc(100% - 45px)` : '100%'),
-    [playerControlsVisible],
-  )
+  const getOverlayHeight = '100%'
 
   const getOverlayPosition = useMemo(() => {
     if (isLyricsDisplayBottom) {
-      return playerControlsVisible
-        ? { bottom: `45px`, top: 'auto' }
-        : { bottom: '45px', top: 'auto' }
+      return {
+        bottom: '0px',
+        top: '0px',
+      }
     } else {
-      return { top: '0', bottom: 'auto' }
+      return { top: '60px', bottom: '0px' }
     }
-  }, [isLyricsDisplayBottom, playerControlsVisible])
+  }, [isLyricsDisplayBottom])
 
   //TODO: Font size multiplier testing
   const fontSizeMultiplier = useAtomValue(fontSizeMultiplierAtom)
@@ -263,9 +260,9 @@ function LyricsDisplayOverlay({
         <div
           className={`${baseClass} ${typeClass} ${
             transitionRef.current.isEntering
-              ? 'fade-in'
+              ? ''
               : transitionRef.current.isExiting
-                ? 'fade-out'
+                ? ''
                 : ''
           }`}>
           {content}
@@ -331,16 +328,17 @@ function LyricsDisplayOverlay({
 
   return (
     <div
-      className='player-lyrics-overlay unselectable pointer-events-none absolute left-0 z-50 w-full'
+      className='player-lyrics-overlay unhighlightable absolute left-0 z-50 w-full'
       style={{
         ...getOverlayPosition,
         height: isLyricsDisplayBottom ? getOverlayHeight : 'auto',
         display: 'flex',
         flexDirection: isLyricsDisplayBottom ? 'column-reverse' : 'column',
+        pointerEvents: 'none',
       }}>
       <div
         className={`lyric-container flex w-full items-center justify-start ${
-          isLyricsDisplayBottom ? 'pb-2' : 'pt-2'
+          isLyricsDisplayBottom ? 'pb-0' : 'pt-4'
         }`}>
         <div
           className='flex w-full flex-col items-center'

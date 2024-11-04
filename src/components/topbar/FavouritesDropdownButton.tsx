@@ -100,9 +100,9 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
           <DropdownMenuTrigger asChild>
             <TooltipTrigger asChild>
               <Button
-                variant='secondary'
+                variant='outline'
                 size='icon'
-                className={`border-primary hover:border-white ${buttonVisibility}`}>
+                className={`invisible-ring border-primary hover:border-white ${buttonVisibility}`}>
                 <BookmarksIcon className='h-6 w-6' />
                 <span className='sr-only'>Toggle Bookmarks</span>
               </Button>
@@ -116,7 +116,7 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
           align='end'
           sideOffset={10}
           className='max-h-[600px] w-[400px] max-w-[400px] overflow-auto border border-primary bg-background/95'>
-          <DropdownMenuLabel className='m-2 mb-0 text-xl'>
+          <DropdownMenuLabel className='unselectable m-2 mb-0 text-xl'>
             Saved Songs
           </DropdownMenuLabel>
           {/* <DropdownMenuSeparator /> */}

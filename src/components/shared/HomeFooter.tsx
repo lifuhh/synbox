@@ -5,7 +5,6 @@ import { Divider } from '@mantine/core'
 export type IconProps = React.HTMLAttributes<SVGElement>
 
 const HomeFooter = () => {
-
   return (
     <div className='landing-footer flex-between bottom-0 left-0 z-50 h-14 w-full flex-col md:mt-2'>
       <div className='flex-around pb-2'>

@@ -16,10 +16,10 @@ const LandingPageCharts: React.FC = () => {
   }
 
   // Calculate the height for 6 items
-  const tableBodyHeight = 6 * 52 // Assuming each row is 52px
+  const tableBodyHeight = 6 * 55 // Assuming each row is 52px
 
   return (
-    <div className='w-full rounded-md lg:ml-6 lg:mt-2 lg:w-5/12 xl:w-4/12'>
+    <div className='w-full rounded-md border border-accent bg-transparent lg:ml-6 lg:mt-2 lg:w-5/12 xl:w-4/12'>
       <div className='relative overflow-hidden rounded-md bg-dark-3 bg-opacity-15'>
         <table
           className='w-full border-collapse'
@@ -29,7 +29,7 @@ const LandingPageCharts: React.FC = () => {
             <col style={{ width: '60px' }} />
           </colgroup>
           <thead>
-            <tr className='bg-primary text-white'>
+            <tr className='bg-primary/40 text-white'>
               <th className='unselectable py-3 text-center' colSpan={2}>
                 YouTube Charts
               </th>
@@ -72,7 +72,7 @@ const LandingPageCharts: React.FC = () => {
                     />
                   ))}
             </tbody>
-            <caption className='mb-2 mt-1 caption-bottom text-sm text-gray-500'>
+            <caption className='mb-2 mt-1 caption-bottom text-sm text-gray-300'>
               Source: Top 100 Japan YouTube
             </caption>
           </table>
@@ -131,7 +131,7 @@ const SongRow = ({ song, onPlayClick }: SongRowProps) => {
       </td>
       <td className='p-2'>
         <Button
-          variant='outline'
+          variant='link'
           size='icon'
           className='flex-shrink-0 bg-secondary'
           onClick={onPlayClick(song.vidURL)}>

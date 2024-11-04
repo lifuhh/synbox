@@ -43,7 +43,7 @@ const ProfileButtonDropdown = () => {
         <Button
           variant='outline'
           size='icon'
-          className={` border-primary hover:border-white`}>
+          className={` invisible-ring border-primary hover:border-white`}>
           <PersonIcon className='fill-white' />
           <span className='sr-only'>Toggle Profile</span>
         </Button>
@@ -51,7 +51,7 @@ const ProfileButtonDropdown = () => {
       <DropdownMenuContent
         align='end'
         sideOffset={10}
-        className='w-56 overflow-auto border-[1px] border-primary bg-dark-1 bg-opacity-95'>
+        className=' bg-popover w-56 overflow-auto border-[1px] border-primary bg-opacity-100'>
         {/* <DropdownMenuLabel className='unselectable'>
           My Account
         </DropdownMenuLabel>
@@ -81,23 +81,7 @@ const ProfileButtonDropdown = () => {
             }}>
             <AccountCircleIcon fontSize='small' className='mr-2 h-4 w-4' />
             <span>Profile</span>
-            {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
           </DropdownMenuItem>
-          {/* <DropdownMenuItem className='cursor-pointer'>
-            <BookmarksIcon fontSize='small' className='mr-2 h-4 w-4' />
-            <span>Playlist</span>
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem className='cursor-pointer'>
-            <CreditCardIcon className='mr-2 h-4 w-4' fontSize='small' />
-            <span>Billing</span>
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem className='cursor-pointer'>
-            <SettingsIcon className='mr-2 h-4 w-4' fontSize='small' />
-            <span>Settings</span>
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator className='unselectable cursor-default bg-dark-2' />
         <DropdownMenuGroup>

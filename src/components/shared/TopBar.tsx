@@ -26,6 +26,10 @@ const TopBar = () => {
   // console.log(pathname)
   // console.log(pathname.includes('/v/'))
 
+  if (isVideoPlayer) {
+    return null
+  }
+
   return (
     // <section className='topbar sticky top-0 bg'>
     <section
@@ -33,11 +37,11 @@ const TopBar = () => {
         isFullscreen ? 'hidden' : !globalControlsVisible ? 'hidden' : 'block'
       }`}>
       <nav
-        className={`flex-between h-14 w-full bg-dark-1 ${
+        className={`flex-between h-14 w-full bg-secondary/50 ${
           isVideoPlayer ? 'bg-opacity-0' : 'bg-opacity-80'
         } sm:px-4
         `}>
-        {playerControlsVisible && <AppLogo />}
+        {playerControlsVisible && !isVideoPlayer && <AppLogo />}
         {/* <div className='flex-end pb-2 justify-end lg:gap-2 w-48'>
           <AccountBoxIcon
             sx={{ fontSize: 50 }}

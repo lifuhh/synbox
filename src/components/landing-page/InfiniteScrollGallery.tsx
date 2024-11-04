@@ -33,13 +33,17 @@ export const InfiniteScrollGallery = ({
       { threshold: 0.1 },
     )
 
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current)
+    // Store the current value of the ref
+    const currentObserverTarget = observerTarget.current
+
+    if (currentObserverTarget) {
+      observer.observe(currentObserverTarget)
     }
 
     return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current)
+      // Use the stored value in cleanup
+      if (currentObserverTarget) {
+        observer.unobserve(currentObserverTarget)
       }
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
@@ -50,29 +54,29 @@ export const InfiniteScrollGallery = ({
         {items.map((item, idx) => (
           <div
             key={item?.videoId}
-            className='w-full p-3 sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4'
+            className='relative w-full p-3 sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4'
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
             onClick={handleGalleryItemClick(item?.videoId)}>
             <AnimatePresence>
               {hoveredIndex === idx && (
                 <motion.span
-                  className='absolute inset-0 block h-full w-full rounded-xl bg-primary-500 dark:bg-dark-2/[0.8]'
+                  className='absolute inset-0 block h-full w-full rounded-xl bg-primary/40'
                   layoutId='hoverBackground'
-                  initial={{ opacity: 0 }}
+                  initial={{ opacity: 0.4 }}
                   animate={{
-                    opacity: 1,
+                    opacity: 0.5,
                     transition: { duration: 0.08 },
                   }}
                   exit={{
-                    opacity: 0,
-                    transition: { duration: 0.08, delay: 0.1 },
+                    opacity: 0.2,
+                    transition: { duration: 0.08, delay: 20 },
                   }}
                 />
               )}
             </AnimatePresence>
-            <Card className='cursor-pointer'>
-              <CardTitle className=' mb-4  text-lg'>{item.title}</CardTitle>
+            <Card className='cursor-pointer bg-secondary'>
+              <CardTitle className=' mb-4 text-lg'>{item.title}</CardTitle>
               <div className='relative overflow-hidden rounded-xl pb-[56.25%]'>
                 <div
                   className='absolute inset-0 bg-cover bg-center'
@@ -103,7 +107,7 @@ export const Card = ({
   return (
     <div
       className={cn(
-        'playlist-item relative z-20 w-full overflow-hidden rounded-xl border border-transparent bg-dark-4 p-4 transition-all hover:border-slate-700 dark:border-white/[0.2]',
+        'playlist-item bg-card border-ring/20 hover:border-ring relative z-20 w-full overflow-hidden rounded-xl border p-4 transition-colors duration-500',
         className,
       )}>
       {children}

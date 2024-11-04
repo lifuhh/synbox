@@ -23,23 +23,28 @@ const LyricTextLine = ({
     return { __html: DOMPurify.sanitize(htmlContent) }
   }, [htmlContent])
 
-  const pStyle: React.CSSProperties =
-    lang === 'ja'
-      ? ({ '--kanji-spacing': kanjiSpacing } as React.CSSProperties)
-      : {}
+  const pStyle: React.CSSProperties = {
+    ...(lang === 'ja' ? { '--kanji-spacing': kanjiSpacing } : {}),
+    // Explicitly set text shadow as a fallback
+    textShadow: '0 0 10px hsl(336 78% 44.5%)',
+  } as React.CSSProperties
 
   return (
     <div
       style={divStyle}
       className={cn(
-        className,
-        { 'lyric-text-line-wrapper': useBlur }, // Conditionally apply the wrapper class
+        { 'lyric-text-line-wrapper': useBlur },
+        className, // Move user's className here
       )}>
       <p
         className={cn(
-          'lyric-text-line font-outline-1 font_noto_sans_jp_black_900 text-balance align-middle leading-normal',
-          className,
+          'lyric-text-line',
+          'font_noto_sans_jp_black_900',
+          'font-outline-1',
           'text-2vw',
+          'text-balance align-middle leading-normal',
+          // Move className to the end to allow overrides
+          className,
         )}
         style={pStyle}
         dangerouslySetInnerHTML={sanitizedHtmlContent}

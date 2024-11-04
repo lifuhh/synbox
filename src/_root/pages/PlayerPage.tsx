@@ -1,7 +1,5 @@
 import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverlay'
 import LyricsVisibilityToggleGroup from '@/components/lyrics-display/LyricsVisibilityToggleGroup'
-import { MemoizedPlayerBottomBar } from '@/components/playerbottombar/PlayerBottomBar'
-import FloatingGlobalVisibilityToggle from '@/components/shared/FloatingGlobalVisibilityToggle'
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import {
@@ -18,53 +16,76 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const PlayerPage = () => {
-  // console.log('PlayerPage re-rendered...')
+  const navigate = useNavigate()
+  const { videoId } = useParams<{ videoId: string }>()
   const { volume, playerOverlayVisibleHandler } = useAppContext()
+
+  // All useState hooks must be declared before any conditional returns
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [stateVideoId, setStateVideoId] = useState<string | null>(null)
+  const [isPlayerReady, setIsPlayerReady] = useState(false)
+  const [playing, setPlaying] = useState<boolean>(false)
+  const [seeking, setSeeking] = useState<boolean>(false)
+  const [played, setPlayed] = useState<number>(0)
+  const [loop, setLoop] = useState<boolean>(false)
+  const [duration, setDuration] = useState<number>(0)
+
+  // Refs
+  const playerRef = useRef<BaseReactPlayer<ReactPlayer> | null>(null)
+  const testRafId = useRef<number>(0)
+  const testCounter = useRef<number>(0)
+
+  // Jotai atoms
   const userInteractedWithSettings = useAtomValue(
     userInteractedWithSettingsAtom,
   )
   const [muted, setMuted] = useAtom(mutedAtom)
   const isFullscreen = useAtomValue(fullscreenAtom)
-  // const playerControlsVisible = useAtomValue(playerControlVisibilityAtom)
-
-  //* Video ID state
-  const { videoId } = useParams() // Extract videoId from route parameters
-  const [stateVideoId, setStateVideoId] = useState<string | null>(null)
-
-  //* Video Player state
-  const [isPlayerReady, setIsPlayerReady] = useState(false)
-  const [playing, setPlaying] = useState<boolean>(muted ? false : true)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [seeking, setSeeking] = useState<boolean>(false)
-  const [played, setPlayed] = useState<number>(0)
-  // const [loaded, setLoaded] = useState<number>(0)
-  const [loop, setLoop] = useState<boolean>(false)
-  const [duration, setDuration] = useState<number>(0)
-  const playerRef = useRef<BaseReactPlayer<ReactPlayer> | null>(null)
-
-  const testRafId = useRef<number>(0)
-  const testCounter = useRef<number>(0)
-
-  //* Lyrics-display related state
   const [lyricsVisibility, setLyricsVisibility] = useAtom(lyricsVisibilityAtom)
   const [romajiVisibility, setRomajiVisibility] = useAtom(romajiVisibilityAtom)
   const [translationVisibility, setTranslationVisibility] = useAtom(
     translationVisibilityAtom,
   )
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [lyricsControlVisibility, setLyricsControlVisibility] = useAtom(
     lyricsControlVisibilityAtom,
   )
 
-  //? Handler for lyrics overlay changes
+  // Initial validation effect
+  useEffect(() => {
+    if (!videoId) {
+      navigate('/', { replace: true })
+      return
+    }
+
+    const initializePlayer = async () => {
+      try {
+        setIsLoading(true)
+
+        if (!videoId.match(/^[a-zA-Z0-9_-]{11}$/)) {
+          throw new Error('Invalid video ID format')
+        }
+
+        setStateVideoId(videoId)
+        setError(null)
+      } catch (err) {
+        console.error('Error initializing player:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load video')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    initializePlayer()
+  }, [videoId, navigate])
+
+  // Your existing callback functions
   const handleToggleLyricsOverlayVisibility = useCallback(() => {
     const someOn = lyricsVisibility || romajiVisibility || translationVisibility
-
     const newState = !someOn
-
     setLyricsVisibility(newState)
     setRomajiVisibility(newState)
     setTranslationVisibility(newState)
@@ -89,21 +110,6 @@ const PlayerPage = () => {
     setLyricsVisibility((prev) => !prev)
   }, [setLyricsVisibility])
 
-  //TODO: wrong - fix this
-  useEffect(() => {
-    if (videoId) setStateVideoId(videoId)
-  }, [videoId])
-
-  useEffect(() => {
-    if (!lyricsControlVisibility) setLyricsControlVisibility(true)
-  }, [lyricsControlVisibility, setLyricsControlVisibility])
-
-  // const load = (vidId: string) => {
-  //   setStateVideoId(vidId)
-  //   setPlayed(0)
-  //   setLoaded(0)
-  // }
-
   const handlePause = useCallback(() => {
     setPlaying(false)
     if (!userInteractedWithSettings) {
@@ -119,19 +125,15 @@ const PlayerPage = () => {
     }
   }, [playing, setLyricsControlVisibility, userInteractedWithSettings])
 
-  //* Used for youtube player's native interactions, replicate everything in handleplaypause here as well
   const handlePlay = useCallback(() => {
     setPlaying(true)
-    // playerOverlayVisibleHandler.close()
     if (muted) setMuted(false)
     if (!userInteractedWithSettings) {
       setLyricsControlVisibility(false)
     }
-    // setTestStartTime(performance.now())
   }, [muted, setMuted, setLyricsControlVisibility, userInteractedWithSettings])
 
   const handleInitMutedPlay = useCallback(() => {
-    // console.log('Init Muted Play clicked')
     setMuted(false)
     playerOverlayVisibleHandler.close()
     handlePlay()
@@ -147,46 +149,16 @@ const PlayerPage = () => {
   ])
 
   const handleToggleLoop = useCallback(() => {
-    setLoop(!loop)
-  }, [loop]) // Add dependencies if any
-
-  //? `requestAnimationFrame` tester - to change to use accordingly for lyrics
-  useEffect(() => {
-    //! RAF gives a timestamp actually
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const testAnimationFrameCallback = (timestamp: number) => {
-      // console.log(timestamp)
-      testCounter.current++
-      if (playerRef.current) {
-        //? Test code for getting current time every 60 frames in console
-        // const videoPlayedTime = playerRef.current.getCurrentTime().toFixed(3)
-        // if (testCounter.current % 60 === 0) console.log({ videoPlayedTime })
-
-        testRafId.current = requestAnimationFrame(testAnimationFrameCallback)
-      }
-    }
-
-    if (playing) {
-      testRafId.current = requestAnimationFrame(testAnimationFrameCallback)
-    } else {
-      cancelAnimationFrame(testRafId.current)
-    }
-
-    return () => {
-      cancelAnimationFrame(testRafId.current)
-    }
-  }, [playing])
+    setLoop((prev) => !prev)
+  }, [])
 
   const handleStart = useCallback(() => {
-    // console.log('video started playing')
     setPlaying(true)
-    // console.log(performance.now())
   }, [])
 
   const handleSeekChange = useCallback(
     (value: number) => {
       const newPlayedTime = parseInt((value * duration).toFixed(0))
-
       setPlayed(newPlayedTime)
       if (playerRef.current) {
         playerRef.current.seekTo(newPlayedTime)
@@ -196,7 +168,6 @@ const PlayerPage = () => {
   )
 
   const handleSeekMouseDown = useCallback(() => {
-    // Implementation for seeking if needed
     setSeeking(true)
   }, [])
 
@@ -212,27 +183,40 @@ const PlayerPage = () => {
 
   const handleProgress = useCallback(() => {
     if (!playerRef.current) return null
-
     const secondsLapsed = playerRef.current.getCurrentTime()
-    //? This fires every second
     const curPlayed = Math.floor(parseInt(secondsLapsed.toFixed(0)))
-
     setPlayed(curPlayed)
-    // setLoaded(loaded)
   }, [])
 
-  //* When ended, go to next track [to be implemented]
   const handleEnded = useCallback(() => {
-    // console.log('onEnded')
     setPlaying(loop)
   }, [loop])
 
   const handleDuration = useCallback((duration: number) => {
-    // console.log('onDuration', duration)
     setDuration(duration)
   }, [])
 
-  //? Handle spacebar events
+  // RAF effect
+  useEffect(() => {
+    const testAnimationFrameCallback = (timestamp: number) => {
+      testCounter.current++
+      if (playerRef.current) {
+        testRafId.current = requestAnimationFrame(testAnimationFrameCallback)
+      }
+    }
+
+    if (playing) {
+      testRafId.current = requestAnimationFrame(testAnimationFrameCallback)
+    } else {
+      cancelAnimationFrame(testRafId.current)
+    }
+
+    return () => {
+      cancelAnimationFrame(testRafId.current)
+    }
+  }, [playing])
+
+  // Spacebar handler effect
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === ' ' || event.code === 'Space') {
@@ -241,14 +225,13 @@ const PlayerPage = () => {
       }
     }
 
-    // Use capture phase to intercept the event before it reaches other elements
     document.addEventListener('keydown', handleKeyDown, true)
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown, true)
     }
   }, [handlePlayPause])
 
+  // Prevent spacebar scroll effect
   useEffect(() => {
     const preventSpacebarScroll = (e: KeyboardEvent) => {
       if (e.key === ' ' || e.code === 'Space') {
@@ -257,18 +240,41 @@ const PlayerPage = () => {
     }
 
     window.addEventListener('keydown', preventSpacebarScroll)
-
     return () => {
       window.removeEventListener('keydown', preventSpacebarScroll)
     }
   }, [])
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className='flex h-screen items-center justify-center'>
+        Loading...
+      </div>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className='flex h-screen flex-col items-center justify-center'>
+        <p className='text-red-500'>{error}</p>
+        <button
+          onClick={() => navigate('/')}
+          className='mt-4 rounded bg-primary px-4 py-2 text-white'>
+          Return Home
+        </button>
+      </div>
+    )
+  }
 
   return (
     <>
       <Helmet>
         <title>Player Page | Synbox</title>
       </Helmet>
-      {/* Lyrics Display Controller */}
+      <LyricsVisibilityToggleGroup />
+
       {isPlayerReady && (
         <LyricsDisplayOverlay
           playerRef={playerRef}
@@ -278,12 +284,8 @@ const PlayerPage = () => {
           playing={playing}
         />
       )}
-      {/* //TODO: Added unselectable to youtube player, need to add at top level to play video if video is paused and user clicks on screen */}
-      <div
-        //${playing ? 'unselectable' : ''}
-        className={`
-        
-        relative aspect-video h-full w-full border-2 border-primary border-opacity-5 ${isFullscreen ? 'mt-14' : ''} `}>
+
+      <div className='relative mt-14 aspect-video h-full w-full border-2 border-primary border-opacity-5'>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}
@@ -302,31 +304,8 @@ const PlayerPage = () => {
           />
         )}
       </div>
-      <LyricsVisibilityToggleGroup />
-      {/* <FloatingGlobalVisibilityToggle /> */}
-      {/* <MemoizedPlayerBottomBar
-        playing={playing}
-        loop={loop}
-        played={played}
-        duration={duration}
-        playerRef={playerRef}
-        romajiEnabled={romajiVisibility}
-        handleInitMutedPlay={handleInitMutedPlay}
-        handlePause={handlePause}
-        handlePlayPause={handlePlayPause}
-        handleSeekMouseDown={handleSeekMouseDown}
-        handleSeekChange={handleSeekChange}
-        handleSeekMouseUp={handleSeekMouseUp}
-        handleProgress={handleProgress}
-        handleToggleLoop={handleToggleLoop}
-        handleToggleRomajiVisibility={handleToggleRomajiVisibility}
-        handleToggleTranslationVisibility={handleToggleTranslationVisibility}
-        handleToggleLyricsVisibility={handleToggleLyricsVisibility}
-        handleToggleLyricsOverlayVisibility={
-          handleToggleLyricsOverlayVisibility
-        }
-      /> */}
     </>
   )
 }
+
 export default PlayerPage

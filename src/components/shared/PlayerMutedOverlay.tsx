@@ -22,7 +22,7 @@ const PlayerMutedOverlay = ({
       onClick={isInitializing ? undefined : handleInitMutedPlay}
       className={`absolute inset-0 flex h-full w-full ${
         isInitializing ? '' : 'cursor-pointer'
-      } flex-col items-center justify-center gap-4 bg-black bg-opacity-50 px-4 text-center text-white backdrop-blur-lg`}>
+      } flex-col items-center justify-center gap-4 bg-blue-500 bg-opacity-100 px-4 text-center text-white backdrop-blur-sm`}>
       {isInitializing ? (
         <div className='unselectable flex items-center gap-2'>
           <LoaderIcon className='h-10 w-10 animate-spin' />
@@ -34,9 +34,8 @@ const PlayerMutedOverlay = ({
             <PlayCircleFilledIcon
               className='transition-transform duration-200'
               sx={{
-                fontSize: '4em', // Increased size
-                width: 'auto',
-                height: 'auto',
+                width: '104px', // or whatever size you want
+                height: '104px', // or whatever size you want
                 color: 'white',
                 opacity: 0.85,
                 '&:hover': {
@@ -45,8 +44,8 @@ const PlayerMutedOverlay = ({
               }}
             />
             <div className='mx-auto mt-4 flex w-48 items-center justify-center gap-2 align-middle'>
-              <CheckIcon className='h-10 w-10 animate-pulse' />
-              <Text className='text-2xl font-medium'>Ready!</Text>
+              <CheckIcon className='h-8 w-8 animate-pulse' />
+              <Text className='text-xl font-medium'>Ready!</Text>
             </div>
           </div>
         </div>

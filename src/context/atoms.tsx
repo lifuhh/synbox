@@ -12,7 +12,22 @@ export const romajiVisibilityAtom = atom(true)
 export const translationVisibilityAtom = atom(true)
 export const translationIsEnglishAtom = atom(true)
 export const lyricsDisplayBottomAtom = atom(true)
-export const fontSizeMultiplierAtom = atom(1)
+
+//? Lyrics Display Font Size
+const DEFAULT_FONT_SIZE = 1
+const getInitialFontSize = () => {
+  const stored = localStorage.getItem('fontSizeMultiplier')
+  return stored ? parseFloat(stored) : DEFAULT_FONT_SIZE
+}
+export const fontSizeMultiplierAtom = atom(getInitialFontSize())
+
+export const fontSizeMultiplierAtomWithPersistence = atom(
+  (get) => get(fontSizeMultiplierAtom),
+  (get, set, newValue: number) => {
+    set(fontSizeMultiplierAtom, newValue)
+    localStorage.setItem('fontSizeMultiplier', newValue.toString())
+  }
+)
 
 export const userInteractedWithSettingsAtom = atom(false)
 export const lyricsControlVisibilityAtom = atom(true)
