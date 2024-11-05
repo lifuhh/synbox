@@ -9,45 +9,53 @@ const HomeFooter = () => {
     <div className='landing-footer flex-between bottom-0 left-0 z-50 h-14 w-full flex-col md:mt-2'>
       <div className='flex-around pb-2'>
         <div className='flex'>
-          <h1 className=' whitespace-nowrap text-pretty font-semibold'>
+          <h1 className=' unselectable whitespace-nowrap text-pretty font-semibold'>
             Built With
           </h1>
         </div>
         {/* //TODO: Maybe add tooltip? */}
         {/* //TODO: Also, perhaps change/replace some icons -- use stripe, remove shadcn e.g. dunno think about it */}
         <Dock className='mt-0 border-none'>
-          <DockIcon onClick={() => handleRedirect('https://react.dev/')}>
-            <Icons.react className='h-6 w-6' />
+          <DockIcon
+            onClick={() => handleRedirect('https://react.dev/')}
+            className='bg-card-foreground'>
+            <Icons.react className='h-6 w-6 text-primary' />
           </DockIcon>
-          <DockIcon onClick={() => handleRedirect('https://tailwindcss.com/')}>
-            <Icons.tailwind className='h-6 w-6' />
+          <DockIcon
+            onClick={() => handleRedirect('https://tailwindcss.com/')}
+            className='bg-card-foreground'>
+            <Icons.tailwind className='h-6 w-6 text-primary' />
           </DockIcon>
-          <DockIcon onClick={() => handleRedirect('https://ui.shadcn.com/')}>
-            <Icons.shadcn className='h-6 w-6' />
+          <DockIcon
+            onClick={() => handleRedirect('https://ui.shadcn.com/')}
+            className='bg-card-foreground'>
+            <Icons.shadcn className='h-6 w-6 text-primary ' />
           </DockIcon>
           <DockIcon
             onClick={() =>
               handleRedirect('https://platform.openai.com/docs/overview/')
-            }>
-            <Icons.openai className='h-6 w-6' />
+            }
+            className='bg-card-foreground'>
+            <Icons.openai className='h-6 w-6 text-primary' />
           </DockIcon>
           <DockIcon
             onClick={() =>
               handleRedirect('https://developers.google.com/youtube/v3/')
-            }>
-            <Icons.gcloud className='h-6 w-6' />
+            }
+            className='bg-card-foreground'>
+            <Icons.gcloud className='h-6 w-6 text-primary' />
           </DockIcon>
-          <DockIcon
+          {/* <DockIcon
             onClick={() =>
               handleRedirect('https://docs.stripe.com/api?lang=node')
             }>
             <Icons.stripe className='h-8 w-8' />
-          </DockIcon>
+          </DockIcon> */}
         </Dock>
         <Divider
           orientation='vertical'
           size='sm'
-          className=' mx-4 border-secondary'
+          className=' border-foreground mx-4'
         />
         <div className='flex'>
           {/* <h1 className='whitespace-nowrap text-center'>Visit Me At </h1> */}
@@ -56,12 +64,14 @@ const HomeFooter = () => {
           <DockIcon
             onClick={() =>
               handleRedirect('https://www.linkedin.com/in/lifuhuang97/')
-            }>
-            <Icons.linkedin className='h-6 w-6' />
+            }
+            className='bg-card-foreground'>
+            <Icons.linkedin className='h-6 w-6 text-primary' />
           </DockIcon>
           <DockIcon
-            onClick={() => handleRedirect('https://github.com/lifuhuang97/')}>
-            <Icons.gitHub className='h-6 w-6' />
+            onClick={() => handleRedirect('https://github.com/lifuhuang97/')}
+            className='bg-card-foreground'>
+            <Icons.gitHub className='h-6 w-6 text-primary' />
           </DockIcon>
         </Dock>
       </div>

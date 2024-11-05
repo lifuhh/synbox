@@ -24,7 +24,7 @@ const TopBar = () => {
         ${isVideoPlayer ? 'pointer-events-none' : ''}`}>
       <nav
         className={`flex-between h-14 w-full
-          ${isVideoPlayer ? 'bg-secondary/0' : 'bg-secondary/50 bg-opacity-80'}
+          ${isVideoPlayer ? 'bg-secondary/0' : 'bg-muted/80 bg-opacity-80'}
           ${isVideoPlayer ? 'pointer-events-auto' : ''}
           sm:px-4`}>
         {playerControlsVisible && !isVideoPlayer && <AppLogo />}

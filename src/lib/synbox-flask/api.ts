@@ -64,9 +64,9 @@ export const streamTranscribeVideoById = async (
   onError: (error: string) => void,
   onAiGenerated: (isAiGenerated: boolean) => void,
 ) => {
-  console.log('This is stream transcribe api call')
-  console.log(videoId)
-  console.log(JSON.stringify(subtitleInfo))
+  // console.log('This is stream transcribe api call')
+  // console.log(videoId)
+  // console.log(JSON.stringify(subtitleInfo))
 
   const response = await fetch(`${BE_ADDRESS}/transcribev2`, {
     method: 'POST',
@@ -93,8 +93,8 @@ export const streamTranscribeVideoById = async (
 
     lines.forEach((line) => {
 
-      console.log("Received line: ")
-      console.log(line)
+      // console.log("Received line: ")
+      // console.log(line)
 
       if (validateJSON(line)) {
         const content = JSON.parse(line)

@@ -14,7 +14,7 @@ import {
   getSongInfoBySongId,
   getSongLyricsById,
   signInGoogleAccount,
-  uploadHardCodedLyrics,
+  uploadLyricsToAppwrite,
 } from '../appwrite/api'
 import {
   getChartsPlaylist,
@@ -111,9 +111,7 @@ export const useGetYoutubeSearchResults = (searchTerm: string) => {
   })
 }
 
-export const useGetLyricsBySongId = (songId: string) => {
-  console.log(`Query attempted with songId: ${songId}`) // Debug log
-  
+export const useGetLyricsBySongId = (songId: string) => {  
   return useQuery({
     queryKey: [QUERY_KEYS.GET_LYRICS_BY_SONG_ID, songId],
     enabled: Boolean(songId?.trim()), // More strict check
@@ -149,7 +147,7 @@ export const useAddLyricsToSong = () => {
   })
 }
 
-interface HardCodedLyricsData {
+interface LyricsDataInterface {
   full_lyrics: string
   plain_lyrics: string
   romaji: string
@@ -157,7 +155,7 @@ interface HardCodedLyricsData {
   chi_translation: string
   labelled_full_lyrics: string
 }
-export const useUploadHardCodedLyrics = () => {
+export const useUploadLyricsToAppwrite = () => {
   // const queryClient = useQueryClient()
 
   return useMutation({
@@ -166,7 +164,7 @@ export const useUploadHardCodedLyrics = () => {
       lyricsData,
     }: {
       songId: string
-      lyricsData: HardCodedLyricsData
-    }) => uploadHardCodedLyrics(songId, lyricsData),
+      lyricsData: LyricsDataInterface
+    }) => uploadLyricsToAppwrite(songId, lyricsData),
   })
 }

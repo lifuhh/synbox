@@ -29,7 +29,7 @@ const LandingPage = () => {
       <Divider
         my='sm'
         label={
-          <h1 className='font_noto_sans_jp_black_900 unselectable text-2xl font-bold text-white'>
+          <h1 className='font_noto_sans_jp_black_900 unselectable text-foreground text-2xl font-bold'>
             {/* おすすめ */}
             Recommendations
           </h1>
@@ -61,12 +61,12 @@ const LandingPage = () => {
       <Divider
         my='xs'
         label={
-          <h1 className='unselectable text-2xl font-bold text-white'>
+          <h1 className='unselectable text-foreground text-2xl font-bold'>
             Gallery
           </h1>
         }
         labelPosition='center'
-        className='px-8 py-2'
+        className=' px-8 py-2'
       />
       {/* //? Infinite Gallery */}
       <SongsInfiniteGallery />

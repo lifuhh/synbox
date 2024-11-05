@@ -85,11 +85,11 @@ videoId
     <div style={{ opacity }} className=' scale-75'>
       <div style={cardStyle}>
         <CardContainer>
-          <CardBody className='group/card bg-popover relative h-auto w-[30rem] rounded-xl border border-primary/40 p-6 transition-shadow duration-300 ease-in-out dark:hover:shadow-2xl dark:hover:shadow-primary/[0.15]'>
+          <CardBody className='group/card relative h-auto w-[30rem] rounded-xl border border-primary/70 bg-muted p-6 transition-shadow duration-300 ease-in-out dark:hover:shadow-2xl dark:hover:shadow-primary/[0.15]'>
             <CardItem
               translateZ='50'
               as='button'
-              className='max-h-12 min-h-12 text-left text-xl font-bold text-white'
+              className='max-h-12 min-h-12 text-left text-xl font-bold text-card-foreground shadow-sm'
               onClick={handleNavigate}>
               {item.title}
             </CardItem>
@@ -114,7 +114,7 @@ videoId
                 {item.channel}
               </CardItem>
               <Button
-                className='rounded-xl px-4 py-2 text-sm font-bold text-white'
+                className='rounded-xl bg-white px-4 py-2 text-sm font-bold text-primary/80 transition-none duration-0 hover:bg-primary/80 hover:text-foreground'
                 onClick={handleNavigate}
                 variant='default'>
                 <CardItem

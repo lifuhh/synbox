@@ -10,7 +10,7 @@ import ErrorBoundary from './test_stuff/ErrorBoundary'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <HelmetProvider>
-      <MantineProvider>
+      <MantineProvider forceColorScheme='dark'>
         <AppProvider>
           <QueryProvider>
             <ErrorBoundary>

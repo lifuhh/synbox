@@ -143,7 +143,7 @@ export async function addLyricsToSong(lyricsFile: File) {
   }
 }
 
-interface HardCodedLyricsData {
+interface LyricsDataInterface {
   full_lyrics: string
   plain_lyrics: string
   romaji: string
@@ -152,9 +152,9 @@ interface HardCodedLyricsData {
   labelled_full_lyrics: string
 }
 
-export async function uploadHardCodedLyrics(
+export async function uploadLyricsToAppwrite(
   songId: string,
-  lyrics: HardCodedLyricsData,
+  lyrics: LyricsDataInterface,
 ) {
   if (!songId) throw Error('No songId found')
 
@@ -162,16 +162,16 @@ export async function uploadHardCodedLyrics(
   console.log(lyrics)
 
   try {
-    const uploadHardCodedLyrics = await databases.createDocument(
+    const uploadedLyrics = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.lyricsId,
       songId,
       { ...lyrics, visit_count: 0 },
     )
 
-    if (!uploadHardCodedLyrics) throw Error('Lyrics not uploaded successfully')
+    if (!uploadedLyrics) throw Error('Lyrics not uploaded successfully')
 
-    return uploadHardCodedLyrics
+    return uploadedLyrics
   } catch (error) {
     console.log(error)
   }

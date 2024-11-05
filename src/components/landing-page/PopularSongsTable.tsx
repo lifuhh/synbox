@@ -19,8 +19,8 @@ const LandingPageCharts: React.FC = () => {
   const tableBodyHeight = 6 * 55 // Assuming each row is 52px
 
   return (
-    <div className='w-full rounded-md border border-accent bg-transparent lg:ml-6 lg:mt-2 lg:w-5/12 xl:w-4/12'>
-      <div className='relative overflow-hidden rounded-md bg-dark-3 bg-opacity-15'>
+    <div className='w-full rounded-md border border-primary/30 bg-background lg:ml-6 lg:mt-2 lg:w-5/12 xl:w-4/12'>
+      <div className='bg-dark-3 relative overflow-hidden rounded-md bg-opacity-15'>
         <table
           className='w-full border-collapse'
           style={{ tableLayout: 'fixed' }}>
@@ -29,7 +29,7 @@ const LandingPageCharts: React.FC = () => {
             <col style={{ width: '60px' }} />
           </colgroup>
           <thead>
-            <tr className='bg-primary/40 text-white'>
+            <tr className='bg-muted text-white'>
               <th className='unselectable py-3 text-center' colSpan={2}>
                 YouTube Charts
               </th>
@@ -37,7 +37,7 @@ const LandingPageCharts: React.FC = () => {
           </thead>
         </table>
         <div
-          className='custom-scrollbar overflow-y-auto'
+          className='no-scrollbar overflow-y-auto'
           style={{ height: `${tableBodyHeight}px` }}>
           <table
             className='w-full border-collapse'
@@ -51,7 +51,7 @@ const LandingPageCharts: React.FC = () => {
                 ? Array(6)
                     .fill(null)
                     .map((_, index) => (
-                      <tr key={index} className='h-13'>
+                      <tr key={index} className='h-13 '>
                         <td colSpan={2} className='py-2'>
                           {index === 2 && (
                             <div className='flex justify-center'>
@@ -115,7 +115,7 @@ const SongRow = ({ song, onPlayClick }: SongRowProps) => {
   }, [song.title])
 
   return (
-    <tr className='playlist-item h-13 hover:bg-gray-700'>
+    <tr className='playlist-item h-13 bg-card/80 text-accent-foreground hover:bg-muted-foreground/20'>
       <td className='p-2'>
         <div
           ref={containerRef}

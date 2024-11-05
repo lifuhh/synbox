@@ -15,17 +15,11 @@ const SongsInfiniteGallery: React.FC = () => {
     isFetchingNextPage,
   } = useGetInfiniteGalleryPlaylist()
 
-  useEffect(() => {
-    if (isInfiniteGallerySongDataFetching) {
-      console.log('Fetching next page data')
-    }
-  }, [isInfiniteGallerySongDataFetching])
-
   return (
     <section className='relative flex flex-wrap justify-between'>
       <Spotlight
-        className='-top-80 left-40 scale-x-[-1] md:-left-40 md:top-20'
-        fill='#ff8ab9'
+        className='-top-80 left-40 scale-x-[-1]  md:-left-40 md:top-20'
+        fill='#580a24'
       />
       <div className='mx-auto h-[calc(100vh-200px)] max-w-full px-8'>
         {infiniteGallerySongData && (

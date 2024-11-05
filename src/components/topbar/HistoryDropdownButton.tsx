@@ -67,7 +67,7 @@ const PaginationLink: React.FC<{
   <button
     onClick={onClick}
     className={`flex h-8 w-8 items-center justify-center rounded-md ${
-      isActive ? 'text-primary-foreground bg-primary' : ''
+      isActive ? 'bg-primary text-primary-foreground' : ''
     } ${className}`}>
     {children}
   </button>
@@ -214,7 +214,7 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
         <DropdownMenuContent
           align='end'
           sideOffset={10}
-          className='w-[400px] max-w-[400px] border border-primary bg-background/95 p-0'
+          className='w-[400px] max-w-[400px] border border-primary bg-background p-0'
           style={{ height: `${calculateDropdownHeight()}px` }}>
           <div className='flex h-full flex-col'>
             <div className='sticky top-0 z-10 m-2 bg-background/95'>
@@ -226,7 +226,7 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
                   <Button
                     variant='ghost'
                     onClick={handleClearHistoryClick}
-                    className='text-accent-foreground hover:text-foreground text-sm'>
+                    className='text-sm text-accent-foreground hover:text-foreground'>
                     Clear History
                   </Button>
                 )}
@@ -242,10 +242,10 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
                 </div>
               ) : (
                 <div className=' flex h-full flex-col items-center justify-center py-2 text-center'>
-                  <p className='text-muted-foreground text-lg font-medium'>
+                  <p className='text-lg font-medium text-muted-foreground'>
                     Your history is empty.
                   </p>
-                  <p className='text-muted-foreground pb-4 pt-2 text-sm'>
+                  <p className='pb-4 pt-2 text-sm text-muted-foreground'>
                     Videos you viewed will appear here
                   </p>
                 </div>

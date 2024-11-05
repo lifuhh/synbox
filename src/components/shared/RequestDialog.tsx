@@ -20,7 +20,7 @@ import UpdateMessagesDisplay from './UpdateMessagesDisplay'
 
 import {
   useGetLyricsBySongId,
-  useUploadHardCodedLyrics,
+  useUploadLyricsToAppwrite,
 } from '@/lib/react-query/queriesAndMutations'
 import { QUERY_KEYS } from '@/lib/react-query/queryKeys'
 import { useQueryClient } from '@tanstack/react-query'
@@ -61,7 +61,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   // where update
 
   const queryClient = useQueryClient()
-  const { mutate: uploadHardCodedLyrics } = useUploadHardCodedLyrics()
+  const { mutate: uploadLyricsToAppwrite } = useUploadLyricsToAppwrite()
   const { refetch: refetchLyrics } = useGetLyricsBySongId(videoId)
 
   const handleAnnotateError = (error: string) => {
@@ -206,7 +206,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         labelled_full_lyrics: JSON.stringify(labelledLyrics),
       }
 
-      await uploadHardCodedLyrics(
+      await uploadLyricsToAppwrite(
         { songId: videoId, lyricsData },
         {
           onSuccess: async () => {
@@ -309,7 +309,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
   return (
     <DialogContent
-      className='invisible-ring bg-input flex h-auto max-h-[90vh] flex-col border-2 border-accent border-opacity-60 sm:max-w-2xl'
+      className='invisible-ring border-1 flex h-auto max-h-[90vh] flex-col border-accent border-opacity-60 bg-background sm:max-w-2xl [&>button]:hidden'
       onEscapeKeyDown={handleEscapeKeyDown}
       onPointerDownOutside={handleOutsideEvent}
       onInteractOutside={handleOutsideEvent}>
@@ -332,7 +332,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         <DialogClose asChild>
           <Button
             type='button'
-            variant='secondary'
+            variant='destructive'
             onClick={handleClose}
             disabled={isButtonDisabled}
             className='invisible-ring text-md w-full text-light-1  md:w-auto'>
@@ -355,7 +355,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
                 onClick={handleProceedClick}
                 disabled={isButtonDisabled}
                 className='invisible-ring flex-1 bg-blue-500 text-white hover:bg-blue-600 md:flex-initial'>
-                {currentStep === 3 ? 'Upload Lyrics' : 'Next Step'}
+                {currentStep === 3 ? 'Proceed' : 'Next Step'}
               </Button>
             )}
           </div>

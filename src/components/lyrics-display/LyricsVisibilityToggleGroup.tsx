@@ -20,6 +20,8 @@ import { useToast } from '@/components/ui/use-toast'
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 
+import { LyricsVisibilityControlButton } from './LyricsVisibilityControlButton'
+
 import {
   addFavoriteAtom,
   currentVideoAtom,
@@ -242,7 +244,7 @@ const LyricsVisibilityToggleGroup = () => {
           className={`flex transform items-center transition-transform duration-300 ease-in-out ${
             isOpen ? 'translate-x-0' : '-translate-x-[calc(100%-2.5rem)]'
           }`}>
-          <div className='flex items-center space-x-4  p-4'>
+          <div className='flex items-center space-x-4 p-4'>
             <TooltipProvider delayDuration={190}>
               <div className='flex cursor-pointer flex-col space-y-4'>
                 <ToggleGroup
@@ -250,222 +252,128 @@ const LyricsVisibilityToggleGroup = () => {
                   value={lyricsToggleValues}
                   onValueChange={handleLyricsToggle}
                   className='flex flex-col space-y-2'>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ToggleGroupItem
-                        value='returnHomeButton'
-                        onClick={handleHomeButtonClick}
-                        variant='default'
-                        aria-label='Return home'
-                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                        style={getButtonStyle('returnHomeButton')}>
-                        <HomeIcon sx={{ fontSize: 24 }} />
-                      </ToggleGroupItem>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side='right'
-                      align='start'
-                      sideOffset={6}
-                      alignOffset={-4}
-                      className='unhighlightable border-none bg-primary'>
-                      {'Return to Home Page'}
-                    </TooltipContent>
-                  </Tooltip>
+                  <LyricsVisibilityControlButton
+                    id='returnHomeButton'
+                    value='returnHomeButton'
+                    onClick={handleHomeButtonClick}
+                    isActive={lyricsToggleValues.includes('returnHomeButton')}
+                    isHovered={hoveredButton === 'returnHomeButton'}
+                    currentVideo={currentVideo}
+                    isFavorite={isFavorite}
+                    isLyricsDisplayBottom={isLyricsDisplayBottom}
+                    isTranslationEnglish={isTranslationEnglish}
+                    isRomajiVisible={isRomajiVisible}
+                    isLyricsVisible={isLyricsVisible}
+                    isTranslationVisible={isTranslationVisible}
+                  />
 
                   <Divider size='sm' className='w-full border-primary' />
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ToggleGroupItem
-                        value='translationLanguage'
-                        onClick={handleTranslationLanguageToggle}
-                        variant='default'
-                        aria-label='Toggle translation language'
-                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                        style={getButtonStyle('translationLanguage')}>
-                        {isTranslationEnglish ? (
-                          <h1 className='text-xl'>EN</h1>
-                        ) : (
-                          <h1 className='text-xl font-extrabold'>中</h1>
-                        )}
-                      </ToggleGroupItem>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side='right'
-                      align='start'
-                      sideOffset={6}
-                      alignOffset={-4}
-                      className='unhighlightable border-none bg-primary'>
-                      {isTranslationEnglish
-                        ? 'View Chinese Translations'
-                        : 'View English Translations'}
-                    </TooltipContent>
-                  </Tooltip>
+                  <LyricsVisibilityControlButton
+                    id='translationLanguage'
+                    value='translationLanguage'
+                    onClick={handleTranslationLanguageToggle}
+                    isActive={lyricsToggleValues.includes(
+                      'translationLanguage',
+                    )}
+                    isHovered={hoveredButton === 'translationLanguage'}
+                    currentVideo={currentVideo}
+                    isFavorite={isFavorite}
+                    isLyricsDisplayBottom={isLyricsDisplayBottom}
+                    isTranslationEnglish={isTranslationEnglish}
+                    isRomajiVisible={isRomajiVisible}
+                    isLyricsVisible={isLyricsVisible}
+                    isTranslationVisible={isTranslationVisible}
+                  />
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ToggleGroupItem
-                        value='translation'
-                        aria-label='Toggle translation'
-                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
-                        style={getButtonStyle('translation')}>
-                        <TranslateIcon sx={{ fontSize: 24 }} />
-                      </ToggleGroupItem>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side='right'
-                      align='start'
-                      sideOffset={6}
-                      alignOffset={-4}
-                      className='unhighlightable border-none bg-primary'>
-                      {isTranslationVisible
-                        ? 'Hide Translations'
-                        : 'Show Translations'}
-                    </TooltipContent>
-                  </Tooltip>
+                  <LyricsVisibilityControlButton
+                    id='translation'
+                    value='translation'
+                    isActive={lyricsToggleValues.includes('translation')}
+                    isHovered={hoveredButton === 'translation'}
+                    currentVideo={currentVideo}
+                    isFavorite={isFavorite}
+                    isLyricsDisplayBottom={isLyricsDisplayBottom}
+                    isTranslationEnglish={isTranslationEnglish}
+                    isRomajiVisible={isRomajiVisible}
+                    isLyricsVisible={isLyricsVisible}
+                    isTranslationVisible={isTranslationVisible}
+                  />
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ToggleGroupItem
-                        value='lyrics'
-                        aria-label='Toggle lyrics'
-                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
-                        style={getButtonStyle('lyrics')}>
-                        <LyricsIcon sx={{ fontSize: 24 }} />
-                      </ToggleGroupItem>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side='right'
-                      align='start'
-                      sideOffset={6}
-                      alignOffset={-4}
-                      className='unhighlightable border-none bg-primary'>
-                      {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
-                    </TooltipContent>
-                  </Tooltip>
+                  <LyricsVisibilityControlButton
+                    id='lyrics'
+                    value='lyrics'
+                    isActive={lyricsToggleValues.includes('lyrics')}
+                    isHovered={hoveredButton === 'lyrics'}
+                    currentVideo={currentVideo}
+                    isFavorite={isFavorite}
+                    isLyricsDisplayBottom={isLyricsDisplayBottom}
+                    isTranslationEnglish={isTranslationEnglish}
+                    isRomajiVisible={isRomajiVisible}
+                    isLyricsVisible={isLyricsVisible}
+                    isTranslationVisible={isTranslationVisible}
+                  />
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ToggleGroupItem
-                        value='romaji'
-                        aria-label='Toggle romaji'
-                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
-                        style={getButtonStyle('romaji')}>
-                        <h1 className='text-xl'>R</h1>
-                      </ToggleGroupItem>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side='right'
-                      align='start'
-                      sideOffset={6}
-                      alignOffset={-4}
-                      className='unhighlightable border-none bg-primary'>
-                      {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
-                    </TooltipContent>
-                  </Tooltip>
+                  <LyricsVisibilityControlButton
+                    id='romaji'
+                    value='romaji'
+                    isActive={lyricsToggleValues.includes('romaji')}
+                    isHovered={hoveredButton === 'romaji'}
+                    currentVideo={currentVideo}
+                    isFavorite={isFavorite}
+                    isLyricsDisplayBottom={isLyricsDisplayBottom}
+                    isTranslationEnglish={isTranslationEnglish}
+                    isRomajiVisible={isRomajiVisible}
+                    isLyricsVisible={isLyricsVisible}
+                    isTranslationVisible={isTranslationVisible}
+                  />
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ToggleGroupItem
-                        value='lyricsPosition'
-                        onClick={handleLyricsPositionToggle}
-                        variant='default'
-                        aria-label='Toggle lyrics position'
-                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                        style={getButtonStyle('lyricsPosition')}>
-                        {isLyricsDisplayBottom ? (
-                          <VerticalAlignTopIcon />
-                        ) : (
-                          <VerticalAlignBottomIcon />
-                        )}
-                      </ToggleGroupItem>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side='right'
-                      align='start'
-                      sideOffset={6}
-                      alignOffset={-4}
-                      className='unhighlightable border-none bg-primary'>
-                      {isLyricsDisplayBottom
-                        ? 'Align Lyrics Top'
-                        : 'Align Lyrics Bottom'}
-                    </TooltipContent>
-                  </Tooltip>
+                  <LyricsVisibilityControlButton
+                    id='lyricsPosition'
+                    value='lyricsPosition'
+                    onClick={handleLyricsPositionToggle}
+                    isActive={lyricsToggleValues.includes('lyricsPosition')}
+                    isHovered={hoveredButton === 'lyricsPosition'}
+                    currentVideo={currentVideo}
+                    isFavorite={isFavorite}
+                    isLyricsDisplayBottom={isLyricsDisplayBottom}
+                    isTranslationEnglish={isTranslationEnglish}
+                    isRomajiVisible={isRomajiVisible}
+                    isLyricsVisible={isLyricsVisible}
+                    isTranslationVisible={isTranslationVisible}
+                  />
 
                   <Divider size='sm' className='w-full border-primary' />
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ToggleGroupItem
-                        value='bookmarkButton'
-                        onClick={handleBookmark}
-                        variant='default'
-                        disabled={!currentVideo}
-                        aria-label='Toggle bookmark'
-                        className={`invisible-ring h-10 w-10 cursor-${currentVideo ? 'pointer' : 'not-allowed'} rounded-lg bg-primary text-white`}
-                        style={getButtonStyle('bookmarkButton')}>
-                        {currentVideo ? (
-                          isFavorite(currentVideo.videoId) ? (
-                            <BookmarkAddedIcon />
-                          ) : (
-                            <BookmarkBorderIcon
-                              sx={{
-                                fontSize: 24,
-                                transform: 'scaleX(-1) rotate(0deg)',
-                                transformOrigin: 'center',
-                              }}
-                            />
-                          )
-                        ) : (
-                          <BookmarkBorderIcon
-                            sx={{
-                              fontSize: 24,
-                              transform: 'scaleX(-1) rotate(0deg)',
-                              transformOrigin: 'center',
-                            }}
-                          />
-                        )}
-                      </ToggleGroupItem>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side='right'
-                      align='start'
-                      sideOffset={6}
-                      alignOffset={-4}
-                      className='unhighlightable border-none bg-primary'>
-                      {!currentVideo
-                        ? 'No video selected'
-                        : currentVideo && isFavorite(currentVideo.videoId)
-                          ? 'Remove from Bookmarks'
-                          : 'Add to Bookmarks'}
-                    </TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ToggleGroupItem
-                        value='shareButton'
-                        onClick={handleShare}
-                        variant='default'
-                        aria-label='Return home'
-                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                        style={getButtonStyle('shareButton')}>
-                        <ReplyIcon
-                          sx={{
-                            fontSize: 24,
-                            transform: 'scaleX(-1) rotate(0deg)',
-                            transformOrigin: 'center',
-                          }}
-                        />
-                      </ToggleGroupItem>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side='right'
-                      align='start'
-                      sideOffset={6}
-                      alignOffset={-4}
-                      className='unhighlightable border-none bg-primary'>
-                      {'Copy URL'}
-                    </TooltipContent>
-                  </Tooltip>
+
+                  <LyricsVisibilityControlButton
+                    id='bookmarkButton'
+                    value='bookmarkButton'
+                    onClick={handleBookmark}
+                    isActive={lyricsToggleValues.includes('bookmarkButton')}
+                    isHovered={hoveredButton === 'bookmarkButton'}
+                    currentVideo={currentVideo}
+                    isFavorite={isFavorite}
+                    isLyricsDisplayBottom={isLyricsDisplayBottom}
+                    isTranslationEnglish={isTranslationEnglish}
+                    isRomajiVisible={isRomajiVisible}
+                    isLyricsVisible={isLyricsVisible}
+                    isTranslationVisible={isTranslationVisible}
+                  />
+
+                  <LyricsVisibilityControlButton
+                    id='shareButton'
+                    value='shareButton'
+                    onClick={handleShare}
+                    isActive={lyricsToggleValues.includes('shareButton')}
+                    isHovered={hoveredButton === 'shareButton'}
+                    currentVideo={currentVideo}
+                    isFavorite={isFavorite}
+                    isLyricsDisplayBottom={isLyricsDisplayBottom}
+                    isTranslationEnglish={isTranslationEnglish}
+                    isRomajiVisible={isRomajiVisible}
+                    isLyricsVisible={isLyricsVisible}
+                    isTranslationVisible={isTranslationVisible}
+                  />
                 </ToggleGroup>
               </div>
             </TooltipProvider>

@@ -150,11 +150,11 @@ function LyricsDisplayOverlay({
 
       addSongInfo(formattedSongInfo, {
         onSuccess: (newSongInfo) => {
-          console.log('Successfully added song info to database:', newSongInfo)
+          // console.log('Successfully added song info to database:', newSongInfo)
           setCurrentVideo(formattedSongInfo)
         },
         onError: (error) => {
-          console.error('Error adding song info to database:', error)
+          // console.error('Error adding song info to database:', error)
           // Optionally set currentVideo to null here if you want to ensure error state
           setCurrentVideo(null)
         },

@@ -61,7 +61,7 @@ export const InfiniteScrollGallery = ({
             <AnimatePresence>
               {hoveredIndex === idx && (
                 <motion.span
-                  className='absolute inset-0 block h-full w-full rounded-xl bg-primary/40'
+                  className='absolute inset-0 block h-full w-full rounded-xl bg-primary/10'
                   layoutId='hoverBackground'
                   initial={{ opacity: 0 }}
                   animate={{
@@ -75,7 +75,7 @@ export const InfiniteScrollGallery = ({
                 />
               )}
             </AnimatePresence>
-            <Card className='cursor-pointer bg-secondary'>
+            <Card className='cursor-pointer bg-muted'>
               <CardTitle className=' mb-4 text-lg'>{item.title}</CardTitle>
               <div className='relative overflow-hidden rounded-xl pb-[56.25%]'>
                 <div
@@ -107,7 +107,7 @@ export const Card = ({
   return (
     <div
       className={cn(
-        'playlist-item bg-card border-ring/20 hover:border-ring relative z-20 w-full overflow-hidden rounded-xl border p-4 transition-colors duration-500',
+        'playlist-item relative z-20 w-full overflow-hidden rounded-xl border border-primary/70 bg-card p-4 transition-colors duration-500 hover:border-ring',
         className,
       )}>
       {children}

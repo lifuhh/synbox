@@ -56,8 +56,8 @@ const RequestDialogStepTwoDisplay: React.FC<
 
   useEffect(() => {
     if (lyricsInfo) {
-      console.log('lyrics info: ')
-      console.log(lyricsInfo)
+      // console.log('lyrics info: ')
+      // console.log(lyricsInfo)
       setCurrentLyrics(lyricsInfo.lyrics)
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)

@@ -4,6 +4,8 @@ import { dialogStepAtom } from '@/context/atoms'
 import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
 import { YouTubeUrlOrIdValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { useSetAtom } from 'jotai'
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -106,10 +108,10 @@ const HeroGenerateLyricsDefault = ({
   }
 
   return (
-    <div className='items-top bg-grid-white/[0.90] relative flex w-full overflow-hidden rounded-md bg-dark-1/[0.15] pt-10 antialiased md:h-[25rem] md:justify-center'>
+    <div className='items-top bg-grid-white/[0.90] bg-dark-1/[0.15] relative flex w-full overflow-hidden rounded-md pt-10 antialiased md:h-[25rem] md:justify-center'>
       <Spotlight
         className='-top-8 left-10 md:-top-20 md:left-60'
-        fill='#ff8ab9'
+        fill='#580a24'
       />
 
       <div className='flex-between xl:flex-around z-10 mx-auto w-full max-w-7xl flex-col gap-4 p-4 lg:gap-0 xl:h-96'>
@@ -121,15 +123,15 @@ const HeroGenerateLyricsDefault = ({
             value={inputValue}
             onChange={handleInputChange}
             placeholder='Paste YouTube URL here'
-            className={`invisible-ring border-2 py-6 ${
+            className={`invisible-ring border-2 bg-input/40 py-6 text-white ${
               inputValue.length > 0
                 ? validationSuccess
-                  ? 'border-green-500 hover:border-green-500 focus:border-green-500'
-                  : 'border-primary hover:border-red-700 focus:border-red-700'
-                : 'border-white hover:border-white focus:border-white'
+                  ? 'border-green-500 hover:border-foreground focus:border-green-500'
+                  : 'border-red-800 hover:border-foreground focus:border-red-800'
+                : 'border-foreground/60 hover:border-foreground/80 focus:border-foreground/90'
             } `}
           />
-          <div className='absolute -bottom-20 left-0 h-20 w-full pt-2 text-left'>
+          <div className='absolute -bottom-20 left-0 h-20 w-full py-6 pt-2 text-center lg:py-2 lg:text-left'>
             {inputValue.length > 0 && (
               <div className={errorMessage ? 'text-red-500' : 'text-green-500'}>
                 {errorMessage
@@ -159,13 +161,22 @@ const HeroGenerateLyricsDefault = ({
                     : false || isCheckingLyrics)
                 }
                 variant='default'
-                role='combobox'
-                className='w-1/3 border-2 border-primary/40 py-6 md:w-4/12 lg:w-1/4'>
-                {isCheckingLyrics
-                  ? 'Searching...'
-                  : existingLyrics
-                    ? 'Watch Now'
-                    : 'Try Now'}
+                // role='combobox'
+                className='w-full gap-2 border-2 border-primary/90 bg-primary/90 py-6 text-foreground hover:border-primary hover:bg-primary md:w-1/2 lg:w-1/4'>
+                {isCheckingLyrics ? (
+                  <p className='text-[16px]'>Searching ...</p>
+                ) : existingLyrics ? (
+                  <p className='text-[18px]'>Play</p>
+                ) : (
+                  <p className='text-[18px]'>Try Now</p>
+                )}
+                {isCheckingLyrics ? (
+                  ''
+                ) : existingLyrics ? (
+                  <PlayArrowIcon className='h-2 w-2' />
+                ) : (
+                  <ArrowForwardIcon className='h-4 w-4' />
+                )}
               </Button>
             </DialogTrigger>
             <RequestDialog

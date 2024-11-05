@@ -43,7 +43,7 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
         <DropdownMenuContent
           align='end'
           sideOffset={10}
-          className='w-[400px] max-w-[400px] border border-primary bg-background/95 p-0'>
+          className='w-[400px] max-w-[400px] border border-primary bg-background p-0'>
           <div className='flex flex-col'>
             {/* Fixed Header */}
             <div className='sticky top-0 z-10 bg-background/95 p-2'>
@@ -63,10 +63,10 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
                 </div>
               ) : (
                 <div className='flex flex-col items-center justify-center py-2 text-center'>
-                  <p className='text-muted-foreground text-lg font-medium'>
+                  <p className='text-lg font-medium text-muted-foreground'>
                     Your bookmarks list is empty
                   </p>
-                  <p className='text-muted-foreground pb-4 pt-2 text-sm'>
+                  <p className='pb-4 pt-2 text-sm text-muted-foreground'>
                     Songs you bookmarked will appear here.
                   </p>
                 </div>

@@ -134,7 +134,7 @@ export const getInfiniteGalleryPlaylist = async ({
 export async function getYoutubeVideoInfo(
   videoId: string,
 ): Promise<YoutubeSearchResultInfo> {
-  console.log('YT API: Getting info for vid id: ' + videoId)
+  // console.log('YT API: Getting info for vid id: ' + videoId)
 
   const response = await axios.get<YoutubeSearchApiResponse>(
     `https://www.googleapis.com/youtube/v3/videos`,
@@ -168,8 +168,8 @@ export async function getYoutubeVideoInfo(
     statistics: songInfo.statistics,
   }
 
-  console.log('Song Data received from youtube')
-  console.log(songData)
+  // console.log('Song Data received from youtube')
+  // console.log(songData)
 
   return songData
 }
