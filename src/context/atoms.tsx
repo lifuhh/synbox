@@ -130,3 +130,42 @@ export const isFavoriteAtom = atom((get) => (videoId: string) => {
   const favorites = get(favoritesAtom)
   return favorites.some((item) => item.videoId === videoId)
 })
+
+// History
+
+interface HistoryItem {
+  videoId: string
+  title: string
+  author: string
+  thumbnailUrl: string
+  timestamp: number // To track when the video was viewed
+}
+
+export const historyAtom = atomWithStorage<HistoryItem[]>('history', [])
+
+// Atom for managing history operations
+export const addToHistoryAtom = atom(
+  null,
+  (get, set, newItem: Omit<HistoryItem, 'timestamp'>) => {
+    const history = get(historyAtom)
+
+    // Remove existing entry if present
+    const filteredHistory = history.filter(
+      (item) => item.videoId !== newItem.videoId,
+    )
+
+    // Add new entry at the beginning with timestamp
+    const updatedHistory = [
+      {
+        ...newItem,
+        timestamp: Date.now(),
+      },
+      ...filteredHistory,
+    ]
+
+    // Limit history to 100 items to prevent localStorage from getting too large
+    const limitedHistory = updatedHistory.slice(0, 100)
+
+    set(historyAtom, limitedHistory)
+  },
+)

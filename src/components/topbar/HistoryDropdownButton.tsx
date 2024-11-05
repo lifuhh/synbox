@@ -7,7 +7,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,7 +22,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { historyAtom } from '@/context/atoms'
 import HistoryIcon from '@mui/icons-material/History'
+import { useAtom } from 'jotai'
 import {
   ChevronLeft,
   ChevronRight,
@@ -32,13 +33,6 @@ import {
 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import HistoryDropdownItem from './HistoryDropdownItem'
-
-interface HistoryItem {
-  videoId: string
-  title: string
-  author: string
-  thumbnailUrl: string
-}
 
 interface HistoryDropdownButtonProps {
   buttonVisibility?: boolean
@@ -79,148 +73,14 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
   buttonVisibility = true,
 }) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-  ])
-
-  const [isOpen, setIsOpen] = useState(false) // Add this for controlling dropdown state
+  const [historyItems, setHistoryItems] = useAtom(historyAtom)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isAlertOpen, setIsAlertOpen] = useState(false)
 
   useEffect(() => {
     if (historyItems.length === 0) {
       setCurrentPage(1)
     } else {
-      // Ensure current page is valid after items change
       const maxPage = Math.ceil(historyItems.length / ITEMS_PER_PAGE)
       if (currentPage > maxPage) {
         setCurrentPage(maxPage)
@@ -228,10 +88,23 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
     }
   }, [historyItems.length, currentPage])
 
-  const clearHistory = () => {
+  const handleClearHistoryClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsAlertOpen(true)
+  }
+
+  const handleClearHistory = () => {
     setHistoryItems([])
     setCurrentPage(1)
-    setIsOpen(false)
+    setIsDropdownOpen(false)
+    // Important: Set isAlertOpen to false after clearing history
+    setIsAlertOpen(false)
+  }
+
+  const handleAlertDismiss = () => {
+    setIsAlertOpen(false)
+    // Ensure dropdown state is maintained
+    setIsDropdownOpen(true)
   }
 
   const totalPages = Math.ceil(historyItems.length / ITEMS_PER_PAGE)
@@ -242,7 +115,6 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
   const handlePageChange = (page: number): void => {
     setCurrentPage(page)
   }
-
   const renderPaginationItems = () => {
     const items: React.ReactNode[] = []
     const VISIBLE_PAGES = 5
@@ -303,9 +175,10 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
   }
 
   const showPagination = historyItems.length > ITEMS_PER_PAGE
+
   return (
     <TooltipProvider>
-      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
         <Tooltip>
           <DropdownMenuTrigger asChild>
             <TooltipTrigger asChild>
@@ -326,6 +199,7 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
           align='end'
           sideOffset={10}
           className='w-[400px] max-w-[400px] border border-primary bg-background/95 p-0'>
+          {/* Rest of the dropdown content remains the same... */}
           <div className='flex h-[535px] flex-col'>
             <div className='sticky top-0 z-10 bg-background/95 p-2'>
               <div className='flex items-center justify-between'>
@@ -333,36 +207,16 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
                   History
                 </DropdownMenuLabel>
                 {historyItems.length > 0 && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant='ghost'
-                        className='text-accent-foreground hover:text-foreground text-sm'>
-                        Clear History
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Clear History</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to clear your viewing history?{' '}
-                          <br />
-                          This cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={clearHistory}>
-                          Clear History
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <Button
+                    variant='ghost'
+                    onClick={handleClearHistoryClick}
+                    className='text-accent-foreground hover:text-foreground text-sm'>
+                    Clear History
+                  </Button>
                 )}
               </div>
               <DropdownMenuSeparator />
             </div>
-            {/* Scrollable Content with minimum height */}
             <div className='max-h-[490px] flex-1 overflow-y-auto px-2'>
               {historyItems.length > 0 ? (
                 <div className='space-y-1'>
@@ -381,7 +235,6 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
                 </div>
               )}
             </div>
-            {/* Fixed Footer with Enhanced Pagination */}
             {showPagination && historyItems.length > 0 && (
               <div className='sticky bottom-0 bg-background/95 p-2'>
                 <DropdownMenuSeparator className='my-2' />
@@ -437,6 +290,33 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
+      <AlertDialog
+        open={isAlertOpen}
+        onOpenChange={(open) => {
+          setIsAlertOpen(open)
+          // If alert is being closed, ensure dropdown stays open
+          if (!open) {
+            setIsDropdownOpen(true)
+          }
+        }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear History</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to clear your viewing history? <br />
+              This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleAlertDismiss}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleClearHistory}>
+              Clear History
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </TooltipProvider>
   )
 }

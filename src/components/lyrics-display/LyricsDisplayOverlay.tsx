@@ -1,4 +1,5 @@
 import {
+  addToHistoryAtom,
   currentVideoAtom,
   fontSizeMultiplierAtom,
   lyricsDisplayBottomAtom,
@@ -10,7 +11,7 @@ import {
   useGetSongInfoBySongId,
   useGetYoutubeVideoInfo,
 } from '@/lib/react-query/queriesAndMutations'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
@@ -83,7 +84,8 @@ function LyricsDisplayOverlay({
   const [lyricsStyles, setLyricsStyles] = useState<React.CSSProperties[]>([])
   const isTranslationEnglish = useAtomValue(translationIsEnglishAtom)
   const isLyricsDisplayBottom = useAtomValue(lyricsDisplayBottomAtom)
-  const setCurrentVideo = useSetAtom(currentVideoAtom)
+  const [currentVideo, setCurrentVideo] = useAtom(currentVideoAtom)
+  const setHistory = useSetAtom(addToHistoryAtom)
 
   const transitionRef = useRef({ isEntering: false, isExiting: false })
 
@@ -161,6 +163,18 @@ function LyricsDisplayOverlay({
     addSongInfo,
     setCurrentVideo,
   ])
+
+  useEffect(() => {
+    if (currentVideo) {
+      const { videoId, title, author, thumbnailUrl } = currentVideo
+      setHistory({
+        videoId,
+        title,
+        author,
+        thumbnailUrl,
+      })
+    }
+  }, [currentVideo, setHistory])
 
   const findCurrentIndex = useCallback(
     (currentTime: number) => {
