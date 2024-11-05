@@ -30,7 +30,7 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
               <Button
                 variant='outline'
                 size='icon'
-                className={`invisible-ring border-primary hover:border-white ${buttonVisibility}`}>
+                className={`invisible-ring border-primary/80 hover:border-white ${buttonVisibility}`}>
                 <BookmarksIcon className='h-6 w-6' />
                 <span className='sr-only'>View Bookmarks</span>
               </Button>

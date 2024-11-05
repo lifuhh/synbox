@@ -131,7 +131,7 @@ const HeroGenerateLyricsDefault = ({
                 : 'border-foreground/60 hover:border-foreground/80 focus:border-foreground/90'
             } `}
           />
-          <div className='absolute -bottom-20 left-0 h-20 w-full py-6 pt-2 text-center lg:py-2 lg:text-left'>
+          <div className='absolute -bottom-20 left-0 h-20 w-full py-6 pt-2 text-center md:text-left lg:py-2'>
             {inputValue.length > 0 && (
               <div className={errorMessage ? 'text-red-500' : 'text-green-500'}>
                 {errorMessage
@@ -166,16 +166,16 @@ const HeroGenerateLyricsDefault = ({
                 {isCheckingLyrics ? (
                   <p className='text-[16px]'>Searching ...</p>
                 ) : existingLyrics ? (
-                  <p className='text-[18px]'>Play</p>
+                  <p className='text-[16px]'>Play</p>
                 ) : (
-                  <p className='text-[18px]'>Try Now</p>
+                  <p className='text-[16px]'>Try Now</p>
                 )}
                 {isCheckingLyrics ? (
                   ''
                 ) : existingLyrics ? (
                   <PlayArrowIcon className='h-2 w-2' />
                 ) : (
-                  <ArrowForwardIcon className='h-4 w-4' />
+                  <ArrowForwardIcon className='h-2 w-2' />
                 )}
               </Button>
             </DialogTrigger>

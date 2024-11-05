@@ -43,7 +43,7 @@ const ProfileButtonDropdown = () => {
         <Button
           variant='outline'
           size='icon'
-          className={` invisible-ring border-primary hover:border-white`}>
+          className={` invisible-ring border-primary/80 hover:border-white`}>
           <PersonIcon className='fill-white' />
           <span className='sr-only'>Toggle Profile</span>
         </Button>
@@ -51,7 +51,7 @@ const ProfileButtonDropdown = () => {
       <DropdownMenuContent
         align='end'
         sideOffset={10}
-        className=' bg-popover w-56 overflow-auto border-[1px] border-primary bg-opacity-100'>
+        className=' w-56 overflow-auto border-[1px] border-primary bg-popover bg-opacity-100'>
         {/* <DropdownMenuLabel className='unselectable'>
           My Account
         </DropdownMenuLabel>
@@ -83,7 +83,7 @@ const ProfileButtonDropdown = () => {
             <span>Profile</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator className='unselectable cursor-default bg-dark-2' />
+        <DropdownMenuSeparator className='unselectable bg-dark-2 cursor-default' />
         <DropdownMenuGroup>
           <DropdownMenuItem
             className='cursor-pointer'

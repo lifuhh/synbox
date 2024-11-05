@@ -114,7 +114,7 @@ videoId
                 {item.channel}
               </CardItem>
               <Button
-                className='rounded-xl bg-white px-4 py-2 text-sm font-bold text-primary/80 transition-none duration-0 hover:bg-primary/80 hover:text-foreground'
+                className='rounded-xl bg-white px-4 py-2 text-sm font-bold text-primary/80 hover:bg-primary/80 hover:text-foreground [&:hover]:transition-none [&:hover]:duration-0'
                 onClick={handleNavigate}
                 variant='default'>
                 <CardItem

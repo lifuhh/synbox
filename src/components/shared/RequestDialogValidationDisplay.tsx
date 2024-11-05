@@ -49,7 +49,7 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
           {/* <InfoItem label='Uploader' value={uploader} /> */}
           <InfoItem label='Likes' value={likes.toLocaleString()} />
           <div>
-            <InfoItem
+            {/* <InfoItem
               label='Lyrics'
               value={
                 subtitlesExist ? (
@@ -58,7 +58,7 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
                   <X className='text-red-500' />
                 )
               }
-            />
+            /> */}
             {/* <InfoItem
               label='Cleansed'
               value={

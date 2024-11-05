@@ -19,31 +19,31 @@ const HomeFooter = () => {
           <DockIcon
             onClick={() => handleRedirect('https://react.dev/')}
             className='bg-card-foreground'>
-            <Icons.react className='h-6 w-6 text-primary' />
+            <Icons.react className='h-6 w-6 text-primary/80' />
           </DockIcon>
           <DockIcon
             onClick={() => handleRedirect('https://tailwindcss.com/')}
             className='bg-card-foreground'>
-            <Icons.tailwind className='h-6 w-6 text-primary' />
+            <Icons.tailwind className='h-6 w-6 text-primary/80' />
           </DockIcon>
           <DockIcon
             onClick={() => handleRedirect('https://ui.shadcn.com/')}
             className='bg-card-foreground'>
-            <Icons.shadcn className='h-6 w-6 text-primary ' />
+            <Icons.shadcn className='h-6 w-6 text-primary/80 ' />
           </DockIcon>
           <DockIcon
             onClick={() =>
               handleRedirect('https://platform.openai.com/docs/overview/')
             }
             className='bg-card-foreground'>
-            <Icons.openai className='h-6 w-6 text-primary' />
+            <Icons.openai className='h-6 w-6 text-primary/80' />
           </DockIcon>
           <DockIcon
             onClick={() =>
               handleRedirect('https://developers.google.com/youtube/v3/')
             }
             className='bg-card-foreground'>
-            <Icons.gcloud className='h-6 w-6 text-primary' />
+            <Icons.gcloud className='h-6 w-6 text-primary/80' />
           </DockIcon>
           {/* <DockIcon
             onClick={() =>
@@ -55,7 +55,7 @@ const HomeFooter = () => {
         <Divider
           orientation='vertical'
           size='sm'
-          className=' border-foreground mx-4'
+          className=' mx-4 border-foreground'
         />
         <div className='flex'>
           {/* <h1 className='whitespace-nowrap text-center'>Visit Me At </h1> */}
@@ -66,12 +66,12 @@ const HomeFooter = () => {
               handleRedirect('https://www.linkedin.com/in/lifuhuang97/')
             }
             className='bg-card-foreground'>
-            <Icons.linkedin className='h-6 w-6 text-primary' />
+            <Icons.linkedin className='h-6 w-6 text-primary/80' />
           </DockIcon>
           <DockIcon
             onClick={() => handleRedirect('https://github.com/lifuhuang97/')}
             className='bg-card-foreground'>
-            <Icons.gitHub className='h-6 w-6 text-primary' />
+            <Icons.gitHub className='h-6 w-6 text-primary/80' />
           </DockIcon>
         </Dock>
       </div>

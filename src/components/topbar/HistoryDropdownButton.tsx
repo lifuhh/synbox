@@ -201,7 +201,7 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
               <Button
                 variant='outline'
                 size='icon'
-                className={`invisible-ring border-primary hover:border-white ${buttonVisibility}`}>
+                className={`invisible-ring border-primary/80 hover:border-white ${buttonVisibility}`}>
                 <HistoryIcon className='h-6 w-6' />
                 <span className='sr-only'>View History</span>
               </Button>
