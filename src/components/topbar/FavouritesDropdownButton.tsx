@@ -48,7 +48,7 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
             {/* Fixed Header */}
             <div className='sticky top-0 z-10 bg-background/95 p-2'>
               <DropdownMenuLabel className='unselectable text-xl'>
-                Bookmarked Songs
+                Bookmarks
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
             </div>
@@ -56,7 +56,7 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
             {/* Scrollable Content */}
             <div className='max-h-[600px] overflow-y-auto px-2'>
               {favorites.length > 0 ? (
-                <div className='space-y-1'>
+                <div className='space-y-1 pb-4'>
                   {[...favorites].reverse().map((item) => (
                     <FavouritesDropdownItem key={item.videoId} {...item} />
                   ))}
@@ -64,10 +64,10 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
               ) : (
                 <div className='flex flex-col items-center justify-center py-2 text-center'>
                   <p className='text-muted-foreground text-lg font-medium'>
-                    Your bookmarks list is empty.
+                    Your bookmarks list is empty
                   </p>
                   <p className='text-muted-foreground py-6 text-sm'>
-                    Songs you bookmark will appear here
+                    Songs you bookmarked will appear here.
                   </p>
                 </div>
               )}

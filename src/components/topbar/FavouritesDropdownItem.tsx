@@ -5,6 +5,7 @@ import { useAtom } from 'jotai'
 import { X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import OptimizedThumbnail from '../shared/OptimizedThumbnail'
 import { Button } from '../ui/button'
 
 interface FavouritesDropdownItemProps {
@@ -57,11 +58,11 @@ const FavouritesDropdownItem: React.FC<FavouritesDropdownItemProps> = ({
   return (
     <DropdownMenuItem className='p-2'>
       <div className='playlist-item flex h-full w-full items-center space-x-2'>
-        <img
+        <OptimizedThumbnail
           src={thumbnailUrl}
           alt={title}
-          className='rounded-xs h-12 w-auto cursor-pointer object-cover'
           onClick={handleClick}
+          className='cursor-pointer'
         />
         <div className='min-w-0 flex-grow'>
           <div

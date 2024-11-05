@@ -126,7 +126,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     <>
       <LoadingOverlay
         visible={playerOverlayVisible}
-        zIndex={40}
+        zIndex={100}
         overlayProps={{ radius: 'sm', blur: 15 }}
         loaderProps={{
           // Remove the default spinner

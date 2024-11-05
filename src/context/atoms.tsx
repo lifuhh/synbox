@@ -169,3 +169,6 @@ export const addToHistoryAtom = atom(
     set(historyAtom, limitedHistory)
   },
 )
+
+//? Watch History notification
+export const showWatchHistoryToastAtom = atomWithStorage('showWatchHistoryToast', true)

@@ -108,10 +108,17 @@ function LyricsDisplayOverlay({
   useEffect(() => {
     const pathSegments = location.pathname.split('/')
     const newVideoId = pathSegments[pathSegments.length - 1]
+    setCurrentVideo(null)
     if (newVideoId) {
       setVideoId(newVideoId)
     }
-  }, [location])
+
+    // Cleanup function
+    return () => {
+      setCurrentVideo(null)
+      setVideoId(null)
+    }
+  }, [location, setCurrentVideo])
 
   useEffect(() => {
     if (currentSongLyrics && isLyricsData(currentSongLyrics)) {
@@ -127,11 +134,13 @@ function LyricsDisplayOverlay({
   }, [currentSongLyrics])
 
   useEffect(() => {
-    if (!videoId || isLoadingYoutubeInfo || isFetchingSongInfo) return
+    if (!videoId || isLoadingYoutubeInfo || isFetchingSongInfo) {
+      // Still loading, keep currentVideo as null
+      return
+    }
 
-    // If song info doesn't exist in database and we haven't fetched from YouTube yet
+    // If song info doesn't exist in database and we have YouTube info
     if (isSongInfoError && youtubeInfo) {
-      // Format YouTube data to match your database schema
       const formattedSongInfo = {
         videoId,
         title: youtubeInfo.title,
@@ -139,7 +148,6 @@ function LyricsDisplayOverlay({
         thumbnailUrl: youtubeInfo.thumbnail,
       }
 
-      // Add to database
       addSongInfo(formattedSongInfo, {
         onSuccess: (newSongInfo) => {
           console.log('Successfully added song info to database:', newSongInfo)
@@ -147,11 +155,16 @@ function LyricsDisplayOverlay({
         },
         onError: (error) => {
           console.error('Error adding song info to database:', error)
+          // Optionally set currentVideo to null here if you want to ensure error state
+          setCurrentVideo(null)
         },
       })
     } else if (currentSongInfo) {
-      // If we already have the song info, just set it as current
+      // We have the song info from database
       setCurrentVideo(currentSongInfo)
+    } else {
+      // No song info and no YouTube info
+      setCurrentVideo(null)
     }
   }, [
     videoId,

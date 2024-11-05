@@ -1,6 +1,7 @@
 import LyricsDisplayOverlay from '@/components/lyrics-display/LyricsDisplayOverlay'
 import LyricsVisibilityToggleGroup from '@/components/lyrics-display/LyricsVisibilityToggleGroup'
 import VideoPlayer from '@/components/shared/VideoPlayer'
+import { ToastProps } from '@/components/ui/toast'
 import { useAppContext } from '@/context/AppContext'
 import {
   currentVideoAtom,
@@ -12,12 +13,17 @@ import {
   translationVisibilityAtom,
   userInteractedWithSettingsAtom,
 } from '@/context/atoms'
+import HistoryIcon from '@mui/icons-material/History'
 import { useAtom, useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
 import { useNavigate, useParams } from 'react-router-dom'
+
+import { ToastAction } from '@/components/ui/toast'
+import { useToast } from '@/components/ui/use-toast'
+import { showWatchHistoryToastAtom } from '@/context/atoms'
 
 const PlayerPage = () => {
   const navigate = useNavigate()
@@ -55,6 +61,13 @@ const PlayerPage = () => {
     lyricsControlVisibilityAtom,
   )
   const [currentVideo, setCurrentVideo] = useAtom(currentVideoAtom)
+
+  //
+  const { toast, dismiss } = useToast()
+  const toastIdRef = useRef<string | null>(null)
+  const [showWatchHistoryToast, setShowWatchHistoryToast] = useAtom(
+    showWatchHistoryToastAtom,
+  )
 
   // Initial validation effect
   useEffect(() => {
@@ -142,12 +155,46 @@ const PlayerPage = () => {
     if (!userInteractedWithSettings) {
       setLyricsControlVisibility(false)
     }
+
+    const handleToastDismiss = () => {
+      setShowWatchHistoryToast(false)
+      if (toastIdRef.current) {
+        dismiss(toastIdRef.current)
+      }
+    }
+
+    if (showWatchHistoryToast) {
+      const { id } = toast({
+        title: (
+          <div className='flex items-center gap-2'>
+            <p>Video added to Watch History</p>
+            <HistoryIcon className='h-6 w-6' />
+          </div>
+        ) as unknown as ToastProps['title'],
+        description: (
+          <div className='flex justify-start'>
+            <button
+              className='text-primary hover:underline'
+              onClick={handleToastDismiss}>
+              Do not show again
+            </button>
+          </div>
+        ),
+        duration: 2800,
+      })
+
+      toastIdRef.current = id
+    }
   }, [
     setLyricsControlVisibility,
     handlePlay,
     playerOverlayVisibleHandler,
+    dismiss,
+    setShowWatchHistoryToast,
     userInteractedWithSettings,
     setMuted,
+    toast,
+    showWatchHistoryToast,
   ])
 
   const handleToggleLoop = useCallback(() => {

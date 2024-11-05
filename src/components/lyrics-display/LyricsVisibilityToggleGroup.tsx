@@ -1,5 +1,13 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
+import {
+  Toast,
+  ToastAction,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
   Tooltip,
@@ -7,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useToast } from '@/components/ui/use-toast'
 
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
@@ -39,6 +48,7 @@ import { useNavigate } from 'react-router-dom'
 
 const LyricsVisibilityToggleGroup = () => {
   const navigate = useNavigate()
+  const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(true)
   const [hoveredButton, setHoveredButton] = useState(null)
 
@@ -90,18 +100,68 @@ const LyricsVisibilityToggleGroup = () => {
     setLyricsControlVisible(true) // Ensure controls remain visible when drawer is open
   }
 
-  //TODO: Add functionality
-  const handleShare = () => {
-    //
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      toast({
+        title: 'Copied URL to clipboard',
+        duration: 1500,
+      })
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: 'Failed to copy link to clipboard',
+        variant: 'destructive',
+        duration: 2000,
+      })
+    }
   }
 
   const handleBookmark = () => {
     if (!currentVideo) return
 
     if (isFavorite(currentVideo.videoId)) {
+      const videoToRemove = currentVideo
       removeFavorite(currentVideo.videoId)
+
+      toast({
+        title: 'Removed Bookmark',
+        action: (
+          <ToastAction
+            altText='Undo removal'
+            onClick={() => {
+              addFavorite(videoToRemove)
+              // toast({
+              //   title: 'Restored Bookmark',
+              //   duration: 1500,
+              // })
+            }}>
+            Undo
+          </ToastAction>
+        ),
+        duration: 5000,
+      })
     } else {
-      addFavorite(currentVideo)
+      const videoToAdd = currentVideo
+      addFavorite(videoToAdd)
+
+      toast({
+        title: 'Added to Bookmarks',
+        action: (
+          <ToastAction
+            altText='Undo add'
+            onClick={() => {
+              removeFavorite(videoToAdd.videoId)
+              // toast({
+              //   title: 'Bookmark Removed',
+              //   duration: 1500,
+              // })
+            }}>
+            Undo
+          </ToastAction>
+        ),
+        duration: 5000,
+      })
     }
   }
 
@@ -158,6 +218,16 @@ const LyricsVisibilityToggleGroup = () => {
     const isActive = lyricsToggleValues.includes(buttonId)
     const isExcludedButton = excludedButtons.includes(buttonId)
 
+    // Special handling for bookmark button when currentVideo doesn't exist
+    if (buttonId === 'bookmarkButton' && !currentVideo) {
+      return {
+        opacity: 0.3, // Matches disabled button opacity
+        cursor: 'not-allowed',
+        transform: 'scale(1)',
+        transition: 'opacity 0.15s ease-in-out, transform 0.15s ease-in-out',
+      }
+    }
+
     return {
       opacity: isExcludedButton || isActive ? 1 : isHovered ? 0.6 : 0.4,
       transform: isHovered ? 'scale(1.1)' : 'scale(1)',
@@ -166,256 +236,272 @@ const LyricsVisibilityToggleGroup = () => {
   }
 
   return (
-    <div className='fixed left-0 top-1/2 z-50 -translate-y-1/2 transform'>
-      <div
-        className={`flex transform items-center transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-[calc(100%-2.5rem)]'
-        }`}>
-        <div className='flex items-center space-x-4  p-4'>
-          <TooltipProvider delayDuration={190}>
-            <div className='flex cursor-pointer flex-col space-y-4'>
-              <ToggleGroup
-                type='multiple'
-                value={lyricsToggleValues}
-                onValueChange={handleLyricsToggle}
-                className='flex flex-col space-y-2'>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ToggleGroupItem
-                      value='returnHomeButton'
-                      onClick={handleHomeButtonClick}
-                      variant='default'
-                      aria-label='Return home'
-                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                      style={getButtonStyle('returnHomeButton')}>
-                      <HomeIcon sx={{ fontSize: 24 }} />
-                    </ToggleGroupItem>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side='right'
-                    align='start'
-                    sideOffset={6}
-                    alignOffset={-4}
-                    className='unhighlightable border-none bg-primary'>
-                    {'Return to Home Page'}
-                  </TooltipContent>
-                </Tooltip>
+    <ToastProvider>
+      <div className='fixed left-0 top-1/2 z-50 -translate-y-1/2 transform'>
+        <div
+          className={`flex transform items-center transition-transform duration-300 ease-in-out ${
+            isOpen ? 'translate-x-0' : '-translate-x-[calc(100%-2.5rem)]'
+          }`}>
+          <div className='flex items-center space-x-4  p-4'>
+            <TooltipProvider delayDuration={190}>
+              <div className='flex cursor-pointer flex-col space-y-4'>
+                <ToggleGroup
+                  type='multiple'
+                  value={lyricsToggleValues}
+                  onValueChange={handleLyricsToggle}
+                  className='flex flex-col space-y-2'>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value='returnHomeButton'
+                        onClick={handleHomeButtonClick}
+                        variant='default'
+                        aria-label='Return home'
+                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                        style={getButtonStyle('returnHomeButton')}>
+                        <HomeIcon sx={{ fontSize: 24 }} />
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side='right'
+                      align='start'
+                      sideOffset={6}
+                      alignOffset={-4}
+                      className='unhighlightable border-none bg-primary'>
+                      {'Return to Home Page'}
+                    </TooltipContent>
+                  </Tooltip>
 
-                <Divider size='sm' className='w-full border-primary' />
+                  <Divider size='sm' className='w-full border-primary' />
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ToggleGroupItem
-                      value='translationLanguage'
-                      onClick={handleTranslationLanguageToggle}
-                      variant='default'
-                      aria-label='Toggle translation language'
-                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                      style={getButtonStyle('translationLanguage')}>
-                      {isTranslationEnglish ? (
-                        <h1 className='text-xl'>EN</h1>
-                      ) : (
-                        <h1 className='text-xl font-extrabold'>中</h1>
-                      )}
-                    </ToggleGroupItem>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side='right'
-                    align='start'
-                    sideOffset={6}
-                    alignOffset={-4}
-                    className='unhighlightable border-none bg-primary'>
-                    {isTranslationEnglish
-                      ? 'View Chinese Translations'
-                      : 'View English Translations'}
-                  </TooltipContent>
-                </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value='translationLanguage'
+                        onClick={handleTranslationLanguageToggle}
+                        variant='default'
+                        aria-label='Toggle translation language'
+                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                        style={getButtonStyle('translationLanguage')}>
+                        {isTranslationEnglish ? (
+                          <h1 className='text-xl'>EN</h1>
+                        ) : (
+                          <h1 className='text-xl font-extrabold'>中</h1>
+                        )}
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side='right'
+                      align='start'
+                      sideOffset={6}
+                      alignOffset={-4}
+                      className='unhighlightable border-none bg-primary'>
+                      {isTranslationEnglish
+                        ? 'View Chinese Translations'
+                        : 'View English Translations'}
+                    </TooltipContent>
+                  </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ToggleGroupItem
-                      value='translation'
-                      aria-label='Toggle translation'
-                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
-                      style={getButtonStyle('translation')}>
-                      <TranslateIcon sx={{ fontSize: 24 }} />
-                    </ToggleGroupItem>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side='right'
-                    align='start'
-                    sideOffset={6}
-                    alignOffset={-4}
-                    className='unhighlightable border-none bg-primary'>
-                    {isTranslationVisible
-                      ? 'Hide Translations'
-                      : 'Show Translations'}
-                  </TooltipContent>
-                </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value='translation'
+                        aria-label='Toggle translation'
+                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
+                        style={getButtonStyle('translation')}>
+                        <TranslateIcon sx={{ fontSize: 24 }} />
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side='right'
+                      align='start'
+                      sideOffset={6}
+                      alignOffset={-4}
+                      className='unhighlightable border-none bg-primary'>
+                      {isTranslationVisible
+                        ? 'Hide Translations'
+                        : 'Show Translations'}
+                    </TooltipContent>
+                  </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ToggleGroupItem
-                      value='lyrics'
-                      aria-label='Toggle lyrics'
-                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
-                      style={getButtonStyle('lyrics')}>
-                      <LyricsIcon sx={{ fontSize: 24 }} />
-                    </ToggleGroupItem>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side='right'
-                    align='start'
-                    sideOffset={6}
-                    alignOffset={-4}
-                    className='unhighlightable border-none bg-primary'>
-                    {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
-                  </TooltipContent>
-                </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value='lyrics'
+                        aria-label='Toggle lyrics'
+                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
+                        style={getButtonStyle('lyrics')}>
+                        <LyricsIcon sx={{ fontSize: 24 }} />
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side='right'
+                      align='start'
+                      sideOffset={6}
+                      alignOffset={-4}
+                      className='unhighlightable border-none bg-primary'>
+                      {isLyricsVisible ? 'Hide Lyrics' : 'Show Lyrics'}
+                    </TooltipContent>
+                  </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ToggleGroupItem
-                      value='romaji'
-                      aria-label='Toggle romaji'
-                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
-                      style={getButtonStyle('romaji')}>
-                      <h1 className='text-xl'>R</h1>
-                    </ToggleGroupItem>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side='right'
-                    align='start'
-                    sideOffset={6}
-                    alignOffset={-4}
-                    className='unhighlightable border-none bg-primary'>
-                    {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
-                  </TooltipContent>
-                </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value='romaji'
+                        aria-label='Toggle romaji'
+                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary bg-opacity-100 data-[state=off]:bg-secondary/10'
+                        style={getButtonStyle('romaji')}>
+                        <h1 className='text-xl'>R</h1>
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side='right'
+                      align='start'
+                      sideOffset={6}
+                      alignOffset={-4}
+                      className='unhighlightable border-none bg-primary'>
+                      {isRomajiVisible ? 'Hide Romaji' : 'Show Romaji'}
+                    </TooltipContent>
+                  </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ToggleGroupItem
-                      value='lyricsPosition'
-                      onClick={handleLyricsPositionToggle}
-                      variant='default'
-                      aria-label='Toggle lyrics position'
-                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                      style={getButtonStyle('lyricsPosition')}>
-                      {isLyricsDisplayBottom ? (
-                        <VerticalAlignTopIcon />
-                      ) : (
-                        <VerticalAlignBottomIcon />
-                      )}
-                    </ToggleGroupItem>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side='right'
-                    align='start'
-                    sideOffset={6}
-                    alignOffset={-4}
-                    className='unhighlightable border-none bg-primary'>
-                    {isLyricsDisplayBottom
-                      ? 'Align Lyrics Top'
-                      : 'Align Lyrics Bottom'}
-                  </TooltipContent>
-                </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value='lyricsPosition'
+                        onClick={handleLyricsPositionToggle}
+                        variant='default'
+                        aria-label='Toggle lyrics position'
+                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                        style={getButtonStyle('lyricsPosition')}>
+                        {isLyricsDisplayBottom ? (
+                          <VerticalAlignTopIcon />
+                        ) : (
+                          <VerticalAlignBottomIcon />
+                        )}
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side='right'
+                      align='start'
+                      sideOffset={6}
+                      alignOffset={-4}
+                      className='unhighlightable border-none bg-primary'>
+                      {isLyricsDisplayBottom
+                        ? 'Align Lyrics Top'
+                        : 'Align Lyrics Bottom'}
+                    </TooltipContent>
+                  </Tooltip>
 
-                <Divider size='sm' className='w-full border-primary' />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ToggleGroupItem
-                      value='bookmarkButton'
-                      onClick={handleBookmark}
-                      variant='default'
-                      aria-label='Return home'
-                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                      style={getButtonStyle('bookmarkButton')}>
-                      {currentVideo && isFavorite(currentVideo.videoId) ? (
-                        <BookmarkAddedIcon />
-                      ) : (
-                        <BookmarkBorderIcon
+                  <Divider size='sm' className='w-full border-primary' />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value='bookmarkButton'
+                        onClick={handleBookmark}
+                        variant='default'
+                        disabled={!currentVideo}
+                        aria-label='Toggle bookmark'
+                        className={`invisible-ring h-10 w-10 cursor-${currentVideo ? 'pointer' : 'not-allowed'} rounded-lg bg-primary text-white`}
+                        style={getButtonStyle('bookmarkButton')}>
+                        {currentVideo ? (
+                          isFavorite(currentVideo.videoId) ? (
+                            <BookmarkAddedIcon />
+                          ) : (
+                            <BookmarkBorderIcon
+                              sx={{
+                                fontSize: 24,
+                                transform: 'scaleX(-1) rotate(0deg)',
+                                transformOrigin: 'center',
+                              }}
+                            />
+                          )
+                        ) : (
+                          <BookmarkBorderIcon
+                            sx={{
+                              fontSize: 24,
+                              transform: 'scaleX(-1) rotate(0deg)',
+                              transformOrigin: 'center',
+                            }}
+                          />
+                        )}
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side='right'
+                      align='start'
+                      sideOffset={6}
+                      alignOffset={-4}
+                      className='unhighlightable border-none bg-primary'>
+                      {!currentVideo
+                        ? 'No video selected'
+                        : currentVideo && isFavorite(currentVideo.videoId)
+                          ? 'Remove from Bookmarks'
+                          : 'Add to Bookmarks'}
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value='shareButton'
+                        onClick={handleShare}
+                        variant='default'
+                        aria-label='Return home'
+                        className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
+                        style={getButtonStyle('shareButton')}>
+                        <ReplyIcon
                           sx={{
                             fontSize: 24,
                             transform: 'scaleX(-1) rotate(0deg)',
                             transformOrigin: 'center',
                           }}
                         />
-                      )}
-                    </ToggleGroupItem>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side='right'
-                    align='start'
-                    sideOffset={6}
-                    alignOffset={-4}
-                    className='unhighlightable border-none bg-primary'>
-                    {currentVideo && isFavorite(currentVideo.videoId)
-                      ? 'Remove from Favourites'
-                      : 'Add to Favourites'}
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ToggleGroupItem
-                      value='shareButton'
-                      onClick={handleShare}
-                      variant='default'
-                      aria-label='Return home'
-                      className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
-                      style={getButtonStyle('shareButton')}>
-                      <ReplyIcon
-                        sx={{
-                          fontSize: 24,
-                          transform: 'scaleX(-1) rotate(0deg)',
-                          transformOrigin: 'center',
-                        }}
-                      />
-                    </ToggleGroupItem>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side='right'
-                    align='start'
-                    sideOffset={6}
-                    alignOffset={-4}
-                    className='unhighlightable border-none bg-primary'>
-                    {'Copy URL'}
-                  </TooltipContent>
-                </Tooltip>
-              </ToggleGroup>
-            </div>
-          </TooltipProvider>
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side='right'
+                      align='start'
+                      sideOffset={6}
+                      alignOffset={-4}
+                      className='unhighlightable border-none bg-primary'>
+                      {'Copy URL'}
+                    </TooltipContent>
+                  </Tooltip>
+                </ToggleGroup>
+              </div>
+            </TooltipProvider>
+          </div>
+          <div className='flex h-56 flex-col items-center justify-center space-y-2'>
+            <span className='unselectable text-2xl font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
+              A
+            </span>
+            <Slider
+              className='V cursor-pointer rounded-lg'
+              min={0.4}
+              max={1.6}
+              step={0.01}
+              value={[fontSizeMultiplier]}
+              onValueChange={handleFontSizeChange}
+              orientation='vertical'
+            />
+            <span className='unselectable text-sm font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
+              A
+            </span>
+          </div>
+          {/* Toggle button */}
+          <Button
+            variant='ghost'
+            onClick={handleToggleDrawer}
+            className='ml-1 h-10 w-10 transition-transform duration-300 hover:scale-110 hover:bg-transparent hover:outline-primary'>
+            <KeyboardDoubleArrowUpIcon
+              className={`transform stroke-primary stroke-1 transition-transform duration-300 ${
+                isOpen ? '-rotate-90' : 'rotate-90'
+              }`}
+            />
+          </Button>
         </div>
-        <div className='flex h-56 flex-col items-center justify-center space-y-2'>
-          <span className='unselectable text-2xl font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
-            A
-          </span>
-          <Slider
-            className='V cursor-pointer rounded-lg'
-            min={0.4}
-            max={1.6}
-            step={0.01}
-            value={[fontSizeMultiplier]}
-            onValueChange={handleFontSizeChange}
-            orientation='vertical'
-          />
-          <span className='unselectable text-sm font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]'>
-            A
-          </span>
-        </div>
-        {/* Toggle button */}
-        <Button
-          variant='ghost'
-          onClick={handleToggleDrawer}
-          className='ml-1 h-10 w-10 transition-transform duration-300 hover:scale-110 hover:bg-transparent hover:outline-primary'>
-          <KeyboardDoubleArrowUpIcon
-            className={`transform stroke-primary stroke-1 transition-transform duration-300 ${
-              isOpen ? '-rotate-90' : 'rotate-90'
-            }`}
-          />
-        </Button>
       </div>
-    </div>
+      <ToastViewport />
+    </ToastProvider>
   )
 }
 

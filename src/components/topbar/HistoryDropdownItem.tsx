@@ -3,16 +3,17 @@ import { useOverflow } from '@/hooks/useOverflow'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import OptimizedThumbnail from '../shared/OptimizedThumbnail'
 import { Button } from '../ui/button'
 
-interface FavouritesDropdownItemProps {
+interface HistoryDropdownItemProps {
   videoId: string
   title: string
   author: string
   thumbnailUrl: string
 }
 
-const FavouritesDropdownItem: React.FC<FavouritesDropdownItemProps> = ({
+const HistoryDropdownItem: React.FC<HistoryDropdownItemProps> = ({
   videoId,
   title,
   author,
@@ -53,11 +54,11 @@ const FavouritesDropdownItem: React.FC<FavouritesDropdownItemProps> = ({
   return (
     <DropdownMenuItem className='p-2'>
       <div className='playlist-item flex h-full w-full items-center space-x-2'>
-        <img
+        <OptimizedThumbnail
           src={thumbnailUrl}
           alt={title}
-          className='rounded-xs h-12 w-auto cursor-pointer object-cover'
           onClick={handleClick}
+          className='cursor-pointer'
         />
         <div className='min-w-0 flex-grow'>
           <div
@@ -88,4 +89,4 @@ const FavouritesDropdownItem: React.FC<FavouritesDropdownItemProps> = ({
   )
 }
 
-export default FavouritesDropdownItem
+export default HistoryDropdownItem
