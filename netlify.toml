@@ -4,3 +4,9 @@ redirects
   from = "/*"
   to = "/index.html"
   status = 200
+
+[
+build
+]
+  publish = "dist"
+  command = "bun run dev"
