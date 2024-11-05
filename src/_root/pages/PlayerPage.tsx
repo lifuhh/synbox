@@ -13,6 +13,7 @@ import {
   translationVisibilityAtom,
   userInteractedWithSettingsAtom,
 } from '@/context/atoms'
+import { handleVideoRoute } from '@/utils/routeHandler.ts'
 import HistoryIcon from '@mui/icons-material/History'
 import { useAtom, useAtomValue } from 'jotai'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -21,7 +22,6 @@ import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ToastAction } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/use-toast'
 import { showWatchHistoryToastAtom } from '@/context/atoms'
 
@@ -69,33 +69,51 @@ const PlayerPage = () => {
     showWatchHistoryToastAtom,
   )
 
-  // Initial validation effect
   useEffect(() => {
-    if (!videoId) {
-      navigate('/', { replace: true })
-      return
-    }
+    let mounted = true
 
-    const initializePlayer = async () => {
-      try {
-        setIsLoading(true)
-
-        if (!videoId.match(/^[a-zA-Z0-9_-]{11}$/)) {
-          throw new Error('Invalid video ID format')
+    handleVideoRoute({
+      navigate,
+      videoId,
+      setIsLoading: (loading) => {
+        if (mounted) setIsLoading(loading)
+      },
+      setError: (err) => {
+        if (mounted) setError(err)
+      },
+      setStateVideoId: (id) => {
+        if (mounted) setStateVideoId(id)
+      },
+      onSuccess: () => {
+        if (mounted) {
+          setIsPlayerReady(false) // Reset player ready state
+          setPlaying(false) // Reset playing state
+          setPlayed(0) // Reset played progress
+          // Add any other state resets you need
         }
+      },
+    })
 
-        setStateVideoId(videoId)
-        setError(null)
-      } catch (err) {
-        console.error('Error initializing player:', err)
-        setError(err instanceof Error ? err.message : 'Failed to load video')
-      } finally {
-        setIsLoading(false)
-      }
+    // Cleanup function
+    return () => {
+      mounted = false
     }
-
-    initializePlayer()
   }, [videoId, navigate])
+
+  // Modified error handling
+  if (error) {
+    return (
+      <div className='flex h-screen flex-col items-center justify-center gap-4'>
+        <p className='text-red-500'>{error}</p>
+        <p className='text-sm text-gray-600'>Video ID: {videoId}</p>
+        <button
+          onClick={() => navigate('/')}
+          className='rounded bg-primary px-4 py-2 text-white transition-colors hover:bg-primary/90'>
+          Return Home
+        </button>
+      </div>
+    )
+  }
 
   // Your existing callback functions
   const handleToggleLyricsOverlayVisibility = useCallback(() => {
@@ -334,7 +352,7 @@ const PlayerPage = () => {
         />
       )}
 
-      <div className='relative aspect-video h-full w-full border-2 border-primary border-opacity-5'>
+      <div className='relative aspect-video h-full w-full border-none border-opacity-5'>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}

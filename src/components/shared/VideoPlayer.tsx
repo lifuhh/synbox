@@ -1,5 +1,6 @@
 import { useAppContext } from '@/context/AppContext'
 import { mutedAtom } from '@/context/atoms'
+import { isValidVideoId } from '@/utils/routeHandler'
 import { LoadingOverlay } from '@mantine/core'
 import { useAtom } from 'jotai'
 import { ForwardedRef, useEffect, useState } from 'react'
@@ -49,8 +50,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [videoEnded, setVideoEnded] = useState(false)
   const [muted, setMuted] = useAtom(mutedAtom)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [videoError, setVideoError] = useState<Error | null>(null)
 
-  //TODO: This is a typeguard - understand this better
+  // Validate video ID
+  useEffect(() => {
+    if (!isValidVideoId(videoId)) {
+      setVideoError(new Error('Invalid video ID'))
+      return
+    }
+    setVideoError(null)
+  }, [videoId])
+
+  // Type guard for playerRef remains the same
   if (!playerRef || typeof playerRef === 'function') {
     throw new Error('playerRef must be a MutableRefObject')
   }
@@ -104,16 +115,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleReady = () => {
     if (!playerRef.current) return
 
-    if (playerRef.current.getInternalPlayer()) {
-      const isMuted = playerRef.current.getInternalPlayer().isMuted()
-      setMuted(isMuted)
-      setIsPlayerReady(true)
-      setIsInitialized(true)
+    try {
+      if (playerRef.current.getInternalPlayer()) {
+        const isMuted = playerRef.current.getInternalPlayer().isMuted()
+        setMuted(isMuted)
+        setIsPlayerReady(true)
+        setIsInitialized(true)
+        setVideoError(null)
 
-      // Auto-start if not muted
-      if (!isMuted) {
-        handlePlay()
+        // Auto-start if not muted
+        if (!isMuted) {
+          handlePlay()
+        }
       }
+    } catch (error) {
+      handleError(error)
     }
   }
 
@@ -122,15 +138,27 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setVideoEnded(playing)
   }
 
+  const handleError = (error: any) => {
+    console.error('Video player error:', error)
+    setVideoError(
+      error instanceof Error ? error : new Error('Video playback error'),
+    )
+    setIsPlayerReady(false)
+  }
+
   return (
     <>
       <LoadingOverlay
-        visible={playerOverlayVisible}
+        visible={playerOverlayVisible || !!videoError}
         zIndex={100}
         overlayProps={{ radius: 'sm', blur: 15 }}
         loaderProps={{
-          // Remove the default spinner
-          children: (
+          children: videoError ? (
+            <div className='flex flex-col items-center justify-center text-red-500'>
+              <p>Error loading video</p>
+              <p className='text-sm'>{videoError.message}</p>
+            </div>
+          ) : (
             <PlayerMutedOverlay handleInitMutedPlay={handleInitMutedPlay} />
           ),
           style: { width: '100%', height: '100%' },
@@ -156,13 +184,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 disablekb: 1,
                 fs: 0,
               },
+              embedOptions: {
+                nocookie: true,
+              },
             },
           }}
           width='100%'
           height='100%'
           url={`https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&cc_load_policy=0&rel=0`}
-          // url={`https://www.youtube.com/embed/${videoId}?cc_load_policy=0&rel=0`}
-          // url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3&rel=0`}
           muted={muted}
           volume={volume}
           playing={playing}
@@ -173,20 +202,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           onPlay={handlePlay}
           onSeek={(e) => console.log('onSeek', e)}
           onEnded={handleVideoEnded}
-          onError={(e) => console.log('onError', e)}
+          onError={handleError}
           onProgress={handleProgress}
           onDuration={handleDuration}
           onPause={handlePause}
         />
       </ExternalLinkHandler>
-
-      {/* {playing || videoEnded ? (
-        <div
-          className='absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-0 text-white'
-          onClick={handlePlayPause}></div>
-      ) : (
-        ''
-      )} */}
     </>
   )
 }
