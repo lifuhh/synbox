@@ -1,65 +1,36 @@
-import { Button } from '@/components/ui/button'
-import { useLocation } from 'react-router-dom'
-import { GitHubIcon } from '../svgicons'
-import AppLogo from '../topbar/AppLogo'
-import CommandSearch from '../topbar/CommandSearch'
-
-import { globalControlsVisibilityAtom } from '@/context/atoms'
-
 import { useAppContext } from '@/context/AppContext'
-import { fullscreenAtom } from '@/context/atoms'
+import { fullscreenAtom, globalControlsVisibilityAtom } from '@/context/atoms'
 import { useAtomValue } from 'jotai'
+import { useLocation } from 'react-router-dom'
+import AppLogo from '../topbar/AppLogo'
 import FavouritesDropdownButton from '../topbar/FavouritesDropdownButton'
 import HistoryDropdownButton from '../topbar/HistoryDropdownButton'
 import ProfileButton from '../topbar/ProfileButton'
 
 const TopBar = () => {
   const { playerControlsVisible } = useAppContext()
-  const globalControlsVisible = useAtomValue(globalControlsVisibilityAtom)
-  const isFullscreen = useAtomValue(fullscreenAtom)
-
-  const location = useLocation() // Use the useLocation hook to access the current route
+  // const globalControlsVisible = useAtomValue(globalControlsVisibilityAtom)
+  const location = useLocation()
   const isVideoPlayer = location.pathname.includes('/v/')
-  // Determine the background opacity based on the pathname
 
-  // const pathname = window.location.pathname
-  // console.log('Pathname in topbar is')
-  // console.log(pathname)
-  // console.log(pathname.includes('/v/'))
-
-  if (isVideoPlayer) {
-    return null
-  }
+  // Return empty fragment instead of null to maintain consistent rendering
+  // if (isVideoPlayer && !globalControlsVisible) {
+  //   return <></>
+  // }
 
   return (
-    // <section className='topbar sticky top-0 bg'>
     <section
-      className={`topbar controls sticky top-0 z-100${
-        isFullscreen ? 'hidden' : !globalControlsVisible ? 'hidden' : 'block'
-      }`}>
+      className={`fixed left-0 right-0 top-0 z-50 transition-opacity duration-300
+        ${isVideoPlayer ? 'pointer-events-none' : ''}`}>
       <nav
-        className={`flex-between h-14 w-full bg-secondary/50 ${
-          isVideoPlayer ? 'bg-opacity-0' : 'bg-opacity-80'
-        } sm:px-4
-        `}>
+        className={`flex-between h-14 w-full
+          ${isVideoPlayer ? 'bg-secondary/0' : 'bg-secondary/50 bg-opacity-80'}
+          ${isVideoPlayer ? 'pointer-events-auto' : ''}
+          sm:px-4`}>
         {playerControlsVisible && !isVideoPlayer && <AppLogo />}
-        {/* <div className='flex-end pb-2 justify-end lg:gap-2 w-48'>
-          <AccountBoxIcon
-            sx={{ fontSize: 50 }}
-            className='flex justify-self-end align-top'
-          />
-          <FavouritesButton />
-        </div> */}
         <div
-          className={`ml-auto mr-2 flex items-center gap-3 ${playerControlsVisible ? '' : 'hidden'} `}>
-          {/* <CommandSearch isVideoPlayer={isVideoPlayer} /> */}
-          {/* <Button
-            variant='outline'
-            size='icon'
-            className={`border-primary hover:border-white ${buttonVisibility}`}>
-            <GitHubIcon className='scale-75 fill-white' />
-            <span className='sr-only'>GitHub Button</span>
-          </Button> */}
+          className={`ml-auto mr-2 flex items-center gap-3 
+            ${isVideoPlayer ? 'pointer-events-auto' : ''}`}>
           <FavouritesDropdownButton buttonVisibility={true} />
           <HistoryDropdownButton buttonVisibility={true} />
           {!isVideoPlayer && <ProfileButton />}

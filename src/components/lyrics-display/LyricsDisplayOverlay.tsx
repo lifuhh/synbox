@@ -299,16 +299,21 @@ function LyricsDisplayOverlay({
     [],
   )
 
-  const getOverlayHeight = '100%'
-
   const getOverlayPosition = useMemo(() => {
     if (isLyricsDisplayBottom) {
       return {
-        bottom: '0px',
-        top: '0px',
+        bottom: '0',
+        top: 'auto',
+        height: '26%', // Adjust this value based on your needs
+        // background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)',
       }
     } else {
-      return { top: '60px', bottom: '0px' }
+      return {
+        top: '0',
+        bottom: 'auto',
+        height: '40%', // Adjust this value based on your needs
+        // background: 'linear-gradient(to bottom, rgba(0,0,0,0.3), transparent)',
+      }
     }
   }, [isLyricsDisplayBottom])
 
@@ -414,14 +419,13 @@ function LyricsDisplayOverlay({
       className='player-lyrics-overlay unhighlightable absolute left-0 z-50 w-full'
       style={{
         ...getOverlayPosition,
-        height: isLyricsDisplayBottom ? getOverlayHeight : 'auto',
-        display: 'flex',
-        flexDirection: isLyricsDisplayBottom ? 'column-reverse' : 'column',
         pointerEvents: 'none',
       }}>
       <div
-        className={`lyric-container flex w-full items-center justify-start ${
-          isLyricsDisplayBottom ? 'pb-0' : 'pt-4'
+        className={`lyric-container flex h-full w-full ${
+          isLyricsDisplayBottom
+            ? 'flex-col justify-end pb-14' // Add some bottom padding when at bottom
+            : 'flex-col justify-start pt-14' // Add more top padding to account for the floating topbar
         }`}>
         <div
           className='flex w-full flex-col items-center'

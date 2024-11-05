@@ -160,7 +160,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           }}
           width='100%'
           height='100%'
-          url={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&cc_load_policy=0&rel=0`}
+          url={`https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&cc_load_policy=0&rel=0`}
           // url={`https://www.youtube.com/embed/${videoId}?cc_load_policy=0&rel=0`}
           // url={`https://www.youtube.com/watch?v=${videoId}&cc_load_policy=3&rel=0`}
           muted={muted}

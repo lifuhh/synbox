@@ -43,7 +43,6 @@ import {
   mutedAtom,
 } from '@/context/atoms'
 import { useAtom, useAtomValue } from 'jotai'
-import LyricsVisibilityToggleGroup from '../lyrics-display/LyricsVisibilityToggleGroup'
 
 interface PlayerBottomBarProps {
   playing: boolean
@@ -185,7 +184,6 @@ const PlayerBottomBar = ({
       <div
         ref={bottomBarRef}
         className={`controls fixed inset-x-0 bottom-0 bg-dark-3 ${playerControlsVisible ? 'visible' : 'hidden'}`}>
-        {lyricsControlVisibility && <LyricsVisibilityToggleGroup />}
         <div className='relative h-1 cursor-pointer'>
           <div className='absolute inset-x-0 z-10'>
             <Slider

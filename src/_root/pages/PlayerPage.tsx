@@ -334,7 +334,7 @@ const PlayerPage = () => {
         />
       )}
 
-      <div className='relative mt-14 aspect-video h-full w-full border-2 border-primary border-opacity-5'>
+      <div className='relative aspect-video h-full w-full border-2 border-primary border-opacity-5'>
         {stateVideoId && (
           <VideoPlayer
             videoId={stateVideoId}

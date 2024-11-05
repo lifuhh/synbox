@@ -48,7 +48,7 @@
   }
 
   body {
-    @apply min-h-screen font-inter text-white;
+    @apply custom-scrollbar min-h-screen font-inter text-white;
     /* background-image: url('/assets/images/triangulate.png'); */
     background-size: cover; /* Cover the entire viewport */
     background-position: center; /* Center the image in the viewport */
@@ -104,22 +104,24 @@
 
   /* ? Customize appearance of scrollbar START */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
-    border-radius: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: var(--background);
+    background: hsl(var(--accent)); /* Using your accent color */
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 40px;
+    background: hsl(var(--primary)); /* Using your primary color */
+    border-radius: 3px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary);
+    background: hsl(
+      var(--primary-bright)
+    ); /* Using your bright primary variant */
   }
 
   /* Specific scrollbar styling for the ScrollArea with the white thumb */
