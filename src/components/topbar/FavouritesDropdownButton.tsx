@@ -66,7 +66,7 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
                   <p className='text-muted-foreground text-lg font-medium'>
                     Your bookmarks list is empty
                   </p>
-                  <p className='text-muted-foreground py-6 text-sm'>
+                  <p className='text-muted-foreground pb-4 pt-2 text-sm'>
                     Songs you bookmarked will appear here.
                   </p>
                 </div>

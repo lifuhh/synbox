@@ -60,8 +60,8 @@ const TopBar = () => {
             <GitHubIcon className='scale-75 fill-white' />
             <span className='sr-only'>GitHub Button</span>
           </Button> */}
-          <FavouritesDropdownButton buttonVisibility={playerControlsVisible} />
-          <HistoryDropdownButton buttonVisibility={playerControlsVisible} />
+          <FavouritesDropdownButton buttonVisibility={true} />
+          <HistoryDropdownButton buttonVisibility={true} />
           {!isVideoPlayer && <ProfileButton />}
         </div>
       </nav>

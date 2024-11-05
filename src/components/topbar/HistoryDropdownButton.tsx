@@ -39,8 +39,12 @@ interface HistoryDropdownButtonProps {
 }
 
 const ITEMS_PER_PAGE = 7
+const MAX_HEIGHT = 620 // Maximum height in pixels
+const ITEM_HEIGHT = 68 // Approximate height of each history item
+const HEADER_HEIGHT = 65 // Height of the header section
+const PAGINATION_HEIGHT = 57 // Height of the pagination section
+const MIN_HEIGHT = 150 // Minimum height for the dropdown
 
-// Create custom pagination components to avoid type issues
 const PaginationContainer: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
@@ -77,6 +81,20 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false)
 
+  // Calculate dynamic height based on number of items
+  const calculateDropdownHeight = () => {
+    const contentHeight = Math.min(
+      MAX_HEIGHT,
+      Math.max(
+        MIN_HEIGHT,
+        HEADER_HEIGHT +
+          paginatedItems.length * ITEM_HEIGHT +
+          (showPagination ? PAGINATION_HEIGHT : 0),
+      ),
+    )
+    return contentHeight
+  }
+
   useEffect(() => {
     if (historyItems.length === 0) {
       setCurrentPage(1)
@@ -97,13 +115,11 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
     setHistoryItems([])
     setCurrentPage(1)
     setIsDropdownOpen(false)
-    // Important: Set isAlertOpen to false after clearing history
     setIsAlertOpen(false)
   }
 
   const handleAlertDismiss = () => {
     setIsAlertOpen(false)
-    // Ensure dropdown state is maintained
     setIsDropdownOpen(true)
   }
 
@@ -111,10 +127,12 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, historyItems.length)
   const paginatedItems = historyItems.slice(startIndex, endIndex)
+  const showPagination = historyItems.length > ITEMS_PER_PAGE
 
   const handlePageChange = (page: number): void => {
     setCurrentPage(page)
   }
+
   const renderPaginationItems = () => {
     const items: React.ReactNode[] = []
     const VISIBLE_PAGES = 5
@@ -174,8 +192,6 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
     return items
   }
 
-  const showPagination = historyItems.length > ITEMS_PER_PAGE
-
   return (
     <TooltipProvider>
       <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -198,10 +214,10 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
         <DropdownMenuContent
           align='end'
           sideOffset={10}
-          className='w-[400px] max-w-[400px] border border-primary bg-background/95 p-0'>
-          {/* Rest of the dropdown content remains the same... */}
-          <div className='flex h-[535px] flex-col'>
-            <div className='sticky top-0 z-10 bg-background/95 p-2'>
+          className='w-[400px] max-w-[400px] border border-primary bg-background/95 p-0'
+          style={{ height: `${calculateDropdownHeight()}px` }}>
+          <div className='flex h-full flex-col'>
+            <div className='sticky top-0 z-10 m-2 bg-background/95'>
               <div className='flex items-center justify-between'>
                 <DropdownMenuLabel className='unselectable text-xl'>
                   History
@@ -217,26 +233,26 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
               </div>
               <DropdownMenuSeparator />
             </div>
-            <div className='max-h-[490px] flex-1 overflow-y-auto px-2'>
+            <div className='flex-1 overflow-y-auto px-2'>
               {historyItems.length > 0 ? (
-                <div className='space-y-1'>
+                <div className=''>
                   {paginatedItems.map((item) => (
                     <HistoryDropdownItem key={item.videoId} {...item} />
                   ))}
                 </div>
               ) : (
-                <div className='flex h-full flex-col items-center justify-center py-2 text-center'>
+                <div className=' flex h-full flex-col items-center justify-center py-2 text-center'>
                   <p className='text-muted-foreground text-lg font-medium'>
                     Your history is empty.
                   </p>
-                  <p className='text-muted-foreground py-6 text-sm'>
+                  <p className='text-muted-foreground pb-4 pt-2 text-sm'>
                     Videos you viewed will appear here
                   </p>
                 </div>
               )}
             </div>
             {showPagination && historyItems.length > 0 && (
-              <div className='sticky bottom-0 bg-background/95 p-2'>
+              <div className='sticky bottom-0 bg-background/95 pb-2'>
                 <DropdownMenuSeparator className='my-2' />
                 <PaginationContainer>
                   <PaginationItem>
@@ -294,7 +310,6 @@ const HistoryDropdownButton: React.FC<HistoryDropdownButtonProps> = ({
         open={isAlertOpen}
         onOpenChange={(open) => {
           setIsAlertOpen(open)
-          // If alert is being closed, ensure dropdown stays open
           if (!open) {
             setIsDropdownOpen(true)
           }
