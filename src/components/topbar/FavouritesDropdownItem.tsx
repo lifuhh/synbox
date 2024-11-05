@@ -1,5 +1,7 @@
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import { removeFavoriteAtom } from '@/context/atoms'
 import { useOverflow } from '@/hooks/useOverflow'
+import { useAtom } from 'jotai'
 import { X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -22,6 +24,7 @@ const FavouritesDropdownItem: React.FC<FavouritesDropdownItemProps> = ({
   const textRef = useRef<HTMLSpanElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [isOverflowing, setIsOverflowing] = useState(false)
+  const [, removeFavorite] = useAtom(removeFavoriteAtom)
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -44,6 +47,11 @@ const FavouritesDropdownItem: React.FC<FavouritesDropdownItemProps> = ({
 
   const handleClick = () => {
     navigate(`/v/${videoId}`)
+  }
+
+  const handleRemove = (e) => {
+    e.stopPropagation()
+    removeFavorite(videoId)
   }
 
   return (
@@ -73,6 +81,7 @@ const FavouritesDropdownItem: React.FC<FavouritesDropdownItemProps> = ({
           <div className='truncate text-sm text-gray-400'>{author}</div>
         </div>
         <Button
+          onClick={handleRemove}
           variant='ghost'
           className='ml-2 cursor-pointer px-2 hover:bg-primary'>
           <X className='h-4 w-4' />

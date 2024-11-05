@@ -293,3 +293,10 @@ export interface VideoInfo {
   subtitle_info: SubtitleInfo
   error_msg: string | null
 }
+
+export interface CurrentPlayingInfo {
+  videoId: string
+  title: string
+  author: string
+  thumbnailUrl: string
+}

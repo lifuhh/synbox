@@ -3,6 +3,7 @@ import LyricsVisibilityToggleGroup from '@/components/lyrics-display/LyricsVisib
 import VideoPlayer from '@/components/shared/VideoPlayer'
 import { useAppContext } from '@/context/AppContext'
 import {
+  currentVideoAtom,
   fullscreenAtom,
   lyricsControlVisibilityAtom,
   lyricsVisibilityAtom,
@@ -53,6 +54,7 @@ const PlayerPage = () => {
   const [lyricsControlVisibility, setLyricsControlVisibility] = useAtom(
     lyricsControlVisibilityAtom,
   )
+  const [currentVideo, setCurrentVideo] = useAtom(currentVideoAtom)
 
   // Initial validation effect
   useEffect(() => {

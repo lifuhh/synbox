@@ -12,10 +12,15 @@ import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 
 import {
+  addFavoriteAtom,
+  currentVideoAtom,
+  favoritesAtom,
   fontSizeMultiplierAtomWithPersistence,
+  isFavoriteAtom,
   lyricsControlVisibilityAtom,
   lyricsDisplayBottomAtom,
   lyricsVisibilityAtom,
+  removeFavoriteAtom,
   romajiVisibilityAtom,
   translationIsEnglishAtom,
   translationVisibilityAtom,
@@ -28,7 +33,7 @@ import ReplyIcon from '@mui/icons-material/Reply'
 import TranslateIcon from '@mui/icons-material/Translate'
 import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom'
 import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -40,6 +45,12 @@ const LyricsVisibilityToggleGroup = () => {
   const [fontSizeMultiplier, setFontSizeMultiplier] = useAtom(
     fontSizeMultiplierAtomWithPersistence,
   )
+
+  const [currentVideo] = useAtom(currentVideoAtom)
+  const [favorites] = useAtom(favoritesAtom)
+  const [, addFavorite] = useAtom(addFavoriteAtom)
+  const [, removeFavorite] = useAtom(removeFavoriteAtom)
+  const [isFavorite] = useAtom(isFavoriteAtom)
 
   const [lyricsControlVisible, setLyricsControlVisible] = useAtom(
     lyricsControlVisibilityAtom,
@@ -84,7 +95,15 @@ const LyricsVisibilityToggleGroup = () => {
     //
   }
 
-  const handleBookmark = () => {}
+  const handleBookmark = () => {
+    if (!currentVideo) return
+
+    if (isFavorite(currentVideo.videoId)) {
+      removeFavorite(currentVideo.videoId)
+    } else {
+      addFavorite(currentVideo)
+    }
+  }
 
   useEffect(() => {
     setLyricsToggleValues(
@@ -307,18 +326,22 @@ const LyricsVisibilityToggleGroup = () => {
                   <TooltipTrigger asChild>
                     <ToggleGroupItem
                       value='bookmarkButton'
-                      onClick={handleShare}
+                      onClick={handleBookmark}
                       variant='default'
                       aria-label='Return home'
                       className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'
                       style={getButtonStyle('bookmarkButton')}>
-                      <BookmarkBorderIcon
-                        sx={{
-                          fontSize: 24,
-                          transform: 'scaleX(-1) rotate(0deg)',
-                          transformOrigin: 'center',
-                        }}
-                      />
+                      {currentVideo && isFavorite(currentVideo.videoId) ? (
+                        <BookmarkAddedIcon />
+                      ) : (
+                        <BookmarkBorderIcon
+                          sx={{
+                            fontSize: 24,
+                            transform: 'scaleX(-1) rotate(0deg)',
+                            transformOrigin: 'center',
+                          }}
+                        />
+                      )}
                     </ToggleGroupItem>
                   </TooltipTrigger>
                   <TooltipContent
@@ -327,14 +350,16 @@ const LyricsVisibilityToggleGroup = () => {
                     sideOffset={6}
                     alignOffset={-4}
                     className='unhighlightable border-none bg-primary'>
-                    {'Add to Favourites'}
+                    {currentVideo && isFavorite(currentVideo.videoId)
+                      ? 'Remove from Favourites'
+                      : 'Add to Favourites'}
                   </TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <ToggleGroupItem
                       value='shareButton'
-                      onClick={handleBookmark}
+                      onClick={handleShare}
                       variant='default'
                       aria-label='Return home'
                       className='invisible-ring h-10 w-10 cursor-pointer rounded-lg bg-primary text-white'

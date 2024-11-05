@@ -1,6 +1,4 @@
-
-import { Account, Avatars, Client, Databases, Storage } from 'appwrite';
-
+import { Account, Avatars, Client, Databases, Storage } from 'appwrite'
 
 export const appwriteConfig = {
   //* this keeps projectID safe
@@ -9,14 +7,15 @@ export const appwriteConfig = {
   databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
   storageId: import.meta.env.VITE_APPWRITE_STORAGE_ID,
   lyricsId: import.meta.env.VITE_APPWRITE_LYRICS_COLLECTION_ID,
-};
+  songInfoId: import.meta.env.VITE_APPWRITE_SONG_INFO_COLLECTION_ID,
+}
 
-export const client = new Client();
+export const client = new Client()
 
-client.setProject(appwriteConfig.projectId);
-client.setEndpoint(appwriteConfig.url);
+client.setProject(appwriteConfig.projectId)
+client.setEndpoint(appwriteConfig.url)
 
-export const account = new Account(client);
-export const databases = new Databases(client);
-export const storage = new Storage(client);
-export const avatars = new Avatars(client);
+export const account = new Account(client)
+export const databases = new Databases(client)
+export const storage = new Storage(client)
+export const avatars = new Avatars(client)

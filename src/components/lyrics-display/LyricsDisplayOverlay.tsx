@@ -1,11 +1,16 @@
-import { useAppContext } from '@/context/AppContext'
 import {
+  currentVideoAtom,
   fontSizeMultiplierAtom,
   lyricsDisplayBottomAtom,
   translationIsEnglishAtom,
 } from '@/context/atoms'
-import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
-import { useAtomValue } from 'jotai'
+import {
+  useAddSongInfoBySongId,
+  useGetLyricsBySongId,
+  useGetSongInfoBySongId,
+  useGetYoutubeVideoInfo,
+} from '@/lib/react-query/queriesAndMutations'
+import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 import BaseReactPlayer from 'react-player/base'
@@ -78,12 +83,25 @@ function LyricsDisplayOverlay({
   const [lyricsStyles, setLyricsStyles] = useState<React.CSSProperties[]>([])
   const isTranslationEnglish = useAtomValue(translationIsEnglishAtom)
   const isLyricsDisplayBottom = useAtomValue(lyricsDisplayBottomAtom)
+  const setCurrentVideo = useSetAtom(currentVideoAtom)
 
   const transitionRef = useRef({ isEntering: false, isExiting: false })
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: testLyrics, isLoading: isTestLyricsFetching } =
-    useGetLyricsBySongId(videoId || '')
+  const { data: currentSongLyrics, isLoading } = useGetLyricsBySongId(
+    videoId || '',
+  )
+
+  const {
+    data: currentSongInfo,
+    isLoading: isFetchingSongInfo,
+    isError: isSongInfoError,
+  } = useGetSongInfoBySongId(videoId || '')
+
+  const { data: youtubeInfo, isLoading: isLoadingYoutubeInfo } =
+    useGetYoutubeVideoInfo(videoId || '')
+
+  const { mutate: addSongInfo } = useAddSongInfoBySongId()
 
   useEffect(() => {
     const pathSegments = location.pathname.split('/')
@@ -94,17 +112,55 @@ function LyricsDisplayOverlay({
   }, [location])
 
   useEffect(() => {
-    if (testLyrics && isLyricsData(testLyrics)) {
+    if (currentSongLyrics && isLyricsData(currentSongLyrics)) {
       try {
-        setLyricsArr(JSON.parse(testLyrics.labelled_full_lyrics))
-        setLyricsArrEng(JSON.parse(testLyrics.eng_translation))
-        setLyricsArrChi(JSON.parse(testLyrics.chi_translation))
-        setLyricsArrRomaji(JSON.parse(testLyrics.romaji))
+        setLyricsArr(JSON.parse(currentSongLyrics.labelled_full_lyrics))
+        setLyricsArrEng(JSON.parse(currentSongLyrics.eng_translation))
+        setLyricsArrChi(JSON.parse(currentSongLyrics.chi_translation))
+        setLyricsArrRomaji(JSON.parse(currentSongLyrics.romaji))
       } catch (error) {
         console.error('Error parsing lyrics data:', error)
       }
     }
-  }, [testLyrics])
+  }, [currentSongLyrics])
+
+  useEffect(() => {
+    if (!videoId || isLoadingYoutubeInfo || isFetchingSongInfo) return
+
+    // If song info doesn't exist in database and we haven't fetched from YouTube yet
+    if (isSongInfoError && youtubeInfo) {
+      // Format YouTube data to match your database schema
+      const formattedSongInfo = {
+        videoId,
+        title: youtubeInfo.title,
+        author: youtubeInfo.channelTitle,
+        thumbnailUrl: youtubeInfo.thumbnail,
+      }
+
+      // Add to database
+      addSongInfo(formattedSongInfo, {
+        onSuccess: (newSongInfo) => {
+          console.log('Successfully added song info to database:', newSongInfo)
+          setCurrentVideo(formattedSongInfo)
+        },
+        onError: (error) => {
+          console.error('Error adding song info to database:', error)
+        },
+      })
+    } else if (currentSongInfo) {
+      // If we already have the song info, just set it as current
+      setCurrentVideo(currentSongInfo)
+    }
+  }, [
+    videoId,
+    currentSongInfo,
+    youtubeInfo,
+    isSongInfoError,
+    isLoadingYoutubeInfo,
+    isFetchingSongInfo,
+    addSongInfo,
+    setCurrentVideo,
+  ])
 
   const findCurrentIndex = useCallback(
     (currentTime: number) => {

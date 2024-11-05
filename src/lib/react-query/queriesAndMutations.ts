@@ -9,7 +9,9 @@ import {
 
 import {
   addLyricsToSong,
+  addSongInfoBySongId,
   getCurrentUser,
+  getSongInfoBySongId,
   getSongLyricsById,
   signInGoogleAccount,
   uploadHardCodedLyrics,
@@ -23,6 +25,7 @@ import {
 } from '../youtube/api'
 
 import {
+  CurrentPlayingInfo,
   InfiniteGalleryQueryResult,
   TransformedYoutubePlaylistPage,
   YoutubePlaylistApiResponse,
@@ -91,10 +94,12 @@ export const useGetInfiniteGalleryPlaylist = (): InfiniteGalleryQueryResult => {
 }
 
 export const useGetYoutubeVideoInfo = (videoId: string) => {
+  const { isError } = useGetSongInfoBySongId(videoId)
+
   return useQuery({
     queryKey: [QUERY_KEYS.GET_YOUTUBE_VIDEO_INFO, videoId],
     queryFn: () => getYoutubeVideoInfo(videoId),
-    enabled: !!videoId,
+    enabled: !!videoId && isError, // Only fetch if videoId exists and database fetch failed
   })
 }
 
@@ -113,6 +118,22 @@ export const useGetLyricsBySongId = (songId: string) => {
     staleTime: 1000 * 60 * 60, // Keep the data fresh for 1 hour
     gcTime: 1000 * 60 * 60, // Keep the data cached for 1 hour
     queryFn: () => getSongLyricsById(songId),
+  })
+}
+
+export const useAddSongInfoBySongId = () => {
+  return useMutation({
+    mutationFn: (songInfo: CurrentPlayingInfo) => addSongInfoBySongId(songInfo),
+  })
+}
+
+export const useGetSongInfoBySongId = (songId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_SONG_INFO_BY_SONG_ID, songId],
+    enabled: !!songId,
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60,
+    queryFn: () => getSongInfoBySongId(songId),
   })
 }
 

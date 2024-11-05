@@ -1,3 +1,4 @@
+import { CurrentPlayingInfo } from '@/types'
 import { ID, Query } from 'appwrite'
 import { account, appwriteConfig, avatars, databases, storage } from './config'
 
@@ -17,6 +18,64 @@ export async function signInGoogleAccount() {
   }
 }
 
+export async function addSongInfoBySongId(songInfo: CurrentPlayingInfo) {
+  const { videoId, title, author, thumbnailUrl } = songInfo
+
+  try {
+    const songInfoUpload = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.songInfoId,
+      videoId,
+      {
+        title,
+        author,
+        thumbnailUrl,
+      },
+    )
+    return songInfoUpload
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getSongInfoBySongId(
+  songId: string,
+): Promise<CurrentPlayingInfo | null> {
+  if (!songId) throw Error('No Song Id!')
+
+  try {
+    const songInfo = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.songInfoId,
+      songId,
+    )
+
+    if (!songInfo) throw Error('No song info found')
+
+    const result = {
+      videoId: songId,
+      title: songInfo.title,
+      author: songInfo.author,
+      thumbnailUrl: songInfo.thumbnailUrl,
+    }
+
+    return result
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'No Song Info found.') {
+        return null
+      } else {
+        console.error('API Error: ', error)
+        throw error
+      }
+    } else {
+      // Handle the case where error is not an Error object
+      console.error('An unexpected error occurred of unknown type:', error)
+      throw new Error('An unknown error occurred')
+    }
+  }
+}
+
 export async function getSongLyricsById(songId: string) {
   if (!songId) throw Error('No songId given')
 
@@ -27,25 +86,15 @@ export async function getSongLyricsById(songId: string) {
       songId,
     )
 
-    if (!lyrics) return Error('No video Id given')
-
-    // ? logger for debugging lyrics
-    // if (lyrics) {
-    //   console.log('Lyrics Found')
-    //   console.log(typeof lyrics)
-    //   console.log(typeof lyrics.full_lyrics)
-    //   console.log(lyrics.full_lyrics)
-    // }
+    if (!lyrics) return Error('No lyrics found')
 
     return lyrics
   } catch (error) {
     if (error instanceof Error) {
-      if (
-        error.message === 'Document with the requested ID could not be found.'
-      ) {
+      if (error.message === 'No Lyrics Found') {
         return null
       } else {
-        console.error('An unexpected error occurred: ', error)
+        console.error('API Error: ', error)
         throw error
       }
     } else {

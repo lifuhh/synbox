@@ -1,4 +1,6 @@
+import { CurrentPlayingInfo } from '@/types'
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 export const fullscreenAtom = atom(false)
 export const playerControlVisibilityAtom = atom(false)
@@ -26,7 +28,7 @@ export const fontSizeMultiplierAtomWithPersistence = atom(
   (get, set, newValue: number) => {
     set(fontSizeMultiplierAtom, newValue)
     localStorage.setItem('fontSizeMultiplier', newValue.toString())
-  }
+  },
 )
 
 export const userInteractedWithSettingsAtom = atom(false)
@@ -95,4 +97,36 @@ export const videoDataAtom = atom<AppwriteVideoDataProps>({
   labelled_full_lyrics: '',
   visit_count: 0,
   user_likes: 0,
+})
+
+// For favourites
+
+interface FavoriteItem {
+  videoId: string
+  title: string
+  author: string
+  thumbnailUrl: string
+}
+
+export const currentVideoAtom = atom<CurrentPlayingInfo | null>(null)
+export const favoritesAtom = atomWithStorage<FavoriteItem[]>('favorites', [])
+export const addFavoriteAtom = atom(
+  null,
+  (get, set, newFavorite: FavoriteItem) => {
+    const favorites = get(favoritesAtom)
+    set(favoritesAtom, [...favorites, newFavorite])
+  },
+)
+
+export const removeFavoriteAtom = atom(null, (get, set, videoId: string) => {
+  const favorites = get(favoritesAtom)
+  set(
+    favoritesAtom,
+    favorites.filter((item) => item.videoId !== videoId),
+  )
+})
+
+export const isFavoriteAtom = atom((get) => (videoId: string) => {
+  const favorites = get(favoritesAtom)
+  return favorites.some((item) => item.videoId === videoId)
 })

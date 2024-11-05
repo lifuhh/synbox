@@ -12,86 +12,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { favoritesAtom } from '@/context/atoms'
 import BookmarksIcon from '@mui/icons-material/Bookmarks'
-import { Bookmark } from 'lucide-react'
+import { useAtom } from 'jotai'
 import React from 'react'
 import FavouritesDropdownItem from './FavouritesDropdownItem'
 
 const FavouritesDropdownButton = ({ buttonVisibility }) => {
-  const sampleItems = [
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'yzTuBuRdAyA',
-      title: 'Ado Gira Gira',
-      author: 'The Beatles',
-      thumbnailUrl: 'https://i.ytimg.com/vi/yzTuBuRdAyA/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'yzTuBuRdAyA',
-      title: 'Ado Gira Gira',
-      author: 'The Beatles',
-      thumbnailUrl: 'https://i.ytimg.com/vi/yzTuBuRdAyA/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'yzTuBuRdAyA',
-      title: 'Ado Gira Gira',
-      author: 'The Beatles',
-      thumbnailUrl: 'https://i.ytimg.com/vi/yzTuBuRdAyA/hqdefault.jpg',
-    },
-    {
-      videoId: 'VyvhvlYvRnc',
-      title: 'YOASOBI「優しい彗星」Official Music Video　(YOASOBI - Comet)',
-      author: 'Ayase / YOASOBI',
-      thumbnailUrl: 'https://i.ytimg.com/vi/VyvhvlYvRnc/hqdefault.jpg',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
-      author: 'Rick Astley',
-      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-    },
-    {
-      videoId: 'yzTuBuRdAyA',
-      title: 'Ado Gira Gira',
-      author: 'The Beatles',
-      thumbnailUrl: 'https://i.ytimg.com/vi/yzTuBuRdAyA/hqdefault.jpg',
-    },
-  ]
+  const [favorites] = useAtom(favoritesAtom)
 
   return (
     <TooltipProvider>
@@ -115,14 +43,36 @@ const FavouritesDropdownButton = ({ buttonVisibility }) => {
         <DropdownMenuContent
           align='end'
           sideOffset={10}
-          className='max-h-[600px] w-[400px] max-w-[400px] overflow-auto border border-primary bg-background/95'>
-          <DropdownMenuLabel className='unselectable m-2 mb-0 text-xl'>
-            Saved Songs
-          </DropdownMenuLabel>
-          {/* <DropdownMenuSeparator /> */}
-          {sampleItems.map((item) => (
-            <FavouritesDropdownItem key={item.videoId} {...item} />
-          ))}
+          className='w-[400px] max-w-[400px] border border-primary bg-background/95 p-0'>
+          <div className='flex flex-col'>
+            {/* Fixed Header */}
+            <div className='sticky top-0 z-10 bg-background/95 p-2'>
+              <DropdownMenuLabel className='unselectable text-xl'>
+                Bookmarked Songs
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+            </div>
+
+            {/* Scrollable Content */}
+            <div className='max-h-[600px] overflow-y-auto px-2'>
+              {favorites.length > 0 ? (
+                <div className='space-y-1'>
+                  {[...favorites].reverse().map((item) => (
+                    <FavouritesDropdownItem key={item.videoId} {...item} />
+                  ))}
+                </div>
+              ) : (
+                <div className='flex flex-col items-center justify-center py-2 text-center'>
+                  <p className='text-muted-foreground text-lg font-medium'>
+                    Your bookmarks list is empty.
+                  </p>
+                  <p className='text-muted-foreground py-6 text-sm'>
+                    Songs you bookmark will appear here
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
     </TooltipProvider>
