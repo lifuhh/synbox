@@ -85,11 +85,11 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
       <TooltipProvider>
         <h4 className='mb-2 text-lg font-bold'>Lyrics</h4>
         <ScrollArea
-          className={`lyrics-scroll-area w-full rounded-md border bg-primary p-4 ${isAiGenerated ? 'h-[40vh]' : 'h-[50vh]'}`}>
+          className={`lyrics-scroll-area w-full rounded-md border bg-background p-4 ${isAiGenerated ? 'h-[40vh]' : 'h-[50vh]'}`}>
           {localLyrics.map((lyric, index) => (
             <div
               key={index}
-              className='mb-2 flex w-full items-center justify-between rounded-lg bg-secondary p-2 hover:bg-secondary/80'>
+              className='unselectable mb-2 flex w-full items-center justify-between rounded-lg bg-primary/40 p-2 hover:bg-secondary/80'>
               <span className='text-secondary-foreground mr-2 text-sm font-medium'>
                 [{formatTime(lyric.start_time)} - {formatTime(lyric.end_time)}]
               </span>
@@ -154,8 +154,8 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
         )}
         {isAiGenerated ? (
           <p className='mt-2 text-sm text-yellow-600'>
-            Lyrics are AI-transcribed, please edit to remove hallucinated lines if
-            necessary.
+            Lyrics are AI-transcribed, please edit to remove hallucinated lines
+            if necessary.
           </p>
         ) : (
           <p className='mt-2 text-sm text-green-500'>

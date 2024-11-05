@@ -5,7 +5,7 @@ import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
 import { YouTubeUrlOrIdValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
 import { useSetAtom } from 'jotai'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RequestDialog from '../shared/RequestDialog'
 import { Spotlight } from '../ui/Spotlight'
@@ -26,22 +26,30 @@ const HeroGenerateLyricsDefault = ({
   const [validationSuccess, setValidationSuccess] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const setDialogStepAtom = useSetAtom(dialogStepAtom)
-
-  const [extractedVideoId, setExtractedVideoId] = useState('')
   const navigate = useNavigate()
-
-  const { data: existingLyrics, isLoading: isCheckingLyrics } =
-    useGetLyricsBySongId(extractedVideoId)
-
   const previousInputRef = useRef<string | null>(null)
+
+  // Use useMemo to derive extractedVideoId to prevent unnecessary recalculations
+  const extractedVideoId = useMemo(() => {
+    if (!inputValue) return ''
+
+    const result = YouTubeUrlOrIdValidation.safeParse(inputValue)
+    if (!result.success) return ''
+
+    return extractVideoId(inputValue) || ''
+  }, [inputValue])
+
+  // Only fetch lyrics when we have a valid video ID
+  const { data: existingLyrics, isLoading: isCheckingLyrics } =
+    useGetLyricsBySongId(validationSuccess ? extractedVideoId : '')
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setInputValue(value)
-    setValidationSuccess(false)
-    if (value === '') {
+
+    if (!value) {
       setErrorMessage('')
-      setExtractedVideoId('')
+      setValidationSuccess(false)
       return
     }
 
@@ -50,16 +58,15 @@ const HeroGenerateLyricsDefault = ({
       setErrorMessage(
         result.error.errors.map((error) => error.message).join(', '),
       )
-      setExtractedVideoId('')
+      setValidationSuccess(false)
     } else {
-      const extractedVidId = extractVideoId(value)
-      if (extractedVidId) {
+      const vidId = extractVideoId(value)
+      if (vidId) {
         setValidationSuccess(true)
         setErrorMessage('')
-        setExtractedVideoId(extractedVidId)
       } else {
         setErrorMessage('Invalid URL')
-        setExtractedVideoId('')
+        setValidationSuccess(false)
       }
     }
   }
@@ -99,7 +106,7 @@ const HeroGenerateLyricsDefault = ({
   }
 
   return (
-    <div className='items-top bg-grid-white/[0.90] relative flex w-full overflow-hidden rounded-md bg-dark-1/[0.15] pt-10 antialiased md:h-[25rem]  md:justify-center'>
+    <div className='items-top bg-grid-white/[0.90] relative flex w-full overflow-hidden rounded-md bg-dark-1/[0.15] pt-10 antialiased md:h-[25rem] md:justify-center'>
       <Spotlight
         className='-top-8 left-10 md:-top-20 md:left-60'
         fill='#ff8ab9'
@@ -168,8 +175,6 @@ const HeroGenerateLyricsDefault = ({
           </Dialog>
         </div>
 
-        {/* Display error message or success message */}
-
         <p className='lg:w-7/10 no-select mx-auto mt-4 text-center text-base font-normal text-neutral-300 lg:mt-0'>
           Transform YouTube videos into your personalized Japanese karaoke
           stage, with AI-transcribed, accurately synced lyrics and translations.
@@ -178,4 +183,5 @@ const HeroGenerateLyricsDefault = ({
     </div>
   )
 }
+
 export default HeroGenerateLyricsDefault

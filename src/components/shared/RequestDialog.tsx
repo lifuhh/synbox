@@ -309,7 +309,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
   return (
     <DialogContent
-      className='invisible-ring flex h-auto max-h-[90vh] flex-col border-2 border-cyan-500 border-opacity-60 bg-primary-600 sm:max-w-2xl'
+      className='invisible-ring bg-input flex h-auto max-h-[90vh] flex-col border-2 border-accent border-opacity-60 sm:max-w-2xl'
       onEscapeKeyDown={handleEscapeKeyDown}
       onPointerDownOutside={handleOutsideEvent}
       onInteractOutside={handleOutsideEvent}>
@@ -321,7 +321,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
       <div className='mx-4 mt-2 flex-grow overflow-y-auto'>
         {renderStep()}
         {(error || annotateError) && (
-          <div className='mt-4 text-red-400'>
+          <div className='text-primary-bright mt-4'>
             <h3 className='text-xl font-bold'>Error</h3>
             <p>{error || annotateError}</p>
           </div>
@@ -335,7 +335,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             variant='secondary'
             onClick={handleClose}
             disabled={isButtonDisabled}
-            className='invisible-ring text-md w-full text-light-1 hover:border-primary hover:bg-light-1 hover:text-primary hover:outline-1 md:w-auto'>
+            className='invisible-ring text-md w-full text-light-1  md:w-auto'>
             Close
           </Button>
         </DialogClose>

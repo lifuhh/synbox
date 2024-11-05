@@ -56,6 +56,8 @@ const RequestDialogStepTwoDisplay: React.FC<
 
   useEffect(() => {
     if (lyricsInfo) {
+      console.log('lyrics info: ')
+      console.log(lyricsInfo)
       setCurrentLyrics(lyricsInfo.lyrics)
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
@@ -131,13 +133,15 @@ const RequestDialogStepTwoDisplay: React.FC<
       <div className='min-h-[300px]'>
         {isStreaming ? (
           <LyricsSkeleton />
-        ) : currentLyrics.length > 0 && currentTimestampedLyrics.length > 0 ? (
-          <RequestDialogLyricsDisplay
-            lyrics={currentLyrics}
-            timestampedLyrics={currentTimestampedLyrics}
-            isAiGenerated={isAiGenerated}
-            onLyricsChange={handleLyricsChange}
-          />
+        ) : currentLyrics ? (
+          currentLyrics.length > 0 && currentTimestampedLyrics.length > 0 ? (
+            <RequestDialogLyricsDisplay
+              lyrics={currentLyrics}
+              timestampedLyrics={currentTimestampedLyrics}
+              isAiGenerated={isAiGenerated}
+              onLyricsChange={handleLyricsChange}
+            />
+          ) : null
         ) : null}
       </div>
     </div>

@@ -1,8 +1,8 @@
 import { SubtitleInfo } from '@/types'
 import { validateJSON } from '@/utils'
 
-// const BE_ADDRESS = import.meta.env.VITE_SYNBOX_BE_URL
-const BE_ADDRESS = import.meta.env.VITE_SYNBOX_TEST_BE_URL
+const BE_ADDRESS = import.meta.env.VITE_SYNBOX_BE_URL
+// const BE_ADDRESS = import.meta.env.VITE_SYNBOX_TEST_BE_URL
 
 interface StreamData {
   type: 'update' | 'data' | 'vid_info'
@@ -92,6 +92,10 @@ export const streamTranscribeVideoById = async (
     const lines = chunk.split('\n')
 
     lines.forEach((line) => {
+
+      console.log("Received line: ")
+      console.log(line)
+
       if (validateJSON(line)) {
         const content = JSON.parse(line)
         if (content['type'] === 'update' || content['type'] === 'data') {

@@ -112,11 +112,17 @@ export const useGetYoutubeSearchResults = (searchTerm: string) => {
 }
 
 export const useGetLyricsBySongId = (songId: string) => {
+  console.log(`Query attempted with songId: ${songId}`) // Debug log
+  
   return useQuery({
     queryKey: [QUERY_KEYS.GET_LYRICS_BY_SONG_ID, songId],
-    enabled: !!songId,
-    staleTime: 1000 * 60 * 60, // Keep the data fresh for 1 hour
-    gcTime: 1000 * 60 * 60, // Keep the data cached for 1 hour
+    enabled: Boolean(songId?.trim()), // More strict check
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Prevent refetch on mount
+    refetchOnReconnect: false, // Prevent refetch on reconnect
+    retry: false, // Disable retries since we expect 404s for non-existent lyrics
     queryFn: () => getSongLyricsById(songId),
   })
 }

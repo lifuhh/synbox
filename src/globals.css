@@ -110,18 +110,17 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: hsl(var(--accent)); /* Using your accent color */
+    background: hsl(var(--popover)); /* Using your accent color */
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary)); /* Using your primary color */
+    background: hsl(var(--primary) / 35%); 
     border-radius: 3px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: hsl(
-      var(--primary-bright)
-    ); /* Using your bright primary variant */
+    background: hsl(var(--primary) / 65%); 
+
   }
 
   /* Specific scrollbar styling for the ScrollArea with the white thumb */
