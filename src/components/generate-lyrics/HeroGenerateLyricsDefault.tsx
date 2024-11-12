@@ -40,7 +40,6 @@ const HeroGenerateLyricsDefault = ({
     if (!result.success) return ''
 
     const id = extractVideoId(inputValue)
-    console.log('Extracted Video ID:', id) // Add this log
     return id || ''
   }, [inputValue])
 

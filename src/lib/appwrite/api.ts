@@ -11,11 +11,11 @@ export async function signInGoogleAccount() {
       'http://localhost:5173/',
       'http://localhost:5173/fail',
     )
-    console.log('Logged In!')
+    // console.log('Logged In!')
 
     return session
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }
 
@@ -38,7 +38,7 @@ export async function addSongInfoBySongId(songInfo: CurrentPlayingInfo) {
     )
     return songInfoUpload
   } catch (error) {
-    console.log(error)
+    console.log("Add Song Info Error: ", error)
   }
 }
 
@@ -89,7 +89,7 @@ export async function getSongLyricsById(songId: string) {
   try {
     // Convert YouTube ID to Appwrite-compatible ID for querying
     const appwriteId = createAppwriteIdFromYoutubeId(songId)
-    console.log('Querying Appwrite with ID:', appwriteId)
+    // console.log('Querying Appwrite with ID:', appwriteId)
 
     const lyrics = await databases.getDocument(
       appwriteConfig.databaseId,
@@ -136,7 +136,7 @@ export async function getCurrentUser() {
 
     //
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }
 
@@ -153,7 +153,7 @@ export async function addLyricsToSong(lyricsFile: File) {
     )
     return uploadedLyricsFile
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }
 
@@ -172,8 +172,8 @@ export async function uploadLyricsToAppwrite(
 ) {
   if (!songId) throw Error('No songId found')
 
-  console.log('Lyrics received')
-  console.log(lyrics)
+  // console.log('Lyrics received')
+  // console.log(lyrics)
 
   try {
     // Convert YouTube ID to Appwrite-compatible ID
@@ -193,7 +193,7 @@ export async function uploadLyricsToAppwrite(
 
     return uploadedLyrics
   } catch (error) {
-    console.log(error)
+    console.log("Lyrics Upload Error: ", error)
     throw error
   }
 }
