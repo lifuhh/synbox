@@ -49,26 +49,58 @@ export const useStreamValidationApi = () => {
     setError(null)
   }, [])
 
+  const handleVideoInfo = useCallback((info: any) => {
+    console.log('Received video info:', info)
+    try {
+      // Validate required fields
+      if (!info?.full_vid_info) {
+        throw new Error('Invalid video info format')
+      }
+      setVidInfo(info)
+    } catch (err) {
+      console.error('Error processing video info:', err)
+      setError(err.message)
+    }
+  }, [])
+
   const mutation = useMutation({
-    mutationFn: (id: string) =>
-      streamValidateVideoById(
-        id,
-        (message) => setUpdateMessages((prev) => [...prev, message]),
-        (info) => setVidInfo(info),
-        (err) => setError(err),
-        () => setIsStreaming(false),
-      ),
+    mutationFn: async (id: string) => {
+      try {
+        await streamValidateVideoById(
+          id,
+          (message) => {
+            console.log('Stream update:', message)
+            setUpdateMessages((prev) => [...prev, message])
+          },
+          handleVideoInfo,
+          (err) => {
+            console.error('Stream error:', err)
+            setError(err)
+          },
+          () => {
+            console.log('Stream completed')
+            setIsStreaming(false)
+          }
+        )
+      } catch (err) {
+        console.error('Mutation error:', err)
+        throw err
+      }
+    },
     onMutate: () => {
+      console.log('Starting validation...')
       resetStream()
       setIsStreaming(true)
     },
     onSettled: () => {
+      console.log('Validation settled')
       setIsStreaming(false)
     },
     onError: (error: Error) => {
+      console.error('Validation error:', error)
       setError(error.message)
       setIsStreaming(false)
-    },
+    }
   })
 
   return {
