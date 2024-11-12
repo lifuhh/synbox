@@ -227,7 +227,7 @@ export const LyricsVisibilityControlButton: React.FC<ButtonProps> = ({
         align='start'
         sideOffset={6}
         alignOffset={-4}
-        className='unhighlightable border-none bg-background'>
+        className='unhighlightable border-none bg-primary'>
         {buttonProps.tooltip}
       </TooltipContent>
     </Tooltip>

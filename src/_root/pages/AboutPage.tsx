@@ -76,18 +76,20 @@ const AboutPage = () => {
 
             {/* Future Features */}
             <AccordionItem value='item-4'>
-              <AccordionTrigger>Accordion 4</AccordionTrigger>
+              <AccordionTrigger>
+                What's the next steps for Synbox?
+              </AccordionTrigger>
               <AccordionContent>Accordion 4</AccordionContent>
             </AccordionItem>
           </Accordion>
         </div>
       </div>
-      <Button variant='default'>Test</Button>
+      {/* <Button variant='default'>Test</Button>
       <Button variant='link'>Test</Button>
       <Button variant='secondary'>Test</Button>
       <Button variant='destructive'>Test</Button>
       <Button variant='ghost'>Test</Button>
-      <Button variant='outline'>Test</Button>
+      <Button variant='outline'>Test</Button> */}
 
       <HomeFooter />
     </section>
