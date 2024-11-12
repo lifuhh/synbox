@@ -6,7 +6,7 @@ export type IconProps = React.HTMLAttributes<SVGElement>
 
 const HomeFooter = () => {
   return (
-    <div className='landing-footer flex-between bottom-0 left-0 z-50 h-14 w-full flex-col md:mt-2'>
+    <div className='landing-footer flex-between bottom-0 left-0 z-50 h-14 w-full flex-col pt-2'>
       <div className='flex-around pb-2'>
         <div className='flex'>
           <h1 className=' unselectable whitespace-nowrap text-pretty font-semibold'>
@@ -18,32 +18,32 @@ const HomeFooter = () => {
         <Dock className='mt-0 border-none'>
           <DockIcon
             onClick={() => handleRedirect('https://react.dev/')}
-            className='bg-card-foreground'>
-            <Icons.react className='h-6 w-6 text-primary/80' />
+            className='cursor-pointer bg-card-foreground'>
+            <Icons.react className='text-primary-light h-6 w-6' />
           </DockIcon>
           <DockIcon
             onClick={() => handleRedirect('https://tailwindcss.com/')}
-            className='bg-card-foreground'>
-            <Icons.tailwind className='h-6 w-6 text-primary/80' />
+            className='cursor-pointer bg-card-foreground'>
+            <Icons.tailwind className='text-primary-light h-6 w-6' />
           </DockIcon>
           <DockIcon
             onClick={() => handleRedirect('https://ui.shadcn.com/')}
-            className='bg-card-foreground'>
-            <Icons.shadcn className='h-6 w-6 text-primary/80 ' />
+            className='cursor-pointer bg-card-foreground'>
+            <Icons.shadcn className='text-primary-light h-6 w-6 ' />
           </DockIcon>
           <DockIcon
             onClick={() =>
               handleRedirect('https://platform.openai.com/docs/overview/')
             }
-            className='bg-card-foreground'>
-            <Icons.openai className='h-6 w-6 text-primary/80' />
+            className='cursor-pointer bg-card-foreground'>
+            <Icons.openai className='text-primary-light h-6 w-6' />
           </DockIcon>
           <DockIcon
             onClick={() =>
               handleRedirect('https://developers.google.com/youtube/v3/')
             }
-            className='bg-card-foreground'>
-            <Icons.gcloud className='h-6 w-6 text-primary/80' />
+            className='cursor-pointer bg-card-foreground'>
+            <Icons.gcloud className='text-primary-light h-6 w-6' />
           </DockIcon>
           {/* <DockIcon
             onClick={() =>
@@ -55,7 +55,7 @@ const HomeFooter = () => {
         <Divider
           orientation='vertical'
           size='sm'
-          className=' mx-4 border-foreground'
+          className=' mx-4 my-2 border-foreground'
         />
         <div className='flex'>
           {/* <h1 className='whitespace-nowrap text-center'>Visit Me At </h1> */}
@@ -65,13 +65,13 @@ const HomeFooter = () => {
             onClick={() =>
               handleRedirect('https://www.linkedin.com/in/lifuhuang97/')
             }
-            className='bg-card-foreground'>
-            <Icons.linkedin className='h-6 w-6 text-primary/80' />
+            className='cursor-pointer bg-card-foreground'>
+            <Icons.linkedin className='text-primary-light h-6 w-6' />
           </DockIcon>
           <DockIcon
             onClick={() => handleRedirect('https://github.com/lifuhuang97/')}
-            className='bg-card-foreground'>
-            <Icons.gitHub className='h-6 w-6 text-primary/80' />
+            className='cursor-pointer bg-card-foreground'>
+            <Icons.gitHub className='text-primary-light h-6 w-6' />
           </DockIcon>
         </Dock>
       </div>

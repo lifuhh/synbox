@@ -45,9 +45,9 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
 
         <div className='flex w-full max-w-2xl flex-col gap-y-2 px-3 pt-8 md:pt-4'>
           {/* <InfoItem label='Video ID' value={id} /> */}
-          <InfoItem label='Channel' value={channel_name} />
+          <InfoItem label='Channel' value={channel_name && channel_name} />
           {/* <InfoItem label='Uploader' value={uploader} /> */}
-          <InfoItem label='Likes' value={likes.toLocaleString()} />
+          <InfoItem label='Likes' value={likes && likes.toLocaleString()} />
           <div>
             {/* <InfoItem
               label='Lyrics'

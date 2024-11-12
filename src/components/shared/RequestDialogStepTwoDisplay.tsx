@@ -22,11 +22,12 @@ interface Lyric {
 interface RequestDialogStepTwoDisplayProps {
   vidInfo: any
   onLyricsUpdate: (lyrics: string[], timestampedLyrics: Lyric[]) => void
+  onStreamingStatusChange: (status: boolean) => void
 }
 
 const RequestDialogStepTwoDisplay: React.FC<
   RequestDialogStepTwoDisplayProps
-> = ({ vidInfo, onLyricsUpdate }) => {
+> = ({ vidInfo, onLyricsUpdate, onStreamingStatusChange }) => {
   const [currentLyrics, setCurrentLyrics] = useState<string[]>([])
   const [currentTimestampedLyrics, setCurrentTimestampedLyrics] = useState<
     Lyric[]
@@ -42,6 +43,10 @@ const RequestDialogStepTwoDisplay: React.FC<
     mutate,
     isAiGenerated,
   } = useStreamTranscriptionApi()
+
+  useEffect(() => {
+    onStreamingStatusChange(isStreaming)
+  }, [isStreaming, onStreamingStatusChange])
 
   useEffect(() => {
     if (!vidInfo || !vidInfo.full_vid_info) {
@@ -76,24 +81,6 @@ const RequestDialogStepTwoDisplay: React.FC<
     setCurrentTimestampedLyrics(updatedTimestampedLyrics)
     onLyricsUpdate(updatedLyrics, updatedTimestampedLyrics)
   }
-
-  const LyricsSkeleton = () => (
-    <div className='mt-4 w-full'>
-      <div className='h-[46vh] w-full overflow-hidden rounded-md border p-2'>
-        {[...Array(11)].map((_, index) => (
-          <div
-            key={index}
-            className={`mb-2 flex w-full items-center justify-between rounded-lg ${
-              index !== 11 ? 'px-2 py-1' : 'px-2 pb-0 pt-1'
-            }`}>
-            <Skeleton className='mr-2 h-[28px] w-24' />
-            <Skeleton className='h-[28px] flex-grow' />
-          </div>
-        ))}
-      </div>
-      <Skeleton className='mt-2 h-5 w-40' />
-    </div>
-  )
 
   if (!vidInfo || !vidInfo.full_vid_info) {
     return null
@@ -130,22 +117,26 @@ const RequestDialogStepTwoDisplay: React.FC<
         </div>
       )}
 
-      <div className='min-h-[300px]'>
+      <div className='min-h-[100px]'>
         {isStreaming ? (
-          <LyricsSkeleton />
+          // <LyricsSkeleton />
+          ''
         ) : currentLyrics ? (
           currentLyrics.length > 0 && currentTimestampedLyrics.length > 0 ? (
             <div className='space-y-4'>
-              <div className='rounded-lg border border-primary/20 p-4'>
+              <div className='gap-8 rounded-lg p-4'>
                 <div className='flex items-center justify-center space-x-2'>
                   <PartyPopper className='h-5 w-5 text-primary' />
-                  <h2 className='text-xl text-white'>
-                    Transcription Completed!
+                  <h2 className=' text-xl text-white'>
+                    {isAiGenerated
+                      ? 'Transcription Completed!'
+                      : 'Lyrics Found!'}
                   </h2>
                 </div>
                 <p className='mt-1 text-center text-foreground'>
-                  The song has been successfully transcribed. You can preview
-                  the results below.
+                  {isAiGenerated
+                    ? 'The song has been successfully transcribed.'
+                    : 'Song lyrics retrieved successfully.'}
                 </p>
               </div>
 
@@ -155,8 +146,12 @@ const RequestDialogStepTwoDisplay: React.FC<
                 className='w-full'>
                 <CollapsibleTrigger asChild>
                   <button className='group w-full'>
-                    <div className='flex w-full flex-col items-center space-y-2 rounded-lg py-2 hover:bg-primary/5'>
-                      <h3 className='text-lg font-semibold'>View Lyrics</h3>
+                    <div className='flex w-full items-center justify-center space-x-2 rounded-lg py-2 hover:bg-primary/5'>
+                      <h3 className='text-lg font-semibold'>
+                        {isAiGenerated
+                          ? 'View Generated Lyrics'
+                          : 'View Lyrics'}
+                      </h3>
                       {isOpen ? (
                         <ChevronUp className='h-5 w-5 text-primary/60' />
                       ) : (

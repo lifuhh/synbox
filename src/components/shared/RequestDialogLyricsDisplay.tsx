@@ -88,7 +88,7 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
           {localLyrics.map((lyric, index) => (
             <div
               key={index}
-              className='unselectable mb-2 flex w-full items-center justify-between rounded-lg bg-primary/40 p-2 hover:bg-secondary/80'>
+              className='mb-2 flex w-full items-center justify-between rounded-lg bg-primary/40 p-2'>
               <span className='mr-2 text-sm font-medium text-secondary-foreground'>
                 [{formatTime(lyric.start_time)} - {formatTime(lyric.end_time)}]
               </span>
@@ -96,7 +96,7 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
                 <Input
                   value={lyric.lyric}
                   onChange={(e) => handleLyricEdit(index, e.target.value)}
-                  className='unselectable flex-grow bg-background'
+                  className='flex-grow bg-background'
                 />
               ) : (
                 <span className='flex-grow'>{lyric.lyric}</span>
@@ -115,12 +115,11 @@ const RequestDialogLyricsDisplay: React.FC<RequestDialogLyricsDisplayProps> = ({
         </ScrollArea>
         {isAiGenerated ? (
           <p className='mt-2 text-sm text-yellow-600'>
-            Lyrics are AI-transcribed, please edit to remove hallucinated lines
-            if necessary.
+            Lyrics are AI-transcribed, there may be errors.
           </p>
         ) : (
           <p className='mt-2 text-sm text-green-500'>
-            Lyrics are originally uploaded by the channel.
+            Lyrics are uploaded by the channel owner.
           </p>
         )}
       </TooltipProvider>

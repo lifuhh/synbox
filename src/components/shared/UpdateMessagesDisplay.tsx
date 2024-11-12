@@ -32,8 +32,7 @@ const UpdateMessagesDisplay: React.FC<UpdateMessagesDisplayProps> = ({
   return (
     <>
       {showLoader && (
-        <div className={`flex-center flex flex-col ${marginClass}`}>
-          <Loader color={loaderColor} type={loaderType} size={loaderSize} />
+        <div className={`flex-center mt-10 flex flex-col ${marginClass}`}>
           {isStreaming ? (
             updateMessages.length > 0 ? (
               <Text size={textSize}>{lastMessage}</Text>
@@ -42,8 +41,9 @@ const UpdateMessagesDisplay: React.FC<UpdateMessagesDisplayProps> = ({
               <Text size={textSize}>Waiting for updates...</Text>
             )
           ) : (
-            <Text size={textSize}>Finalizing...</Text>
+            <Text size={textSize}>Cleaning Up...</Text>
           )}
+          <Loader color={loaderColor} type={loaderType} size={loaderSize} />
         </div>
       )}
     </>

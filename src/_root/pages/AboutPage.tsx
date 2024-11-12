@@ -1,3 +1,4 @@
+import HomeFooter from '@/components/shared/HomeFooter'
 import {
   Accordion,
   AccordionContent,
@@ -14,7 +15,7 @@ const AboutPage = () => {
   // }, [])
 
   return (
-    <section className='custom-scrollbar mt-14 flex flex-1 flex-col overflow-y-scroll px-4 md:px-10'>
+    <section className='custom-scrollbar flex-between relative mt-14 flex max-h-screen flex-1 flex-col overflow-y-scroll px-4 pb-4 md:px-10'>
       <Helmet>
         <title>About | Synbox</title>
       </Helmet>
@@ -33,6 +34,8 @@ const AboutPage = () => {
             Paragraph 2 Paragraph 2 Paragraph 2 Paragraph 2 Paragraph 2
             Paragraph 2 Paragraph 2 Paragraph 2
           </p>
+
+          {/* Add disclaimers */}
         </div>
         <Divider my='lg' color='pink' />
         <h1 className='my-8 text-center text-4xl font-bold'>FAQs</h1>
@@ -42,8 +45,8 @@ const AboutPage = () => {
               <AccordionTrigger>How does Synbox work?</AccordionTrigger>
               <AccordionContent>
                 Synbox allows users to generate english and chinese translations
-                as well as romaji annotations given a specific Japanese song
-                YouTube URL.
+                as well as romaji annotations given a YouTube URL for a Japanese
+                song.
               </AccordionContent>
             </AccordionItem>
 
@@ -53,7 +56,7 @@ const AboutPage = () => {
               </AccordionTrigger>
               <AccordionContent>
                 Currently, only Japanese music videos with a duration between 1
-                minute and 8 minutes are supported by Synbox.
+                minute and 8 minutes are supported.
               </AccordionContent>
             </AccordionItem>
 
@@ -70,18 +73,15 @@ const AboutPage = () => {
               </AccordionContent>
             </AccordionItem>
 
+            {/* Future Features */}
             <AccordionItem value='item-4'>
               <AccordionTrigger>Accordion 4</AccordionTrigger>
               <AccordionContent>Accordion 4</AccordionContent>
             </AccordionItem>
-
-            <AccordionItem value='item-5'>
-              <AccordionTrigger>Accordion 5</AccordionTrigger>
-              <AccordionContent>Accordion 5</AccordionContent>
-            </AccordionItem>
           </Accordion>
         </div>
       </div>
+      <HomeFooter />
     </section>
   )
 }

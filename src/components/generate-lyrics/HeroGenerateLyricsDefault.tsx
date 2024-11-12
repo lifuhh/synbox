@@ -157,7 +157,7 @@ const HeroGenerateLyricsDefault = ({
                 {isCheckingLyrics ? (
                   <p className='text-[16px]'>Searching ...</p>
                 ) : existingLyrics ? (
-                  <p className='text-[16px]'>Play</p>
+                  <p className='text-[16px]'>Play Video</p>
                 ) : (
                   <p className='text-[16px]'>Try Now</p>
                 )}

@@ -45,6 +45,8 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [kanjiAnnotations, setKanjiAnnotations] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
+  const [isTranscriptionStreaming, setIsTranscriptionStreaming] =
+    useState(false)
   const [isAnnotationStreaming, setIsAnnotationStreaming] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const {
@@ -63,7 +65,11 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const { refetch: refetchLyrics } = useGetLyricsBySongId(videoId)
 
   const isButtonDisabled =
-    isStreaming || isUploading || showLoader || isAnnotationStreaming
+    isStreaming ||
+    isUploading ||
+    showLoader ||
+    isAnnotationStreaming ||
+    isTranscriptionStreaming
 
   const handleAnnotateError = (error: string) => {
     setAnnotateError(error)
@@ -71,6 +77,10 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
   const handleStreamingStatusChange = (status) => {
     setIsAnnotationStreaming(status)
+  }
+
+  const handleTranscriptionStreamingChange = (status: boolean) => {
+    setIsTranscriptionStreaming(status)
   }
 
   useEffect(() => {
@@ -107,8 +117,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
       case 2:
         return { title: 'Step 3 - Translation & Annotation', description: '' }
       case 3:
-        return { title: 'Step 4 - Confirmation', description: '' }
-      case 4:
         return { title: 'Upload Complete', description: 'Enjoy the video!' }
       default:
         return {
@@ -211,7 +219,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             await refetchLyrics()
             setIsUploading(false)
             setUploadSuccess(true)
-            setCurrentStep(4) // Move to the final step
+            setCurrentStep(3) // Move to the final step
           },
           onError: (error: any) => {
             setIsUploading(false)
@@ -230,7 +238,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   }
 
   const handleProceedClick = () => {
-    if (currentStep === 3) {
+    if (currentStep === 2) {
       handleUpload()
     } else {
       setCurrentStep((prevStep) => prevStep + 1)
@@ -297,10 +305,17 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           <RequestDialogStepTwoDisplay
             vidInfo={vidInfo}
             onLyricsUpdate={handleLyricsUpdate}
+            onStreamingStatusChange={handleTranscriptionStreamingChange}
           />
         )
       case 2:
-        return (
+        return isUploading ? (
+          <UpdateMessagesDisplay
+            isStreaming={true}
+            showLoader={true}
+            updateMessages={['Finalizing...']}
+          />
+        ) : (
           <RequestDialogAnnotateDisplay
             id={videoId}
             lyrics={lyrics}
@@ -311,26 +326,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           />
         )
       case 3:
-        if (isUploading) {
-          return (
-            <UpdateMessagesDisplay
-              isStreaming={true}
-              showLoader={true}
-              updateMessages={['Uploading lyrics...']}
-            />
-          )
-        }
-        return (
-          <div className='mt-4 w-full'>
-            <h3 className='mb-4 text-xl font-bold'>Step 4: Upload Lyrics</h3>
-            <p className='mb-4'>
-              All data has been processed. Click the button below to upload the
-              lyrics and translations.
-            </p>
-            {uploadError && <p className='mb-4 text-red-500'>{uploadError}</p>}
-          </div>
-        )
-      case 4:
         return vidInfo && <RequestDialogFinalDisplay vidInfo={vidInfo} />
       default:
         return null
@@ -358,39 +353,41 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
         )}
       </div>
 
-      <DialogFooter className='bg-primary-600 flex w-full flex-col-reverse gap-4 p-4 md:flex-row md:justify-between'>
-        <DialogClose asChild disabled={isButtonDisabled}>
-          <Button
-            type='button'
-            variant='destructive'
-            onClick={handleCloseWithReset}
-            disabled={isButtonDisabled}
-            className='invisible-ring text-md text-light-1 w-full md:w-auto'>
-            Close
-          </Button>
-        </DialogClose>
+      {currentStep !== 3 && (
+        <DialogFooter className='bg-primary-600 flex w-full flex-col-reverse gap-4 p-4 md:flex-row md:justify-between'>
+          <DialogClose asChild disabled={isButtonDisabled}>
+            <Button
+              type='button'
+              variant='outline'
+              onClick={handleCloseWithReset}
+              disabled={isButtonDisabled}
+              className='invisible-ring text-md text-light-1 w-full disabled:bg-gray-600 md:w-auto'>
+              Close
+            </Button>
+          </DialogClose>
 
-        {!error && !annotateError && currentStep < 4 && (
-          <div className='flex w-full justify-between gap-2 md:w-auto md:justify-end'>
-            {currentStep > 0 && (
-              <Button
-                onClick={handlePreviousClick}
-                disabled={isButtonDisabled}
-                className='invisible-ring flex-1 bg-gray-500 text-white hover:bg-gray-600 md:flex-initial'>
-                Previous Step
-              </Button>
-            )}
-            {((showVidInfo && currentStep === 0) || currentStep > 0) && (
-              <Button
-                onClick={handleProceedClick}
-                disabled={isButtonDisabled}
-                className='invisible-ring flex-1 bg-blue-500 text-white hover:bg-blue-600 md:flex-initial'>
-                {currentStep === 3 ? 'Proceed' : 'Next Step'}
-              </Button>
-            )}
-          </div>
-        )}
-      </DialogFooter>
+          {!error && !annotateError && currentStep < 3 && !isButtonDisabled && (
+            <div className='flex w-full justify-between gap-2 px-2 md:w-auto md:justify-end'>
+              {currentStep > 0 && (
+                <Button
+                  onClick={handlePreviousClick}
+                  disabled={isButtonDisabled}
+                  className='invisible-ring flex-1 bg-gray-500 text-white hover:bg-gray-600 md:flex-initial'>
+                  Previous Step
+                </Button>
+              )}
+              {((showVidInfo && currentStep === 0) || currentStep > 0) && (
+                <Button
+                  onClick={handleProceedClick}
+                  disabled={isButtonDisabled}
+                  className='invisible-ring flex-1 text-white md:flex-initial'>
+                  {currentStep === 2 ? 'Proceed' : 'Next Step'}
+                </Button>
+              )}
+            </div>
+          )}
+        </DialogFooter>
+      )}
     </DialogContent>
   )
 }

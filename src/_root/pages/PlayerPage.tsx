@@ -60,7 +60,9 @@ const PlayerPage = () => {
   const [lyricsControlVisibility, setLyricsControlVisibility] = useAtom(
     lyricsControlVisibilityAtom,
   )
-  const [currentVideo, setCurrentVideo] = useAtom(currentVideoAtom)
+  const currentVideo = useAtomValue(currentVideoAtom)
+
+  const title = currentVideo && currentVideo.title
 
   //
   const { toast, dismiss } = useToast()
@@ -338,7 +340,7 @@ const PlayerPage = () => {
   return (
     <>
       <Helmet>
-        <title>Player Page | Synbox</title>
+        <title>{title ? title : 'Player Page'} | Synbox</title>
       </Helmet>
       <LyricsVisibilityToggleGroup />
 

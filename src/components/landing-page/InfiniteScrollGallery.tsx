@@ -107,7 +107,7 @@ export const Card = ({
   return (
     <div
       className={cn(
-        'playlist-item relative z-20 w-full overflow-hidden rounded-xl border border-primary/70 bg-card p-4 transition-colors duration-500 hover:border-ring',
+        'playlist-item border-muted-foreground relative z-20 w-full overflow-hidden rounded-xl border bg-card p-4 transition-colors duration-500 hover:border-ring',
         className,
       )}>
       {children}
