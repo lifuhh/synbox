@@ -58,11 +58,12 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     mutate,
   } = useStreamValidationApi()
 
-  // where update
-
   const queryClient = useQueryClient()
   const { mutate: uploadLyricsToAppwrite } = useUploadLyricsToAppwrite()
   const { refetch: refetchLyrics } = useGetLyricsBySongId(videoId)
+
+  const isButtonDisabled =
+    isStreaming || isUploading || showLoader || isAnnotationStreaming
 
   const handleAnnotateError = (error: string) => {
     setAnnotateError(error)
@@ -71,9 +72,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const handleStreamingStatusChange = (status) => {
     setIsAnnotationStreaming(status)
   }
-
-  const isButtonDisabled =
-    isStreaming || isUploading || showLoader || isAnnotationStreaming
 
   useEffect(() => {
     if (videoId) {
@@ -124,10 +122,6 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
   const handlePreviousClick = () => {
     setCurrentStep((prevStep) => Math.max(prevStep - 1, 0))
-  }
-
-  const handleEscapeKeyDown = (event: KeyboardEvent) => {
-    event.preventDefault()
   }
 
   const handleLyricsUpdate = (
@@ -243,8 +237,44 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     }
   }
 
+  // Reset states when dialog closes
+  const resetStates = () => {
+    setCurrentStep(0)
+    setShowLoader(false)
+    setLyrics([])
+    setAnnotateError(null)
+    setTimestampedLyrics([])
+    setEngTranslation([])
+    setChiTranslation([])
+    setRomajiLyrics([])
+    setKanjiAnnotations([])
+    setIsUploading(false)
+    setUploadSuccess(false)
+    setIsAnnotationStreaming(false)
+    setUploadError(null)
+    resetStream()
+  }
+
+  const handleCloseWithReset = () => {
+    if (!isButtonDisabled) {
+      resetStates()
+      handleClose()
+    }
+  }
+
+  // Handle all closing events
+  const handleEscapeKeyDown = (event: KeyboardEvent) => {
+    event.preventDefault()
+    if (!isButtonDisabled) {
+      handleCloseWithReset()
+    }
+  }
+
   const handleOutsideEvent = (event: OutsideEvent) => {
     event.preventDefault()
+    if (!isButtonDisabled) {
+      handleCloseWithReset()
+    }
   }
 
   const renderStep = () => {
@@ -321,21 +351,21 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
       <div className='mx-4 mt-2 flex-grow overflow-y-auto'>
         {renderStep()}
         {(error || annotateError) && (
-          <div className='text-primary-bright mt-4'>
+          <div className='mt-4 text-primary-bright'>
             <h3 className='text-xl font-bold'>Error</h3>
             <p>{error || annotateError}</p>
           </div>
         )}
       </div>
 
-      <DialogFooter className='flex w-full flex-col-reverse gap-4 bg-primary-600 p-4 md:flex-row md:justify-between'>
-        <DialogClose asChild>
+      <DialogFooter className='bg-primary-600 flex w-full flex-col-reverse gap-4 p-4 md:flex-row md:justify-between'>
+        <DialogClose asChild disabled={isButtonDisabled}>
           <Button
             type='button'
             variant='destructive'
-            onClick={handleClose}
+            onClick={handleCloseWithReset}
             disabled={isButtonDisabled}
-            className='invisible-ring text-md w-full text-light-1  md:w-auto'>
+            className='invisible-ring text-md text-light-1 w-full md:w-auto'>
             Close
           </Button>
         </DialogClose>

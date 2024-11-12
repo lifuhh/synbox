@@ -5,11 +5,12 @@ import { useCallback, useState } from 'react'
 export const useStreamValidationApi = () => {
   const [isStreaming, setIsStreaming] = useState(false)
   const [updateMessages, setUpdateMessages] = useState<string[]>([])
-  const [vidInfo, setVidInfo] = useState<any>(null)
+  const [vidInfo, setVidInfo] = useState<unknown>(null)
   const [showVidInfo, setShowVidInfo] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const resetStream = useCallback(() => {
+    setIsStreaming(false)
     setUpdateMessages([])
     setVidInfo(null)
     setShowVidInfo(false)
@@ -23,15 +24,13 @@ export const useStreamValidationApi = () => {
         (message) => setUpdateMessages((prev) => [...prev, message]),
         (info) => setVidInfo(info),
         (err) => setError(err),
-        () => setIsStreaming(false), // New callback for "success" message
+        () => setIsStreaming(false),
       ),
     onMutate: () => {
-      setIsStreaming(true)
-      setError(null)
       resetStream()
+      setIsStreaming(true)
     },
     onSettled: () => {
-      // No need for a timeout here anymore
       setIsStreaming(false)
     },
     onError: (error: Error) => {

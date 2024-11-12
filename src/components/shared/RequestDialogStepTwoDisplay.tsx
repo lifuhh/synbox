@@ -1,6 +1,12 @@
 import { Button } from '@/components/ui/button'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useStreamTranscriptionApi } from '@/hooks/useStreamTranscriptionApi'
+import { ChevronDown, ChevronUp, PartyPopper } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RequestDialogLyricsDisplay from './RequestDialogLyricsDisplay'
@@ -14,7 +20,6 @@ interface Lyric {
 }
 
 interface RequestDialogStepTwoDisplayProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   vidInfo: any
   onLyricsUpdate: (lyrics: string[], timestampedLyrics: Lyric[]) => void
 }
@@ -26,6 +31,7 @@ const RequestDialogStepTwoDisplay: React.FC<
   const [currentTimestampedLyrics, setCurrentTimestampedLyrics] = useState<
     Lyric[]
   >([])
+  const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
 
   const {
@@ -56,8 +62,6 @@ const RequestDialogStepTwoDisplay: React.FC<
 
   useEffect(() => {
     if (lyricsInfo) {
-      // console.log('lyrics info: ')
-      // console.log(lyricsInfo)
       setCurrentLyrics(lyricsInfo.lyrics)
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
@@ -75,7 +79,6 @@ const RequestDialogStepTwoDisplay: React.FC<
 
   const LyricsSkeleton = () => (
     <div className='mt-4 w-full'>
-      {/* <div className='mb-2 h-7 w-32' /> */}
       <div className='h-[46vh] w-full overflow-hidden rounded-md border p-2'>
         {[...Array(11)].map((_, index) => (
           <div
@@ -88,9 +91,6 @@ const RequestDialogStepTwoDisplay: React.FC<
           </div>
         ))}
       </div>
-      {/* <div className='mt-4 flex gap-2'>
-        <Skeleton className='h-10 w-32' />
-      </div> */}
       <Skeleton className='mt-2 h-5 w-40' />
     </div>
   )
@@ -135,12 +135,51 @@ const RequestDialogStepTwoDisplay: React.FC<
           <LyricsSkeleton />
         ) : currentLyrics ? (
           currentLyrics.length > 0 && currentTimestampedLyrics.length > 0 ? (
-            <RequestDialogLyricsDisplay
-              lyrics={currentLyrics}
-              timestampedLyrics={currentTimestampedLyrics}
-              isAiGenerated={isAiGenerated}
-              onLyricsChange={handleLyricsChange}
-            />
+            <div className='space-y-4'>
+              <div className='rounded-lg border border-primary/20 p-4'>
+                <div className='flex items-center justify-center space-x-2'>
+                  <PartyPopper className='h-5 w-5 text-primary' />
+                  <h2 className='text-xl text-white'>
+                    Transcription Completed!
+                  </h2>
+                </div>
+                <p className='mt-1 text-center text-foreground'>
+                  The song has been successfully transcribed. You can preview
+                  the results below.
+                </p>
+              </div>
+
+              <Collapsible
+                open={isOpen}
+                onOpenChange={setIsOpen}
+                className='w-full'>
+                <CollapsibleTrigger asChild>
+                  <button className='group w-full'>
+                    <div className='flex w-full flex-col items-center space-y-2 rounded-lg py-2 hover:bg-primary/5'>
+                      <h3 className='text-lg font-semibold'>View Lyrics</h3>
+                      {isOpen ? (
+                        <ChevronUp className='h-5 w-5 text-primary/60' />
+                      ) : (
+                        <ChevronDown className='h-5 w-5 text-primary/60' />
+                      )}
+                    </div>
+                  </button>
+                </CollapsibleTrigger>
+
+                <CollapsibleContent className='space-y-2'>
+                  <div className='min-h-[300px]'>
+                    {' '}
+                    {/* Fixed height container */}
+                    <RequestDialogLyricsDisplay
+                      lyrics={currentLyrics}
+                      timestampedLyrics={currentTimestampedLyrics}
+                      isAiGenerated={isAiGenerated}
+                      onLyricsChange={handleLyricsChange}
+                    />
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
           ) : null
         ) : null}
       </div>

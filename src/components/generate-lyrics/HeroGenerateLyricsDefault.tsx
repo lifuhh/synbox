@@ -7,7 +7,7 @@ import { extractVideoId } from '@/utils'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { useSetAtom } from 'jotai'
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RequestDialog from '../shared/RequestDialog'
 import { Spotlight } from '../ui/Spotlight'
@@ -27,11 +27,12 @@ const HeroGenerateLyricsDefault = ({
   const [errorMessage, setErrorMessage] = useState('')
   const [validationSuccess, setValidationSuccess] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogKey, setDialogKey] = useState(0)
   const setDialogStepAtom = useSetAtom(dialogStepAtom)
   const navigate = useNavigate()
-  const previousInputRef = useRef<string | null>(null)
 
-  // Use useMemo to derive extractedVideoId to prevent unnecessary recalculations
+  // Remove previousInputRef as it's causing issues with dialog reopening
+
   const extractedVideoId = useMemo(() => {
     if (!inputValue) return ''
 
@@ -41,7 +42,6 @@ const HeroGenerateLyricsDefault = ({
     return extractVideoId(inputValue) || ''
   }, [inputValue])
 
-  // Only fetch lyrics when we have a valid video ID
   const { data: existingLyrics, isLoading: isCheckingLyrics } =
     useGetLyricsBySongId(validationSuccess ? extractedVideoId : '')
 
@@ -75,36 +75,27 @@ const HeroGenerateLyricsDefault = ({
 
   const handleOpenLandingPageDialog = () => {
     if (validationSuccess && extractedVideoId) {
-      if (previousInputRef.current !== inputValue) {
-        setDialogOpen(false)
-        setTimeout(() => {
-          setInputVideoId(extractedVideoId)
-          if (existingLyrics) {
-            navigate(`/v/${extractedVideoId}`, {
-              state: { videoId: extractedVideoId },
-            })
-          } else {
-            setDialogStepAtom(0)
-            setDialogOpen(true)
-          }
-        }, 0)
+      setInputVideoId(extractedVideoId)
+
+      if (existingLyrics) {
+        navigate(`/v/${extractedVideoId}`, {
+          state: { videoId: extractedVideoId },
+        })
       } else {
-        setInputVideoId(extractedVideoId)
-        if (existingLyrics) {
-          navigate(`/v/${extractedVideoId}`, {
-            state: { videoId: extractedVideoId },
-          })
-        } else {
-          setDialogStepAtom(0)
+        setDialogStepAtom(0)
+        setDialogOpen(false)
+        // Increment the key to force dialog recreation
+        setDialogKey((prev) => prev + 1)
+        requestAnimationFrame(() => {
           setDialogOpen(true)
-        }
+        })
       }
-      previousInputRef.current = inputValue
     }
   }
 
   const handleDialogClose = () => {
-    if (dialogOpen) setDialogOpen(false)
+    setDialogOpen(false)
+    setDialogStepAtom(0)
   }
 
   return (
@@ -180,6 +171,7 @@ const HeroGenerateLyricsDefault = ({
               </Button>
             </DialogTrigger>
             <RequestDialog
+              key={dialogKey}
               videoId={inputVideoId}
               handleClose={handleDialogClose}
             />

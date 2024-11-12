@@ -1,8 +1,8 @@
 import { SubtitleInfo } from '@/types'
 import { validateJSON } from '@/utils'
 
-const BE_ADDRESS = import.meta.env.VITE_SYNBOX_BE_URL
-// const BE_ADDRESS = import.meta.env.VITE_SYNBOX_TEST_BE_URL
+// const BE_ADDRESS = import.meta.env.VITE_SYNBOX_BE_URL
+const BE_ADDRESS = import.meta.env.VITE_SYNBOX_TEST_BE_URL
 
 interface StreamData {
   type: 'update' | 'data' | 'vid_info'
