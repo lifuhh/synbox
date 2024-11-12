@@ -18,18 +18,18 @@ const RequestDialogFinalDisplay = ({
 }: RequestDialogFinalDisplayProps) => {
   const navigate = useNavigate()
 
-  const videoId = vidInfo?.full_vid_info?.id
+  const videoId = vidInfo.full_vid_info?.id
 
   const { data: lyrics, isLoading: isLoadingLyrics } =
     useGetLyricsBySongId(videoId)
 
   useEffect(() => {
-    if (!vidInfo || !vidInfo.full_vid_info) {
+    if (!vidInfo || vidInfo.full_vid_info) {
       navigate('/')
     }
   }, [vidInfo, navigate])
 
-  if (!vidInfo || !vidInfo.full_vid_info) {
+  if (!vidInfo || vidInfo.full_vid_info) {
     return null
   }
 

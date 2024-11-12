@@ -104,6 +104,8 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   useEffect(() => {
     if (vidInfo && !error) {
       const timer = setTimeout(() => setShowVidInfo(true), 1000)
+      console.log('vid info is')
+      console.log(vidInfo)
       return () => clearTimeout(timer)
     }
   }, [vidInfo, error, setShowVidInfo])
