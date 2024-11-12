@@ -90,6 +90,8 @@ export const streamTranscribeVideoById = async (
 
     const chunk = decoder.decode(value)
     const lines = chunk.split('\n')
+    console.log("Received chunk:", chunk); // Log raw chunk data
+    console.log("Split lines:", lines);
 
     lines.forEach((line) => {
 

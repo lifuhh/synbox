@@ -31,6 +31,9 @@ const RequestDialogValidationDisplay = ({
       JSON.stringify(vidInfo, null, 2),
     )
 
+    console.log('Mounted with vidInfo:', vidInfo)
+    if (!vidInfo) setError('Video information is missing')
+
     try {
       if (!vidInfo) {
         console.error('vidInfo is null or undefined')
