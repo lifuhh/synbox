@@ -358,7 +358,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
           <DialogClose asChild disabled={isButtonDisabled}>
             <Button
               type='button'
-              variant='outline'
+              variant='ghost'
               onClick={handleCloseWithReset}
               disabled={isButtonDisabled}
               className='invisible-ring text-md text-light-1 w-full disabled:bg-gray-600 md:w-auto'>

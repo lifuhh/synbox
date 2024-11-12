@@ -58,7 +58,8 @@ const RequestDialogFinalDisplay = ({
         ) : lyrics ? (
           <Button
             onClick={handlePlayClick}
-            className='mt-4 w-32 bg-green-500 text-white hover:bg-green-600'>
+            variant='default'
+            className='mt-4 w-32'>
             Play
           </Button>
         ) : (

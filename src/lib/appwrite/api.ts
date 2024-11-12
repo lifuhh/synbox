@@ -1,4 +1,5 @@
 import { CurrentPlayingInfo } from '@/types'
+import { createAppwriteIdFromYoutubeId } from '@/utils'
 import { ID, Query } from 'appwrite'
 import { account, appwriteConfig, avatars, databases, storage } from './config'
 
@@ -22,10 +23,13 @@ export async function addSongInfoBySongId(songInfo: CurrentPlayingInfo) {
   const { videoId, title, author, thumbnailUrl } = songInfo
 
   try {
+    // Convert YouTube ID to Appwrite-compatible ID for storage
+    const appwriteId = createAppwriteIdFromYoutubeId(videoId)
+
     const songInfoUpload = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.songInfoId,
-      videoId,
+      appwriteId,
       {
         title,
         author,
@@ -44,16 +48,20 @@ export async function getSongInfoBySongId(
   if (!songId) throw Error('No Song Id!')
 
   try {
+    // Convert YouTube ID to Appwrite-compatible ID for querying
+    const appwriteId = createAppwriteIdFromYoutubeId(songId)
+
     const songInfo = await databases.getDocument(
       appwriteConfig.databaseId,
       appwriteConfig.songInfoId,
-      songId,
+      appwriteId,
     )
 
     if (!songInfo) throw Error('No song info found')
 
+    // Always return the original YouTube ID for frontend use
     const result = {
-      videoId: songId,
+      videoId: songId, // Use original YouTube ID
       title: songInfo.title,
       author: songInfo.author,
       thumbnailUrl: songInfo.thumbnailUrl,
@@ -69,7 +77,6 @@ export async function getSongInfoBySongId(
         throw error
       }
     } else {
-      // Handle the case where error is not an Error object
       console.error('An unexpected error occurred of unknown type:', error)
       throw new Error('An unknown error occurred')
     }
@@ -80,15 +87,23 @@ export async function getSongLyricsById(songId: string) {
   if (!songId) throw Error('No songId given')
 
   try {
+    // Convert YouTube ID to Appwrite-compatible ID for querying
+    const appwriteId = createAppwriteIdFromYoutubeId(songId)
+    console.log('Querying Appwrite with ID:', appwriteId)
+
     const lyrics = await databases.getDocument(
       appwriteConfig.databaseId,
       appwriteConfig.lyricsId,
-      songId,
+      appwriteId,
     )
 
     if (!lyrics) return Error('No lyrics found')
 
-    return lyrics
+    // Convert any encoded IDs back to YouTube format in the response
+    return {
+      ...lyrics,
+      videoId: songId // Ensure we return the original YouTube ID
+    }
   } catch (error) {
     if (error instanceof Error) {
       if (error.message === 'No Lyrics Found') {
@@ -98,7 +113,6 @@ export async function getSongLyricsById(songId: string) {
         throw error
       }
     } else {
-      // Handle the case where error is not an Error object
       console.error('An unexpected error occurred of unknown type:', error)
       throw new Error('An unknown error occurred')
     }
@@ -162,11 +176,17 @@ export async function uploadLyricsToAppwrite(
   console.log(lyrics)
 
   try {
+    // Convert YouTube ID to Appwrite-compatible ID
+    const appwriteId = createAppwriteIdFromYoutubeId(songId)
+
     const uploadedLyrics = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.lyricsId,
-      songId,
-      { ...lyrics, visit_count: 0 },
+      appwriteId,
+      { 
+        ...lyrics, 
+        visit_count: 0,
+      },
     )
 
     if (!uploadedLyrics) throw Error('Lyrics not uploaded successfully')
@@ -174,5 +194,6 @@ export async function uploadLyricsToAppwrite(
     return uploadedLyrics
   } catch (error) {
     console.log(error)
+    throw error
   }
 }

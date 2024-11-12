@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 import { Divider } from '@mantine/core'
 import { Helmet } from 'react-helmet-async'
 
@@ -81,6 +82,13 @@ const AboutPage = () => {
           </Accordion>
         </div>
       </div>
+      <Button variant='default'>Test</Button>
+      <Button variant='link'>Test</Button>
+      <Button variant='secondary'>Test</Button>
+      <Button variant='destructive'>Test</Button>
+      <Button variant='ghost'>Test</Button>
+      <Button variant='outline'>Test</Button>
+
       <HomeFooter />
     </section>
   )

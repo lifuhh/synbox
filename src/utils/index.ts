@@ -8,15 +8,15 @@ import {
   YoutubeSearchItem,
   formattedSearchResult,
   formattedYoutubeVideoItemForCarousel,
-} from '@/types'
+} from '@/types';
 
 import {
   // japaneseToRomajiMap,
   romajiRegex,
   romajiToHiraganaMap,
-} from './charactersMap'
+} from './charactersMap';
 
-import { isKanji, toRomaji } from 'wanakana'
+import { isKanji, toRomaji } from 'wanakana';
 
 // ? Function to shuffle array randomly
 export const shuffleArray = (array: unknown[]) => {
@@ -257,37 +257,55 @@ export const extractVideoId = (input: string): string | null => {
 }
 
 export const createAppwriteIdFromYoutubeId = (id: string): string => {
+  if (!id) return '';
+  
   if (validateYoutubeIdForAppwrite(id)) {
-    return id
+    return id;
   }
-  return encodeYoutubeIdForAppwrite(id)
-}
-
-export const getYouTubeIdFromAppwriteId = (appwriteId: string): string => {
-  if (appwriteId.startsWith('yt_')) {
-    return decodeYoutubeIdForAppwrite(appwriteId)
-  }
-  return appwriteId
+  
+  return encodeYoutubeIdForAppwrite(id);
 }
 
 const validateYoutubeIdForAppwrite = (id: string): boolean => {
-  const validChars = /^[a-zA-Z0-9_]{1,36}$/
-  return validChars.test(id) && !id.startsWith('_')
+  const validChars = /^[a-zA-Z0-9_]{1,36}$/;
+  return validChars.test(id) && !id.startsWith('_');
 }
 
 const encodeYoutubeIdForAppwrite = (id: string): string => {
-  const prefix = 'yt_'
-  const encodedId = btoa(id)
-  return `${prefix}${encodedId}`
+  const prefix = 'yt_';
+  // Replace minus signs with underscores
+  const encodedId = id.replace(/-/g, '_');
+  return `${prefix}${encodedId}`;
 }
 
-const decodeYoutubeIdForAppwrite = (id: string): string => {
+export const getYouTubeIdFromAppwriteId = (appwriteId: string): string => {
+  const prefix = 'yt_';
+  if (!appwriteId.startsWith(prefix)) {
+    return appwriteId;
+  }
+  
+  // Get the ID part and replace underscores back to minus signs
+  const encodedPart = appwriteId.slice(prefix.length);
+  return encodedPart.replace(/_/g, '-');
+}
+
+export const decodeYoutubeIdForAppwrite = (id: string): string => {
   const prefix = 'yt_'
   if (id.startsWith(prefix)) {
     const encodedPart = id.slice(prefix.length)
     return atob(encodedPart)
   }
   throw new Error('Invalid encoded ID format')
+}
+
+//? Used to handle bulk conversions in list queries
+export function convertAppwriteDocsToYoutubeIds<T extends { id: string }>(
+  docs: T[],
+): (T & { videoId: string })[] {
+  return docs.map(doc => ({
+    ...doc,
+    videoId: getYouTubeIdFromAppwriteId(doc.id)
+  }))
 }
 
 export const delayApiResponse = (ms: number) =>

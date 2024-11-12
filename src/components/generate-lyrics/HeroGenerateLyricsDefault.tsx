@@ -39,7 +39,9 @@ const HeroGenerateLyricsDefault = ({
     const result = YouTubeUrlOrIdValidation.safeParse(inputValue)
     if (!result.success) return ''
 
-    return extractVideoId(inputValue) || ''
+    const id = extractVideoId(inputValue)
+    console.log('Extracted Video ID:', id) // Add this log
+    return id || ''
   }, [inputValue])
 
   const { data: existingLyrics, isLoading: isCheckingLyrics } =
