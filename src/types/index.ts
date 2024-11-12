@@ -69,7 +69,6 @@ export interface PageInfo {
 export interface InfiniteGalleryVideoItem {
   title: string
   channel: string
-  description: string
   thumbnailUrl: string
   videoId: string
 }
@@ -96,7 +95,6 @@ export type FormatYoutubeResponseFunction = (
 export interface InfiniteGalleryVideoItem {
   title: string
   channel: string
-  description: string
   thumbnailUrl: string
   videoId: string
 }
@@ -117,7 +115,6 @@ export interface FetchInfiniteGalleryPlaylistParams {
 export interface InfiniteGalleryVideoItem {
   title: string
   channel: string
-  description: string
   thumbnailUrl: string
   videoId: string
 }
@@ -258,25 +255,16 @@ export interface UploadedSrtLine {
 export interface FullVideoInfo {
   id: string
   thumbnail: string
-  views: number
   duration: number
   likes: number
   playable_in_embed: boolean
   title: string
-  categories: string[]
-  description: string
   channel_name: string
-  uploader: string
-  language: string
 }
 
 export interface VideoInfoForValidation {
   title: string
-  categories: string[]
-  description: string
   channel_name: string
-  uploader: string
-  language: string
 }
 
 export interface SubtitleInfo {

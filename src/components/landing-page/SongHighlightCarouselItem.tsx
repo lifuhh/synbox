@@ -25,16 +25,6 @@ const SongHighlightCarouselItem = ({
   itemCount,
   item,
 }: SongHighlightCarouselItemProps) => {
-  /*   channel
-"Ayase / YOASOBI"
-description
-"ストリーミング/ダウンロード絶賛配信中\nhttps://orcd.co/taisho_romance\n\nMusic : Ayase (https://twitt..."
-thumbnailUrl
-"https://i.ytimg.com/vi/wJQ9ig_d8yY/hqdefault.jpg"
-title
-"YOASOBI「大正浪漫」Official Music Video"
-videoId
-"wJQ9ig_d8yY" */
 
   const [cardStyle, setCardStyle] = useState<CSSProperties>({})
   const requestRef = useRef<number>()

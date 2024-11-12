@@ -1,7 +1,7 @@
 import { useGetInfiniteGalleryPlaylist } from '@/lib/react-query/queriesAndMutations'
 import { InfiniteGalleryVideoItem } from '@/types'
 import { Loader } from '@mantine/core'
-import React, { useEffect } from 'react'
+import React from 'react'
 import HomeFooter from '../shared/HomeFooter'
 import { Spotlight } from '../ui/Spotlight'
 import { InfiniteScrollGallery } from './InfiniteScrollGallery'
@@ -29,7 +29,6 @@ const SongsInfiniteGallery: React.FC = () => {
                 (item): InfiniteGalleryVideoItem => ({
                   title: item.title,
                   channel: item.channel || 'Unknown',
-                  description: item.description,
                   thumbnailUrl: item.thumbnailUrl,
                   videoId: item.videoId,
                 }),

@@ -116,16 +116,10 @@ export function formatYoutubePlaylistResponse(
 export const formatYoutubeInfiniteGalleryResponse: FormatYoutubeResponseFunction =
   (data: YoutubePlaylistApiResponse): InfiniteGalleryVideoItem[] => {
     const items = data.items.map((item): InfiniteGalleryVideoItem => {
-      const maxDescriptionLength = 80
 
       return {
         title: item.snippet.title,
         channel: item.snippet.videoOwnerChannelTitle || 'Unknown',
-        description: trimLength(
-          item.snippet.description,
-          maxDescriptionLength,
-          true,
-        ),
         thumbnailUrl: item.snippet.thumbnails.high.url,
         videoId: item.snippet.resourceId?.videoId || '',
       }
