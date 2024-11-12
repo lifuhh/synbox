@@ -25,8 +25,8 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
     subtitle_info: { exist: subtitlesExist, cleaned: subtitlesCleaned },
   } = vidInfo
 
-  console.log('Validation Display: ')
-  console.log(vidInfo)
+  // console.log('Validation Display: ')
+  // console.log(vidInfo)
 
   //? Reference for adding a button to youtube given video ID
   const youtubeUrl = `https://www.youtube.com/watch?v=${id}`

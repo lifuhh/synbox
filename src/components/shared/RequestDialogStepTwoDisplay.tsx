@@ -71,7 +71,8 @@ const RequestDialogStepTwoDisplay: React.FC<
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
 
-      // console.log(lyricsInfo)
+      console.log("Step Two: ")
+      console.log(lyricsInfo)
     }
   }, [lyricsInfo, onLyricsUpdate])
 
