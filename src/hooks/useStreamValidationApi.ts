@@ -1,38 +1,9 @@
 import { streamValidateVideoById } from '@/lib/synbox-flask/api'
+import { VideoInfo } from '@/types'
 import { useMutation } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 
-interface VideoInfo {
-  passed: boolean
-  audio_file_path: string
-  full_vid_info: {
-    categories: string[]
-    channel_name: string
-    description: string
-    duration: number
-    id: string
-    language: string
-    likes: number
-    playable_in_embed: boolean
-    thumbnail: string
-    title: string
-    uploader: string
-    views: number
-  }
-  error_msg: string | null
-  subtitle_info: {
-    exist: boolean
-    path: string | null
-    ext: string | null
-  }
-  vid_info_for_validation: {
-    title: string
-    categories: string[]
-    description: string
-    channel_name: string
-    uploader: string
-  }
-}
+
 
 export const useStreamValidationApi = () => {
   const [isStreaming, setIsStreaming] = useState(false)
@@ -49,19 +20,31 @@ export const useStreamValidationApi = () => {
     setError(null)
   }, [])
 
-  const handleVideoInfo = useCallback((info: any) => {
-    console.log('Received video info:', info)
-    try {
-      // Validate required fields
-      if (!info?.full_vid_info) {
-        throw new Error('Invalid video info format')
-      }
-      setVidInfo(info)
-    } catch (err) {
-      console.error('Error processing video info:', err)
+  const handleError = useCallback((err: unknown) => {
+    if (err instanceof Error) {
       setError(err.message)
+    } else if (typeof err === 'string') {
+      setError(err)
+    } else {
+      setError('An unknown error occurred')
     }
   }, [])
+
+  const handleVideoInfo = useCallback((info: unknown) => {
+    console.log('Received video info:', info)
+    try {
+      // Type check the incoming data
+      if (!info || typeof info !== 'object') {
+        throw new Error('Invalid video info format')
+      }
+      
+      // Type assertion after validation
+      setVidInfo(info as VideoInfo)
+    } catch (err) {
+      console.error('Error processing video info:', err)
+      handleError(err)
+    }
+  }, [handleError])
 
   const mutation = useMutation({
     mutationFn: async (id: string) => {
@@ -75,7 +58,7 @@ export const useStreamValidationApi = () => {
           handleVideoInfo,
           (err) => {
             console.error('Stream error:', err)
-            setError(err)
+            handleError(err)
           },
           () => {
             console.log('Stream completed')
@@ -84,6 +67,7 @@ export const useStreamValidationApi = () => {
         )
       } catch (err) {
         console.error('Mutation error:', err)
+        handleError(err)
         throw err
       }
     },
@@ -96,9 +80,9 @@ export const useStreamValidationApi = () => {
       console.log('Validation settled')
       setIsStreaming(false)
     },
-    onError: (error: Error) => {
-      console.error('Validation error:', error)
-      setError(error.message)
+    onError: (err: unknown) => {
+      console.error('Validation error:', err)
+      handleError(err)
       setIsStreaming(false)
     }
   })

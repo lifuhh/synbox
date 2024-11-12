@@ -1,15 +1,31 @@
 import { Button } from '@/components/ui/button'
+import { VideoInfo } from '@/types'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+interface DisplayVideoData {
+  title: string
+  id: string
+  thumbnail: string
+  likes?: number
+  channel_name?: string
+  passed: boolean
+  subtitleInfo: {
+    exist: boolean
+    path: string | null
+    ext: string | null
+  }
+}
 
-const RequestDialogValidationDisplay = ({ vidInfo }) => {
+const RequestDialogValidationDisplay = ({
+  vidInfo,
+}: {
+  vidInfo: VideoInfo | null
+}) => {
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
-  const [videoData, setVideoData] = useState<any>(null)
+  const [videoData, setVideoData] = useState<DisplayVideoData | null>(null)
 
-  // All hooks must be called before any conditional returns
   useEffect(() => {
-    // Add detailed logging
     console.log(
       'RequestDialogValidationDisplay mounted with vidInfo:',
       JSON.stringify(vidInfo, null, 2),
@@ -28,11 +44,10 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
         return
       }
 
-      // Extract and set video data
       const {
-        full_vid_info: { title, id, thumbnail, likes, uploader, channel_name },
+        full_vid_info: { title, id, thumbnail, likes, channel_name },
         passed,
-        subtitle_info: { exist: subtitlesExist, cleaned: subtitlesCleaned },
+        subtitle_info,
       } = vidInfo
 
       setVideoData({
@@ -42,23 +57,22 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
         likes,
         channel_name,
         passed,
-        subtitlesExist,
-        subtitlesCleaned,
+        subtitleInfo: subtitle_info,
       })
 
-      // Log successful data parsing
       console.log('Successfully parsed video info:', {
         title,
         id,
         thumbnail,
       })
-    } catch (err) {
-      console.error('Error processing vidInfo:', err)
-      setError(`Error processing video information: ${err.message}`)
+    } catch (error: unknown) {
+      console.error('Error processing vidInfo:', error)
+      setError(
+        `Error processing video information: ${error instanceof Error ? error.message : 'Unknown error occurred'}`,
+      )
     }
   }, [vidInfo])
 
-  // Enhanced error display
   if (error) {
     return (
       <div className='p-4 text-red-500'>
@@ -74,7 +88,6 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
     )
   }
 
-  // Wait for video data to be processed
   if (!videoData) {
     return (
       <div className='p-4 text-gray-500'>
@@ -83,23 +96,7 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
     )
   }
 
-  const {
-    title,
-    id,
-    thumbnail,
-    likes,
-    channel_name,
-    passed,
-    subtitlesExist,
-    subtitlesCleaned,
-  } = videoData
-
-  console.log('Rendering validation display with data:', {
-    title,
-    id,
-    thumbnail,
-    likes,
-  })
+  const { title, thumbnail, likes, channel_name } = videoData
 
   return (
     <div className='overflow-visible px-6'>
@@ -109,10 +106,11 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
           <div
             className='mb-4 aspect-video w-full max-w-lg rounded-lg bg-cover bg-center shadow-md'
             style={{ backgroundImage: `url(${thumbnail})` }}
-            onError={(e) => {
-              console.error('Error loading thumbnail:', e)
-              e.currentTarget.style.backgroundImage = 'none'
-              e.currentTarget.style.backgroundColor = '#gray-200'
+            onError={(e: React.SyntheticEvent<HTMLDivElement, Event>) => {
+              console.error('Error loading thumbnail')
+              const target = e.currentTarget
+              target.style.backgroundImage = 'none'
+              target.style.backgroundColor = '#e5e7eb'
             }}
           />
         )}
@@ -134,7 +132,19 @@ const RequestDialogValidationDisplay = ({ vidInfo }) => {
   )
 }
 
-const InfoItem = ({ label, value, valueClassName = '', fallback = 'N/A' }) => (
+interface InfoItemProps {
+  label: string
+  value?: string | number | null
+  valueClassName?: string
+  fallback?: string
+}
+
+const InfoItem = ({
+  label,
+  value,
+  valueClassName = '',
+  fallback = 'N/A',
+}: InfoItemProps) => (
   <div className='flex flex-col'>
     <span className='text-sm text-gray-500'>{label}</span>
     <span className={`font-medium ${valueClassName} pt-[1px]`}>
