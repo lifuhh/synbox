@@ -11,7 +11,6 @@ interface TranscriptionParams {
 export const useStreamTranscriptionApi = () => {
   const [isStreaming, setIsStreaming] = useState(false)
   const [updateMessages, setUpdateMessages] = useState<string[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [lyricsInfo, setLyricsInfo] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [isAiGenerated, setIsAiGenerated] = useState(false)
@@ -26,6 +25,7 @@ export const useStreamTranscriptionApi = () => {
   const STREAM_TIMEOUT = 30000 // 30 seconds
 
   const resetStream = useCallback(() => {
+    console.log('Resetting stream state')
     setIsStreaming(false)
     setUpdateMessages([])
     setLyricsInfo(null)
@@ -78,6 +78,7 @@ export const useStreamTranscriptionApi = () => {
 
   const mutation = useMutation({
     mutationFn: async ({ id, subtitleInfo }: TranscriptionParams) => {
+      console.log('Starting transcription mutation for id:', id)
       resetStream()
       currentRequestRef.current = { id, subtitleInfo }
       setIsStreaming(true)
@@ -118,6 +119,9 @@ export const useStreamTranscriptionApi = () => {
           handleError(err)
         }
         throw err
+      } finally {
+        console.log('Transcription mutation completed')
+        setIsStreaming(false)
       }
     },
     onError: (err: unknown) => {
@@ -134,6 +138,7 @@ export const useStreamTranscriptionApi = () => {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      console.log('Cleaning up stream resources')
       if (streamTimeoutRef.current) {
         clearTimeout(streamTimeoutRef.current)
       }

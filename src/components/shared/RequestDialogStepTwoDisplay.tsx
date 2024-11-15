@@ -44,6 +44,25 @@ const RequestDialogStepTwoDisplay: React.FC<
     isAiGenerated,
   } = useStreamTranscriptionApi()
 
+  // Debug logging
+  useEffect(() => {
+    console.log('State Update:', {
+      isStreaming,
+      transcriptionComplete,
+      hasLyricsInfo: !!lyricsInfo,
+      currentLyricsLength: currentLyrics.length,
+      timestampedLyricsLength: currentTimestampedLyrics.length,
+      error,
+    })
+  }, [
+    isStreaming,
+    transcriptionComplete,
+    lyricsInfo,
+    currentLyrics,
+    currentTimestampedLyrics,
+    error,
+  ])
+
   useEffect(() => {
     onStreamingStatusChange(isStreaming)
   }, [isStreaming, onStreamingStatusChange])
@@ -62,7 +81,7 @@ const RequestDialogStepTwoDisplay: React.FC<
     setTranscriptionComplete(false)
 
     if (id && subtitleInfo) {
-      // Fixed: Using correct parameter names matching TranscriptionParams interface
+      console.log('Initiating transcription for id:', id)
       mutate({
         id,
         subtitleInfo,
@@ -71,14 +90,19 @@ const RequestDialogStepTwoDisplay: React.FC<
   }, [vidInfo, navigate, mutate])
 
   useEffect(() => {
-    if (lyricsInfo && lyricsInfo.lyrics && lyricsInfo.timestamped_lyrics) {
-      console.log('Received lyrics info:', lyricsInfo)
+    if (
+      !isStreaming &&
+      lyricsInfo &&
+      lyricsInfo.lyrics &&
+      lyricsInfo.timestamped_lyrics
+    ) {
+      console.log('Processing received lyrics info')
       setCurrentLyrics(lyricsInfo.lyrics)
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
       setTranscriptionComplete(true)
     }
-  }, [lyricsInfo, onLyricsUpdate])
+  }, [isStreaming, lyricsInfo, onLyricsUpdate])
 
   const handleLyricsChange = (
     updatedLyrics: string[],
@@ -94,25 +118,19 @@ const RequestDialogStepTwoDisplay: React.FC<
       const { full_vid_info: fullVidInfo, subtitle_info: subtitleInfo } =
         vidInfo
       const { id } = fullVidInfo
-      // Fixed: Using correct parameter names here as well
+      setTranscriptionComplete(false)
       mutate({ id, subtitleInfo })
     }
   }
 
   const renderContent = () => {
-    if (isStreaming) {
-      return (
-        <UpdateMessagesDisplay
-          isStreaming={isStreaming}
-          showLoader={isStreaming}
-          updateMessages={updateMessages}
-          loaderType='dots'
-          loaderSize='md'
-          textSize='md'
-          verticalMargin={2}
-        />
-      )
-    }
+    // Debug log the current render state
+    console.log('Rendering content with state:', {
+      isStreaming,
+      error,
+      transcriptionComplete,
+      hasLyrics: currentLyrics.length > 0,
+    })
 
     if (error) {
       return (
@@ -125,11 +143,25 @@ const RequestDialogStepTwoDisplay: React.FC<
       )
     }
 
-    if (
-      transcriptionComplete &&
-      currentLyrics.length > 0 &&
-      currentTimestampedLyrics.length > 0
-    ) {
+    if (isStreaming || (!transcriptionComplete && !error)) {
+      return (
+        <UpdateMessagesDisplay
+          isStreaming={true}
+          showLoader={true}
+          updateMessages={
+            updateMessages.length
+              ? [updateMessages[updateMessages.length - 1]]
+              : ['Processing...']
+          }
+          loaderType='dots'
+          loaderSize='md'
+          textSize='md'
+          verticalMargin={2}
+        />
+      )
+    }
+
+    if (transcriptionComplete && currentLyrics.length > 0) {
       return (
         <div className='space-y-4'>
           <div className='gap-8 rounded-lg p-4'>
