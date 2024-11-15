@@ -15,44 +15,119 @@ export const streamValidateVideoById = async (
   onVidInfo: (info: any) => void,
   onError: (error: string) => void,
   onSuccess: () => void,
+  signal?: AbortSignal
 ) => {
-  const response = await fetch(`${BE_ADDRESS}/validate`, {
-    method: 'POST',
-    body: JSON.stringify({ id: videoId }),
-    headers: {
-      Accept: 'application/x-ndjson, application/json, text/plain',
-      'Content-Type': 'application/json',
-    },
-  })
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-  if (!response.ok) throw new Error('Network response was not ok')
-  if (!response.body)
-    throw new Error('ReadableStream not yet supported in this browser')
+  try {
+    const response = await fetch(`${BE_ADDRESS}/validate`, {
+      method: 'POST',
+      body: JSON.stringify({ id: videoId }),
+      headers: {
+        Accept: 'application/x-ndjson, application/json, text/plain',
+        'Content-Type': 'application/json',
+        'Connection': 'keep-alive',
+      },
+      signal: signal || controller.signal,
+      keepalive: true,
+      // Add credentials if needed for your setup
+      // credentials: 'include',
+    });
 
-  const reader = response.body.getReader()
-  const decoder = new TextDecoder()
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    if (!response.body) {
+      throw new Error('ReadableStream not supported');
+    }
 
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let hasReceivedData = false;
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      
+      if (done) {
+        if (!hasReceivedData) {
+          throw new Error('Stream ended without receiving any data');
+        }
+        // Process any remaining data in buffer
+        if (buffer.trim()) {
+          try {
+            const content = JSON.parse(buffer);
+            processStreamContent(content, onUpdate, onVidInfo, onError);
+          } catch (e) {
+            console.error('Error parsing final buffer:', e);
+          }
+        }
+        break;
+      }
 
-    const chunk = decoder.decode(value)
-    const lines = chunk.split('\n')
+      hasReceivedData = true;
+      buffer += decoder.decode(value, { stream: true });
+      
+      // Process complete lines
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
 
-    lines.forEach((line) => {
-      if (validateJSON(line)) {
-        const content = JSON.parse(line)
-        if (content['type'] === 'update' || content['type'] === 'data') {
-          onUpdate(content['data'])
-        } else if (content['type'] === 'vid_info') {
-          onVidInfo(content['data'])
-        } else if (content['type'] === 'error') {
-          onError(content['data'])
-        } else if (content['type'] === 'success') {
-          onSuccess()
+      for (const line of lines) {
+        if (line.trim() === '') continue;
+
+        try {
+          const content = JSON.parse(line);
+          processStreamContent(content, onUpdate, onVidInfo, onError);
+        } catch (e) {
+          console.error('Error parsing line:', line);
+          console.error('Parse error:', e);
+          continue;
         }
       }
-    })
+    }
+
+    onSuccess();
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        onError('Request timed out');
+      } else {
+        onError(error.message);
+      }
+    } else {
+      onError('An unknown error occurred');
+    }
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+function processStreamContent(
+  content: any,
+  onUpdate: (message: string) => void,
+  onVidInfo: (info: any) => void,
+  onError: (error: string) => void
+) {
+  if (!content || !content.type) {
+    console.error('Invalid content received:', content);
+    return;
+  }
+
+  switch (content.type) {
+    case 'update':
+    case 'data':
+      onUpdate(content.data);
+      break;
+    case 'vid_info':
+      onVidInfo(content.data);
+      break;
+    case 'error':
+      onError(content.data);
+      break;
+    default:
+      console.warn('Unknown message type:', content.type);
   }
 }
 
