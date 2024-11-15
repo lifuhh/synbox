@@ -19,7 +19,6 @@ interface Lyric {
 }
 
 interface RequestDialogStepTwoDisplayProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   vidInfo: any
   onLyricsUpdate: (lyrics: string[], timestampedLyrics: Lyric[]) => void
   onStreamingStatusChange: (status: boolean) => void
@@ -33,6 +32,7 @@ const RequestDialogStepTwoDisplay: React.FC<
     Lyric[]
   >([])
   const [isOpen, setIsOpen] = useState(false)
+  const [transcriptionComplete, setTranscriptionComplete] = useState(false)
   const navigate = useNavigate()
 
   const {
@@ -55,27 +55,28 @@ const RequestDialogStepTwoDisplay: React.FC<
     }
 
     const { full_vid_info: fullVidInfo, subtitle_info: subtitleInfo } = vidInfo
-    const { id: vidId } = fullVidInfo
+    const { id } = fullVidInfo
 
     setCurrentLyrics([])
     setCurrentTimestampedLyrics([])
+    setTranscriptionComplete(false)
 
-    if (vidId && subtitleInfo) {
+    if (id && subtitleInfo) {
+      // Fixed: Using correct parameter names matching TranscriptionParams interface
       mutate({
-        id: vidId,
-        subtitleInfo: subtitleInfo,
+        id,
+        subtitleInfo,
       })
     }
   }, [vidInfo, navigate, mutate])
 
   useEffect(() => {
-    if (lyricsInfo) {
+    if (lyricsInfo && lyricsInfo.lyrics && lyricsInfo.timestamped_lyrics) {
+      console.log('Received lyrics info:', lyricsInfo)
       setCurrentLyrics(lyricsInfo.lyrics)
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
-
-      console.log('Step Two: ')
-      console.log(lyricsInfo)
+      setTranscriptionComplete(true)
     }
   }, [lyricsInfo, onLyricsUpdate])
 
@@ -88,107 +89,101 @@ const RequestDialogStepTwoDisplay: React.FC<
     onLyricsUpdate(updatedLyrics, updatedTimestampedLyrics)
   }
 
-  if (!vidInfo || !vidInfo.full_vid_info) {
-    return null
+  const handleRetry = () => {
+    if (vidInfo && vidInfo.full_vid_info) {
+      const { full_vid_info: fullVidInfo, subtitle_info: subtitleInfo } =
+        vidInfo
+      const { id } = fullVidInfo
+      // Fixed: Using correct parameter names here as well
+      mutate({ id, subtitleInfo })
+    }
   }
 
-  return (
-    <div className='mt-1 h-full w-full'>
-      <UpdateMessagesDisplay
-        isStreaming={isStreaming}
-        showLoader={isStreaming}
-        updateMessages={updateMessages}
-        loaderType='dots'
-        loaderSize='md'
-        textSize='md'
-        verticalMargin={2}
-      />
+  const renderContent = () => {
+    if (isStreaming) {
+      return (
+        <UpdateMessagesDisplay
+          isStreaming={isStreaming}
+          showLoader={isStreaming}
+          updateMessages={updateMessages}
+          loaderType='dots'
+          loaderSize='md'
+          textSize='md'
+          verticalMargin={2}
+        />
+      )
+    }
 
-      {error && (
+    if (error) {
+      return (
         <div className='mb-4 text-center text-red-500'>
           <p>Error: {error}</p>
-          <Button
-            onClick={() => {
-              const {
-                full_vid_info: fullVidInfo,
-                subtitle_info: subtitleInfo,
-              } = vidInfo
-              const { id: vidId } = fullVidInfo
-              mutate({
-                id: vidId,
-                subtitleInfo: subtitleInfo,
-              })
-            }}
-            variant='secondary'
-            className='mt-2'>
+          <Button onClick={handleRetry} variant='secondary' className='mt-2'>
             Retry
           </Button>
         </div>
-      )}
+      )
+    }
 
-      <div className='min-h-[100px]'>
-        {isStreaming ? (
-          // <LyricsSkeleton />
-          ''
-        ) : currentLyrics ? (
-          currentLyrics.length > 0 && currentTimestampedLyrics.length > 0 ? (
-            <div className='space-y-4'>
-              <div className='gap-8 rounded-lg p-4'>
-                <div className='flex items-center justify-center space-x-2'>
-                  <PartyPopper className='h-5 w-5 text-primary' />
-                  <h2 className=' text-xl text-white'>
-                    {isAiGenerated
-                      ? 'Transcription Completed!'
-                      : 'Lyrics Found!'}
-                  </h2>
-                </div>
-                <p className='mt-1 text-center text-foreground'>
-                  {isAiGenerated
-                    ? 'The song has been successfully transcribed.'
-                    : 'Song lyrics retrieved successfully.'}
-                </p>
-              </div>
-
-              <Collapsible
-                open={isOpen}
-                onOpenChange={setIsOpen}
-                className='w-full'>
-                <CollapsibleTrigger asChild>
-                  <button className='group w-full'>
-                    <div className='flex w-full items-center justify-center space-x-2 rounded-lg py-2 hover:bg-primary/5'>
-                      <h3 className='text-lg font-semibold'>
-                        {isAiGenerated
-                          ? 'View Generated Lyrics'
-                          : 'View Lyrics'}
-                      </h3>
-                      {isOpen ? (
-                        <ChevronUp className='h-5 w-5 text-primary/60' />
-                      ) : (
-                        <ChevronDown className='h-5 w-5 text-primary/60' />
-                      )}
-                    </div>
-                  </button>
-                </CollapsibleTrigger>
-
-                <CollapsibleContent className='space-y-2'>
-                  <div className='min-h-[300px]'>
-                    {' '}
-                    {/* Fixed height container */}
-                    <RequestDialogLyricsDisplay
-                      lyrics={currentLyrics}
-                      timestampedLyrics={currentTimestampedLyrics}
-                      isAiGenerated={isAiGenerated}
-                      onLyricsChange={handleLyricsChange}
-                    />
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+    if (
+      transcriptionComplete &&
+      currentLyrics.length > 0 &&
+      currentTimestampedLyrics.length > 0
+    ) {
+      return (
+        <div className='space-y-4'>
+          <div className='gap-8 rounded-lg p-4'>
+            <div className='flex items-center justify-center space-x-2'>
+              <PartyPopper className='h-5 w-5 text-primary' />
+              <h2 className='text-xl text-white'>
+                {isAiGenerated ? 'Transcription Completed!' : 'Lyrics Found!'}
+              </h2>
             </div>
-          ) : null
-        ) : null}
-      </div>
-    </div>
-  )
+            <p className='mt-1 text-center text-foreground'>
+              {isAiGenerated
+                ? 'The song has been successfully transcribed.'
+                : 'Song lyrics retrieved successfully.'}
+            </p>
+          </div>
+
+          <Collapsible
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            className='w-full'>
+            <CollapsibleTrigger asChild>
+              <button className='group w-full'>
+                <div className='flex w-full items-center justify-center space-x-2 rounded-lg py-2 hover:bg-primary/5'>
+                  <h3 className='text-lg font-semibold'>
+                    {isAiGenerated ? 'View Generated Lyrics' : 'View Lyrics'}
+                  </h3>
+                  {isOpen ? (
+                    <ChevronUp className='h-5 w-5 text-primary/60' />
+                  ) : (
+                    <ChevronDown className='h-5 w-5 text-primary/60' />
+                  )}
+                </div>
+              </button>
+            </CollapsibleTrigger>
+
+            <CollapsibleContent className='space-y-2'>
+              <div className='min-h-[300px]'>
+                <RequestDialogLyricsDisplay
+                  lyrics={currentLyrics}
+                  timestampedLyrics={currentTimestampedLyrics}
+                  isAiGenerated={isAiGenerated}
+                  onLyricsChange={handleLyricsChange}
+                />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      )
+    }
+
+    return null
+  }
+
+  return <div className='mt-1 h-full w-full'>{renderContent()}</div>
 }
 
 export default RequestDialogStepTwoDisplay
