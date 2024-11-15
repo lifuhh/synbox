@@ -22,7 +22,7 @@ export const useStreamTranscriptionApi = () => {
   const mutateRef = useRef<((params: TranscriptionParams) => void) | null>(null)
 
   const MAX_RETRIES = 3
-  const STREAM_TIMEOUT = 30000 // 30 seconds
+  const STREAM_TIMEOUT = 300000 // 6mins
 
   const resetStream = useCallback(() => {
     console.log('Resetting stream state')
