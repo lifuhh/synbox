@@ -4,7 +4,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useStreamTranscriptionApi } from '@/hooks/useStreamTranscriptionApi'
 import { ChevronDown, ChevronUp, PartyPopper } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
@@ -20,6 +19,7 @@ interface Lyric {
 }
 
 interface RequestDialogStepTwoDisplayProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   vidInfo: any
   onLyricsUpdate: (lyrics: string[], timestampedLyrics: Lyric[]) => void
   onStreamingStatusChange: (status: boolean) => void
@@ -61,7 +61,10 @@ const RequestDialogStepTwoDisplay: React.FC<
     setCurrentTimestampedLyrics([])
 
     if (vidId && subtitleInfo) {
-      mutate({ vidId, subtitleInfo })
+      mutate({
+        id: vidId,
+        subtitleInfo: subtitleInfo,
+      })
     }
   }, [vidInfo, navigate, mutate])
 
@@ -71,7 +74,7 @@ const RequestDialogStepTwoDisplay: React.FC<
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
 
-      console.log("Step Two: ")
+      console.log('Step Two: ')
       console.log(lyricsInfo)
     }
   }, [lyricsInfo, onLyricsUpdate])
@@ -111,7 +114,10 @@ const RequestDialogStepTwoDisplay: React.FC<
                 subtitle_info: subtitleInfo,
               } = vidInfo
               const { id: vidId } = fullVidInfo
-              mutate({ vidId, subtitleInfo })
+              mutate({
+                id: vidId,
+                subtitleInfo: subtitleInfo,
+              })
             }}
             variant='secondary'
             className='mt-2'>

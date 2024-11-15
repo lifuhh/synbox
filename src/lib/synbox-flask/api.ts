@@ -1,17 +1,16 @@
-import { SubtitleInfo } from '@/types'
-import { validateJSON } from '@/utils'
+/* eslint-disable no-constant-condition */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SubtitleInfo } from '@/types';
 
 const BE_ADDRESS = import.meta.env.VITE_SYNBOX_BE_URL
 // const BE_ADDRESS = import.meta.env.VITE_SYNBOX_TEST_BE_URL
 
-interface StreamData {
-  type: 'update' | 'data' | 'vid_info'
-  data: string | number
-}
+
 
 export const streamValidateVideoById = async (
   videoId: string,
   onUpdate: (message: string) => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onVidInfo: (info: any) => void,
   onError: (error: string) => void,
   onSuccess: () => void,
@@ -138,54 +137,88 @@ export const streamTranscribeVideoById = async (
   onLyricsInfo: (info: any) => void,
   onError: (error: string) => void,
   onAiGenerated: (isAiGenerated: boolean) => void,
+  signal?: AbortSignal
 ) => {
-  // console.log('This is stream transcribe api call')
-  // console.log(videoId)
-  // console.log(JSON.stringify(subtitleInfo))
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-  const response = await fetch(`${BE_ADDRESS}/transcribev2`, {
-    method: 'POST',
-    body: JSON.stringify({ id: videoId, subtitle_info: subtitleInfo }),
-    headers: {
-      Accept: 'application/x-ndjson, application/json, text/plain',
-      'Content-Type': 'application/json',
-    },
-  })
+  try {
+    const response = await fetch(`${BE_ADDRESS}/transcribev2`, {
+      method: 'POST',
+      body: JSON.stringify({ id: videoId, subtitle_info: subtitleInfo }),
+      headers: {
+        Accept: 'application/x-ndjson, application/json, text/plain',
+        'Content-Type': 'application/json',
+        'Connection': 'keep-alive',
+      },
+      signal: signal || controller.signal,
+      keepalive: true,
+    });
 
-  if (!response.ok) throw new Error('Network response was not ok')
-  if (!response.body)
-    throw new Error('ReadableStream not yet supported in this browser')
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-  const reader = response.body.getReader()
-  const decoder = new TextDecoder()
+    if (!response.body) {
+      throw new Error('ReadableStream not supported');
+    }
 
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let hasReceivedData = false;
 
-    const chunk = decoder.decode(value)
-    const lines = chunk.split('\n')
-    console.log("Received chunk:", chunk); // Log raw chunk data
-    console.log("Split lines:", lines);
+    while (true) {
+      const { done, value } = await reader.read();
 
-    lines.forEach((line) => {
+      if (done) {
+        if (!hasReceivedData) {
+          throw new Error('Stream ended without receiving any data');
+        }
+        // Process any remaining data in buffer
+        if (buffer.trim()) {
+          try {
+            const content = JSON.parse(buffer);
+            processTranscriptionContent(content, onUpdate, onLyricsInfo, onError, onAiGenerated);
+          } catch (e) {
+            console.error('Error parsing final buffer:', e);
+          }
+        }
+        break;
+      }
 
-      // console.log("Received line: ")
-      // console.log(line)
+      hasReceivedData = true;
+      buffer += decoder.decode(value, { stream: true });
 
-      if (validateJSON(line)) {
-        const content = JSON.parse(line)
-        if (content['type'] === 'update' || content['type'] === 'data') {
-          onUpdate(content['data'])
-        } else if (content['type'] === 'transcription') {
-          onLyricsInfo(content['data'])
-        } else if (content['type'] === 'error') {
-          onError(content['data'])
-        } else if (content['type'] === 'ai_generated') {
-          onAiGenerated(content['data'])
+      // Process complete lines
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
+
+      for (const line of lines) {
+        if (line.trim() === '') continue;
+
+        try {
+          const content = JSON.parse(line);
+          processTranscriptionContent(content, onUpdate, onLyricsInfo, onError, onAiGenerated);
+        } catch (e) {
+          console.error('Error parsing line:', line);
+          console.error('Parse error:', e);
+          continue;
         }
       }
-    })
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        onError('Request timed out');
+      } else {
+        onError(error.message);
+      }
+    } else {
+      onError('An unknown error occurred');
+    }
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -196,97 +229,158 @@ export const streamAnnotateVideoById = async (
   onUpdate: (message: string) => void,
   onAnnotationInfo: (info: any) => void,
   onError: (error: string) => void,
-  onTaskUpdate: (task: string) => void, // New callback for task updates
+  onTaskUpdate: (task: string) => void,
+  signal?: AbortSignal
 ) => {
-  const response = await fetch(`${BE_ADDRESS}/translate-annotate`, {
-    method: 'POST',
-    body: JSON.stringify({
-      id: videoId,
-      lyrics: lyrics,
-      timestamped_lyrics: timestampedLyrics,
-    }),
-    headers: {
-      Accept: 'application/x-ndjson, application/json, text/plain',
-      'Content-Type': 'application/json',
-    },
-  })
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-  if (!response.ok) throw new Error('Network response was not ok')
-  if (!response.body)
-    throw new Error('ReadableStream not yet supported in this browser')
+  try {
+    const response = await fetch(`${BE_ADDRESS}/translate-annotate`, {
+      method: 'POST',
+      body: JSON.stringify({
+        id: videoId,
+        lyrics: lyrics,
+        timestamped_lyrics: timestampedLyrics,
+      }),
+      headers: {
+        Accept: 'application/x-ndjson, application/json, text/plain',
+        'Content-Type': 'application/json',
+        'Connection': 'keep-alive',
+      },
+      signal: signal || controller.signal,
+      keepalive: true,
+    });
 
-  const reader = response.body.getReader()
-  const decoder = new TextDecoder()
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-  let buffer = ''
+    if (!response.body) {
+      throw new Error('ReadableStream not supported');
+    }
 
-  while (true) {
-    const { done, value } = await reader.read()
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let hasReceivedData = false;
 
-    if (done) break
+    while (true) {
+      const { done, value } = await reader.read();
 
-    buffer += decoder.decode(value, { stream: true })
-
-    const lines = buffer.split('\n')
-    buffer = lines.pop() || '' // Keep the last incomplete line in the buffer
-
-    for (const line of lines) {
-      if (line.trim() === '') continue // Skip empty lines
-
-      if (validateJSON(line)) {
-        const content = JSON.parse(line)
-        switch (content['type']) {
-          case 'update':
-          case 'data':
-            onUpdate(content['data'])
-            break
-          case 'eng_translation':
-          case 'chi_translation':
-          case 'romaji_lyrics':
-          case 'kanji_annotations':
-            onAnnotationInfo(content)
-            break
-          case 'error':
-            onError(content['data'])
-            break
-          case 'task_update':
-            onTaskUpdate(content['data']) // Handle task updates
-            break
-          default:
-            console.warn('Unknown message type:', content['type'])
+      if (done) {
+        if (!hasReceivedData) {
+          throw new Error('Stream ended without receiving any data');
         }
-      } else {
-        console.error('Invalid JSON:', line)
+        // Process any remaining data in buffer
+        if (buffer.trim()) {
+          try {
+            const content = JSON.parse(buffer);
+            processAnnotationContent(content, onUpdate, onAnnotationInfo, onError, onTaskUpdate);
+          } catch (e) {
+            console.error('Error parsing final buffer:', e);
+          }
+        }
+        break;
+      }
+
+      hasReceivedData = true;
+      buffer += decoder.decode(value, { stream: true });
+
+      // Process complete lines
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
+
+      for (const line of lines) {
+        if (line.trim() === '') continue;
+
+        try {
+          const content = JSON.parse(line);
+          processAnnotationContent(content, onUpdate, onAnnotationInfo, onError, onTaskUpdate);
+        } catch (e) {
+          console.error('Error parsing line:', line);
+          console.error('Parse error:', e);
+          continue;
+        }
       }
     }
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        onError('Request timed out');
+      } else {
+        onError(error.message);
+      }
+    } else {
+      onError('An unknown error occurred');
+    }
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+
+function processTranscriptionContent(
+  content: any,
+  onUpdate: (message: string) => void,
+  onLyricsInfo: (info: any) => void,
+  onError: (error: string) => void,
+  onAiGenerated: (isAiGenerated: boolean) => void,
+) {
+  if (!content || !content.type) {
+    console.error('Invalid content received:', content);
+    return;
   }
 
-  // Process any remaining data in the buffer
-  if (buffer.trim() !== '') {
-    try {
-      const content = JSON.parse(buffer)
-      switch (content['type']) {
-        case 'update':
-        case 'data':
-          onUpdate(content['data'])
-          break
-        case 'eng_translation':
-        case 'chi_translation':
-        case 'romaji_lyrics':
-        case 'kanji_annotations':
-          onAnnotationInfo(content)
-          break
-        case 'error':
-          onError(content['data'])
-          break
-        case 'task_update':
-          onTaskUpdate(content['data']) // Handle task updates
-          break
-        default:
-          console.warn('Unknown message type:', content['type'])
-      }
-    } catch (e) {
-      console.error('Error parsing final buffer:', e)
-    }
+  switch (content.type) {
+    case 'update':
+    case 'data':
+      onUpdate(content.data);
+      break;
+    case 'transcription':
+      onLyricsInfo(content.data);
+      break;
+    case 'ai_generated':
+      onAiGenerated(content.data);
+      break;
+    case 'error':
+      onError(content.data);
+      break;
+    default:
+      console.warn('Unknown message type:', content.type);
+  }
+}
+
+function processAnnotationContent(
+  content: any,
+  onUpdate: (message: string) => void,
+  onAnnotationInfo: (info: any) => void,
+  onError: (error: string) => void,
+  onTaskUpdate: (task: string) => void,
+) {
+  if (!content || !content.type) {
+    console.error('Invalid content received:', content);
+    return;
+  }
+
+  switch (content.type) {
+    case 'update':
+    case 'data':
+      onUpdate(content.data);
+      break;
+    case 'eng_translation':
+    case 'chi_translation':
+    case 'romaji_lyrics':
+    case 'kanji_annotations':
+      onAnnotationInfo(content);
+      break;
+    case 'task_update':
+      onTaskUpdate(content.data);
+      break;
+    case 'error':
+      onError(content.data);
+      break;
+    default:
+      console.warn('Unknown message type:', content.type);
   }
 }
