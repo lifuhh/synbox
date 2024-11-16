@@ -113,9 +113,9 @@
 
   /* ? Customize appearance of scrollbar START */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
