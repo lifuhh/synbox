@@ -342,7 +342,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
   return (
     <DialogContent
-      className='invisible-ring border-1 flex h-auto max-h-[90vh] flex-col border-accent border-opacity-60 bg-background sm:max-w-2xl [&>button]:hidden'
+      className='invisible-ring border-1 flex h-auto max-h-[90vh] flex-col border-accent border-opacity-60 bg-card sm:max-w-2xl [&>button]:hidden'
       onEscapeKeyDown={handleEscapeKeyDown}
       onPointerDownOutside={handleOutsideEvent}
       onInteractOutside={handleOutsideEvent}>
@@ -378,9 +378,10 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             <div className='flex w-full justify-between gap-2 px-2 md:w-auto md:justify-end'>
               {currentStep > 0 && (
                 <Button
+                  variant='ghost'
                   onClick={handlePreviousClick}
                   disabled={isButtonDisabled}
-                  className='invisible-ring flex-1 bg-gray-500 text-white hover:bg-gray-600 md:flex-initial'>
+                  className='invisible-ring text-md text-light-1 flex-1 hover:bg-gray-600 md:flex-initial'>
                   Previous Step
                 </Button>
               )}

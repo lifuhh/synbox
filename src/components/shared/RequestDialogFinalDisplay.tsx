@@ -9,6 +9,7 @@ interface RequestDialogFinalDisplayProps {
       title: string
       id: string
       thumbnail: string
+      channel_name?: string
     }
   }
 }
@@ -18,18 +19,19 @@ const RequestDialogFinalDisplay = ({
 }: RequestDialogFinalDisplayProps) => {
   const navigate = useNavigate()
 
-  const videoId = vidInfo.full_vid_info?.id
+  const videoId = vidInfo?.full_vid_info?.id
 
   const { data: lyrics, isLoading: isLoadingLyrics } =
     useGetLyricsBySongId(videoId)
 
   useEffect(() => {
-    if (!vidInfo || vidInfo.full_vid_info) {
+    if (!vidInfo || !vidInfo.full_vid_info) {
       navigate('/')
     }
   }, [vidInfo, navigate])
 
-  if (!vidInfo || vidInfo.full_vid_info) {
+  // Only show loading or error state when we have valid video info
+  if (!vidInfo?.full_vid_info) {
     return null
   }
 
@@ -39,14 +41,13 @@ const RequestDialogFinalDisplay = ({
 
   const handlePlayClick = () => {
     navigate(`/v/${videoId}`, {
-      state: { videoId: videoId },
+      state: { videoId },
     })
   }
 
   return (
     <div className='overflow-visible px-6'>
       <div className='flex flex-col items-center'>
-        {/* <h1 className='unselectable pb-4 text-lg font-bold'>Enjoy the Song!</h1> */}
         <img
           src={thumbnail}
           alt={title}
@@ -60,7 +61,7 @@ const RequestDialogFinalDisplay = ({
             onClick={handlePlayClick}
             variant='default'
             className='mt-4 w-32'>
-            Play
+            Play Video
           </Button>
         ) : (
           <p className='text-yellow-500'>
