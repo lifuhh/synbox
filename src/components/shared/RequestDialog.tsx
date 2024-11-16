@@ -5,11 +5,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { ToastProps } from '@/components/ui/toast'
+import { useToast } from '@/components/ui/use-toast'
 import { dialogStepAtom } from '@/context/atoms'
 import { useStreamValidationApi } from '@/hooks/useStreamValidationApi'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { useAtom } from 'jotai'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 import RequestDialogAnnotateDisplay from './RequestDialogAnnotateDisplay'
@@ -59,6 +61,9 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     resetStream,
     mutate,
   } = useStreamValidationApi()
+
+  const { toast, dismiss } = useToast()
+  const toastIdRef = useRef<string | null>(null)
 
   const queryClient = useQueryClient()
   const { mutate: uploadLyricsToAppwrite } = useUploadLyricsToAppwrite()
@@ -268,10 +273,12 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   }
 
   const handleCloseWithReset = () => {
-    if (!isButtonDisabled) {
-      resetStates()
-      handleClose()
-    }
+    resetStates()
+    handleClose()
+    toast({
+      description: 'Request Cancelled',
+      duration: 2000,
+    })
   }
 
   // Handle all closing events
@@ -363,13 +370,12 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
 
       {currentStep !== 3 && (
         <DialogFooter className='bg-primary-600 flex w-full flex-col-reverse gap-4 p-4 md:flex-row md:justify-between'>
-          <DialogClose asChild disabled={isButtonDisabled}>
+          <DialogClose asChild>
             <Button
               type='button'
               variant='ghost'
               onClick={handleCloseWithReset}
-              disabled={isButtonDisabled}
-              className='invisible-ring text-md text-light-1 w-full disabled:bg-gray-600 md:w-auto'>
+              className='invisible-ring text-md text-light-1 w-full md:w-auto'>
               Close
             </Button>
           </DialogClose>

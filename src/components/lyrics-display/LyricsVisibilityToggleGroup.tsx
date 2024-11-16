@@ -127,7 +127,7 @@ const LyricsVisibilityToggleGroup = () => {
       removeFavorite(currentVideo.videoId)
 
       toast({
-        title: 'Removed Bookmark',
+        description: 'Removed Bookmark',
         action: (
           <ToastAction
             altText='Undo removal'
@@ -148,7 +148,7 @@ const LyricsVisibilityToggleGroup = () => {
       addFavorite(videoToAdd)
 
       toast({
-        title: 'Added to Bookmarks',
+        description: 'Added to Bookmarks',
         action: (
           <ToastAction
             altText='Undo add'
