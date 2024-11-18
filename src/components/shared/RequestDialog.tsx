@@ -89,12 +89,12 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   }
 
   useEffect(() => {
-    console.log('Starting validation for videoId:', videoId)
+    // console.log('Starting validation for videoId:', videoId)
     if (videoId) {
       mutate(videoId)
     }
     return () => {
-      console.log('Stopping stream for videoId:', videoId)
+      // console.log('Stopping stream for videoId:', videoId)
       resetStream()
     }
   }, [videoId, mutate, resetStream])
@@ -300,7 +300,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
     switch (currentStep) {
       case 0:
         if (showVidInfo && !showLoader && !error && vidInfo) {
-          console.log('Rendering vidInfo:', vidInfo)
+          // console.log('Rendering vidInfo:', vidInfo)
         }
 
         return (

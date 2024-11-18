@@ -26,12 +26,12 @@ const RequestDialogValidationDisplay = ({
   const [videoData, setVideoData] = useState<DisplayVideoData | null>(null)
 
   useEffect(() => {
-    console.log(
-      'RequestDialogValidationDisplay mounted with vidInfo:',
-      JSON.stringify(vidInfo, null, 2),
-    )
+    // console.log(
+    //   'RequestDialogValidationDisplay mounted with vidInfo:',
+    //   JSON.stringify(vidInfo, null, 2),
+    // )
 
-    console.log('Mounted with vidInfo:', vidInfo)
+    // console.log('Mounted with vidInfo:', vidInfo)
     if (!vidInfo) setError('Video information is missing')
 
     try {

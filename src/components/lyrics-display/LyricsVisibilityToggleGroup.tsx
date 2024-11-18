@@ -1,24 +1,13 @@
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import {
-  Toast,
   ToastAction,
-  ToastDescription,
   ToastProvider,
-  ToastTitle,
   ToastViewport,
 } from '@/components/ui/toast'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { ToggleGroup } from '@/components/ui/toggle-group'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { useToast } from '@/components/ui/use-toast'
-
-import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded'
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 
 import { LyricsVisibilityControlButton } from './LyricsVisibilityControlButton'
 
@@ -37,15 +26,9 @@ import {
   translationVisibilityAtom,
 } from '@/context/atoms'
 import { Divider } from '@mantine/core'
-import HomeIcon from '@mui/icons-material/Home'
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp'
-import LyricsIcon from '@mui/icons-material/Lyrics'
-import ReplyIcon from '@mui/icons-material/Reply'
-import TranslateIcon from '@mui/icons-material/Translate'
-import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom'
-import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop'
-import { useAtom, useAtomValue } from 'jotai'
-import React, { useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const LyricsVisibilityToggleGroup = () => {
@@ -189,13 +172,8 @@ const LyricsVisibilityToggleGroup = () => {
     const newRomajiVisible = values.includes('romaji')
     const newTranslationVisible = values.includes('translation')
 
-    if (newLyricsVisible !== isLyricsVisible) {
-      setLyricsVisible(newLyricsVisible)
-      setRomajiVisible(newLyricsVisible)
-    } else {
-      setRomajiVisible(newRomajiVisible)
-    }
-
+    setLyricsVisible(newLyricsVisible)
+    setRomajiVisible(newRomajiVisible)
     setTranslationVisible(newTranslationVisible)
   }
 

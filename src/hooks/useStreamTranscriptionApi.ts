@@ -25,7 +25,7 @@ export const useStreamTranscriptionApi = () => {
   const STREAM_TIMEOUT = 300000 // 6mins
 
   const resetStream = useCallback(() => {
-    console.log('Resetting stream state')
+    // console.log('Resetting stream state')
     setIsStreaming(false)
     setUpdateMessages([])
     setLyricsInfo(null)
@@ -68,7 +68,7 @@ export const useStreamTranscriptionApi = () => {
         mutateRef.current
       ) {
         retryCountRef.current++
-        console.log(`Retrying stream (attempt ${retryCountRef.current})...`)
+        // console.log(`Retrying stream (attempt ${retryCountRef.current})...`)
         mutateRef.current(currentRequestRef.current)
       } else {
         handleError('Stream timeout reached after multiple retries')
@@ -78,7 +78,7 @@ export const useStreamTranscriptionApi = () => {
 
   const mutation = useMutation({
     mutationFn: async ({ id, subtitleInfo }: TranscriptionParams) => {
-      console.log('Starting transcription mutation for id:', id)
+      // console.log('Starting transcription mutation for id:', id)
       resetStream()
       currentRequestRef.current = { id, subtitleInfo }
       setIsStreaming(true)
@@ -91,11 +91,11 @@ export const useStreamTranscriptionApi = () => {
           id,
           subtitleInfo,
           (message) => {
-            console.log('Stream update:', message)
+            // console.log('Stream update:', message)
             setUpdateMessages((prev) => [...prev, message])
           },
           (info) => {
-            console.log('Received lyrics info:', info)
+            // console.log('Received lyrics info:', info)
             setLyricsInfo(info)
             if (streamTimeoutRef.current) {
               clearTimeout(streamTimeoutRef.current)
@@ -106,21 +106,21 @@ export const useStreamTranscriptionApi = () => {
             handleError(err)
           },
           (aiGenerated) => {
-            console.log('AI Generated status:', aiGenerated)
+            // console.log('AI Generated status:', aiGenerated)
             setIsAiGenerated(aiGenerated)
           },
           abortControllerRef.current.signal
         )
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {
-          console.log('Stream was aborted')
+          // console.log('Stream was aborted')
         } else {
           console.error('Mutation error:', err)
           handleError(err)
         }
         throw err
       } finally {
-        console.log('Transcription mutation completed')
+        // console.log('Transcription mutation completed')
         setIsStreaming(false)
       }
     },
@@ -138,7 +138,7 @@ export const useStreamTranscriptionApi = () => {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      console.log('Cleaning up stream resources')
+      // console.log('Cleaning up stream resources')
       if (streamTimeoutRef.current) {
         clearTimeout(streamTimeoutRef.current)
       }

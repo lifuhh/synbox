@@ -45,23 +45,23 @@ const RequestDialogStepTwoDisplay: React.FC<
   } = useStreamTranscriptionApi()
 
   // Debug logging
-  useEffect(() => {
-    console.log('State Update:', {
-      isStreaming,
-      transcriptionComplete,
-      hasLyricsInfo: !!lyricsInfo,
-      currentLyricsLength: currentLyrics.length,
-      timestampedLyricsLength: currentTimestampedLyrics.length,
-      error,
-    })
-  }, [
-    isStreaming,
-    transcriptionComplete,
-    lyricsInfo,
-    currentLyrics,
-    currentTimestampedLyrics,
-    error,
-  ])
+  // useEffect(() => {
+  //   console.log('State Update:', {
+  //     isStreaming,
+  //     transcriptionComplete,
+  //     hasLyricsInfo: !!lyricsInfo,
+  //     currentLyricsLength: currentLyrics.length,
+  //     timestampedLyricsLength: currentTimestampedLyrics.length,
+  //     error,
+  //   })
+  // }, [
+  //   isStreaming,
+  //   transcriptionComplete,
+  //   lyricsInfo,
+  //   currentLyrics,
+  //   currentTimestampedLyrics,
+  //   error,
+  // ])
 
   useEffect(() => {
     onStreamingStatusChange(isStreaming)
@@ -81,7 +81,7 @@ const RequestDialogStepTwoDisplay: React.FC<
     setTranscriptionComplete(false)
 
     if (id && subtitleInfo) {
-      console.log('Initiating transcription for id:', id)
+      // console.log('Initiating transcription for id:', id)
       mutate({
         id,
         subtitleInfo,
@@ -96,7 +96,8 @@ const RequestDialogStepTwoDisplay: React.FC<
       lyricsInfo.lyrics &&
       lyricsInfo.timestamped_lyrics
     ) {
-      console.log('Processing received lyrics info')
+      // console.log('Processing received lyrics info')
+      // console.log(lyricsInfo)
       setCurrentLyrics(lyricsInfo.lyrics)
       setCurrentTimestampedLyrics(lyricsInfo.timestamped_lyrics)
       onLyricsUpdate(lyricsInfo.lyrics, lyricsInfo.timestamped_lyrics)
@@ -125,12 +126,12 @@ const RequestDialogStepTwoDisplay: React.FC<
 
   const renderContent = () => {
     // Debug log the current render state
-    console.log('Rendering content with state:', {
-      isStreaming,
-      error,
-      transcriptionComplete,
-      hasLyrics: currentLyrics.length > 0,
-    })
+    // console.log('Rendering content with state:', {
+    //   isStreaming,
+    //   error,
+    //   transcriptionComplete,
+    //   hasLyrics: currentLyrics.length > 0,
+    // })
 
     if (error) {
       return (

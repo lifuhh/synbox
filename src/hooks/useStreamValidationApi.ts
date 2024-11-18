@@ -50,7 +50,7 @@ export const useStreamValidationApi = () => {
   }, [])
 
   const handleVideoInfo = useCallback((info: unknown) => {
-    console.log('Received video info:', info)
+    // console.log('Received video info:', info)
     try {
       if (!info || typeof info !== 'object') {
         throw new Error('Invalid video info format')
@@ -76,7 +76,7 @@ export const useStreamValidationApi = () => {
       console.warn('Stream timeout reached')
       if (retryCountRef.current < MAX_RETRIES && currentIdRef.current && mutateRef.current) {
         retryCountRef.current++
-        console.log(`Retrying stream (attempt ${retryCountRef.current})...`)
+        // console.log(`Retrying stream (attempt ${retryCountRef.current})...`)
         mutateRef.current(currentIdRef.current)
       } else {
         handleError('Stream timeout reached after multiple retries')
@@ -98,11 +98,11 @@ export const useStreamValidationApi = () => {
         await streamValidateVideoById(
           id,
           (message) => {
-            console.log('Stream update:', message)
+            // console.log('Stream update:', message)
             setUpdateMessages((prev) => [...prev, message])
           },
           (info) => {
-            console.log('Received info:', info)
+            // console.log('Received info:', info)
             handleVideoInfo(info)
           },
           (err) => {
@@ -110,7 +110,7 @@ export const useStreamValidationApi = () => {
             handleError(err)
           },
           () => {
-            console.log('Stream completed successfully')
+            // console.log('Stream completed successfully')
             if (streamTimeoutRef.current) {
               clearTimeout(streamTimeoutRef.current)
             }

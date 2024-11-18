@@ -75,7 +75,7 @@ export const useStreamAnnotateApi = () => {
         mutateRef.current
       ) {
         retryCountRef.current++
-        console.log(`Retrying stream (attempt ${retryCountRef.current})...`)
+        // console.log(`Retrying stream (attempt ${retryCountRef.current})...`)
         mutateRef.current(currentRequestRef.current)
       } else {
         handleError('Stream timeout reached after multiple retries')
@@ -98,11 +98,11 @@ export const useStreamAnnotateApi = () => {
           lyrics,
           timestampedLyrics,
           (message) => {
-            console.log('Stream update:', message)
+            // console.log('Stream update:', message)
             setUpdateMessages((prev) => [...prev, message])
           },
           (info) => {
-            console.log('Received annotation info:', info)
+            // console.log('Received annotation info:', info)
             switch (info.type) {
               case 'eng_translation':
                 setEngTranslation(info.data)
@@ -127,14 +127,14 @@ export const useStreamAnnotateApi = () => {
             handleError(err)
           },
           (task) => {
-            console.log('Task update:', task)
+            // console.log('Task update:', task)
             setCurrentTask(task)
           },
           abortControllerRef.current.signal
         )
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {
-          console.log('Stream was aborted')
+          // console.log('Stream was aborted')
         } else {
           console.error('Mutation error:', err)
           handleError(err)
