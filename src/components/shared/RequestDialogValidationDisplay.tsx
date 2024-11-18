@@ -63,11 +63,11 @@ const RequestDialogValidationDisplay = ({
         subtitleInfo: subtitle_info,
       })
 
-      console.log('Successfully parsed video info:', {
-        title,
-        id,
-        thumbnail,
-      })
+      // console.log('Successfully parsed video info:', {
+      //   title,
+      //   id,
+      //   thumbnail,
+      // })
     } catch (error: unknown) {
       console.error('Error processing vidInfo:', error)
       setError(

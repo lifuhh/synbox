@@ -235,6 +235,11 @@ export const streamAnnotateVideoById = async (
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
+  // console.log("lyrics: ")
+  // console.log(lyrics)
+  // console.log("timestamped lyrics: ")
+  // console.log(timestampedLyrics)
+
   try {
     const response = await fetch(`${BE_ADDRESS}/translate-annotate`, {
       method: 'POST',
