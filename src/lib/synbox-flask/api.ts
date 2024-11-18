@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SubtitleInfo } from '@/types';
 
-// const BE_ADDRESS = import.meta.env.VITE_SYNBOX_BE_URL
-const BE_ADDRESS = import.meta.env.VITE_SYNBOX_TEST_BE_URL
+const BE_ADDRESS = import.meta.env.VITE_SYNBOX_BE_URL
+// const BE_ADDRESS = import.meta.env.VITE_SYNBOX_TEST_BE_URL
 
 
 
