@@ -63,13 +63,13 @@ const HomeFooter = () => {
         <Dock className='mt-0 border-none'>
           <DockIcon
             onClick={() =>
-              handleRedirect('https://www.linkedin.com/in/lifuhuang97/')
+              handleRedirect('https://www.linkedin.com/in/lifuhh/')
             }
             className='cursor-pointer bg-card-foreground'>
             <Icons.linkedin className='text-primary-light h-6 w-6' />
           </DockIcon>
           <DockIcon
-            onClick={() => handleRedirect('https://github.com/lifuhuang97/')}
+            onClick={() => handleRedirect('https://github.com/lifuhh/')}
             className='cursor-pointer bg-card-foreground'>
             <Icons.gitHub className='text-primary-light h-6 w-6' />
           </DockIcon>

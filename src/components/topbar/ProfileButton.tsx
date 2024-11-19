@@ -87,7 +87,7 @@ const ProfileButtonDropdown = () => {
         <DropdownMenuGroup>
           <DropdownMenuItem
             className='cursor-pointer'
-            onClick={() => handleRedirect('https://github.com/lifuhuang97/')}>
+            onClick={() => handleRedirect('https://github.com/lifuhh/')}>
             <GitHubIcon className='ml-[3px] mr-2 h-4 w-4 fill-white' />
             <span>GitHub</span>
           </DropdownMenuItem>
