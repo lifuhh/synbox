@@ -56,7 +56,7 @@ const ProfileButtonDropdown = () => {
           My Account
         </DropdownMenuLabel>
         <DropdownMenuSeparator className=' unselectable bg-dark-2' /> */}
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem
             className='cursor-pointer'
             // onClick={() => {
@@ -82,8 +82,8 @@ const ProfileButtonDropdown = () => {
             <AccountCircleIcon fontSize='small' className='mr-2 h-4 w-4' />
             <span>Profile</span>
           </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator className='unselectable bg-dark-2 cursor-default' />
+        </DropdownMenuGroup> */}
+        {/* <DropdownMenuSeparator className='unselectable bg-dark-2 cursor-default' /> */}
         <DropdownMenuGroup>
           <DropdownMenuItem
             className='cursor-pointer'
@@ -91,12 +91,12 @@ const ProfileButtonDropdown = () => {
             <GitHubIcon className='ml-[3px] mr-2 h-4 w-4 fill-white' />
             <span>GitHub</span>
           </DropdownMenuItem>
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             className='cursor-pointer'
             onClick={handleReportIssue}>
             <ReportIcon className='mr-2 h-4 w-4' fontSize='small' />
             <span>Report Issue</span>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem
             className='cursor-pointer'
             onClick={handleAboutOnClick}>
