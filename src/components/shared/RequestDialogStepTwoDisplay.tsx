@@ -27,7 +27,12 @@ interface RequestDialogStepTwoDisplayProps {
 
 const RequestDialogStepTwoDisplay: React.FC<
   RequestDialogStepTwoDisplayProps
-> = ({ vidInfo, onLyricsUpdate, onStreamingStatusChange }) => {
+> = ({
+  vidInfo,
+  onLyricsUpdate,
+  onStreamingStatusChange,
+  forceAiTranscription,
+}) => {
   const [currentLyrics, setCurrentLyrics] = useState<string[]>([])
   const [currentTimestampedLyrics, setCurrentTimestampedLyrics] = useState<
     Lyric[]
@@ -35,7 +40,6 @@ const RequestDialogStepTwoDisplay: React.FC<
   const [isOpen, setIsOpen] = useState(false)
   const [transcriptionComplete, setTranscriptionComplete] = useState(false)
   const navigate = useNavigate()
-  const [forceAiTranscription, setForceAiTranscription] = useState(false)
 
   const {
     isStreaming,

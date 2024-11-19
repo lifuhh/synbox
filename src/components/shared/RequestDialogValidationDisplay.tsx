@@ -169,7 +169,7 @@ const RequestDialogValidationDisplay = ({
                     sideOffset={10}
                     align='center'>
                     <p className='text-pretty text-center'>
-                      Use ONLY when lyrics in next step is not Japanese
+                      Use only when lyrics in next step is not Japanese
                     </p>
                   </TooltipContent>
                 </Tooltip>

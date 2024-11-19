@@ -46,12 +46,12 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [romajiLyrics, setRomajiLyrics] = useState<string[]>([])
   const [kanjiAnnotations, setKanjiAnnotations] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
-  const [forceAiTranscription, setForceAiTranscription] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [isTranscriptionStreaming, setIsTranscriptionStreaming] =
-    useState(false)
+  useState(false)
   const [isAnnotationStreaming, setIsAnnotationStreaming] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [forceAiTranscription, setForceAiTranscription] = useState(false)
   const {
     isStreaming,
     updateMessages,
