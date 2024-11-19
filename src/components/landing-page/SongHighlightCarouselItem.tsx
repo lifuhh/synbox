@@ -25,7 +25,6 @@ const SongHighlightCarouselItem = ({
   itemCount,
   item,
 }: SongHighlightCarouselItemProps) => {
-
   const [cardStyle, setCardStyle] = useState<CSSProperties>({})
   const requestRef = useRef<number>()
   const navigate = useNavigate()
@@ -79,7 +78,7 @@ const SongHighlightCarouselItem = ({
             <CardItem
               translateZ='50'
               as='button'
-              className='max-h-12 min-h-12 text-left text-xl font-bold text-card-foreground shadow-sm'
+              className='unhighlightable max-h-12 min-h-12 text-left text-xl font-bold text-card-foreground shadow-sm'
               onClick={handleNavigate}>
               {item.title}
             </CardItem>

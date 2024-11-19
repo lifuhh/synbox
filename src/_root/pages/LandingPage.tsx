@@ -29,7 +29,7 @@ const LandingPage = () => {
       <Divider
         my='sm'
         label={
-          <h1 className='font_noto_sans_jp_black_900 unselectable text-foreground text-2xl font-bold'>
+          <h1 className='font_noto_sans_jp_black_900 unselectable text-2xl font-bold text-foreground'>
             {/* おすすめ */}
             Recommendations
           </h1>
@@ -47,7 +47,7 @@ const LandingPage = () => {
       <Divider
         my='xs'
         label={
-          <h1 className='unselectable text-foreground text-2xl font-bold'>
+          <h1 className='unselectable text-2xl font-bold text-foreground'>
             Gallery
           </h1>
         }

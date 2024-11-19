@@ -110,7 +110,7 @@ export function formatYoutubePlaylistResponse(
     items,
   ) as formattedYoutubeVideoItemForCarousel[]
 
-  return shuffledResults.slice(0, 20)
+  return shuffledResults.slice(0, 50)
 }
 
 export const formatYoutubeInfiniteGalleryResponse: FormatYoutubeResponseFunction =
