@@ -1,7 +1,15 @@
 import { Button } from '@/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { VideoInfo } from '@/types'
+import { Info } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Checkbox } from '../ui/checkbox'
 interface DisplayVideoData {
   title: string
   id: string
@@ -18,12 +26,15 @@ interface DisplayVideoData {
 
 const RequestDialogValidationDisplay = ({
   vidInfo,
+  onForceAiChange,
 }: {
   vidInfo: VideoInfo | null
+  onForceAiChange?: (forceAi: boolean) => void
 }) => {
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [videoData, setVideoData] = useState<DisplayVideoData | null>(null)
+  const [forceAiTranscription, setForceAiTranscription] = useState(false)
 
   useEffect(() => {
     // console.log(
@@ -76,6 +87,10 @@ const RequestDialogValidationDisplay = ({
     }
   }, [vidInfo])
 
+  useEffect(() => {
+    onForceAiChange?.(forceAiTranscription)
+  }, [forceAiTranscription, onForceAiChange])
+
   if (error) {
     return (
       <div className='p-4 text-red-500'>
@@ -99,7 +114,7 @@ const RequestDialogValidationDisplay = ({
     )
   }
 
-  const { title, thumbnail, likes, channel_name } = videoData
+  const { title, thumbnail, likes, channel_name, subtitleInfo } = videoData
 
   return (
     <div className='overflow-visible px-6'>
@@ -129,6 +144,38 @@ const RequestDialogValidationDisplay = ({
             label='Likes'
             value={likes ? likes.toLocaleString() : 'N/A'}
           />
+          {subtitleInfo.exist && (
+            <div className='mt-6 flex w-full items-center space-x-2'>
+              <Checkbox
+                id='forceAi'
+                checked={forceAiTranscription}
+                onCheckedChange={(checked) =>
+                  setForceAiTranscription(checked as boolean)
+                }
+              />
+              <label htmlFor='forceAi' className='text-md'>
+                Force AI Transcription
+              </label>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className='rounded-full'>
+                      <Info className='h-4 w-4 text-neutral-300' />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    className=''
+                    side='bottom'
+                    sideOffset={10}
+                    align='center'>
+                    <p className='text-pretty text-center'>
+                      Use ONLY when lyrics in next step is not Japanese
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          )}
         </div>
       </div>
     </div>

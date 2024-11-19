@@ -137,7 +137,8 @@ export const streamTranscribeVideoById = async (
   onLyricsInfo: (info: any) => void,
   onError: (error: string) => void,
   onAiGenerated: (isAiGenerated: boolean) => void,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  forceAiTranscription?: boolean,
 ) => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
@@ -145,7 +146,7 @@ export const streamTranscribeVideoById = async (
   try {
     const response = await fetch(`${BE_ADDRESS}/transcribev2`, {
       method: 'POST',
-      body: JSON.stringify({ id: videoId, subtitle_info: subtitleInfo }),
+      body: JSON.stringify({ id: videoId, subtitle_info: subtitleInfo, force_ai_transcription: forceAiTranscription  }),
       headers: {
         Accept: 'application/x-ndjson, application/json, text/plain',
         'Content-Type': 'application/json',

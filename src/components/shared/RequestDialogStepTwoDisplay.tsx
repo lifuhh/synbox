@@ -22,6 +22,7 @@ interface RequestDialogStepTwoDisplayProps {
   vidInfo: any
   onLyricsUpdate: (lyrics: string[], timestampedLyrics: Lyric[]) => void
   onStreamingStatusChange: (status: boolean) => void
+  forceAiTranscription?: boolean
 }
 
 const RequestDialogStepTwoDisplay: React.FC<
@@ -34,6 +35,7 @@ const RequestDialogStepTwoDisplay: React.FC<
   const [isOpen, setIsOpen] = useState(false)
   const [transcriptionComplete, setTranscriptionComplete] = useState(false)
   const navigate = useNavigate()
+  const [forceAiTranscription, setForceAiTranscription] = useState(false)
 
   const {
     isStreaming,
@@ -43,25 +45,6 @@ const RequestDialogStepTwoDisplay: React.FC<
     mutate,
     isAiGenerated,
   } = useStreamTranscriptionApi()
-
-  // Debug logging
-  // useEffect(() => {
-  //   console.log('State Update:', {
-  //     isStreaming,
-  //     transcriptionComplete,
-  //     hasLyricsInfo: !!lyricsInfo,
-  //     currentLyricsLength: currentLyrics.length,
-  //     timestampedLyricsLength: currentTimestampedLyrics.length,
-  //     error,
-  //   })
-  // }, [
-  //   isStreaming,
-  //   transcriptionComplete,
-  //   lyricsInfo,
-  //   currentLyrics,
-  //   currentTimestampedLyrics,
-  //   error,
-  // ])
 
   useEffect(() => {
     onStreamingStatusChange(isStreaming)
@@ -85,9 +68,10 @@ const RequestDialogStepTwoDisplay: React.FC<
       mutate({
         id,
         subtitleInfo,
+        forceAiTranscription,
       })
     }
-  }, [vidInfo, navigate, mutate])
+  }, [vidInfo, navigate, mutate, forceAiTranscription])
 
   useEffect(() => {
     if (
@@ -120,7 +104,7 @@ const RequestDialogStepTwoDisplay: React.FC<
         vidInfo
       const { id } = fullVidInfo
       setTranscriptionComplete(false)
-      mutate({ id, subtitleInfo })
+      mutate({ id, subtitleInfo, forceAiTranscription })
     }
   }
 

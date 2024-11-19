@@ -10,8 +10,6 @@ import { globalControlsVisibilityAtom } from './atoms'
 export const INITIAL_USER = {
   id: '',
   name: '',
-  // username: '',
-  // subscription: '',
 }
 
 interface AppContextType {

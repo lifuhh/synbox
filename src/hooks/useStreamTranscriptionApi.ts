@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 interface TranscriptionParams {
   id: string
   subtitleInfo: SubtitleInfo
+  forceAiTranscription?: boolean
 }
 
 export const useStreamTranscriptionApi = () => {
@@ -77,10 +78,10 @@ export const useStreamTranscriptionApi = () => {
   }, [handleError])
 
   const mutation = useMutation({
-    mutationFn: async ({ id, subtitleInfo }: TranscriptionParams) => {
+    mutationFn: async ({ id, subtitleInfo, forceAiTranscription }: TranscriptionParams) => {
       // console.log('Starting transcription mutation for id:', id)
       resetStream()
-      currentRequestRef.current = { id, subtitleInfo }
+      currentRequestRef.current = { id, subtitleInfo, forceAiTranscription }
       setIsStreaming(true)
 
       abortControllerRef.current = new AbortController()
@@ -109,7 +110,8 @@ export const useStreamTranscriptionApi = () => {
             // console.log('AI Generated status:', aiGenerated)
             setIsAiGenerated(aiGenerated)
           },
-          abortControllerRef.current.signal
+          abortControllerRef.current.signal,
+          forceAiTranscription
         )
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {

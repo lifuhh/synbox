@@ -1,12 +1,20 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { dialogStepAtom } from '@/context/atoms'
 import { useGetLyricsBySongId } from '@/lib/react-query/queriesAndMutations'
 import { YouTubeUrlOrIdValidation } from '@/lib/validation'
 import { extractVideoId } from '@/utils'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import InfoIcon from '@mui/icons-material/Info'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { useSetAtom } from 'jotai'
+import { Info } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RequestDialog from '../shared/RequestDialog'
@@ -179,10 +187,32 @@ const HeroGenerateLyricsDefault = ({
           </Dialog>
         </div>
 
-        <p className='lg:w-7/10 no-select mx-auto mt-4 text-center text-base font-normal text-neutral-300 lg:mt-0'>
-          Transform YouTube videos into your personalized Japanese karaoke
-          stage, with AI-transcribed, accurately synced lyrics and translations.
-        </p>
+        <div className='flex items-center justify-center gap-2'>
+          <p className='lg:w-7/10 no-select mx-auto mt-4 text-center text-base font-normal text-neutral-300 lg:mt-0'>
+            Transform YouTube videos into your personalized Japanese karaoke
+            stage, with AI-transcribed, accurately synced lyrics and
+            translations
+          </p>
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className='rounded-full'>
+                  <Info className='h-4 w-4 text-neutral-300' />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent
+                className=''
+                side='bottom'
+                sideOffset={10}
+                align='end'>
+                <p className='text-pretty text-center'>
+                  While AI strives for accuracy, occasional discrepancies in
+                  transcription or syncing may occur.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
     </div>
   )

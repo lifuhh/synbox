@@ -44,20 +44,6 @@ const LandingPage = () => {
         {/* //? Songs Top 50 Leaderboard */}
         <LandingPageCharts />
       </section>
-      {/* //? Pricing */}
-      {/* //TODO: Payment stuff Component */}
-
-      {/* <Divider
-        my='xs'
-        label={
-          <h1 className='pointer-events-none text-2xl font-bold text-light-2'>
-            Pricing
-          </h1>
-        }
-        labelPosition='center'
-        className='p-4'
-      />
-      <PricingTable /> */}
       <Divider
         my='xs'
         label={

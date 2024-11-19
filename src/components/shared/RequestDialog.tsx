@@ -46,6 +46,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [romajiLyrics, setRomajiLyrics] = useState<string[]>([])
   const [kanjiAnnotations, setKanjiAnnotations] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
+  const [forceAiTranscription, setForceAiTranscription] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [isTranscriptionStreaming, setIsTranscriptionStreaming] =
     useState(false)
@@ -311,7 +312,10 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
               updateMessages={updateMessages}
             />
             {showVidInfo && !showLoader && !error && vidInfo && (
-              <RequestDialogValidationDisplay vidInfo={vidInfo} />
+              <RequestDialogValidationDisplay
+                vidInfo={vidInfo}
+                onForceAiChange={setForceAiTranscription}
+              />
             )}
           </>
         )
@@ -321,6 +325,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
             vidInfo={vidInfo}
             onLyricsUpdate={handleLyricsUpdate}
             onStreamingStatusChange={handleTranscriptionStreamingChange}
+            forceAiTranscription={forceAiTranscription}
           />
         )
       case 2:
