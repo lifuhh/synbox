@@ -60,7 +60,7 @@ const RequestDialogFinalDisplay = ({
           <Button
             onClick={handlePlayClick}
             variant='default'
-            className='mt-4 w-32'>
+            className=' mt-4 w-32'>
             Play Video
           </Button>
         ) : (

@@ -48,7 +48,7 @@ const RequestDialog = ({ videoId, handleClose }: RequestDialogProps) => {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [isTranscriptionStreaming, setIsTranscriptionStreaming] =
-  useState(false)
+    useState(false)
   const [isAnnotationStreaming, setIsAnnotationStreaming] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [forceAiTranscription, setForceAiTranscription] = useState(false)
