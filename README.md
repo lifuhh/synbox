@@ -103,8 +103,8 @@ Synbox leverages a cutting edge full-stack architecture, combining a user-friend
 **Google Data API** - Integrates YouTube data to fetch popular Japanese playlists and user-submitted video links.  
 
 **Hosting and Deployment**
-The **frontend** is hosted on **Netlify**, ensuring fast and reliable delivery.  
-The **backend** runs on **Google Cloud Run**, offering scalable and efficient serverless deployment.  
+**Frontend** - Hosted on **Netlify**, ensuring fast and reliable delivery.  
+**Backend** - Runs on **Google Cloud Run**, offering scalable and efficient serverless deployment.  
 
 This architecture ensures Synbox remains fast, responsive, and capable of delivering a rich user experience while handling computationally intensive AI tasks in the backend.
 
