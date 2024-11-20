@@ -41,20 +41,21 @@ As a non-native speaker who loves Japanese music, I’ve often struggled with th
 
 ## **Features Showcase**
 
-🎵 **Discover New Music** - Explore a landing page with a carousel, an infinite scroll gallery, and links to top songs played in Japan, curated from YouTube’s popular playlists.  
-<br>
-<p align="center">
-  <img src="public/assets/showcase/landingpage.gif" alt="Landing Page" width="90%">
-</p>
-
-<p align="center">-</p>
 
 🔊 **Accurate Transcriptions** - Leverage the latest OpenAI Whisper model to transcribe any Japanese song with precision.  
 🈴 **Kanji Annotations with Furigana** - Furigana annotations make it easier to sing along with just Japanese lyrics, catering to users of all proficiency levels.  
 🌍 **Custom Translations and Romaji** - Translate lyrics and annotate with romaji for a tailored viewing experience that meets the needs of diverse users.  
 <br>
 <p align="center">
-  <img src="public/assets/showcase/overlay.gif" alt="Customizable Overlay" width="90%">
+  <img src="public/assets/showcase/overlay.gif" alt="Overlay Display" width="90%">
+</p>
+
+<p align="center">-</p>
+
+🎵 **Discover New Music** - Explore a landing page with a carousel, an infinite scroll gallery, and links to top songs played in Japan, curated from YouTube’s popular playlists.  
+<br>
+<p align="center">
+  <img src="public/assets/showcase/landingpage.gif" alt="Landing Page" width="90%">
 </p>
 
 <p align="center">-</p>
