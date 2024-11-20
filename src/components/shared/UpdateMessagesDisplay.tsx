@@ -41,7 +41,7 @@ const UpdateMessagesDisplay: React.FC<UpdateMessagesDisplayProps> = ({
               <Text size={textSize}>Waiting for updates...</Text>
             )
           ) : (
-            <Text size={textSize}>Cleaning Up...</Text>
+            <Text size={textSize}>Cleaning up...</Text>
           )}
           <Loader color={loaderColor} type={loaderType} size={loaderSize} />
         </div>
