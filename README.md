@@ -40,7 +40,9 @@ View the <a href="https://github.com/lifuhh/synbox-transcribe-whisper"  target="
 
 ## **Motivation**
 
-As a non-native speaker who loves Japanese music, I’ve often struggled with the lack of proper translations, romaji, or furigana in many Japanese music videos on YouTube. Singing along or truly connecting with the lyrics felt nearly impossible. This frustration inspired me to create Synbox — a tool that helps fans like me enjoy Japanese music on a deeper level by providing customizable overlays with translations, romaji, and furigana annotations, all while preserving the experience of the original music video.
+As someone who loves Japanese music and culture but has only a basic understanding of the language, I’ve often struggled with the lack of proper translations, romaji, or furigana in many Japanese music videos on YouTube. Singing along or truly connecting with the lyrics felt nearly impossible.
+
+This frustration inspired me to create Synbox — a tool that helps fans like me enjoy Japanese music on a deeper level by providing customizable overlays with translations, romaji, and furigana annotations, all while preserving the experience of the original music video.
 
 ## **Features Showcase**
 
