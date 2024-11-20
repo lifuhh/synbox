@@ -113,7 +113,7 @@ This architecture ensures Synbox remains fast, responsive, and capable of delive
 
 Feel free to reach out for feedback, issues, or contributions:
 
-**Lifu**: [LinkedIn](www.linkedin.com/in/lifuhh)
+**Lifu**: [LinkedIn](https://www.linkedin.com/in/lifuhh)
 **GitHub Issues**: [Report issues](https://github.com/lifuhh/synbox/issues)
 
 ## **License**
