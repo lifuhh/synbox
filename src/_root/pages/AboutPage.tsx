@@ -21,33 +21,12 @@ const AboutPage = () => {
       </Helmet>
 
       <div className='mx-auto w-full max-w-6xl'>
-        <h1 className='my-8 text-center text-3xl font-bold'>Why Synbox?</h1>
+        <h1 className='my-8 text-center text-3xl font-bold'>About</h1>
         <Divider my='lg' color='pink' />
 
         <div className='space-y-6'>
           <p className=' text-pretty text-lg'>
-            Many Japanese music videos on YouTube lack proper translations. Even
-            when captions are available, they have to be viewed in YouTube’s
-            default layout. For non-Japanese speakers, singing along to a song
-            can feel almost impossible without romaji, which most music videos
-            don’t provide. While fan-made videos sometimes include translations
-            and romaji, they cannot be viewed alongside the original music
-            video. This gap inspired me to create Synbox — a tool to bridge this
-            divide and bring a richer experience to fans of Japanese music.
-          </p>
-
-          <p className='text-pretty text-lg'>
-            Synbox offers a customizable overlay that displays romaji,
-            translations, and even furigana annotations for the original
-            Japanese lyrics. It’s designed with learners and enthusiasts like
-            myself in mind, allowing users to engage with the lyrics in their
-            own way—whether by toggling translations, viewing furigana for
-            kanji, or enjoying the original text. With Synbox, fans are no
-            longer limited by the availability of translations on artist
-            channels or the lack of accessibility in YouTube captions. It
-            empowers users to generate and display lyrics their way, preserving
-            the essence of the original music video while making it more
-            accessible and enjoyable for all.
+          Many Japanese music videos on YouTube lack proper translations or romaji, making it difficult for non-Japanese speakers to engage with the lyrics. Synbox bridges this gap by offering a customizable overlay that displays romaji, translations, and furigana, empowering users to enjoy and interact with Japanese lyrics alongside the original music video.
           </p>
         </div>
 
