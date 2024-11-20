@@ -78,7 +78,6 @@ As a non-native speaker who loves Japanese music, I’ve often struggled with th
   <img src="public/assets/showcase/bookmark.png" alt="Bookmark Feature" width="90%">
 </p>
 
-<p align="center">-</p>
 
 ## **Infrastructure / Tech Used**
 
