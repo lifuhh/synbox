@@ -33,7 +33,7 @@ View the <a href="https://github.com/lifuhh/synbox-transcribe-whisper"  target="
 ## Table of Contents
 - [Motivation](#motivation)
 - [Features Showcase](#features-showcase)
-- [Infrastructure / Tech Used](#infrastructure--tech-used)
+- [Infrastructure / Technologies](#infrastructure--technologies)
 - [Contacts](#contacts)
 - [License](#license)
 
@@ -81,7 +81,7 @@ This frustration inspired me to create Synbox — a tool that helps fans like me
 </p>
 
 
-## **Infrastructure / Tech Used**
+## **Infrastructure / Technologies**
 
 | **Category**          | **Technologies**                                                   |
 |------------------------|--------------------------------------------------------------------|
