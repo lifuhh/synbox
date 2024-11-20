@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="https://synbox.io" target="_blank">
+  <a href="https://synbox.io" target="_blank" rel="noopener noreferrer">
     <img src="public/assets/icons/Synbox.svg" alt="Synbox Logo" width="340px" />
   </a>
 </p>
 
 <p align="center">
-  <a href="./LICENSE">
+  <a href="./LICENSE" target="_blank" rel="noopener noreferrer">
     <img src="https://img.shields.io/badge/license-Personal_Use-red" alt="License Badge" />
   </a>
   <a href="#">
@@ -17,15 +17,15 @@
   Effortlessly transcribe, translate, and annotate Japanese song lyrics from YouTube with AI, enhancing your viewing experience.  
   <br>
   <br>
-View the <a href="https://github.com/lifuhh/synbox-transcribe-whisper">backend repository</a> here
+View the <a href="https://github.com/lifuhh/synbox-transcribe-whisper"  target="_blank" rel="noopener noreferrer">backend repository</a> here
   <br/>
   <br />
-  <a href="https://synbox.io"><strong>Visit Website »</strong></a>
+  <a href="https://synbox.io" target="_blank" rel="noopener noreferrer"><strong>Visit Website »</strong></a>
   <br />
   <br />
   <a href="https://github.com/lifuhh/synbox">Explore the Docs</a> · 
-  <a href="https://github.com/lifuhh/synbox/issues">Report Bug</a> · 
-  <a href="https://github.com/lifuhh/synbox/issues">Request Feature</a>
+  <a href="https://github.com/lifuhh/synbox/issues" target="_blank" rel="noopener noreferrer">Report Bug</a> · 
+  <a href="https://github.com/lifuhh/synbox/issues" target="_blank" rel="noopener noreferrer">Request Feature</a>
 </p>
 
 ---
