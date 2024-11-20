@@ -102,7 +102,7 @@ Synbox leverages a cutting edge full-stack architecture, combining a user-friend
 **OpenAI API** - For transcription, translation, and annotation of Japanese song lyrics.  
 **Google Data API** - Integrates YouTube data to fetch popular Japanese playlists and user-submitted video links.  
 
-**Hosting and Deployment**
+**Hosting and Deployment**  
 **Frontend** - Hosted on **Netlify**, ensuring fast and reliable delivery.  
 **Backend** - Runs on **Google Cloud Run**, offering scalable and efficient serverless deployment.  
 
