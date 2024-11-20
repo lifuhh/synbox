@@ -41,32 +41,40 @@ As a non-native speaker who loves Japanese music, I’ve often struggled with th
 
 ## **Features Showcase**
 
+🎵 **Discover New Music** - Explore a landing page with a carousel, an infinite scroll gallery, and links to top songs played in Japan, curated from YouTube’s popular playlists.  
+<br>
 <p align="center">
   <img src="public/assets/showcase/landingpage.gif" alt="Landing Page" width="90%">
 </p>
 
-🎵 **Discover New Music** - Explore a landing page with a carousel, an infinite scroll gallery, and links to top songs played in Japan, curated from YouTube’s popular playlists.  
-
-<p align="center">
-  <img src="public/assets/showcase/overlay.gif" alt="Customizable Overlay" width="90%">
-</p>
+<p align="center">-</p>
 
 🔊 **Accurate Transcriptions** - Leverage the latest OpenAI Whisper model to transcribe any Japanese song with precision.  
 🈴 **Kanji Annotations with Furigana** - Furigana annotations make it easier to sing along with just Japanese lyrics, catering to users of all proficiency levels.  
 🌍 **Custom Translations and Romaji** - Translate lyrics and annotate with romaji for a tailored viewing experience that meets the needs of diverse users.  
+<br>
+<p align="center">
+  <img src="public/assets/showcase/overlay.gif" alt="Customizable Overlay" width="90%">
+</p>
+
+<p align="center">-</p>
+
+⚙️ **Customizable Lyrics Overlay** - Adjust the size, position, and appearance of the lyrics overlay to match your preferences and the music video’s styling.  
 
 <p align="center">
   <img src="public/assets/showcase/customize.gif" alt="Customizable Overlay" width="90%">
 </p>
 
-⚙️ **Customizable Lyrics Overlay** - Adjust the size, position, and appearance of the lyrics overlay to match your preferences and the music video’s styling.  
+<p align="center">-</p>
+
+📌 **History and Bookmarks** - Keep track of your favorite songs with history and bookmark features, ensuring easy access to revisit and enjoy.  
+
 
 <p align="center">
   <img src="public/assets/showcase/bookmark.png" alt="Bookmark Feature" width="90%">
 </p>
 
-📌 **History and Bookmarks** - Keep track of your favorite songs with history and bookmark features, ensuring easy access to revisit and enjoy.  
-
+<p align="center">-</p>
 
 ## **Infrastructure / Tech Used**
 
