@@ -14,7 +14,10 @@
 </p>
 
 <p align="center">
-  Effortlessly transcribe, translate, and annotate Japanese song lyrics from YouTube with AI, enhancing your viewing experience.
+  Effortlessly transcribe, translate, and annotate Japanese song lyrics from YouTube with AI, enhancing your viewing experience.  
+  <br>
+  <br>
+View the <a href="https://github.com/lifuhh/synbox-transcribe-whisper">backend repository</a> here
   <br/>
   <br />
   <a href="https://synbox.io"><strong>Visit Website »</strong></a>
