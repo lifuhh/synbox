@@ -48,9 +48,7 @@ This frustration inspired me to create Synbox — a tool that helps fans like me
 
 
 🔊 **Accurate Transcriptions** - Leverage the latest OpenAI Whisper model to transcribe any Japanese song with precision.  
-🈴 **Kanji Annotations with Furigana** - Furigana annotations make it easier to sing along with just Japanese lyrics, catering to users of all proficiency levels.  
-🌍 **Custom Translations and Romaji** - Translate lyrics and annotate with romaji for a tailored viewing experience that meets the needs of diverse users.  
-<br>
+
 <p align="center">
   <img src="public/assets/showcase/overlay.gif" alt="Overlay Display" width="90%">
 </p>
@@ -58,10 +56,33 @@ This frustration inspired me to create Synbox — a tool that helps fans like me
 <p align="center">-</p>
 
 🎵 **Discover New Music** - Explore a landing page with a carousel, an infinite scroll gallery, and links to top songs played in Japan, curated from YouTube’s popular playlists.  
-<br>
 <p align="center">
   <img src="public/assets/showcase/landingpage.gif" alt="Landing Page" width="90%">
 </p>
+
+<p align="center">-</p>
+
+### **Smart Lyrics Transcription**
+
+🎶 **Smart Lyrics Transcription** - Core feature of Synbox, delivering advanced, multi-step processes for generating highly accurate Japanese lyrics with translations and annotations.
+⚡ **Real-Time Updates** - Live progress streaming for immediate feedback, ensuring a seamless user experience.  
+🔄 **Smart Retries** - Automatic 3-attempt retry system with timeout protection.  
+
+<h5 align="center">Transcription</h5>
+<p align="center">
+  <img src="public/assets/showcase/transcription.gif" alt="Transcription Showcase" width="90%">
+</p>
+
+🎯 **Intelligent Detection** - Automatically detects and utilises existing YouTube subtitles.  
+
+🤖 **OpenAI Transcription** - Uses the Whisper model for precise transcription when subtitles aren't available.  
+
+<h5 align="center">Translation & Annotation</h5>
+<p align="center">
+  <img src="public/assets/showcase/annotation.gif" alt="Annotation Showcase" width="90%">
+</p>
+
+📝 **Complete Language Support** - Japanese lyrics are annotated with Romaji and Furigana annotations to provide a tailored viewing experience that meets the needs of diverse users.  
 
 <p align="center">-</p>
 
