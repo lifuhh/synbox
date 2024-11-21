@@ -64,8 +64,10 @@ This frustration inspired me to create Synbox — a tool that helps fans like me
 
 ### **Smart Lyrics Transcription**
 
-🎶 **Smart Lyrics Transcription** - Core feature of Synbox, delivering advanced, multi-step processes for generating highly accurate Japanese lyrics with translations and annotations.
+🎶 **Smart Lyrics Transcription** - Core feature of Synbox, delivering advanced, multi-step processes for generating highly accurate Japanese lyrics with translations and annotations.  
+
 ⚡ **Real-Time Updates** - Live progress streaming for immediate feedback, ensuring a seamless user experience.  
+
 🔄 **Smart Retries** - Automatic 3-attempt retry system with timeout protection.  
 
 <h5 align="center">Transcription</h5>
