@@ -1,7 +1,7 @@
 import { useOverflow } from '@/hooks/useOverflow'
 import { InfiniteScrollGalleryProps } from '@/types'
 import { cn } from '@/utils/cn'
-import {  Loader } from '@mantine/core'
+import { Loader } from '@mantine/core'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { memo, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'

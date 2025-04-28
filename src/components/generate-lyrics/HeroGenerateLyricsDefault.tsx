@@ -149,16 +149,17 @@ const HeroGenerateLyricsDefault = ({
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button
-                onClick={
-                  inputValue?.length > 0
-                    ? handleOpenLandingPageDialog
-                    : () => {}
-                }
+                onClick={(e) => {
+                  if (inputValue?.length === 0) {
+                    e.preventDefault()
+                    return
+                  }
+                  handleOpenLandingPageDialog()
+                }}
                 disabled={
-                  inputValue?.length == 0 ||
-                  (errorMessage && errorMessage != ''
+                  errorMessage && errorMessage != ''
                     ? true
-                    : false || isCheckingLyrics)
+                    : false || isCheckingLyrics
                 }
                 variant='default'
                 // role='combobox'
