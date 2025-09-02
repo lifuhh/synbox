@@ -44,6 +44,7 @@
     "@types/youtube": "^0.0.50",
     "appwrite": "^13.0.2",
     "axios": "^1.6.8",
+    "caniuse-lite": "",
     "class-variance-authority": "^0.7.0",
     "cmdk": "0.2.1",
     "dompurify": "^3.1.0",

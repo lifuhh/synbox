@@ -200,16 +200,38 @@ function LyricsDisplayOverlay({
     [lyricsArr],
   )
 
+  const isFullyEnglishText = useCallback((text: string) => {
+    if (!text) return false
+
+    // Remove HTML tags to analyze actual text content
+    const cleanText = text.replace(/<[^>]*>/g, '').trim()
+
+    // Check for any Japanese characters (hiragana, katakana, kanji)
+    const hasJapaneseChars = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(
+      cleanText,
+    )
+
+    // Check for English letters
+    const hasEnglishChars = /[a-zA-Z]/.test(cleanText)
+
+    // Only consider it fully English if it has English characters AND no Japanese characters
+    return hasEnglishChars && !hasJapaneseChars
+  }, [])
+
   useEffect(() => {
     if (lyricsArr.length > 0) {
-      const renderedJp = lyricsArr.map((lyric, index) => (
-        <MemoizedLyricTextLine
-          key={`${index}-jp-${lyric.id}`}
-          htmlContent={lyric.text}
-          className='font-outline-4 mb-0 !text-3.5vw'
-          lang='ja'
-        />
-      ))
+      const renderedJp = lyricsArr.map((lyric, index) => {
+        const isCurrentLyricEnglish = isFullyEnglishText(lyric.text)
+        return (
+          <MemoizedLyricTextLine
+            key={`${index}-jp-${lyric.id}`}
+            htmlContent={lyric.text}
+            className='font-outline-4 mb-0 !text-3.5vw'
+            lang='ja'
+            isEnglish={isCurrentLyricEnglish} // Pass the detection result
+          />
+        )
+      })
 
       const renderedEng = lyricsArrEng.map((lyric, index) => (
         <MemoizedLyricTextLine
@@ -247,7 +269,13 @@ function LyricsDisplayOverlay({
         ),
       )
     }
-  }, [lyricsArr, lyricsArrEng, lyricsArrChi, lyricsArrRomaji])
+  }, [
+    lyricsArr,
+    lyricsArrEng,
+    lyricsArrChi,
+    lyricsArrRomaji,
+    isFullyEnglishText,
+  ])
 
   useEffect(() => {
     let animationFrameId: number
@@ -379,9 +407,7 @@ function LyricsDisplayOverlay({
       {
         key: 'lyrics',
         content: renderLyricLine(
-          <div
-            style={lyricsStyles[currentIndex]}
-            className='w-full text-center'>
+          <div className='w-full text-center'>
             {renderedLyrics.jp[currentIndex]}
           </div>,
           lyricsVisibility,
@@ -409,7 +435,6 @@ function LyricsDisplayOverlay({
     lyricsVisibility,
     romajiVisibility,
     currentLyric,
-    lyricsStyles,
     renderLyricLine,
     isContentSame,
   ])

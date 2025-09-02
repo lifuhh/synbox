@@ -331,6 +331,11 @@
     text-shadow: 0 0 10px hsl(336 78% 44.5%) !important;
   }
 
+  .lyric-text-line.font_noto_sans_reg {
+    font-family: 'Noto Sans', sans-serif !important;
+    font-weight: 900 !important;
+  }
+
   /* Make the font more specific */
   .lyric-text-line.font_noto_sans_jp_black_900 {
     font-family: 'Noto Sans JP', sans-serif !important;
