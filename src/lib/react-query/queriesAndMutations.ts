@@ -83,6 +83,12 @@ export const useGetInfiniteGalleryPlaylist = (): InfiniteGalleryQueryResult => {
     },
     initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextPageToken ?? undefined,
+
+    staleTime: 5 * 60 * 1000,        // Data stays fresh for 5 minutes
+    gcTime: 10 * 60 * 1000,          // Cache for 10 minutes after component unmounts
+    refetchOnWindowFocus: false,      // Don't refetch when window gains focus
+    refetchOnMount: false,            // Don't refetch on component remount if data exists
+    refetchOnReconnect: 'always',     // Only refetch on reconnect if data is stale
     select: (data) => ({
       pages: data.pages.map((page) => ({
         items: formatYoutubeInfiniteGalleryResponse(page),

@@ -122,6 +122,7 @@ export const getInfiniteGalleryPlaylist = async ({
         playlistId: 'PLzJ1mqwxogpHcS_hfWcEY_o8n_yBeGlAN',
         maxResults: 12,
         pageToken: pageParam,
+        // fields: 'nextPageToken,items(snippet(title,channelTitle,thumbnails/medium))',
       },
     },
   )

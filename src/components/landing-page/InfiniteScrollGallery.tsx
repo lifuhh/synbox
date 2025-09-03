@@ -3,8 +3,9 @@ import { InfiniteScrollGalleryProps } from '@/types'
 import { cn } from '@/utils/cn'
 import { Loader } from '@mantine/core'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { memo, useEffect, useRef, useState } from 'react'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import OptimizedThumbnail from '../shared/OptimizedThumbnail'
 
 export const InfiniteScrollGallery = ({
   items,
@@ -18,9 +19,12 @@ export const InfiniteScrollGallery = ({
   const observerTarget = useRef(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleGalleryItemClick = (videoId: string) => () => {
-    navigate(`/v/${videoId}`, { state: { videoId: videoId } })
-  }
+  const handleGalleryItemClick = useCallback(
+    (videoId: string) => () => {
+      navigate(`/v/${videoId}`, { state: { videoId: videoId } })
+    },
+    [navigate],
+  )
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -29,7 +33,7 @@ export const InfiniteScrollGallery = ({
           fetchNextPage()
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1, rootMargin: '50px' },
     )
 
     // Store the current value of the ref
@@ -77,9 +81,11 @@ export const InfiniteScrollGallery = ({
             <Card className='cursor-pointer bg-muted'>
               <CardTitle className=' mb-4 text-lg'>{item.title}</CardTitle>
               <div className='relative overflow-hidden rounded-xl pb-[56.25%]'>
-                <div
-                  className='absolute inset-0 bg-cover bg-center'
-                  style={{ backgroundImage: `url(${item.thumbnailUrl})` }}
+                <img
+                  className='absolute inset-0 h-full w-full object-cover'
+                  src={item.thumbnailUrl}
+                  alt={item.title}
+                  loading='lazy'
                 />
               </div>
             </Card>
