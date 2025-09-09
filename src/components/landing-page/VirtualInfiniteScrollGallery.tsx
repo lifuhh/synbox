@@ -37,13 +37,13 @@ const useResponsiveColumns = () => {
   return columns
 }
 
-// Virtual Grid Hook - maintains original flexbox layout
+// Virtual Grid Hook - NO THROTTLING, immediate updates
 const useVirtualGrid = ({
   items,
   containerHeight,
-  estimatedRowHeight = 280, // Reduced to better match actual card height
+  estimatedRowHeight = 280,
   columnsPerRow,
-  overscan = 3,
+  overscan = 6, // Large overscan for fast scrolling
 }: {
   items: any[]
   containerHeight: number
@@ -55,9 +55,11 @@ const useVirtualGrid = ({
 
   const totalRows = Math.ceil(items.length / columnsPerRow)
 
-  // Calculate visible range based on rows with better buffering
+  // Aggressive overscan calculation for smooth fast scrolling
   const visibleRange = useMemo(() => {
     const visibleRows = Math.ceil(containerHeight / estimatedRowHeight)
+
+    // Large buffer zones to prevent blank spaces during fast scrolling
     const startRow = Math.max(
       0,
       Math.floor(scrollTop / estimatedRowHeight) - overscan,
@@ -108,22 +110,10 @@ export const VirtualInfiniteScrollGallery = ({
     useVirtualGrid({
       items,
       containerHeight,
-      estimatedRowHeight: 280, // Reduced to better match actual card height
+      estimatedRowHeight: 280,
       columnsPerRow: columns,
-      overscan: 3, // Increased for smoother scrolling
+      overscan: 6, // Large overscan for smooth scrolling
     })
-
-  // Throttle scroll updates to reduce flickering
-  const throttledSetScrollTop = useCallback(
-    (() => {
-      let timeoutId: NodeJS.Timeout | null = null
-      return (scrollTop: number) => {
-        if (timeoutId) clearTimeout(timeoutId)
-        timeoutId = setTimeout(() => setScrollTop(scrollTop), 16) // ~60fps
-      }
-    })(),
-    [setScrollTop],
-  )
 
   // Update container height on mount and resize
   useEffect(() => {
@@ -152,11 +142,11 @@ export const VirtualInfiniteScrollGallery = ({
     [navigate],
   )
 
-  // Handle scroll for virtual scrolling + infinite scroll
+  // IMMEDIATE scroll updates - NO throttling for responsive scrolling
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
       const scrollTop = e.currentTarget.scrollTop
-      throttledSetScrollTop(scrollTop) // Use throttled version
+      setScrollTop(scrollTop) // Update immediately on every scroll event
 
       // Check if we need to fetch more data (infinite scroll)
       const scrollHeight = e.currentTarget.scrollHeight
@@ -164,14 +154,14 @@ export const VirtualInfiniteScrollGallery = ({
       const scrollBottom = scrollTop + clientHeight
 
       if (
-        scrollBottom >= scrollHeight - 400 && // Increased threshold
+        scrollBottom >= scrollHeight - 400 &&
         hasNextPage &&
         !isFetchingNextPage
       ) {
         fetchNextPage()
       }
     },
-    [throttledSetScrollTop, hasNextPage, isFetchingNextPage, fetchNextPage],
+    [setScrollTop, hasNextPage, isFetchingNextPage, fetchNextPage],
   )
 
   // Get visible items
@@ -206,7 +196,7 @@ export const VirtualInfiniteScrollGallery = ({
             const actualIndex = visibleRange.startIndex + index
             return (
               <div
-                key={item?.videoId} // Use stable videoId instead of actualIndex
+                key={item?.videoId} // Stable key to prevent remounting
                 className='relative w-full p-3 sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4'
                 onMouseEnter={() => setHoveredIndex(actualIndex)}
                 onMouseLeave={() => setHoveredIndex(null)}
@@ -215,7 +205,7 @@ export const VirtualInfiniteScrollGallery = ({
                   {hoveredIndex === actualIndex && (
                     <motion.span
                       className='absolute inset-0 block h-full w-full rounded-xl bg-primary/10'
-                      layoutId={`hoverBackground-${item?.videoId}`} // Use videoId for stable layoutId
+                      layoutId={`hoverBackground-${item?.videoId}`}
                       initial={{ opacity: 0 }}
                       animate={{
                         opacity: 1,
@@ -249,7 +239,7 @@ export const VirtualInfiniteScrollGallery = ({
           <div
             className='absolute left-0 right-0 flex items-center justify-center py-4'
             style={{
-              top: actualContentHeight + offsetY, // Position right after actual content
+              top: actualContentHeight + offsetY,
               height: '80px',
             }}>
             <Loader color='white' size='xl' type='dots' />
