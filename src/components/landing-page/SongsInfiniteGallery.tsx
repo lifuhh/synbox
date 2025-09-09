@@ -4,7 +4,8 @@ import { Loader } from '@mantine/core'
 import React from 'react'
 import HomeFooter from '../shared/HomeFooter'
 import { Spotlight } from '../ui/Spotlight'
-import { InfiniteScrollGallery } from './InfiniteScrollGallery'
+// import { InfiniteScrollGallery } from './InfiniteScrollGallery'
+import { VirtualInfiniteScrollGallery } from './VirtualInfiniteScrollGallery'
 
 const SongsInfiniteGallery: React.FC = () => {
   const {
@@ -23,7 +24,7 @@ const SongsInfiniteGallery: React.FC = () => {
       />
       <div className='mx-auto h-[calc(100vh-200px)] max-w-full gap-2 px-8'>
         {infiniteGallerySongData && (
-          <InfiniteScrollGallery
+          <VirtualInfiniteScrollGallery
             items={infiniteGallerySongData.pages.flatMap((page) =>
               page.items.map(
                 (item): InfiniteGalleryVideoItem => ({

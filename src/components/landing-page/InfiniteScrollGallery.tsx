@@ -5,7 +5,6 @@ import { Loader } from '@mantine/core'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import OptimizedThumbnail from '../shared/OptimizedThumbnail'
 
 export const InfiniteScrollGallery = ({
   items,
