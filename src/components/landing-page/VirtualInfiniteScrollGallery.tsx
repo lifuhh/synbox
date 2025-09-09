@@ -13,20 +13,20 @@ import React, {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// Get responsive columns based on screen width (same as original)
+// Get responsive columns based on screen width (matching your CSS classes)
 const useResponsiveColumns = () => {
-  const [columns, setColumns] = useState(4)
+  const [columns, setColumns] = useState(3) // Default to 3 since most screens show 3
 
   useEffect(() => {
     const updateColumns = () => {
       const width = window.innerWidth
       if (width < 640)
-        setColumns(1) // sm: w-full
+        setColumns(1) // sm: w-full (1 column)
       else if (width < 1024)
-        setColumns(2) // lg: w-1/2
-      else if (width < 1280)
-        setColumns(3) // xl: w-1/3
-      else setColumns(4) // 2xl: w-1/4
+        setColumns(2) // sm: w-1/2 (2 columns)
+      else if (width < 1536)
+        setColumns(3) // lg/xl: w-1/3 (3 columns)
+      else setColumns(4) // 2xl: w-1/4 (4 columns)
     }
 
     updateColumns()
@@ -41,9 +41,9 @@ const useResponsiveColumns = () => {
 const useVirtualGrid = ({
   items,
   containerHeight,
-  estimatedRowHeight = 350, // Estimated height per row
+  estimatedRowHeight = 280, // Reduced to better match actual card height
   columnsPerRow,
-  overscan = 2,
+  overscan = 3,
 }: {
   items: any[]
   containerHeight: number
@@ -55,16 +55,14 @@ const useVirtualGrid = ({
 
   const totalRows = Math.ceil(items.length / columnsPerRow)
 
-  // Calculate visible range based on rows
+  // Calculate visible range based on rows with better buffering
   const visibleRange = useMemo(() => {
+    const visibleRows = Math.ceil(containerHeight / estimatedRowHeight)
     const startRow = Math.max(
       0,
       Math.floor(scrollTop / estimatedRowHeight) - overscan,
     )
-    const endRow = Math.min(
-      startRow + Math.ceil(containerHeight / estimatedRowHeight) + overscan * 2,
-      totalRows,
-    )
+    const endRow = Math.min(startRow + visibleRows + overscan * 2, totalRows)
 
     const startIndex = startRow * columnsPerRow
     const endIndex = Math.min(endRow * columnsPerRow, items.length)
@@ -100,7 +98,9 @@ export const VirtualInfiniteScrollGallery = ({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(600)
+  const [actualContentHeight, setActualContentHeight] = useState(0)
 
   const columns = useResponsiveColumns()
 
@@ -108,10 +108,22 @@ export const VirtualInfiniteScrollGallery = ({
     useVirtualGrid({
       items,
       containerHeight,
-      estimatedRowHeight: 350, // Adjust based on your card height
+      estimatedRowHeight: 280, // Reduced to better match actual card height
       columnsPerRow: columns,
-      overscan: 2,
+      overscan: 3, // Increased for smoother scrolling
     })
+
+  // Throttle scroll updates to reduce flickering
+  const throttledSetScrollTop = useCallback(
+    (() => {
+      let timeoutId: NodeJS.Timeout | null = null
+      return (scrollTop: number) => {
+        if (timeoutId) clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => setScrollTop(scrollTop), 16) // ~60fps
+      }
+    })(),
+    [setScrollTop],
+  )
 
   // Update container height on mount and resize
   useEffect(() => {
@@ -126,6 +138,13 @@ export const VirtualInfiniteScrollGallery = ({
     return () => window.removeEventListener('resize', updateHeight)
   }, [])
 
+  // Measure actual content height after render
+  useEffect(() => {
+    if (contentRef.current) {
+      setActualContentHeight(contentRef.current.offsetHeight)
+    }
+  }, [visibleRange, items.length])
+
   const handleGalleryItemClick = useCallback(
     (videoId: string) => () => {
       navigate(`/v/${videoId}`, { state: { videoId: videoId } })
@@ -137,7 +156,7 @@ export const VirtualInfiniteScrollGallery = ({
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
       const scrollTop = e.currentTarget.scrollTop
-      setScrollTop(scrollTop)
+      throttledSetScrollTop(scrollTop) // Use throttled version
 
       // Check if we need to fetch more data (infinite scroll)
       const scrollHeight = e.currentTarget.scrollHeight
@@ -145,14 +164,14 @@ export const VirtualInfiniteScrollGallery = ({
       const scrollBottom = scrollTop + clientHeight
 
       if (
-        scrollBottom >= scrollHeight - 300 &&
+        scrollBottom >= scrollHeight - 400 && // Increased threshold
         hasNextPage &&
         !isFetchingNextPage
       ) {
         fetchNextPage()
       }
     },
-    [setScrollTop, hasNextPage, isFetchingNextPage, fetchNextPage],
+    [throttledSetScrollTop, hasNextPage, isFetchingNextPage, fetchNextPage],
   )
 
   // Get visible items
@@ -165,7 +184,7 @@ export const VirtualInfiniteScrollGallery = ({
   const offsetY = visibleRange.startRow * estimatedRowHeight
 
   // Calculate total height including loading indicator
-  const totalHeightWithLoader = totalHeight + (isFetchingNextPage ? 100 : 0)
+  const totalHeightWithLoader = totalHeight + (isFetchingNextPage ? 80 : 0)
 
   return (
     <div
@@ -177,6 +196,7 @@ export const VirtualInfiniteScrollGallery = ({
       <div style={{ height: totalHeightWithLoader, position: 'relative' }}>
         {/* Visible items container - positioned to maintain scroll illusion */}
         <div
+          ref={contentRef}
           className='flex flex-wrap py-2 pt-4'
           style={{
             transform: `translateY(${offsetY}px)`,
@@ -186,8 +206,8 @@ export const VirtualInfiniteScrollGallery = ({
             const actualIndex = visibleRange.startIndex + index
             return (
               <div
-                key={`${item?.videoId}-${actualIndex}`}
-                className='relative w-full p-3 sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4' // Original responsive classes
+                key={item?.videoId} // Use stable videoId instead of actualIndex
+                className='relative w-full p-3 sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4'
                 onMouseEnter={() => setHoveredIndex(actualIndex)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 onClick={handleGalleryItemClick(item?.videoId)}>
@@ -195,7 +215,7 @@ export const VirtualInfiniteScrollGallery = ({
                   {hoveredIndex === actualIndex && (
                     <motion.span
                       className='absolute inset-0 block h-full w-full rounded-xl bg-primary/10'
-                      layoutId={`hoverBackground-${actualIndex}`}
+                      layoutId={`hoverBackground-${item?.videoId}`} // Use videoId for stable layoutId
                       initial={{ opacity: 0 }}
                       animate={{
                         opacity: 1,
@@ -224,13 +244,13 @@ export const VirtualInfiniteScrollGallery = ({
           })}
         </div>
 
-        {/* Loading indicator positioned at the bottom as an additional "row" */}
+        {/* Loading indicator positioned immediately after actual content */}
         {isFetchingNextPage && (
           <div
-            className='absolute left-0 right-0 flex items-center justify-center py-8'
+            className='absolute left-0 right-0 flex items-center justify-center py-4'
             style={{
-              top: totalHeight, // Position at the bottom of actual content
-              height: '100px', // Fixed height for the loader
+              top: actualContentHeight + offsetY, // Position right after actual content
+              height: '80px',
             }}>
             <Loader color='white' size='xl' type='dots' />
           </div>
