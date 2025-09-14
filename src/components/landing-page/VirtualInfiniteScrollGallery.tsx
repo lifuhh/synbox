@@ -179,7 +179,7 @@ export const VirtualInfiniteScrollGallery = ({
   return (
     <div
       ref={containerRef}
-      className={cn('overflow-auto px-4', className)}
+      className={cn('custom-scrollbar overflow-auto px-4', className)}
       onScroll={handleScroll}
       style={{ height: '100%' }}>
       {/* Virtual container with total height including loader */}

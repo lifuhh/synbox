@@ -51,12 +51,12 @@ export const InfiniteScrollGallery = ({
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   return (
-    <div ref={containerRef} className={cn('overflow-auto px-4', className)}>
-      <div className='flex flex-wrap py-2 pt-4'>
+    <div ref={containerRef} className={cn(' overflow-auto px-4', className)}>
+      <div className=' flex flex-wrap py-2 pt-4'>
         {items.map((item, idx) => (
           <div
             key={item?.videoId}
-            className='relative w-full p-3 sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4'
+            className=' relative w-full p-3 sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4'
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
             onClick={handleGalleryItemClick(item?.videoId)}>
